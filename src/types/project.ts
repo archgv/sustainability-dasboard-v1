@@ -8,5 +8,4 @@ export interface Project {
   carbonIntensity: number; // kgCO2e/m²/yr
   operationalEnergy: number; // kWh/m²/yr
   certifications?: string[];
-  area?: number; // m²
 }
