@@ -2,25 +2,30 @@
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from 'recharts';
-import { Project } from '@/types/project';
+import { Project, availableKPIs } from '@/types/project';
 
 interface ChartSectionProps {
   projects: Project[];
+  selectedKPI1: string;
+  selectedKPI2: string;
 }
 
-export const ChartSection = ({ projects }: ChartSectionProps) => {
+export const ChartSection = ({ projects, selectedKPI1, selectedKPI2 }: ChartSectionProps) => {
+  const kpi1Config = availableKPIs.find(kpi => kpi.key === selectedKPI1);
+  const kpi2Config = availableKPIs.find(kpi => kpi.key === selectedKPI2);
+
   // Prepare data for bar chart - group by typology
   const barChartData = projects.reduce((acc: any[], project) => {
     const existing = acc.find(item => item.typology === project.typology);
     if (existing) {
-      existing.avgCarbon = (existing.avgCarbon + project.carbonIntensity) / 2;
-      existing.avgEnergy = (existing.avgEnergy + project.operationalEnergy) / 2;
+      existing[`avg${selectedKPI1}`] = (existing[`avg${selectedKPI1}`] + (project[selectedKPI1 as keyof Project] as number)) / 2;
+      existing[`avg${selectedKPI2}`] = (existing[`avg${selectedKPI2}`] + (project[selectedKPI2 as keyof Project] as number)) / 2;
       existing.count += 1;
     } else {
       acc.push({
         typology: project.typology,
-        avgCarbon: project.carbonIntensity,
-        avgEnergy: project.operationalEnergy,
+        [`avg${selectedKPI1}`]: project[selectedKPI1 as keyof Project] as number,
+        [`avg${selectedKPI2}`]: project[selectedKPI2 as keyof Project] as number,
         count: 1
       });
     }
@@ -44,15 +49,15 @@ export const ChartSection = ({ projects }: ChartSectionProps) => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis 
                   type="number" 
-                  dataKey="carbonIntensity" 
-                  name="Carbon Intensity"
-                  unit=" kgCO2e/m²/yr"
+                  dataKey={selectedKPI1}
+                  name={kpi1Config?.label || selectedKPI1}
+                  unit={kpi1Config?.unit ? ` ${kpi1Config.unit}` : ''}
                 />
                 <YAxis 
                   type="number" 
-                  dataKey="operationalEnergy" 
-                  name="Operational Energy"
-                  unit=" kWh/m²/yr"
+                  dataKey={selectedKPI2}
+                  name={kpi2Config?.label || selectedKPI2}
+                  unit={kpi2Config?.unit ? ` ${kpi2Config.unit}` : ''}
                 />
                 <Tooltip 
                   cursor={{ strokeDasharray: '3 3' }}
@@ -63,8 +68,12 @@ export const ChartSection = ({ projects }: ChartSectionProps) => {
                         <div className="bg-white p-3 border rounded-lg shadow-lg">
                           <p className="font-semibold">{data.name}</p>
                           <p className="text-sm text-gray-600">{data.typology}</p>
-                          <p className="text-sm">Carbon: {data.carbonIntensity} kgCO2e/m²/yr</p>
-                          <p className="text-sm">Energy: {data.operationalEnergy} kWh/m²/yr</p>
+                          <p className="text-sm">
+                            {kpi1Config?.label}: {data[selectedKPI1]} {kpi1Config?.unit}
+                          </p>
+                          <p className="text-sm">
+                            {kpi2Config?.label}: {data[selectedKPI2]} {kpi2Config?.unit}
+                          </p>
                         </div>
                       );
                     }
@@ -92,15 +101,15 @@ export const ChartSection = ({ projects }: ChartSectionProps) => {
                 <Tooltip />
                 <Legend />
                 <Bar 
-                  dataKey="avgCarbon" 
+                  dataKey={`avg${selectedKPI1}`}
                   fill="#EF4444" 
-                  name="Avg Carbon Intensity"
+                  name={`Avg ${kpi1Config?.label || selectedKPI1}`}
                   radius={[4, 4, 0, 0]}
                 />
                 <Bar 
-                  dataKey="avgEnergy" 
+                  dataKey={`avg${selectedKPI2}`}
                   fill="#10B981" 
-                  name="Avg Operational Energy"
+                  name={`Avg ${kpi2Config?.label || selectedKPI2}`}
                   radius={[4, 4, 0, 0]}
                 />
               </BarChart>

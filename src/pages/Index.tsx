@@ -4,10 +4,13 @@ import { FilterPanel } from '@/components/FilterPanel';
 import { ChartSection } from '@/components/ChartSection';
 import { ProjectGrid } from '@/components/ProjectGrid';
 import { DashboardHeader } from '@/components/DashboardHeader';
+import { KPISelector } from '@/components/KPISelector';
 import { sampleProjects } from '@/data/sampleData';
 
 const Index = () => {
   const [filteredProjects, setFilteredProjects] = useState(sampleProjects);
+  const [selectedKPI1, setSelectedKPI1] = useState('carbonIntensity');
+  const [selectedKPI2, setSelectedKPI2] = useState('operationalEnergy');
   const [filters, setFilters] = useState({
     typology: 'all',
     dateRange: 'all',
@@ -60,8 +63,20 @@ const Index = () => {
           
           {/* Main Content */}
           <div className="lg:col-span-3 space-y-8">
+            {/* KPI Selector */}
+            <KPISelector 
+              selectedKPI1={selectedKPI1}
+              selectedKPI2={selectedKPI2}
+              onKPI1Change={setSelectedKPI1}
+              onKPI2Change={setSelectedKPI2}
+            />
+            
             {/* Charts Section */}
-            <ChartSection projects={filteredProjects} />
+            <ChartSection 
+              projects={filteredProjects} 
+              selectedKPI1={selectedKPI1}
+              selectedKPI2={selectedKPI2}
+            />
             
             {/* Projects Grid */}
             <ProjectGrid projects={filteredProjects} />

@@ -10,6 +10,11 @@ export const sampleProjects: Project[] = [
     completionDate: '2023-05-15',
     carbonIntensity: 25,
     operationalEnergy: 65,
+    eui: 68,
+    shd: 15,
+    upfrontEC: 320,
+    wlc: 1250,
+    pmv: 0.2,
     certifications: ['BREEAM Excellent', 'DGNB Gold']
   },
   {
@@ -20,6 +25,11 @@ export const sampleProjects: Project[] = [
     completionDate: '2022-11-20',
     carbonIntensity: 18,
     operationalEnergy: 45,
+    eui: 42,
+    shd: 12,
+    upfrontEC: 280,
+    wlc: 950,
+    pmv: 0.1,
     certifications: ['Passive House', 'Nordic Swan']
   },
   {
@@ -30,6 +40,11 @@ export const sampleProjects: Project[] = [
     completionDate: '2023-08-30',
     carbonIntensity: 35,
     operationalEnergy: 85,
+    eui: 88,
+    shd: 22,
+    upfrontEC: 450,
+    wlc: 1680,
+    pmv: 0.3,
     certifications: ['LEED Platinum']
   },
   {
@@ -40,6 +55,11 @@ export const sampleProjects: Project[] = [
     completionDate: '2021-09-12',
     carbonIntensity: 42,
     operationalEnergy: 95,
+    eui: 98,
+    shd: 25,
+    upfrontEC: 520,
+    wlc: 1950,
+    pmv: 0.0,
     certifications: ['BREEAM Very Good']
   },
   {
@@ -50,6 +70,11 @@ export const sampleProjects: Project[] = [
     completionDate: '2022-03-18',
     carbonIntensity: 55,
     operationalEnergy: 120,
+    eui: 125,
+    shd: 35,
+    upfrontEC: 380,
+    wlc: 2200,
+    pmv: 0.4,
     certifications: ['LEED Gold']
   },
   {
@@ -60,6 +85,11 @@ export const sampleProjects: Project[] = [
     completionDate: '2023-01-25',
     carbonIntensity: 38,
     operationalEnergy: 78,
+    eui: 82,
+    shd: 18,
+    upfrontEC: 410,
+    wlc: 1580,
+    pmv: 0.2,
     certifications: ['DGNB Silver', 'EU Taxonomy']
   },
   {
@@ -70,6 +100,11 @@ export const sampleProjects: Project[] = [
     completionDate: '2020-07-10',
     carbonIntensity: 62,
     operationalEnergy: 135,
+    eui: 140,
+    shd: 38,
+    upfrontEC: 580,
+    wlc: 2850,
+    pmv: 0.5,
     certifications: ['BREEAM Good']
   },
   {
@@ -80,6 +115,11 @@ export const sampleProjects: Project[] = [
     completionDate: '2023-06-05',
     carbonIntensity: 22,
     operationalEnergy: 52,
+    eui: 48,
+    shd: 14,
+    upfrontEC: 290,
+    wlc: 1120,
+    pmv: 0.1,
     certifications: ['Miljöbyggnad Silver']
   }
 ];
