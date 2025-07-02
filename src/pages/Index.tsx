@@ -5,14 +5,20 @@ import { ChartSection } from '@/components/ChartSection';
 import { ProjectGrid } from '@/components/ProjectGrid';
 import { DashboardHeader } from '@/components/DashboardHeader';
 import { KPISelector } from '@/components/KPISelector';
+import { ProjectComparison } from '@/components/ProjectComparison';
+import { EmbodiedCarbonBreakdown } from '@/components/EmbodiedCarbonBreakdown';
 import { sampleProjects } from '@/data/sampleData';
 
 const Index = () => {
   const [filteredProjects, setFilteredProjects] = useState(sampleProjects);
-  const [selectedKPI1, setSelectedKPI1] = useState('carbonIntensity');
+  const [selectedKPI1, setSelectedKPI1] = useState('totalEmbodiedCarbon');
   const [selectedKPI2, setSelectedKPI2] = useState('operationalEnergy');
+  const [primaryProject, setPrimaryProject] = useState(sampleProjects[0]?.id || '');
+  const [comparisonProjects, setComparisonProjects] = useState<string[]>([]);
   const [filters, setFilters] = useState({
     typology: 'all',
+    projectType: 'all',
+    ribaStage: 'all',
     dateRange: 'all',
     carbonRange: [0, 100],
     energyRange: [0, 200]
@@ -24,6 +30,8 @@ const Index = () => {
     // Apply filters to projects
     const filtered = sampleProjects.filter(project => {
       const typologyMatch = newFilters.typology === 'all' || project.typology === newFilters.typology;
+      const projectTypeMatch = newFilters.projectType === 'all' || project.projectType === newFilters.projectType;
+      const ribaStageMatch = newFilters.ribaStage === 'all' || project.ribaStage === newFilters.ribaStage;
       const carbonMatch = project.carbonIntensity >= newFilters.carbonRange[0] && 
                          project.carbonIntensity <= newFilters.carbonRange[1];
       const energyMatch = project.operationalEnergy >= newFilters.energyRange[0] && 
@@ -44,11 +52,13 @@ const Index = () => {
         }
       }
       
-      return typologyMatch && carbonMatch && energyMatch && dateMatch;
+      return typologyMatch && projectTypeMatch && ribaStageMatch && carbonMatch && energyMatch && dateMatch;
     });
     
     setFilteredProjects(filtered);
   };
+
+  const primaryProjectData = sampleProjects.find(p => p.id === primaryProject);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -63,6 +73,15 @@ const Index = () => {
           
           {/* Main Content */}
           <div className="lg:col-span-3 space-y-8">
+            {/* Project Comparison */}
+            <ProjectComparison 
+              projects={filteredProjects}
+              primaryProject={primaryProject}
+              comparisonProjects={comparisonProjects}
+              onPrimaryProjectChange={setPrimaryProject}
+              onComparisonProjectsChange={setComparisonProjects}
+            />
+            
             {/* KPI Selector */}
             <KPISelector 
               selectedKPI1={selectedKPI1}
@@ -77,6 +96,11 @@ const Index = () => {
               selectedKPI1={selectedKPI1}
               selectedKPI2={selectedKPI2}
             />
+            
+            {/* Embodied Carbon Breakdown */}
+            {primaryProjectData && (
+              <EmbodiedCarbonBreakdown project={primaryProjectData} />
+            )}
             
             {/* Projects Grid */}
             <ProjectGrid projects={filteredProjects} />

@@ -1,4 +1,3 @@
-
 import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -11,6 +10,8 @@ interface FilterPanelProps {
     dateRange: string;
     carbonRange: number[];
     energyRange: number[];
+    projectType: string;
+    ribaStage: string;
   };
   onFilterChange: (filters: any) => void;
 }
@@ -30,6 +31,14 @@ export const FilterPanel = ({ filters, onFilterChange }: FilterPanelProps) => {
 
   const handleEnergyRangeChange = (value: number[]) => {
     onFilterChange({ ...filters, energyRange: value });
+  };
+
+  const handleProjectTypeChange = (value: string) => {
+    onFilterChange({ ...filters, projectType: value });
+  };
+
+  const handleRibaStageChange = (value: string) => {
+    onFilterChange({ ...filters, ribaStage: value });
   };
 
   return (
@@ -57,6 +66,45 @@ export const FilterPanel = ({ filters, onFilterChange }: FilterPanelProps) => {
               <SelectItem value="healthcare">Healthcare</SelectItem>
               <SelectItem value="retail">Retail</SelectItem>
               <SelectItem value="mixed-use">Mixed Use</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Project Type Filter */}
+        <div>
+          <Label htmlFor="projectType" className="text-sm font-medium text-gray-700 mb-2 block">
+            Project Type
+          </Label>
+          <Select value={filters.projectType || 'all'} onValueChange={handleProjectTypeChange}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select project type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Projects</SelectItem>
+              <SelectItem value="new-build">New Build</SelectItem>
+              <SelectItem value="retrofit">Retrofit</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* RIBA Stage Filter */}
+        <div>
+          <Label htmlFor="ribaStage" className="text-sm font-medium text-gray-700 mb-2 block">
+            RIBA Stage
+          </Label>
+          <Select value={filters.ribaStage || 'all'} onValueChange={handleRibaStageChange}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select RIBA stage" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Stages</SelectItem>
+              <SelectItem value="stage-1">Stage 1</SelectItem>
+              <SelectItem value="stage-2">Stage 2</SelectItem>
+              <SelectItem value="stage-3">Stage 3</SelectItem>
+              <SelectItem value="stage-4">Stage 4</SelectItem>
+              <SelectItem value="stage-5">Stage 5</SelectItem>
+              <SelectItem value="stage-6">Stage 6</SelectItem>
+              <SelectItem value="stage-7">Stage 7</SelectItem>
             </SelectContent>
           </Select>
         </div>
