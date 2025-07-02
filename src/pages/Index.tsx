@@ -4,7 +4,7 @@ import { FilterPanel } from '@/components/FilterPanel';
 import { ChartSection } from '@/components/ChartSection';
 import { ProjectGrid } from '@/components/ProjectGrid';
 import { DashboardHeader } from '@/components/DashboardHeader';
-import { KPISelector } from '@/components/KPISelector';
+import { ChartTypeSelector, ChartType } from '@/components/ChartTypeSelector';
 import { ProjectComparison } from '@/components/ProjectComparison';
 import { EmbodiedCarbonBreakdown } from '@/components/EmbodiedCarbonBreakdown';
 import { SectorPerformance } from '@/components/SectorPerformance';
@@ -12,6 +12,7 @@ import { sampleProjects } from '@/data/sampleData';
 
 const Index = () => {
   const [filteredProjects, setFilteredProjects] = useState(sampleProjects);
+  const [chartType, setChartType] = useState<ChartType>('compare-scatter');
   const [selectedKPI1, setSelectedKPI1] = useState('totalEmbodiedCarbon');
   const [selectedKPI2, setSelectedKPI2] = useState('operationalEnergy');
   const [primaryProject, setPrimaryProject] = useState(sampleProjects[0]?.id || '');
@@ -86,10 +87,12 @@ const Index = () => {
               onComparisonProjectsChange={setComparisonProjects}
             />
             
-            {/* KPI Selector */}
-            <KPISelector 
+            {/* Chart Type Selector */}
+            <ChartTypeSelector 
+              chartType={chartType}
               selectedKPI1={selectedKPI1}
               selectedKPI2={selectedKPI2}
+              onChartTypeChange={setChartType}
               onKPI1Change={setSelectedKPI1}
               onKPI2Change={setSelectedKPI2}
             />
@@ -97,6 +100,7 @@ const Index = () => {
             {/* Charts Section */}
             <ChartSection 
               projects={filteredProjects} 
+              chartType={chartType}
               selectedKPI1={selectedKPI1}
               selectedKPI2={selectedKPI2}
             />
