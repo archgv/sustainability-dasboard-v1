@@ -7,6 +7,7 @@ import { DashboardHeader } from '@/components/DashboardHeader';
 import { KPISelector } from '@/components/KPISelector';
 import { ProjectComparison } from '@/components/ProjectComparison';
 import { EmbodiedCarbonBreakdown } from '@/components/EmbodiedCarbonBreakdown';
+import { SectorPerformance } from '@/components/SectorPerformance';
 import { sampleProjects } from '@/data/sampleData';
 
 const Index = () => {
@@ -73,6 +74,9 @@ const Index = () => {
           
           {/* Main Content */}
           <div className="lg:col-span-3 space-y-8">
+            {/* Sector Performance Analysis */}
+            <SectorPerformance projects={filteredProjects} />
+            
             {/* Project Comparison */}
             <ProjectComparison 
               projects={filteredProjects}
