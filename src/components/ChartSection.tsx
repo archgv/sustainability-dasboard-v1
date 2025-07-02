@@ -1,30 +1,43 @@
-
 import { Card } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, LineChart, Line } from 'recharts';
 import { Project, availableKPIs } from '@/types/project';
-import { ChartType } from './ChartTypeSelector';
+import { ChartType, EmbodiedCarbonBreakdown } from './ChartTypeSelector';
 
 interface ChartSectionProps {
   projects: Project[];
   chartType: ChartType;
   selectedKPI1: string;
   selectedKPI2: string;
+  embodiedCarbonBreakdown: EmbodiedCarbonBreakdown;
 }
 
-export const ChartSection = ({ projects, chartType, selectedKPI1, selectedKPI2 }: ChartSectionProps) => {
+export const ChartSection = ({ 
+  projects, 
+  chartType, 
+  selectedKPI1, 
+  selectedKPI2, 
+  embodiedCarbonBreakdown 
+}: ChartSectionProps) => {
   const kpi1Config = availableKPIs.find(kpi => kpi.key === selectedKPI1);
   const kpi2Config = availableKPIs.find(kpi => kpi.key === selectedKPI2);
 
   const handleExportChart = () => {
     const chartTitle = getChartTitle();
-    const chartContent = `${chartTitle}\n\n` + 
-      projects.map(project => 
+    let chartContent = `${chartTitle}\n\n`;
+    
+    if (chartType === 'single-bar' && selectedKPI1 === 'totalEmbodiedCarbon' && embodiedCarbonBreakdown !== 'none') {
+      const breakdownData = getEmbodiedCarbonBreakdownData();
+      chartContent += breakdownData.map(item => 
+        `${item.name}: ${item.value} kgCO2e/m²`
+      ).join('\n');
+    } else {
+      chartContent += projects.map(project => 
         `${project.name}: ${project[selectedKPI1 as keyof Project]} ${kpi1Config?.unit || ''}` +
         (chartType.includes('compare') ? ` | ${project[selectedKPI2 as keyof Project]} ${kpi2Config?.unit || ''}` : '')
       ).join('\n');
+    }
     
     const blob = new Blob([chartContent], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -36,6 +49,11 @@ export const ChartSection = ({ projects, chartType, selectedKPI1, selectedKPI2 }
   };
 
   const getChartTitle = () => {
+    if (chartType === 'single-bar' && selectedKPI1 === 'totalEmbodiedCarbon' && embodiedCarbonBreakdown !== 'none') {
+      const breakdownType = embodiedCarbonBreakdown === 'lifecycle' ? 'Lifecycle Stage' : 'Building Element';
+      return `Embodied Carbon by ${breakdownType} - Bar Chart`;
+    }
+    
     switch (chartType) {
       case 'compare-scatter':
         return `${kpi1Config?.label} vs ${kpi2Config?.label} - Scatter Plot`;
@@ -50,7 +68,91 @@ export const ChartSection = ({ projects, chartType, selectedKPI1, selectedKPI2 }
     }
   };
 
+  const getEmbodiedCarbonBreakdownData = () => {
+    if (embodiedCarbonBreakdown === 'none') return [];
+    
+    // Get all projects with embodied carbon breakdown data
+    const projectsWithBreakdown = projects.filter(p => p.embodiedCarbonBreakdown);
+    
+    if (projectsWithBreakdown.length === 0) return [];
+    
+    const breakdownKey = embodiedCarbonBreakdown === 'lifecycle' ? 'byLifeCycleStage' : 'byBuildingElement';
+    const aggregatedData: Record<string, number[]> = {};
+    
+    // Aggregate data across all projects
+    projectsWithBreakdown.forEach(project => {
+      const breakdown = project.embodiedCarbonBreakdown![breakdownKey];
+      Object.entries(breakdown).forEach(([key, value]) => {
+        if (!aggregatedData[key]) aggregatedData[key] = [];
+        aggregatedData[key].push(value);
+      });
+    });
+    
+    // Calculate averages and format for chart
+    return Object.entries(aggregatedData).map(([key, values]) => {
+      const average = values.reduce((sum, val) => sum + val, 0) / values.length;
+      const name = embodiedCarbonBreakdown === 'lifecycle' 
+        ? getLifeCycleStageName(key)
+        : key.charAt(0).toUpperCase() + key.slice(1);
+      
+      return {
+        name,
+        value: Math.round(average * 100) / 100
+      };
+    });
+  };
+
+  const getLifeCycleStageName = (stage: string): string => {
+    const stageNames: Record<string, string> = {
+      a1a3: 'Product Stage',
+      a4: 'Transport',
+      a5: 'Construction',
+      b1b7: 'Use Stage',
+      c1c4: 'End of Life',
+      d: 'Benefits Beyond System'
+    };
+    return stageNames[stage] || stage.toUpperCase();
+  };
+
   const renderChart = () => {
+    // Handle embodied carbon breakdown
+    if (chartType === 'single-bar' && selectedKPI1 === 'totalEmbodiedCarbon' && embodiedCarbonBreakdown !== 'none') {
+      const breakdownData = getEmbodiedCarbonBreakdownData();
+      
+      if (breakdownData.length === 0) {
+        return <div className="flex items-center justify-center h-full text-gray-500">No breakdown data available for selected projects</div>;
+      }
+      
+      return (
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={breakdownData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis 
+              dataKey="name" 
+              angle={-45}
+              textAnchor="end"
+              height={80}
+              interval={0}
+            />
+            <YAxis 
+              label={{ value: 'kgCO2e/m²', angle: -90, position: 'insideLeft' }}
+            />
+            <Tooltip 
+              formatter={(value: number) => [`${value} kgCO2e/m²`, 'Average Carbon']}
+              labelFormatter={(label) => `${embodiedCarbonBreakdown === 'lifecycle' ? 'Stage' : 'Element'}: ${label}`}
+            />
+            <Bar 
+              dataKey="value"
+              fill="#10B981" 
+              name="Average Embodied Carbon"
+              radius={[4, 4, 0, 0]}
+            />
+          </BarChart>
+        </ResponsiveContainer>
+      );
+    }
+
+    // ... keep existing code (all other chart rendering logic the same)
     switch (chartType) {
       case 'compare-scatter':
         return (

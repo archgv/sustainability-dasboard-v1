@@ -2,28 +2,35 @@
 import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
 import { availableKPIs } from '@/types/project';
 
 export type ChartType = 'compare-scatter' | 'compare-bubble' | 'single-bar' | 'single-timeline';
+export type EmbodiedCarbonBreakdown = 'none' | 'lifecycle' | 'element';
 
 interface ChartTypeSelectorProps {
   chartType: ChartType;
   selectedKPI1: string;
   selectedKPI2: string;
+  embodiedCarbonBreakdown: EmbodiedCarbonBreakdown;
   onChartTypeChange: (value: ChartType) => void;
   onKPI1Change: (value: string) => void;
   onKPI2Change: (value: string) => void;
+  onEmbodiedCarbonBreakdownChange: (value: EmbodiedCarbonBreakdown) => void;
 }
 
 export const ChartTypeSelector = ({
   chartType,
   selectedKPI1,
   selectedKPI2,
+  embodiedCarbonBreakdown,
   onChartTypeChange,
   onKPI1Change,
-  onKPI2Change
+  onKPI2Change,
+  onEmbodiedCarbonBreakdownChange
 }: ChartTypeSelectorProps) => {
   const showKPI2 = chartType === 'compare-scatter' || chartType === 'compare-bubble';
+  const showEmbodiedCarbonBreakdown = chartType === 'single-bar' && selectedKPI1 === 'totalEmbodiedCarbon';
 
   return (
     <Card className="p-4 mb-6">
@@ -83,6 +90,37 @@ export const ChartTypeSelector = ({
           </div>
         )}
       </div>
+
+      {showEmbodiedCarbonBreakdown && (
+        <div className="mt-4 pt-4 border-t">
+          <Label className="text-sm font-medium text-gray-700 mb-2 block">
+            Embodied Carbon Breakdown
+          </Label>
+          <div className="flex gap-2">
+            <Button
+              variant={embodiedCarbonBreakdown === 'none' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => onEmbodiedCarbonBreakdownChange('none')}
+            >
+              Total Values
+            </Button>
+            <Button
+              variant={embodiedCarbonBreakdown === 'lifecycle' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => onEmbodiedCarbonBreakdownChange('lifecycle')}
+            >
+              By Lifecycle Stage
+            </Button>
+            <Button
+              variant={embodiedCarbonBreakdown === 'element' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => onEmbodiedCarbonBreakdownChange('element')}
+            >
+              By Building Element
+            </Button>
+          </div>
+        </div>
+      )}
     </Card>
   );
 };

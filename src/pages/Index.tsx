@@ -1,12 +1,10 @@
-
 import { useState } from 'react';
 import { FilterPanel } from '@/components/FilterPanel';
 import { ChartSection } from '@/components/ChartSection';
 import { ProjectGrid } from '@/components/ProjectGrid';
 import { DashboardHeader } from '@/components/DashboardHeader';
-import { ChartTypeSelector, ChartType } from '@/components/ChartTypeSelector';
+import { ChartTypeSelector, ChartType, EmbodiedCarbonBreakdown } from '@/components/ChartTypeSelector';
 import { ProjectComparison } from '@/components/ProjectComparison';
-import { EmbodiedCarbonBreakdown } from '@/components/EmbodiedCarbonBreakdown';
 import { SectorPerformance } from '@/components/SectorPerformance';
 import { sampleProjects } from '@/data/sampleData';
 
@@ -15,6 +13,7 @@ const Index = () => {
   const [chartType, setChartType] = useState<ChartType>('compare-scatter');
   const [selectedKPI1, setSelectedKPI1] = useState('totalEmbodiedCarbon');
   const [selectedKPI2, setSelectedKPI2] = useState('operationalEnergy');
+  const [embodiedCarbonBreakdown, setEmbodiedCarbonBreakdown] = useState<EmbodiedCarbonBreakdown>('none');
   const [primaryProject, setPrimaryProject] = useState(sampleProjects[0]?.id || '');
   const [comparisonProjects, setComparisonProjects] = useState<string[]>([]);
   const [filters, setFilters] = useState({
@@ -60,8 +59,6 @@ const Index = () => {
     setFilteredProjects(filtered);
   };
 
-  const primaryProjectData = sampleProjects.find(p => p.id === primaryProject);
-
   return (
     <div className="min-h-screen bg-gray-50">
       <DashboardHeader />
@@ -92,9 +89,11 @@ const Index = () => {
               chartType={chartType}
               selectedKPI1={selectedKPI1}
               selectedKPI2={selectedKPI2}
+              embodiedCarbonBreakdown={embodiedCarbonBreakdown}
               onChartTypeChange={setChartType}
               onKPI1Change={setSelectedKPI1}
               onKPI2Change={setSelectedKPI2}
+              onEmbodiedCarbonBreakdownChange={setEmbodiedCarbonBreakdown}
             />
             
             {/* Charts Section */}
@@ -103,12 +102,8 @@ const Index = () => {
               chartType={chartType}
               selectedKPI1={selectedKPI1}
               selectedKPI2={selectedKPI2}
+              embodiedCarbonBreakdown={embodiedCarbonBreakdown}
             />
-            
-            {/* Embodied Carbon Breakdown */}
-            {primaryProjectData && (
-              <EmbodiedCarbonBreakdown project={primaryProjectData} />
-            )}
             
             {/* Projects Grid */}
             <ProjectGrid projects={filteredProjects} />
