@@ -2,7 +2,7 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { BoxPlot, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import { ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, BarChart, Bar } from 'recharts';
 import { Download } from 'lucide-react';
 import { Project, availableKPIs } from '@/types/project';
 import { useState } from 'react';
