@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, LineChart, Line } from 'recharts';
 import { Project, availableKPIs } from '@/types/project';
-import { ChartType, EmbodiedCarbonBreakdown } from './ChartTypeSelector';
+import { ChartType, EmbodiedCarbonBreakdown, ValueType } from './ChartTypeSelector';
 
 interface ChartSectionProps {
   projects: Project[];
@@ -11,6 +11,7 @@ interface ChartSectionProps {
   selectedKPI1: string;
   selectedKPI2: string;
   embodiedCarbonBreakdown: EmbodiedCarbonBreakdown;
+  valueType: ValueType;
 }
 
 export const ChartSection = ({ 
@@ -18,10 +19,36 @@ export const ChartSection = ({
   chartType, 
   selectedKPI1, 
   selectedKPI2, 
-  embodiedCarbonBreakdown 
+  embodiedCarbonBreakdown,
+  valueType
 }: ChartSectionProps) => {
   const kpi1Config = availableKPIs.find(kpi => kpi.key === selectedKPI1);
   const kpi2Config = availableKPIs.find(kpi => kpi.key === selectedKPI2);
+
+  // Mock building area data for demonstration
+  const getProjectArea = (projectId: string): number => {
+    const areas: Record<string, number> = {
+      '1': 15000, // Green Office Tower
+      '2': 8500,  // Sustainable Housing Complex
+      '3': 22000, // Innovation Campus
+      '4': 12000, // Community Health Center
+      '5': 18000  // Urban Retail Hub
+    };
+    return areas[projectId] || 10000;
+  };
+
+  const transformDataForValueType = (data: any[]) => {
+    if (valueType === 'per-sqm') {
+      return data; // Data is already per sqm in our KPIs
+    }
+    
+    // For total values, multiply by building area
+    return data.map(item => ({
+      ...item,
+      [selectedKPI1]: item[selectedKPI1] * getProjectArea(item.id),
+      [selectedKPI2]: selectedKPI2 ? item[selectedKPI2] * getProjectArea(item.id) : undefined
+    }));
+  };
 
   const handleExportChart = () => {
     const chartTitle = getChartTitle();
@@ -30,12 +57,13 @@ export const ChartSection = ({
     if (chartType === 'single-bar' && selectedKPI1 === 'totalEmbodiedCarbon' && embodiedCarbonBreakdown !== 'none') {
       const breakdownData = getEmbodiedCarbonBreakdownData();
       chartContent += breakdownData.map(item => 
-        `${item.name}: ${item.value} kgCO2e/m²`
+        `${item.name}: ${item.value} ${valueType === 'per-sqm' ? 'kgCO2e/m²' : 'kgCO2e total'}`
       ).join('\n');
     } else {
-      chartContent += projects.map(project => 
-        `${project.name}: ${project[selectedKPI1 as keyof Project]} ${kpi1Config?.unit || ''}` +
-        (chartType.includes('compare') ? ` | ${project[selectedKPI2 as keyof Project]} ${kpi2Config?.unit || ''}` : '')
+      const transformedProjects = transformDataForValueType(projects);
+      chartContent += transformedProjects.map(project => 
+        `${project.name}: ${project[selectedKPI1 as keyof Project]} ${getUnitLabel(kpi1Config?.unit || '', valueType)}` +
+        (chartType === 'compare-bubble' ? ` | ${project[selectedKPI2 as keyof Project]} ${getUnitLabel(kpi2Config?.unit || '', valueType)}` : '')
       ).join('\n');
     }
     
@@ -43,26 +71,33 @@ export const ChartSection = ({
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `chart-data-${selectedKPI1}.txt`;
+    a.download = `chart-data-${selectedKPI1}-${valueType}.txt`;
     a.click();
     URL.revokeObjectURL(url);
   };
 
+  const getUnitLabel = (baseUnit: string, valueType: ValueType): string => {
+    if (valueType === 'total') {
+      return baseUnit.replace('/m²', '').replace('/year', '/year total');
+    }
+    return baseUnit;
+  };
+
   const getChartTitle = () => {
+    const valueTypeLabel = valueType === 'per-sqm' ? 'per sqm' : 'total';
+    
     if (chartType === 'single-bar' && selectedKPI1 === 'totalEmbodiedCarbon' && embodiedCarbonBreakdown !== 'none') {
       const breakdownType = embodiedCarbonBreakdown === 'lifecycle' ? 'Lifecycle Stage' : 'Building Element';
-      return `Embodied Carbon by ${breakdownType} - Bar Chart`;
+      return `Embodied Carbon by ${breakdownType} (${valueTypeLabel}) - Bar Chart`;
     }
     
     switch (chartType) {
-      case 'compare-scatter':
-        return `${kpi1Config?.label} vs ${kpi2Config?.label} - Scatter Plot`;
       case 'compare-bubble':
-        return `${kpi1Config?.label} vs ${kpi2Config?.label} - Bubble Chart`;
+        return `${kpi1Config?.label} vs ${kpi2Config?.label} (${valueTypeLabel}) - Bubble Chart`;
       case 'single-bar':
-        return `${kpi1Config?.label} by Project - Bar Chart`;
+        return `${kpi1Config?.label} by Project (${valueTypeLabel}) - Bar Chart`;
       case 'single-timeline':
-        return `${kpi1Config?.label} Over Time - Timeline`;
+        return `${kpi1Config?.label} Over Time (${valueTypeLabel}) - Timeline`;
       default:
         return 'Chart';
     }
@@ -71,7 +106,6 @@ export const ChartSection = ({
   const getEmbodiedCarbonBreakdownData = () => {
     if (embodiedCarbonBreakdown === 'none') return [];
     
-    // Get all projects with embodied carbon breakdown data
     const projectsWithBreakdown = projects.filter(p => p.embodiedCarbonBreakdown);
     
     if (projectsWithBreakdown.length === 0) return [];
@@ -79,16 +113,15 @@ export const ChartSection = ({
     const breakdownKey = embodiedCarbonBreakdown === 'lifecycle' ? 'byLifeCycleStage' : 'byBuildingElement';
     const aggregatedData: Record<string, number[]> = {};
     
-    // Aggregate data across all projects
     projectsWithBreakdown.forEach(project => {
       const breakdown = project.embodiedCarbonBreakdown![breakdownKey];
       Object.entries(breakdown).forEach(([key, value]) => {
         if (!aggregatedData[key]) aggregatedData[key] = [];
-        aggregatedData[key].push(value);
+        const finalValue = valueType === 'total' ? value * getProjectArea(project.id) : value;
+        aggregatedData[key].push(finalValue);
       });
     });
     
-    // Calculate averages and format for chart
     return Object.entries(aggregatedData).map(([key, values]) => {
       const average = values.reduce((sum, val) => sum + val, 0) / values.length;
       const name = embodiedCarbonBreakdown === 'lifecycle' 
@@ -135,10 +168,10 @@ export const ChartSection = ({
               interval={0}
             />
             <YAxis 
-              label={{ value: 'kgCO2e/m²', angle: -90, position: 'insideLeft' }}
+              label={{ value: valueType === 'per-sqm' ? 'kgCO2e/m²' : 'kgCO2e total', angle: -90, position: 'insideLeft' }}
             />
             <Tooltip 
-              formatter={(value: number) => [`${value} kgCO2e/m²`, 'Average Carbon']}
+              formatter={(value: number) => [`${value} ${valueType === 'per-sqm' ? 'kgCO2e/m²' : 'kgCO2e total'}`, 'Average Carbon']}
               labelFormatter={(label) => `${embodiedCarbonBreakdown === 'lifecycle' ? 'Stage' : 'Element'}: ${label}`}
             />
             <Bar 
@@ -152,56 +185,9 @@ export const ChartSection = ({
       );
     }
 
-    // ... keep existing code (all other chart rendering logic the same)
-    switch (chartType) {
-      case 'compare-scatter':
-        return (
-          <ResponsiveContainer width="100%" height="100%">
-            <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis 
-                type="number" 
-                dataKey={selectedKPI1}
-                name={kpi1Config?.label || selectedKPI1}
-                unit={kpi1Config?.unit ? ` ${kpi1Config.unit}` : ''}
-              />
-              <YAxis 
-                type="number" 
-                dataKey={selectedKPI2}
-                name={kpi2Config?.label || selectedKPI2}
-                unit={kpi2Config?.unit ? ` ${kpi2Config.unit}` : ''}
-              />
-              <Tooltip 
-                cursor={{ strokeDasharray: '3 3' }}
-                content={({ active, payload }) => {
-                  if (active && payload && payload.length) {
-                    const data = payload[0].payload;
-                    return (
-                      <div className="bg-white p-3 border rounded-lg shadow-lg">
-                        <p className="font-semibold">{data.name}</p>
-                        <p className="text-sm text-gray-600">{data.typology}</p>
-                        <p className="text-sm">
-                          {kpi1Config?.label}: {data[selectedKPI1]} {kpi1Config?.unit}
-                        </p>
-                        <p className="text-sm">
-                          {kpi2Config?.label}: {data[selectedKPI2]} {kpi2Config?.unit}
-                        </p>
-                      </div>
-                    );
-                  }
-                  return null;
-                }}
-              />
-              <Scatter 
-                name="Projects" 
-                data={projects} 
-                fill="#3b82f6"
-                fillOpacity={0.7}
-              />
-            </ScatterChart>
-          </ResponsiveContainer>
-        );
+    const transformedProjects = transformDataForValueType(projects);
 
+    switch (chartType) {
       case 'compare-bubble':
         return (
           <ResponsiveContainer width="100%" height="100%">
@@ -211,28 +197,30 @@ export const ChartSection = ({
                 type="number" 
                 dataKey={selectedKPI1}
                 name={kpi1Config?.label || selectedKPI1}
-                unit={kpi1Config?.unit ? ` ${kpi1Config.unit}` : ''}
+                unit={` ${getUnitLabel(kpi1Config?.unit || '', valueType)}`}
               />
               <YAxis 
                 type="number" 
                 dataKey={selectedKPI2}
                 name={kpi2Config?.label || selectedKPI2}
-                unit={kpi2Config?.unit ? ` ${kpi2Config.unit}` : ''}
+                unit={` ${getUnitLabel(kpi2Config?.unit || '', valueType)}`}
               />
               <Tooltip 
                 cursor={{ strokeDasharray: '3 3' }}
                 content={({ active, payload }) => {
                   if (active && payload && payload.length) {
                     const data = payload[0].payload;
+                    const area = getProjectArea(data.id);
                     return (
                       <div className="bg-white p-3 border rounded-lg shadow-lg">
                         <p className="font-semibold">{data.name}</p>
                         <p className="text-sm text-gray-600">{data.typology}</p>
+                        <p className="text-sm">Area: {area.toLocaleString()} m²</p>
                         <p className="text-sm">
-                          {kpi1Config?.label}: {data[selectedKPI1]} {kpi1Config?.unit}
+                          {kpi1Config?.label}: {data[selectedKPI1]} {getUnitLabel(kpi1Config?.unit || '', valueType)}
                         </p>
                         <p className="text-sm">
-                          {kpi2Config?.label}: {data[selectedKPI2]} {kpi2Config?.unit}
+                          {kpi2Config?.label}: {data[selectedKPI2]} {getUnitLabel(kpi2Config?.unit || '', valueType)}
                         </p>
                       </div>
                     );
@@ -242,11 +230,18 @@ export const ChartSection = ({
               />
               <Scatter 
                 name="Projects" 
-                data={projects} 
+                data={transformedProjects}
                 fill="#3b82f6"
                 fillOpacity={0.6}
-                r={8}
-              />
+              >
+                {transformedProjects.map((project, index) => {
+                  const area = getProjectArea(project.id);
+                  const bubbleSize = valueType === 'per-sqm' ? Math.sqrt(area / 500) : 8;
+                  return (
+                    <Scatter key={index} r={Math.max(4, Math.min(20, bubbleSize))} />
+                  );
+                })}
+              </Scatter>
             </ScatterChart>
           </ResponsiveContainer>
         );
@@ -254,7 +249,7 @@ export const ChartSection = ({
       case 'single-bar':
         return (
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={projects} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
+            <BarChart data={transformedProjects} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis 
                 dataKey="name" 
@@ -264,11 +259,11 @@ export const ChartSection = ({
                 interval={0}
               />
               <YAxis 
-                label={{ value: kpi1Config?.unit || '', angle: -90, position: 'insideLeft' }}
+                label={{ value: getUnitLabel(kpi1Config?.unit || '', valueType), angle: -90, position: 'insideLeft' }}
               />
               <Tooltip 
                 formatter={(value: number) => [
-                  `${value} ${kpi1Config?.unit || ''}`,
+                  `${value} ${getUnitLabel(kpi1Config?.unit || '', valueType)}`,
                   kpi1Config?.label || selectedKPI1
                 ]}
                 labelFormatter={(label) => `Project: ${label}`}
@@ -284,7 +279,7 @@ export const ChartSection = ({
         );
 
       case 'single-timeline':
-        const timelineData = projects
+        const timelineData = transformedProjects
           .map(project => ({
             ...project,
             date: new Date(project.completionDate).getTime()
@@ -300,11 +295,11 @@ export const ChartSection = ({
                 type="category"
               />
               <YAxis 
-                label={{ value: kpi1Config?.unit || '', angle: -90, position: 'insideLeft' }}
+                label={{ value: getUnitLabel(kpi1Config?.unit || '', valueType), angle: -90, position: 'insideLeft' }}
               />
               <Tooltip 
                 formatter={(value: number) => [
-                  `${value} ${kpi1Config?.unit || ''}`,
+                  `${value} ${getUnitLabel(kpi1Config?.unit || '', valueType)}`,
                   kpi1Config?.label || selectedKPI1
                 ]}
                 labelFormatter={(label) => `Completion: ${label}`}

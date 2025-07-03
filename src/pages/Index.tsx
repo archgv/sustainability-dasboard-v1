@@ -3,17 +3,18 @@ import { FilterPanel } from '@/components/FilterPanel';
 import { ChartSection } from '@/components/ChartSection';
 import { ProjectGrid } from '@/components/ProjectGrid';
 import { DashboardHeader } from '@/components/DashboardHeader';
-import { ChartTypeSelector, ChartType, EmbodiedCarbonBreakdown } from '@/components/ChartTypeSelector';
+import { ChartTypeSelector, ChartType, EmbodiedCarbonBreakdown, ValueType } from '@/components/ChartTypeSelector';
 import { ProjectComparison } from '@/components/ProjectComparison';
 import { SectorPerformance } from '@/components/SectorPerformance';
 import { sampleProjects } from '@/data/sampleData';
 
 const Index = () => {
   const [filteredProjects, setFilteredProjects] = useState(sampleProjects);
-  const [chartType, setChartType] = useState<ChartType>('compare-scatter');
+  const [chartType, setChartType] = useState<ChartType>('compare-bubble');
   const [selectedKPI1, setSelectedKPI1] = useState('totalEmbodiedCarbon');
-  const [selectedKPI2, setSelectedKPI2] = useState('operationalEnergy');
+  const [selectedKPI2, setSelectedKPI2] = useState('refrigerants');
   const [embodiedCarbonBreakdown, setEmbodiedCarbonBreakdown] = useState<EmbodiedCarbonBreakdown>('none');
+  const [valueType, setValueType] = useState<ValueType>('per-sqm');
   const [primaryProject, setPrimaryProject] = useState(sampleProjects[0]?.id || '');
   const [comparisonProjects, setComparisonProjects] = useState<string[]>([]);
   const [filters, setFilters] = useState({
@@ -28,7 +29,6 @@ const Index = () => {
   const handleFilterChange = (newFilters: typeof filters) => {
     setFilters(newFilters);
     
-    // Apply filters to projects
     const filtered = sampleProjects.filter(project => {
       const typologyMatch = newFilters.typology === 'all' || project.typology === newFilters.typology;
       const projectTypeMatch = newFilters.projectType === 'all' || project.projectType === newFilters.projectType;
@@ -90,10 +90,12 @@ const Index = () => {
               selectedKPI1={selectedKPI1}
               selectedKPI2={selectedKPI2}
               embodiedCarbonBreakdown={embodiedCarbonBreakdown}
+              valueType={valueType}
               onChartTypeChange={setChartType}
               onKPI1Change={setSelectedKPI1}
               onKPI2Change={setSelectedKPI2}
               onEmbodiedCarbonBreakdownChange={setEmbodiedCarbonBreakdown}
+              onValueTypeChange={setValueType}
             />
             
             {/* Charts Section */}
@@ -103,6 +105,7 @@ const Index = () => {
               selectedKPI1={selectedKPI1}
               selectedKPI2={selectedKPI2}
               embodiedCarbonBreakdown={embodiedCarbonBreakdown}
+              valueType={valueType}
             />
             
             {/* Projects Grid */}
