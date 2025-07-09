@@ -2,7 +2,7 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
-import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, LineChart, Line } from 'recharts';
+import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, LineChart, Line, Legend } from 'recharts';
 import { Project, availableKPIs } from '@/types/project';
 import { ChartType, EmbodiedCarbonBreakdown, ValueType } from './ChartTypeSelector';
 import { addProjectNumberToName } from '@/utils/projectUtils';
@@ -61,10 +61,12 @@ export const ChartSection = ({
     let chartContent = `${chartTitle}\n\n`;
     
     if (chartType === 'single-bar' && selectedKPI1 === 'totalEmbodiedCarbon' && embodiedCarbonBreakdown !== 'none') {
-      const breakdownData = getEmbodiedCarbonBreakdownData();
-      chartContent += breakdownData.map(item => 
-        `${item.name}: ${item.value} ${valueType === 'per-sqm' ? 'kgCO2e/m²' : 'kgCO2e total'}`
-      ).join('\n');
+      const breakdownData = getEmbodiedCarbonStackedData();
+      chartContent += breakdownData.map(item => {
+        const projectName = item.name;
+        const categories = Object.keys(item).filter(key => key !== 'name');
+        return `${projectName}:\n` + categories.map(cat => `  ${cat}: ${item[cat]} ${valueType === 'per-sqm' ? 'kgCO2e/m²' : 'kgCO2e total'}`).join('\n');
+      }).join('\n\n');
     } else {
       const transformedProjects = transformDataForValueType(projects);
       chartContent += transformedProjects.map(project => 
@@ -94,7 +96,7 @@ export const ChartSection = ({
     
     if (chartType === 'single-bar' && selectedKPI1 === 'totalEmbodiedCarbon' && embodiedCarbonBreakdown !== 'none') {
       const breakdownType = embodiedCarbonBreakdown === 'lifecycle' ? 'Lifecycle Stage' : 'Building Element';
-      return `Embodied Carbon by ${breakdownType} (${valueTypeLabel}) - Bar Chart`;
+      return `Embodied Carbon by ${breakdownType} (${valueTypeLabel}) - Stacked Column Chart`;
     }
     
     switch (chartType) {
@@ -109,62 +111,75 @@ export const ChartSection = ({
     }
   };
 
-  const getEmbodiedCarbonBreakdownData = () => {
-    if (embodiedCarbonBreakdown === 'none') return [];
-    
-    const projectsWithBreakdown = projects.filter(p => p.embodiedCarbonBreakdown);
-    
-    if (projectsWithBreakdown.length === 0) return [];
-    
-    const breakdownKey = embodiedCarbonBreakdown === 'lifecycle' ? 'byLifeCycleStage' : 'byBuildingElement';
-    const aggregatedData: Record<string, number[]> = {};
-    
-    projectsWithBreakdown.forEach(project => {
-      const breakdown = project.embodiedCarbonBreakdown![breakdownKey];
-      Object.entries(breakdown).forEach(([key, value]) => {
-        if (!aggregatedData[key]) aggregatedData[key] = [];
-        const finalValue = valueType === 'total' ? value * getProjectArea(project.id) : value;
-        aggregatedData[key].push(finalValue);
-      });
-    });
-    
-    return Object.entries(aggregatedData).map(([key, values]) => {
-      const average = values.reduce((sum, val) => sum + val, 0) / values.length;
-      const name = embodiedCarbonBreakdown === 'lifecycle' 
-        ? getLifeCycleStageName(key)
-        : key.charAt(0).toUpperCase() + key.slice(1);
-      
-      return {
-        name,
-        value: Math.round(average * 100) / 100
-      };
-    });
-  };
+  const getLifecycleStageCategories = () => [
+    { key: 'biogenicCarbon', label: 'Biogenic carbon (A1-A3)', color: '#22c55e' },
+    { key: 'upfrontEmbodied', label: 'Upfront embodied carbon (A1-A5)', color: '#3b82f6' },
+    { key: 'inUseEmbodied', label: 'In-use embodied carbon (B1-B5)', color: '#f59e0b' },
+    { key: 'endOfLife', label: 'End of life (C1-C4)', color: '#ef4444' },
+    { key: 'benefitsLoads', label: 'Benefits and loads (D1)', color: '#8b5cf6' },
+    { key: 'facilitatingWorks', label: 'Facilitating works', color: '#06b6d4' }
+  ];
 
-  const getLifeCycleStageName = (stage: string): string => {
-    const stageNames: Record<string, string> = {
-      a1a3: 'Product Stage',
-      a4: 'Transport',
-      a5: 'Construction',
-      b1b7: 'Use Stage',
-      c1c4: 'End of Life',
-      d: 'Benefits Beyond System'
-    };
-    return stageNames[stage] || stage.toUpperCase();
+  const getBuildingElementCategories = () => [
+    { key: 'substructure', label: 'Substructure', color: '#22c55e' },
+    { key: 'superstructureFrame', label: 'Superstructure - Frame', color: '#3b82f6' },
+    { key: 'superstructureExternal', label: 'Superstructure - External envelope', color: '#f59e0b' },
+    { key: 'superstructureInternal', label: 'Superstructure - Internal assemblies', color: '#ef4444' },
+    { key: 'finishes', label: 'Finishes', color: '#8b5cf6' },
+    { key: 'ffe', label: 'FF&E', color: '#06b6d4' },
+    { key: 'mep', label: 'MEP', color: '#ec4899' },
+    { key: 'externalWorks', label: 'External works', color: '#10b981' },
+    { key: 'contingency', label: 'Contingency', color: '#6b7280' }
+  ];
+
+  const getEmbodiedCarbonStackedData = () => {
+    if (embodiedCarbonBreakdown === 'none' || projects.length === 0) return [];
+    
+    const categories = embodiedCarbonBreakdown === 'lifecycle' 
+      ? getLifecycleStageCategories()
+      : getBuildingElementCategories();
+    
+    return projects.map(project => {
+      const baseId = project.id.split('-')[0];
+      const displayName = isComparingToSelf && project.ribaStage 
+        ? `${addProjectNumberToName(project.name, parseInt(baseId) - 1)} (RIBA ${project.ribaStage.replace('stage-', '')})`
+        : addProjectNumberToName(project.name, parseInt(baseId) - 1);
+      
+      const projectData: any = { name: displayName };
+      
+      // Mock breakdown data - in real app this would come from project.embodiedCarbonBreakdown
+      categories.forEach((category, index) => {
+        // Generate mock values based on total embodied carbon
+        const baseValue = project.totalEmbodiedCarbon || 45;
+        const multiplier = embodiedCarbonBreakdown === 'lifecycle' 
+          ? [0.4, 0.15, 0.25, 0.1, 0.05, 0.05][index] // Lifecycle distribution
+          : [0.15, 0.2, 0.15, 0.1, 0.05, 0.05, 0.15, 0.1, 0.05][index]; // Building element distribution
+        
+        const categoryValue = baseValue * (multiplier || 0.1);
+        const finalValue = valueType === 'total' ? categoryValue * getProjectArea(baseId) : categoryValue;
+        projectData[category.key] = Math.round(finalValue * 100) / 100;
+      });
+      
+      return projectData;
+    });
   };
 
   const renderChart = () => {
-    // Handle embodied carbon breakdown
+    // Handle embodied carbon breakdown with stacked columns
     if (chartType === 'single-bar' && selectedKPI1 === 'totalEmbodiedCarbon' && embodiedCarbonBreakdown !== 'none') {
-      const breakdownData = getEmbodiedCarbonBreakdownData();
+      const stackedData = getEmbodiedCarbonStackedData();
       
-      if (breakdownData.length === 0) {
+      if (stackedData.length === 0) {
         return <div className="flex items-center justify-center h-full text-gray-500">No breakdown data available for selected projects</div>;
       }
       
+      const categories = embodiedCarbonBreakdown === 'lifecycle' 
+        ? getLifecycleStageCategories()
+        : getBuildingElementCategories();
+      
       return (
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={breakdownData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
+          <BarChart data={stackedData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis 
               dataKey="name" 
@@ -177,15 +192,28 @@ export const ChartSection = ({
               label={{ value: valueType === 'per-sqm' ? 'kgCO2e/m²' : 'kgCO2e total', angle: -90, position: 'insideLeft' }}
             />
             <Tooltip 
-              formatter={(value: number) => [`${value} ${valueType === 'per-sqm' ? 'kgCO2e/m²' : 'kgCO2e total'}`, 'Average Carbon']}
-              labelFormatter={(label) => `${embodiedCarbonBreakdown === 'lifecycle' ? 'Stage' : 'Element'}: ${label}`}
+              formatter={(value: number, name: string) => {
+                const category = categories.find(cat => cat.key === name);
+                return [`${value} ${valueType === 'per-sqm' ? 'kgCO2e/m²' : 'kgCO2e total'}`, category?.label || name];
+              }}
+              labelFormatter={(label) => `Project: ${label}`}
             />
-            <Bar 
-              dataKey="value"
-              fill="#10B981" 
-              name="Average Embodied Carbon"
-              radius={[4, 4, 0, 0]}
+            <Legend 
+              wrapperStyle={{ paddingTop: '20px' }}
+              formatter={(value) => {
+                const category = categories.find(cat => cat.key === value);
+                return category?.label || value;
+              }}
             />
+            {categories.map((category) => (
+              <Bar 
+                key={category.key}
+                dataKey={category.key}
+                stackId="embodiedCarbon"
+                fill={category.color}
+                name={category.label}
+              />
+            ))}
           </BarChart>
         </ResponsiveContainer>
       );
