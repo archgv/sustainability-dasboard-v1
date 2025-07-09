@@ -1,7 +1,7 @@
+
 import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Slider } from '@/components/ui/slider';
 import { Filter } from 'lucide-react';
 
 interface FilterPanelProps {
@@ -23,14 +23,6 @@ export const FilterPanel = ({ filters, onFilterChange }: FilterPanelProps) => {
 
   const handleDateRangeChange = (value: string) => {
     onFilterChange({ ...filters, dateRange: value });
-  };
-
-  const handleCarbonRangeChange = (value: number[]) => {
-    onFilterChange({ ...filters, carbonRange: value });
-  };
-
-  const handleEnergyRangeChange = (value: number[]) => {
-    onFilterChange({ ...filters, energyRange: value });
   };
 
   const handleProjectTypeChange = (value: string) => {
@@ -124,48 +116,6 @@ export const FilterPanel = ({ filters, onFilterChange }: FilterPanelProps) => {
               <SelectItem value="older">Older Projects</SelectItem>
             </SelectContent>
           </Select>
-        </div>
-
-        {/* Carbon Intensity Range */}
-        <div>
-          <Label className="text-sm font-medium text-gray-700 mb-3 block">
-            Carbon Intensity (kgCO2e/m²/yr)
-          </Label>
-          <div className="px-2">
-            <Slider
-              value={filters.carbonRange}
-              onValueChange={handleCarbonRangeChange}
-              min={0}
-              max={100}
-              step={5}
-              className="mb-2"
-            />
-            <div className="flex justify-between text-xs text-gray-500">
-              <span>{filters.carbonRange[0]}</span>
-              <span>{filters.carbonRange[1]}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Energy Range */}
-        <div>
-          <Label className="text-sm font-medium text-gray-700 mb-3 block">
-            Operational Energy (kWh/m²/yr)
-          </Label>
-          <div className="px-2">
-            <Slider
-              value={filters.energyRange}
-              onValueChange={handleEnergyRangeChange}
-              min={0}
-              max={200}
-              step={10}
-              className="mb-2"
-            />
-            <div className="flex justify-between text-xs text-gray-500">
-              <span>{filters.energyRange[0]}</span>
-              <span>{filters.energyRange[1]}</span>
-            </div>
-          </div>
         </div>
       </div>
     </Card>

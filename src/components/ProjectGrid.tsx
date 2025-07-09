@@ -3,6 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, MapPin, Zap, Leaf } from 'lucide-react';
 import { Project } from '@/types/project';
+import { addProjectNumberToName } from '@/utils/projectUtils';
 
 interface ProjectGridProps {
   projects: Project[];
@@ -31,11 +32,11 @@ export const ProjectGrid = ({ projects }: ProjectGridProps) => {
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {projects.map((project) => (
+        {projects.map((project, index) => (
           <Card key={project.id} className="p-6 hover:shadow-lg transition-shadow duration-200">
             <div className="flex justify-between items-start mb-4">
               <h3 className="text-lg font-semibold text-gray-900 line-clamp-2">
-                {project.name}
+                {addProjectNumberToName(project.name, parseInt(project.id) - 1)}
               </h3>
               <Badge variant="outline" className="ml-2 capitalize">
                 {project.typology}

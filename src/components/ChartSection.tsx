@@ -1,9 +1,11 @@
+
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, LineChart, Line } from 'recharts';
 import { Project, availableKPIs } from '@/types/project';
 import { ChartType, EmbodiedCarbonBreakdown, ValueType } from './ChartTypeSelector';
+import { addProjectNumberToName } from '@/utils/projectUtils';
 
 interface ChartSectionProps {
   projects: Project[];
@@ -282,13 +284,14 @@ export const ChartSection = ({
         const timelineData = transformedProjects
           .map(project => ({
             ...project,
+            name: addProjectNumberToName(project.name, parseInt(project.id) - 1),
             date: new Date(project.completionDate).getTime()
           }))
           .sort((a, b) => a.date - b.date);
 
         return (
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={timelineData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+            <ScatterChart data={timelineData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis 
                 dataKey="completionDate"
@@ -303,15 +306,30 @@ export const ChartSection = ({
                   kpi1Config?.label || selectedKPI1
                 ]}
                 labelFormatter={(label) => `Completion: ${label}`}
+                content={({ active, payload }) => {
+                  if (active && payload && payload.length) {
+                    const data = payload[0].payload;
+                    return (
+                      <div className="bg-white p-3 border rounded-lg shadow-lg">
+                        <p className="font-semibold">{data.name}</p>
+                        <p className="text-sm text-gray-600">Completion: {data.completionDate}</p>
+                        <p className="text-sm">
+                          {kpi1Config?.label}: {data[selectedKPI1]} {getUnitLabel(kpi1Config?.unit || '', valueType)}
+                        </p>
+                      </div>
+                    );
+                  }
+                  return null;
+                }}
               />
-              <Line 
-                type="monotone" 
+              <Scatter 
                 dataKey={selectedKPI1}
-                stroke="#3b82f6" 
+                fill="#3b82f6" 
+                stroke="#3b82f6"
                 strokeWidth={2}
-                dot={{ fill: '#3b82f6', strokeWidth: 2, r: 4 }}
+                r={6}
               />
-            </LineChart>
+            </ScatterChart>
           </ResponsiveContainer>
         );
 

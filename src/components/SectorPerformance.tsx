@@ -1,4 +1,3 @@
-
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -14,13 +13,27 @@ interface SectorPerformanceProps {
 
 export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
   const [selectedKPI, setSelectedKPI] = useState('totalEmbodiedCarbon');
+  const [valueType, setValueType] = useState<'per-sqm' | 'total'>('per-sqm');
   
   const kpiConfig = availableKPIs.find(kpi => kpi.key === selectedKPI);
   
+  // Mock building area data for demonstration
+  const getProjectArea = (projectId: string): number => {
+    const areas: Record<string, number> = {
+      '1': 15000, '2': 8500, '3': 22000, '4': 12000, '5': 18000
+    };
+    return areas[projectId] || 10000;
+  };
+
   // Calculate sector statistics
   const sectorStats = projects.reduce((acc: any, project) => {
     const typology = project.typology;
-    const value = project[selectedKPI as keyof Project] as number;
+    let value = project[selectedKPI as keyof Project] as number;
+    
+    // Convert to total if needed
+    if (valueType === 'total') {
+      value = value * getProjectArea(project.id);
+    }
     
     if (!acc[typology]) {
       acc[typology] = [];
@@ -48,6 +61,13 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
       errorMax: max - average
     };
   });
+
+  const getUnitLabel = (): string => {
+    if (valueType === 'total') {
+      return kpiConfig?.unit?.replace('/m²', '') || '';
+    }
+    return kpiConfig?.unit || '';
+  };
 
   const handleExportCSV = () => {
     const csvHeaders = ['Typology', 'Count', 'Average', 'Min', 'Max', 'Range'];
@@ -129,6 +149,29 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                     ))}
                   </SelectContent>
                 </Select>
+                
+                <div className="flex rounded-md border border-gray-300 bg-white">
+                  <button
+                    onClick={() => setValueType('per-sqm')}
+                    className={`px-3 py-2 text-sm font-medium rounded-l-md transition-colors ${
+                      valueType === 'per-sqm'
+                        ? 'bg-blue-100 text-blue-900 border-blue-300'
+                        : 'bg-white text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    Per m²
+                  </button>
+                  <button
+                    onClick={() => setValueType('total')}
+                    className={`px-3 py-2 text-sm font-medium rounded-r-md border-l transition-colors ${
+                      valueType === 'total'
+                        ? 'bg-blue-100 text-blue-900 border-blue-300'
+                        : 'bg-white text-gray-700 hover:bg-gray-50 border-gray-300'
+                    }`}
+                  >
+                    Total
+                  </button>
+                </div>
               </div>
               <div className="flex gap-2">
                 <Button variant="outline" size="sm" onClick={handleExportChart}>
@@ -147,7 +190,7 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
             </div>
 
             <div className="h-96">
-              <h3 className="text-lg font-medium mb-4">Performance by Sector</h3>
+              <h3 className="text-lg font-medium mb-4">Performance by Sector ({valueType === 'per-sqm' ? 'per m²' : 'total'})</h3>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
                   <CartesianGrid strokeDasharray="3 3" />
@@ -159,11 +202,11 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                     interval={0}
                   />
                   <YAxis 
-                    label={{ value: kpiConfig?.unit || '', angle: -90, position: 'insideLeft' }}
+                    label={{ value: getUnitLabel(), angle: -90, position: 'insideLeft' }}
                   />
                   <Tooltip 
                     formatter={(value: number, name: string) => [
-                      `${value} ${kpiConfig?.unit || ''}`,
+                      `${value} ${getUnitLabel()}`,
                       name === 'average' ? 'Average' : name
                     ]}
                     labelFormatter={(label) => `Sector: ${label}`}
@@ -173,8 +216,8 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                         return (
                           <div className="bg-white border border-gray-300 rounded p-3 shadow-lg">
                             <p className="font-medium">{`${label}`}</p>
-                            <p className="text-blue-600">{`Average: ${data.average} ${kpiConfig?.unit || ''}`}</p>
-                            <p className="text-gray-600">{`Range: ${data.min} - ${data.max} ${kpiConfig?.unit || ''}`}</p>
+                            <p className="text-blue-600">{`Average: ${data.average} ${getUnitLabel()}`}</p>
+                            <p className="text-gray-600">{`Range: ${data.min} - ${data.max} ${getUnitLabel()}`}</p>
                             <p className="text-gray-500">{`Projects: ${data.count}`}</p>
                           </div>
                         );
@@ -211,7 +254,7 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                         <td className="border border-gray-300 px-3 py-2 font-medium">{sector.typology}</td>
                         <td className="border border-gray-300 px-3 py-2 text-right">{sector.count}</td>
                         <td className="border border-gray-300 px-3 py-2 text-right font-medium">
-                          {sector.average} {kpiConfig?.unit}
+                          {sector.average} {getUnitLabel()}
                         </td>
                         <td className="border border-gray-300 px-3 py-2 text-right">{sector.min}</td>
                         <td className="border border-gray-300 px-3 py-2 text-right">{sector.max}</td>
