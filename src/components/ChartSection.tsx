@@ -14,6 +14,8 @@ interface ChartSectionProps {
   selectedKPI2: string;
   embodiedCarbonBreakdown: EmbodiedCarbonBreakdown;
   valueType: ValueType;
+  isComparingToSelf?: boolean;
+  selectedRibaStages?: string[];
 }
 
 export const ChartSection = ({ 
@@ -22,7 +24,9 @@ export const ChartSection = ({
   selectedKPI1, 
   selectedKPI2, 
   embodiedCarbonBreakdown,
-  valueType
+  valueType,
+  isComparingToSelf = false,
+  selectedRibaStages = []
 }: ChartSectionProps) => {
   const kpi1Config = availableKPIs.find(kpi => kpi.key === selectedKPI1);
   const kpi2Config = availableKPIs.find(kpi => kpi.key === selectedKPI2);
@@ -47,8 +51,8 @@ export const ChartSection = ({
     // For total values, multiply by building area
     return data.map(item => ({
       ...item,
-      [selectedKPI1]: item[selectedKPI1] * getProjectArea(item.id),
-      [selectedKPI2]: selectedKPI2 ? item[selectedKPI2] * getProjectArea(item.id) : undefined
+      [selectedKPI1]: item[selectedKPI1] * getProjectArea(item.id.split('-')[0]), // Handle RIBA stage variants
+      [selectedKPI2]: selectedKPI2 ? item[selectedKPI2] * getProjectArea(item.id.split('-')[0]) : undefined
     }));
   };
 
@@ -212,10 +216,15 @@ export const ChartSection = ({
                 content={({ active, payload }) => {
                   if (active && payload && payload.length) {
                     const data = payload[0].payload;
-                    const area = getProjectArea(data.id);
+                    const baseId = data.id.split('-')[0];
+                    const area = getProjectArea(baseId);
+                    const displayName = isComparingToSelf && data.ribaStage 
+                      ? `${addProjectNumberToName(data.name, parseInt(baseId) - 1)} (RIBA ${data.ribaStage.replace('stage-', '')})`
+                      : addProjectNumberToName(data.name, parseInt(data.id) - 1);
+                    
                     return (
                       <div className="bg-white p-3 border rounded-lg shadow-lg">
-                        <p className="font-semibold">{data.name}</p>
+                        <p className="font-semibold">{displayName}</p>
                         <p className="text-sm text-gray-600">{data.typology}</p>
                         <p className="text-sm">Area: {area.toLocaleString()} m²</p>
                         <p className="text-sm">
@@ -237,7 +246,8 @@ export const ChartSection = ({
                 fillOpacity={0.6}
               >
                 {transformedProjects.map((project, index) => {
-                  const area = getProjectArea(project.id);
+                  const baseId = project.id.split('-')[0];
+                  const area = getProjectArea(baseId);
                   const bubbleSize = valueType === 'per-sqm' ? Math.sqrt(area / 500) : 8;
                   return (
                     <Scatter key={index} r={Math.max(4, Math.min(20, bubbleSize))} />
@@ -254,7 +264,13 @@ export const ChartSection = ({
             <BarChart data={transformedProjects} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis 
-                dataKey="name" 
+                dataKey={(item) => {
+                  const baseId = item.id.split('-')[0];
+                  const displayName = isComparingToSelf && item.ribaStage 
+                    ? `${addProjectNumberToName(item.name, parseInt(baseId) - 1)} (RIBA ${item.ribaStage.replace('stage-', '')})`
+                    : addProjectNumberToName(item.name, parseInt(item.id) - 1);
+                  return displayName;
+                }}
                 angle={-45}
                 textAnchor="end"
                 height={80}
@@ -282,11 +298,18 @@ export const ChartSection = ({
 
       case 'single-timeline':
         const timelineData = transformedProjects
-          .map(project => ({
-            ...project,
-            name: addProjectNumberToName(project.name, parseInt(project.id) - 1),
-            date: new Date(project.completionDate).getTime()
-          }))
+          .map(project => {
+            const baseId = project.id.split('-')[0];
+            const displayName = isComparingToSelf && project.ribaStage 
+              ? `${addProjectNumberToName(project.name, parseInt(baseId) - 1)} (RIBA ${project.ribaStage.replace('stage-', '')})`
+              : addProjectNumberToName(project.name, parseInt(project.id) - 1);
+            
+            return {
+              ...project,
+              displayName,
+              date: new Date(project.completionDate).getTime()
+            };
+          })
           .sort((a, b) => a.date - b.date);
 
         return (
@@ -311,7 +334,7 @@ export const ChartSection = ({
                     const data = payload[0].payload;
                     return (
                       <div className="bg-white p-3 border rounded-lg shadow-lg">
-                        <p className="font-semibold">{data.name}</p>
+                        <p className="font-semibold">{data.displayName}</p>
                         <p className="text-sm text-gray-600">Completion: {data.completionDate}</p>
                         <p className="text-sm">
                           {kpi1Config?.label}: {data[selectedKPI1]} {getUnitLabel(kpi1Config?.unit || '', valueType)}

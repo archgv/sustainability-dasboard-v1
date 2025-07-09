@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { FilterPanel } from '@/components/FilterPanel';
 import { ChartSection } from '@/components/ChartSection';
@@ -17,6 +18,8 @@ const Index = () => {
   const [valueType, setValueType] = useState<ValueType>('per-sqm');
   const [primaryProject, setPrimaryProject] = useState(sampleProjects[0]?.id || '');
   const [comparisonProjects, setComparisonProjects] = useState<string[]>([]);
+  const [compareToSelf, setCompareToSelf] = useState(false);
+  const [selectedRibaStages, setSelectedRibaStages] = useState<string[]>([]);
   const [filters, setFilters] = useState({
     typology: 'all',
     projectType: 'all',
@@ -59,6 +62,31 @@ const Index = () => {
     setFilteredProjects(filtered);
   };
 
+  const handleComparisonChange = (projects: string[], compareToSelfFlag: boolean, ribaStages: string[]) => {
+    setComparisonProjects(projects);
+    setCompareToSelf(compareToSelfFlag);
+    setSelectedRibaStages(ribaStages);
+  };
+
+  // Generate comparison data for charts and grid
+  const getDisplayProjects = () => {
+    if (compareToSelf && selectedRibaStages.length > 0) {
+      const primaryProjectData = sampleProjects.find(p => p.id === primaryProject);
+      if (!primaryProjectData) return filteredProjects;
+      
+      // Generate project variants for different RIBA stages
+      return selectedRibaStages.map(stageId => ({
+        ...primaryProjectData,
+        id: `${primaryProjectData.id}-${stageId}`,
+        ribaStage: stageId as any,
+        name: primaryProjectData.name // Keep original name, numbering handled in display
+      }));
+    }
+    return filteredProjects;
+  };
+
+  const displayProjects = getDisplayProjects();
+
   return (
     <div className="min-h-screen bg-gray-50">
       <DashboardHeader />
@@ -81,7 +109,7 @@ const Index = () => {
               primaryProject={primaryProject}
               comparisonProjects={comparisonProjects}
               onPrimaryProjectChange={setPrimaryProject}
-              onComparisonProjectsChange={setComparisonProjects}
+              onComparisonProjectsChange={handleComparisonChange}
             />
             
             {/* Chart Type Selector */}
@@ -100,16 +128,22 @@ const Index = () => {
             
             {/* Charts Section */}
             <ChartSection 
-              projects={filteredProjects} 
+              projects={displayProjects}
               chartType={chartType}
               selectedKPI1={selectedKPI1}
               selectedKPI2={selectedKPI2}
               embodiedCarbonBreakdown={embodiedCarbonBreakdown}
               valueType={valueType}
+              isComparingToSelf={compareToSelf}
+              selectedRibaStages={selectedRibaStages}
             />
             
             {/* Projects Grid */}
-            <ProjectGrid projects={filteredProjects} />
+            <ProjectGrid 
+              projects={displayProjects} 
+              isComparingToSelf={compareToSelf}
+              selectedRibaStages={selectedRibaStages}
+            />
           </div>
         </div>
       </div>

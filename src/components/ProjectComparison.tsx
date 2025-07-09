@@ -1,4 +1,3 @@
-
 import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
@@ -18,7 +17,7 @@ interface ProjectComparisonProps {
   primaryProject: string;
   comparisonProjects: string[];
   onPrimaryProjectChange: (projectId: string) => void;
-  onComparisonProjectsChange: (projectIds: string[]) => void;
+  onComparisonProjectsChange: (projectIds: string[], compareToSelf: boolean, ribaStages: string[]) => void;
 }
 
 export const ProjectComparison = ({ 
@@ -44,19 +43,30 @@ export const ProjectComparison = ({
 
   const handleComparisonToggle = (projectId: string) => {
     const isSelected = comparisonProjects.includes(projectId);
-    if (isSelected) {
-      onComparisonProjectsChange(comparisonProjects.filter(id => id !== projectId));
-    } else {
-      onComparisonProjectsChange([...comparisonProjects, projectId]);
-    }
+    const newComparisonProjects = isSelected
+      ? comparisonProjects.filter(id => id !== projectId)
+      : [...comparisonProjects, projectId];
+    
+    onComparisonProjectsChange(newComparisonProjects, compareToSelf, selectedRibaStages);
   };
 
   const handleRibaStageToggle = (stageId: string) => {
     const isSelected = selectedRibaStages.includes(stageId);
-    if (isSelected) {
-      setSelectedRibaStages(selectedRibaStages.filter(id => id !== stageId));
+    const newSelectedStages = isSelected
+      ? selectedRibaStages.filter(id => id !== stageId)
+      : [...selectedRibaStages, stageId];
+    
+    setSelectedRibaStages(newSelectedStages);
+    onComparisonProjectsChange(comparisonProjects, compareToSelf, newSelectedStages);
+  };
+
+  const handleCompareToSelfToggle = (checked: boolean) => {
+    setCompareToSelf(checked);
+    if (checked) {
+      onComparisonProjectsChange([], true, selectedRibaStages);
     } else {
-      setSelectedRibaStages([...selectedRibaStages, stageId]);
+      setSelectedRibaStages([]);
+      onComparisonProjectsChange(comparisonProjects, false, []);
     }
   };
 
@@ -171,14 +181,7 @@ export const ProjectComparison = ({
               <Checkbox
                 id="compare-to-self"
                 checked={compareToSelf}
-                onCheckedChange={(checked) => {
-                  setCompareToSelf(checked as boolean);
-                  if (checked) {
-                    onComparisonProjectsChange([]);
-                  } else {
-                    setSelectedRibaStages([]);
-                  }
-                }}
+                onCheckedChange={handleCompareToSelfToggle}
               />
               <label htmlFor="compare-to-self" className="text-sm font-medium">
                 Compare to itself (RIBA Stages)
