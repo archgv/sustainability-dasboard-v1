@@ -1,14 +1,17 @@
 
 import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Project } from '@/types/project';
 import { Building2, Calendar, MapPin } from 'lucide-react';
 import { useState } from 'react';
 import { addProjectNumberToName } from '@/utils/projectUtils';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Button } from '@/components/ui/button';
+import { Check, ChevronsUpDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface ProjectComparisonProps {
   projects: Project[];
@@ -25,9 +28,9 @@ export const ProjectComparison = ({
   onPrimaryProjectChange,
   onComparisonProjectsChange
 }: ProjectComparisonProps) => {
-  const [searchTerm, setSearchTerm] = useState('');
   const [compareToSelf, setCompareToSelf] = useState(false);
   const [selectedRibaStages, setSelectedRibaStages] = useState<string[]>([]);
+  const [open, setOpen] = useState(false);
 
   const ribaStages = [
     { id: 'stage-1', label: 'RIBA 1' },
@@ -57,11 +60,6 @@ export const ProjectComparison = ({
     }
   };
 
-  const filteredProjects = projects.filter(project => {
-    const projectWithNumber = addProjectNumberToName(project.name, parseInt(project.id) - 1);
-    return projectWithNumber.toLowerCase().includes(searchTerm.toLowerCase());
-  });
-
   const primaryProjectData = projects.find(p => p.id === primaryProject);
 
   const getComparisonCount = () => {
@@ -69,6 +67,16 @@ export const ProjectComparison = ({
       return selectedRibaStages.length;
     }
     return comparisonProjects.length;
+  };
+
+  // Generate project variants for different RIBA stages when comparing to self
+  const generateProjectVariants = (project: Project) => {
+    return selectedRibaStages.map(stageId => ({
+      ...project,
+      id: `${project.id}-${stageId}`,
+      name: `${addProjectNumberToName(project.name, parseInt(project.id) - 1)} (${ribaStages.find(stage => stage.id === stageId)?.label})`,
+      ribaStage: stageId
+    }));
   };
 
   return (
@@ -81,26 +89,52 @@ export const ProjectComparison = ({
           <Label className="text-sm font-medium text-gray-700 mb-2 block">
             Primary Project
           </Label>
-          <div className="space-y-2">
-            <Input
-              placeholder="Search projects..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="mb-2"
-            />
-            <Select value={primaryProject} onValueChange={onPrimaryProjectChange}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select primary project" />
-              </SelectTrigger>
-              <SelectContent>
-                {filteredProjects.map((project, index) => (
-                  <SelectItem key={project.id} value={project.id}>
-                    {addProjectNumberToName(project.name, parseInt(project.id) - 1)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={open}
+                className="w-full justify-between"
+              >
+                {primaryProject
+                  ? addProjectNumberToName(
+                      projects.find(p => p.id === primaryProject)?.name || '',
+                      parseInt(primaryProject) - 1
+                    )
+                  : "Select primary project..."}
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-full p-0">
+              <Command>
+                <CommandInput placeholder="Search projects..." />
+                <CommandList>
+                  <CommandEmpty>No project found.</CommandEmpty>
+                  <CommandGroup>
+                    {projects.map((project) => (
+                      <CommandItem
+                        key={project.id}
+                        value={`${addProjectNumberToName(project.name, parseInt(project.id) - 1)}`}
+                        onSelect={() => {
+                          onPrimaryProjectChange(project.id);
+                          setOpen(false);
+                        }}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            primaryProject === project.id ? "opacity-100" : "opacity-0"
+                          )}
+                        />
+                        {addProjectNumberToName(project.name, parseInt(project.id) - 1)}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
           
           {primaryProjectData && (
             <div className="mt-3 p-3 bg-blue-50 rounded-lg">
@@ -185,7 +219,7 @@ export const ProjectComparison = ({
           ) : (
             /* Project Selection */
             <div className="space-y-2 max-h-64 overflow-y-auto">
-              {filteredProjects
+              {projects
                 .filter(p => p.id !== primaryProject)
                 .map((project) => (
                   <div
