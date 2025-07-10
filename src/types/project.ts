@@ -29,8 +29,6 @@ export interface Project {
   well: string;
   nabers: string;
   passivhaus: boolean;
-  enerphit?: string;
-  uknzcbs?: string;
   
   // Social Value
   socialValue: number; // £ per £ construction cost

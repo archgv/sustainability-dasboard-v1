@@ -1,11 +1,9 @@
 
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Calendar, MapPin, Zap, Leaf, Eye, EyeOff } from 'lucide-react';
+import { Calendar, MapPin, Zap, Leaf } from 'lucide-react';
 import { Project } from '@/types/project';
 import { addProjectNumberToName } from '@/utils/projectUtils';
-import { useState } from 'react';
 
 interface ProjectGridProps {
   projects: Project[];
@@ -18,8 +16,6 @@ export const ProjectGrid = ({
   isComparingToSelf = false, 
   selectedRibaStages = [] 
 }: ProjectGridProps) => {
-  const [isAnonymized, setIsAnonymized] = useState(false);
-
   const getPerformanceColor = (value: number, type: 'carbon' | 'energy') => {
     if (type === 'carbon') {
       if (value <= 700) return 'bg-green-100 text-green-800';
@@ -33,8 +29,16 @@ export const ProjectGrid = ({
   };
 
   const getRibaStageDisplay = (stage: string) => {
-    const stageNumber = stage.replace('stage-', '');
-    return `RIBA Stage ${stageNumber}`;
+    const stageMap: Record<string, string> = {
+      'stage-1': 'Strategic Definition',
+      'stage-2': 'Preparation & Brief',
+      'stage-3': 'Concept Design',
+      'stage-4': 'Spatial Coordination',
+      'stage-5': 'Technical Design',
+      'stage-6': 'Manufacturing & Construction',
+      'stage-7': 'In Use'
+    };
+    return stageMap[stage] || stage;
   };
 
   const getProjectTypeColor = (type: string) => {
@@ -43,44 +47,23 @@ export const ProjectGrid = ({
       : 'bg-purple-100 text-purple-800';
   };
 
-  const getAnonymizedName = (index: number) => {
-    return `Project ${String.fromCharCode(65 + index)}`;
-  };
-
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-semibold text-gray-900">
           {isComparingToSelf ? 'Project RIBA Stages' : 'Project Portfolio'}
         </h2>
-        <div className="flex items-center gap-4">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setIsAnonymized(!isAnonymized)}
-            className="flex items-center gap-2"
-          >
-            {isAnonymized ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-            {isAnonymized ? 'Show Names' : 'Anonymize'}
-          </Button>
-          <div className="text-sm text-gray-500">
-            Showing {projects.length} {isComparingToSelf ? 'stages' : 'projects'}
-          </div>
+        <div className="text-sm text-gray-500">
+          Showing {projects.length} {isComparingToSelf ? 'stages' : 'projects'}
         </div>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {projects.map((project, index) => {
           const baseId = project.id.split('-')[0];
-          let displayName = '';
-          
-          if (isAnonymized) {
-            displayName = getAnonymizedName(index);
-          } else if (isComparingToSelf && project.ribaStage) {
-            displayName = `${addProjectNumberToName(project.name, parseInt(baseId) - 1)} (${getRibaStageDisplay(project.ribaStage)})`;
-          } else {
-            displayName = addProjectNumberToName(project.name, parseInt(project.id) - 1);
-          }
+          const displayName = isComparingToSelf && project.ribaStage 
+            ? `${addProjectNumberToName(project.name, parseInt(baseId) - 1)} (RIBA ${project.ribaStage.replace('stage-', '')})`
+            : addProjectNumberToName(project.name, parseInt(project.id) - 1);
           
           return (
             <Card key={project.id} className="p-6 hover:shadow-lg transition-shadow duration-200">

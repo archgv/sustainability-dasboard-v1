@@ -9,7 +9,7 @@ export const DashboardHeader = () => {
               <img 
                 src="/lovable-uploads/4ce0bfd4-e09c-45a3-bb7c-0a84df6eca91.png" 
                 alt="Hawkins Brown" 
-                className="h-12 w-auto"
+                className="h-8 w-auto"
               />
             </div>
             <div>

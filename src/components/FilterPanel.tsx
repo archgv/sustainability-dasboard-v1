@@ -2,205 +2,118 @@
 import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Badge } from '@/components/ui/badge';
 import { Filter } from 'lucide-react';
-import { Project } from '@/types/project';
 
 interface FilterPanelProps {
-  projects: Project[];
-  selectedProject: string;
-  onProjectChange: (projectId: string) => void;
-  selectedKPIs: string[];
-  onKPIsChange: (kpis: string[]) => void;
-  selectedProjects: string[];
-  onProjectsChange: (projectIds: string[]) => void;
-  chartType: 'bar' | 'line' | 'scatter';
-  onChartTypeChange: (type: 'bar' | 'line' | 'scatter') => void;
-  comparisonMode: 'projects' | 'self';
-  onComparisonModeChange: (mode: 'projects' | 'self') => void;
-  selectedRibaStages: string[];
-  onRibaStagesChange: (stages: string[]) => void;
+  filters: {
+    typology: string;
+    dateRange: string;
+    carbonRange: number[];
+    energyRange: number[];
+    projectType: string;
+    ribaStage: string;
+  };
+  onFilterChange: (filters: any) => void;
 }
 
-export const FilterPanel = ({ 
-  projects,
-  selectedProject,
-  onProjectChange,
-  selectedKPIs,
-  onKPIsChange,
-  selectedProjects,
-  onProjectsChange,
-  chartType,
-  onChartTypeChange,
-  comparisonMode,
-  onComparisonModeChange,
-  selectedRibaStages,
-  onRibaStagesChange
-}: FilterPanelProps) => {
-  const availableKPIs = [
-    { key: 'totalEmbodiedCarbon', label: 'Embodied Carbon' },
-    { key: 'operationalEnergy', label: 'Operational Energy' },
-    { key: 'operationalWaterUse', label: 'Water Use' },
-    { key: 'socialValue', label: 'Social Value' }
-  ];
+export const FilterPanel = ({ filters, onFilterChange }: FilterPanelProps) => {
+  const handleTypologyChange = (value: string) => {
+    onFilterChange({ ...filters, typology: value });
+  };
 
-  const ribaStages = [
-    { id: 'stage-1', label: 'RIBA 1' },
-    { id: 'stage-2', label: 'RIBA 2' },
-    { id: 'stage-3', label: 'RIBA 3' },
-    { id: 'stage-4', label: 'RIBA 4' },
-    { id: 'stage-5', label: 'RIBA 5' },
-    { id: 'stage-6', label: 'RIBA 6' },
-    { id: 'stage-7', label: 'RIBA 7' }
-  ];
+  const handleDateRangeChange = (value: string) => {
+    onFilterChange({ ...filters, dateRange: value });
+  };
+
+  const handleProjectTypeChange = (value: string) => {
+    onFilterChange({ ...filters, projectType: value });
+  };
+
+  const handleRibaStageChange = (value: string) => {
+    onFilterChange({ ...filters, ribaStage: value });
+  };
 
   return (
     <Card className="p-6 sticky top-8">
       <div className="flex items-center space-x-2 mb-6">
         <Filter className="h-5 w-5 text-blue-600" />
-        <h3 className="text-lg font-semibold text-gray-900">Filters & Comparison</h3>
+        <h3 className="text-lg font-semibold text-gray-900">Filters</h3>
       </div>
       
       <div className="space-y-6">
-        {/* Comparison Mode */}
+        {/* Typology Filter */}
         <div>
-          <Label className="text-sm font-medium text-gray-700 mb-2 block">
-            Comparison Mode
+          <Label htmlFor="typology" className="text-sm font-medium text-gray-700 mb-2 block">
+            Building Typology
           </Label>
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="projects-mode"
-                checked={comparisonMode === 'projects'}
-                onCheckedChange={() => onComparisonModeChange('projects')}
-              />
-              <label htmlFor="projects-mode" className="text-sm">Compare Projects</label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="self-mode"
-                checked={comparisonMode === 'self'}
-                onCheckedChange={() => onComparisonModeChange('self')}
-              />
-              <label htmlFor="self-mode" className="text-sm">Compare RIBA Stages</label>
-            </div>
-          </div>
-        </div>
-
-        {/* Primary Project Selection */}
-        {comparisonMode === 'self' && (
-          <div>
-            <Label className="text-sm font-medium text-gray-700 mb-2 block">
-              Select Project
-            </Label>
-            <Select value={selectedProject} onValueChange={onProjectChange}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select project" />
-              </SelectTrigger>
-              <SelectContent>
-                {projects.map((project) => (
-                  <SelectItem key={project.id} value={project.id}>
-                    {project.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        )}
-
-        {/* RIBA Stages Selection */}
-        {comparisonMode === 'self' && (
-          <div>
-            <Label className="text-sm font-medium text-gray-700 mb-2 block">
-              RIBA Stages ({selectedRibaStages.length} selected)
-            </Label>
-            <div className="space-y-2 max-h-48 overflow-y-auto">
-              {ribaStages.map((stage) => (
-                <div key={stage.id} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={stage.id}
-                    checked={selectedRibaStages.includes(stage.id)}
-                    onCheckedChange={(checked) => {
-                      if (checked) {
-                        onRibaStagesChange([...selectedRibaStages, stage.id]);
-                      } else {
-                        onRibaStagesChange(selectedRibaStages.filter(id => id !== stage.id));
-                      }
-                    }}
-                  />
-                  <label htmlFor={stage.id} className="text-sm">{stage.label}</label>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Project Selection for comparison */}
-        {comparisonMode === 'projects' && (
-          <div>
-            <Label className="text-sm font-medium text-gray-700 mb-2 block">
-              Select Projects ({selectedProjects.length} selected)
-            </Label>
-            <div className="space-y-2 max-h-48 overflow-y-auto">
-              {projects.map((project) => (
-                <div key={project.id} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={project.id}
-                    checked={selectedProjects.includes(project.id)}
-                    onCheckedChange={(checked) => {
-                      if (checked) {
-                        onProjectsChange([...selectedProjects, project.id]);
-                      } else {
-                        onProjectsChange(selectedProjects.filter(id => id !== project.id));
-                      }
-                    }}
-                  />
-                  <label htmlFor={project.id} className="text-sm">{project.name}</label>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* KPI Selection */}
-        <div>
-          <Label className="text-sm font-medium text-gray-700 mb-2 block">
-            KPIs to Display
-          </Label>
-          <div className="space-y-2">
-            {availableKPIs.map((kpi) => (
-              <div key={kpi.key} className="flex items-center space-x-2">
-                <Checkbox
-                  id={kpi.key}
-                  checked={selectedKPIs.includes(kpi.key)}
-                  onCheckedChange={(checked) => {
-                    if (checked) {
-                      onKPIsChange([...selectedKPIs, kpi.key]);
-                    } else {
-                      onKPIsChange(selectedKPIs.filter(k => k !== kpi.key));
-                    }
-                  }}
-                />
-                <label htmlFor={kpi.key} className="text-sm">{kpi.label}</label>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Chart Type */}
-        <div>
-          <Label className="text-sm font-medium text-gray-700 mb-2 block">
-            Chart Type
-          </Label>
-          <Select value={chartType} onValueChange={onChartTypeChange}>
+          <Select value={filters.typology} onValueChange={handleTypologyChange}>
             <SelectTrigger>
-              <SelectValue />
+              <SelectValue placeholder="Select typology" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="bar">Bar Chart</SelectItem>
-              <SelectItem value="line">Line Chart</SelectItem>
-              <SelectItem value="scatter">Scatter Plot</SelectItem>
+              <SelectItem value="all">All Types</SelectItem>
+              <SelectItem value="office">Office</SelectItem>
+              <SelectItem value="residential">Residential</SelectItem>
+              <SelectItem value="educational">Educational</SelectItem>
+              <SelectItem value="healthcare">Healthcare</SelectItem>
+              <SelectItem value="retail">Retail</SelectItem>
+              <SelectItem value="mixed-use">Mixed Use</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Project Type Filter */}
+        <div>
+          <Label htmlFor="projectType" className="text-sm font-medium text-gray-700 mb-2 block">
+            Project Type
+          </Label>
+          <Select value={filters.projectType || 'all'} onValueChange={handleProjectTypeChange}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select project type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Projects</SelectItem>
+              <SelectItem value="new-build">New Build</SelectItem>
+              <SelectItem value="retrofit">Retrofit</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* RIBA Stage Filter */}
+        <div>
+          <Label htmlFor="ribaStage" className="text-sm font-medium text-gray-700 mb-2 block">
+            RIBA Stage
+          </Label>
+          <Select value={filters.ribaStage || 'all'} onValueChange={handleRibaStageChange}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select RIBA stage" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Stages</SelectItem>
+              <SelectItem value="stage-1">Stage 1</SelectItem>
+              <SelectItem value="stage-2">Stage 2</SelectItem>
+              <SelectItem value="stage-3">Stage 3</SelectItem>
+              <SelectItem value="stage-4">Stage 4</SelectItem>
+              <SelectItem value="stage-5">Stage 5</SelectItem>
+              <SelectItem value="stage-6">Stage 6</SelectItem>
+              <SelectItem value="stage-7">Stage 7</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Date Range Filter */}
+        <div>
+          <Label htmlFor="dateRange" className="text-sm font-medium text-gray-700 mb-2 block">
+            Project Timeline
+          </Label>
+          <Select value={filters.dateRange} onValueChange={handleDateRangeChange}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select timeline" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Projects</SelectItem>
+              <SelectItem value="recent">Recent (2+ years)</SelectItem>
+              <SelectItem value="older">Older Projects</SelectItem>
             </SelectContent>
           </Select>
         </div>
