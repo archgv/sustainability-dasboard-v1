@@ -1,4 +1,3 @@
-
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, MapPin, Zap, Leaf } from 'lucide-react';
@@ -29,16 +28,8 @@ export const ProjectGrid = ({
   };
 
   const getRibaStageDisplay = (stage: string) => {
-    const stageMap: Record<string, string> = {
-      'stage-1': 'Strategic Definition',
-      'stage-2': 'Preparation & Brief',
-      'stage-3': 'Concept Design',
-      'stage-4': 'Spatial Coordination',
-      'stage-5': 'Technical Design',
-      'stage-6': 'Manufacturing & Construction',
-      'stage-7': 'In Use'
-    };
-    return stageMap[stage] || stage;
+    const stageNumber = stage.replace('stage-', '');
+    return `RIBA Stage ${stageNumber}`;
   };
 
   const getProjectTypeColor = (type: string) => {
@@ -62,7 +53,7 @@ export const ProjectGrid = ({
         {projects.map((project, index) => {
           const baseId = project.id.split('-')[0];
           const displayName = isComparingToSelf && project.ribaStage 
-            ? `${addProjectNumberToName(project.name, parseInt(baseId) - 1)} (RIBA ${project.ribaStage.replace('stage-', '')})`
+            ? `${addProjectNumberToName(project.name, parseInt(baseId) - 1)} (${getRibaStageDisplay(project.ribaStage)})`
             : addProjectNumberToName(project.name, parseInt(project.id) - 1);
           
           return (

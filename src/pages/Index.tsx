@@ -7,6 +7,7 @@ import { DashboardHeader } from '@/components/DashboardHeader';
 import { ChartTypeSelector, ChartType, EmbodiedCarbonBreakdown, ValueType } from '@/components/ChartTypeSelector';
 import { ProjectComparison } from '@/components/ProjectComparison';
 import { SectorPerformance } from '@/components/SectorPerformance';
+import { CertificationAnalysis } from '@/components/CertificationAnalysis';
 import { sampleProjects } from '@/data/sampleData';
 
 const Index = () => {
@@ -110,6 +111,9 @@ const Index = () => {
           <div className="lg:col-span-3 space-y-8">
             {/* Sector Performance Analysis */}
             <SectorPerformance projects={filteredProjects} />
+            
+            {/* Certification Analysis */}
+            <CertificationAnalysis projects={filteredProjects} />
             
             {/* Project Comparison */}
             <ProjectComparison 
