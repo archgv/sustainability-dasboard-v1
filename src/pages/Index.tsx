@@ -21,6 +21,7 @@ const Index = () => {
   const [comparisonProjects, setComparisonProjects] = useState<string[]>([]);
   const [compareToSelf, setCompareToSelf] = useState(false);
   const [selectedRibaStages, setSelectedRibaStages] = useState<string[]>([]);
+  const [anonymizeProjects, setAnonymizeProjects] = useState(false);
   const [filters, setFilters] = useState({
     typology: 'all',
     projectType: 'all',
@@ -104,7 +105,12 @@ const Index = () => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Filter Panel */}
           <div className="lg:col-span-1">
-            <FilterPanel filters={filters} onFilterChange={handleFilterChange} />
+            <FilterPanel 
+              filters={filters} 
+              onFilterChange={handleFilterChange}
+              anonymizeProjects={anonymizeProjects}
+              onAnonymizeChange={setAnonymizeProjects}
+            />
           </div>
           
           {/* Main Content */}
@@ -155,6 +161,8 @@ const Index = () => {
               projects={displayProjects} 
               isComparingToSelf={compareToSelf}
               selectedRibaStages={selectedRibaStages}
+              anonymizeProjects={anonymizeProjects}
+              primaryProject={primaryProject}
             />
           </div>
         </div>

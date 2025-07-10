@@ -4,7 +4,7 @@ import { Project } from '@/types/project';
 export const sampleProjects: Project[] = [
   {
     id: '1',
-    name: 'Green Office Tower',
+    name: 'UCLUnlockingBloomsbury',
     typology: 'office',
     location: 'London, UK',
     completionDate: '2023-05-15',
@@ -81,8 +81,8 @@ export const sampleProjects: Project[] = [
   },
   {
     id: '2',
-    name: 'Sustainable Housing Complex',
-    typology: 'residential',
+    name: 'UHNElectiveSurgicalHub',
+    typology: 'healthcare',
     location: 'Manchester, UK',
     completionDate: '2022-11-20',
     projectType: 'new-build',
@@ -106,7 +106,7 @@ export const sampleProjects: Project[] = [
     // Accreditations
     breeam: 'N/A',
     leed: 'N/A',
-    well: 'N/A',
+    well: 'Silver',
     nabers: 'N/A',
     passivhaus: true,
     
@@ -135,13 +135,13 @@ export const sampleProjects: Project[] = [
     shd: 12,
     wlc: 950,
     
-    certifications: ['Passivhaus']
+    certifications: ['Passivhaus', 'WELL Silver']
   },
   {
     id: '3',
-    name: 'Innovation Campus',
-    typology: 'educational',
-    location: 'Edinburgh, UK',
+    name: 'TTTrongate',
+    typology: 'mixed-use',
+    location: 'Glasgow, UK',
     completionDate: '2023-08-30',
     projectType: 'new-build',
     ribaStage: 'stage-5',
@@ -162,7 +162,7 @@ export const sampleProjects: Project[] = [
     operationalWaterUse: 150,
     
     // Accreditations
-    breeam: 'N/A',
+    breeam: 'Outstanding',
     leed: 'Platinum',
     well: 'N/A',
     nabers: 'N/A',
@@ -193,13 +193,13 @@ export const sampleProjects: Project[] = [
     shd: 22,
     wlc: 1680,
     
-    certifications: ['LEED Platinum']
+    certifications: ['BREEAM Outstanding', 'LEED Platinum']
   },
   {
     id: '4',
-    name: 'Community Health Center',
+    name: 'HSEAcuteCorkKerryFwk',
     typology: 'healthcare',
-    location: 'Dublin, Ireland',
+    location: 'Cork, Ireland',
     completionDate: '2021-09-12',
     projectType: 'retrofit',
     ribaStage: 'stage-7',
@@ -222,7 +222,7 @@ export const sampleProjects: Project[] = [
     // Accreditations
     breeam: 'Very Good',
     leed: 'N/A',
-    well: 'Silver',
+    well: 'Gold',
     nabers: 'N/A',
     passivhaus: false,
     
@@ -251,13 +251,13 @@ export const sampleProjects: Project[] = [
     shd: 25,
     wlc: 1950,
     
-    certifications: ['BREEAM Very Good', 'WELL Silver']
+    certifications: ['BREEAM Very Good', 'WELL Gold']
   },
   {
     id: '5',
-    name: 'Urban Retail Hub',
-    typology: 'retail',
-    location: 'Birmingham, UK',
+    name: 'OUStCrossBuilding',
+    typology: 'educational',
+    location: 'Oxford, UK',
     completionDate: '2020-03-18',
     projectType: 'new-build',
     ribaStage: 'stage-7',
@@ -279,7 +279,7 @@ export const sampleProjects: Project[] = [
     
     // Accreditations
     breeam: 'Good',
-    leed: 'N/A',
+    leed: 'Gold',
     well: 'N/A',
     nabers: 'N/A',
     passivhaus: false,
@@ -309,6 +309,6 @@ export const sampleProjects: Project[] = [
     shd: 35,
     wlc: 2200,
     
-    certifications: ['BREEAM Good']
+    certifications: ['BREEAM Good', 'LEED Gold']
   }
 ];

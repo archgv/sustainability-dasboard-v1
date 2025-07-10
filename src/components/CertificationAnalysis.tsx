@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { ChevronDown, ChevronRight } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -28,6 +28,7 @@ export const CertificationAnalysis = ({ projects }: CertificationAnalysisProps) 
     const ratings = certificationRatings[certification as keyof typeof certificationRatings] || [];
     const data: { [key: string]: Project[] } = {};
     
+    // Initialize all ratings with empty arrays
     ratings.forEach(rating => {
       data[rating] = [];
     });
@@ -55,7 +56,6 @@ export const CertificationAnalysis = ({ projects }: CertificationAnalysisProps) 
           if (project.certifications?.includes('EnerPHit')) projectRating = 'Certified';
           break;
         case 'uknzcbs':
-          // Assuming this would be in certifications array
           const uknzcbsCert = project.certifications?.find(cert => cert.includes('UKNZCBS'));
           if (uknzcbsCert) {
             if (uknzcbsCert.includes('Net Zero')) projectRating = 'Net Zero';
@@ -74,7 +74,7 @@ export const CertificationAnalysis = ({ projects }: CertificationAnalysisProps) 
   };
 
   const certificationData = getCertificationData(selectedCertification);
-  const totalCertifiedProjects = Object.values(certificationData).reduce((sum, projects) => sum + projects.length, 0);
+  const maxCount = Math.max(...Object.values(certificationData).map(projects => projects.length));
 
   const getRatingColor = (rating: string) => {
     const colors = {
@@ -95,6 +95,25 @@ export const CertificationAnalysis = ({ projects }: CertificationAnalysisProps) 
     return colors[rating as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   };
 
+  const getBarColor = (rating: string) => {
+    const colors = {
+      'Outstanding': 'bg-green-500',
+      'Excellent': 'bg-blue-500',
+      'Very Good': 'bg-purple-500',
+      'Good': 'bg-yellow-500',
+      'Pass': 'bg-gray-500',
+      'Platinum': 'bg-slate-500',
+      'Gold': 'bg-yellow-500',
+      'Silver': 'bg-gray-500',
+      'Bronze': 'bg-orange-500',
+      'Certified': 'bg-green-500',
+      'Net Zero': 'bg-green-500',
+      'Near Zero': 'bg-blue-500',
+      'Low Carbon': 'bg-yellow-500'
+    };
+    return colors[rating as keyof typeof colors] || 'bg-gray-500';
+  };
+
   return (
     <Card className="p-6">
       <div 
@@ -102,16 +121,7 @@ export const CertificationAnalysis = ({ projects }: CertificationAnalysisProps) 
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <h2 className="text-xl font-semibold text-gray-900">Certification Analysis</h2>
-        <div className="flex items-center space-x-2">
-          <span className="text-sm text-gray-500">
-            {totalCertifiedProjects} certified projects
-          </span>
-          {isExpanded ? (
-            <ChevronDown className="h-5 w-5 text-gray-400" />
-          ) : (
-            <ChevronRight className="h-5 w-5 text-gray-400" />
-          )}
-        </div>
+        <ChevronDown className={`h-5 w-5 text-gray-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
       </div>
       
       {isExpanded && (
@@ -137,35 +147,42 @@ export const CertificationAnalysis = ({ projects }: CertificationAnalysisProps) 
           </div>
 
           <div className="space-y-4">
-            {Object.entries(certificationData).map(([rating, projectsWithRating]) => (
-              projectsWithRating.length > 0 && (
-                <div key={rating} className="border rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-3">
+            {Object.entries(certificationData).map(([rating, projectsWithRating]) => {
+              const count = projectsWithRating.length;
+              const barWidth = maxCount > 0 ? (count / maxCount) * 100 : 0;
+              
+              return (
+                <div key={rating} className="space-y-2">
+                  <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
                       <Badge className={getRatingColor(rating)}>
                         {rating}
                       </Badge>
-                      <span className="text-sm text-gray-600">
-                        {projectsWithRating.length} project{projectsWithRating.length !== 1 ? 's' : ''}
-                      </span>
                     </div>
+                    <span className="text-sm font-medium text-gray-700">{count}</span>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-                    {projectsWithRating.map((project) => (
-                      <div key={project.id} className="text-sm text-gray-700 bg-gray-50 rounded px-3 py-2">
-                        {project.name}
+                  
+                  <div className="relative">
+                    <div className="w-full bg-gray-200 rounded-full h-6">
+                      <div 
+                        className={`${getBarColor(rating)} h-6 rounded-full transition-all duration-300 relative`}
+                        style={{ width: `${barWidth}%` }}
+                      />
+                    </div>
+                    
+                    {count > 0 && (
+                      <div className="mt-2 space-y-1">
+                        {projectsWithRating.map((project) => (
+                          <div key={project.id} className="text-sm text-gray-600 pl-2">
+                            250{parseInt(project.id) + 116}_{project.name}
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    )}
                   </div>
                 </div>
-              )
-            ))}
-            
-            {totalCertifiedProjects === 0 && (
-              <div className="text-center py-8 text-gray-500">
-                No projects found with {selectedCertification.toUpperCase()} certification
-              </div>
-            )}
+              );
+            })}
           </div>
         </div>
       )}

@@ -2,18 +2,21 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, MapPin, Zap, Leaf } from 'lucide-react';
 import { Project } from '@/types/project';
-import { addProjectNumberToName } from '@/utils/projectUtils';
 
 interface ProjectGridProps {
   projects: Project[];
   isComparingToSelf?: boolean;
   selectedRibaStages?: string[];
+  anonymizeProjects?: boolean;
+  primaryProject?: string;
 }
 
 export const ProjectGrid = ({ 
   projects, 
   isComparingToSelf = false, 
-  selectedRibaStages = [] 
+  selectedRibaStages = [],
+  anonymizeProjects = false,
+  primaryProject = ''
 }: ProjectGridProps) => {
   const getPerformanceColor = (value: number, type: 'carbon' | 'energy') => {
     if (type === 'carbon') {
@@ -38,6 +41,25 @@ export const ProjectGrid = ({
       : 'bg-purple-100 text-purple-800';
   };
 
+  const getDisplayName = (project: Project, index: number) => {
+    const baseId = project.id.split('-')[0];
+    const projectNumber = `250${parseInt(baseId) + 116}`;
+    
+    // Show full name if it's the primary project or anonymization is off
+    if (!anonymizeProjects || project.id === primaryProject || baseId === primaryProject) {
+      const fullName = `${projectNumber}_${project.name}`;
+      return isComparingToSelf && project.ribaStage 
+        ? `${fullName} (${getRibaStageDisplay(project.ribaStage)})`
+        : fullName;
+    }
+    
+    // Anonymize other projects
+    const anonymizedName = `${projectNumber}_Project ${parseInt(baseId)}`;
+    return isComparingToSelf && project.ribaStage 
+      ? `${anonymizedName} (${getRibaStageDisplay(project.ribaStage)})`
+      : anonymizedName;
+  };
+
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
@@ -51,10 +73,7 @@ export const ProjectGrid = ({
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {projects.map((project, index) => {
-          const baseId = project.id.split('-')[0];
-          const displayName = isComparingToSelf && project.ribaStage 
-            ? `${addProjectNumberToName(project.name, parseInt(baseId) - 1)} (${getRibaStageDisplay(project.ribaStage)})`
-            : addProjectNumberToName(project.name, parseInt(project.id) - 1);
+          const displayName = getDisplayName(project, index);
           
           return (
             <Card key={project.id} className="p-6 hover:shadow-lg transition-shadow duration-200">

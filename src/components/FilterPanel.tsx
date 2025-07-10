@@ -1,7 +1,7 @@
-
 import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
 import { Filter } from 'lucide-react';
 
 interface FilterPanelProps {
@@ -14,9 +14,16 @@ interface FilterPanelProps {
     ribaStage: string;
   };
   onFilterChange: (filters: any) => void;
+  anonymizeProjects: boolean;
+  onAnonymizeChange: (anonymize: boolean) => void;
 }
 
-export const FilterPanel = ({ filters, onFilterChange }: FilterPanelProps) => {
+export const FilterPanel = ({ 
+  filters, 
+  onFilterChange, 
+  anonymizeProjects, 
+  onAnonymizeChange 
+}: FilterPanelProps) => {
   const handleTypologyChange = (value: string) => {
     onFilterChange({ ...filters, typology: value });
   };
@@ -116,6 +123,23 @@ export const FilterPanel = ({ filters, onFilterChange }: FilterPanelProps) => {
               <SelectItem value="older">Older Projects</SelectItem>
             </SelectContent>
           </Select>
+        </div>
+
+        {/* Anonymize Projects Toggle */}
+        <div className="pt-4 border-t">
+          <div className="flex items-center justify-between">
+            <Label htmlFor="anonymize-toggle" className="text-sm font-medium text-gray-700">
+              Anonymise projects
+            </Label>
+            <Switch
+              id="anonymize-toggle"
+              checked={anonymizeProjects}
+              onCheckedChange={onAnonymizeChange}
+            />
+          </div>
+          <p className="text-xs text-gray-500 mt-1">
+            Hide project names except primary project
+          </p>
         </div>
       </div>
     </Card>
