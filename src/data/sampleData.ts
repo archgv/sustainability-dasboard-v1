@@ -9,7 +9,7 @@ export const sampleProjects: Project[] = [
     location: 'London, UK',
     completionDate: '2023-05-15',
     projectType: 'new-build',
-    ribaStage: 'stage-4',
+    ribaStage: 'stage-7',
     
     // Embodied Carbon
     upfrontCarbon: 650,

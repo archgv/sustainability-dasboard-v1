@@ -1,159 +1,90 @@
-
 import { useState } from 'react';
-import { FilterPanel } from '@/components/FilterPanel';
-import { ChartSection } from '@/components/ChartSection';
-import { ProjectGrid } from '@/components/ProjectGrid';
 import { DashboardHeader } from '@/components/DashboardHeader';
-import { ChartTypeSelector, ChartType, EmbodiedCarbonBreakdown, ValueType } from '@/components/ChartTypeSelector';
-import { ProjectComparison } from '@/components/ProjectComparison';
+import { FilterPanel } from '@/components/FilterPanel';
+import { ProjectGrid } from '@/components/ProjectGrid';
+import { ChartSection } from '@/components/ChartSection';
 import { SectorPerformance } from '@/components/SectorPerformance';
+import { CertificationAnalysis } from '@/components/CertificationAnalysis';
+import { ProjectComparison } from '@/components/ProjectComparison';
+import { EmbodiedCarbonBreakdown } from '@/components/EmbodiedCarbonBreakdown';
 import { sampleProjects } from '@/data/sampleData';
+import { Project } from '@/types/project';
 
 const Index = () => {
-  const [filteredProjects, setFilteredProjects] = useState(sampleProjects);
-  const [chartType, setChartType] = useState<ChartType>('compare-bubble');
-  const [selectedKPI1, setSelectedKPI1] = useState('totalEmbodiedCarbon');
-  const [selectedKPI2, setSelectedKPI2] = useState('refrigerants');
-  const [embodiedCarbonBreakdown, setEmbodiedCarbonBreakdown] = useState<EmbodiedCarbonBreakdown>('none');
-  const [valueType, setValueType] = useState<ValueType>('per-sqm');
-  const [primaryProject, setPrimaryProject] = useState(sampleProjects[0]?.id || '');
-  const [comparisonProjects, setComparisonProjects] = useState<string[]>([]);
-  const [compareToSelf, setCompareToSelf] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<string>('');
+  const [selectedKPIs, setSelectedKPIs] = useState<string[]>(['totalEmbodiedCarbon', 'operationalEnergy']);
+  const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
+  const [chartType, setChartType] = useState<'bar' | 'line' | 'scatter'>('bar');
+  const [comparisonMode, setComparisonMode] = useState<'projects' | 'self'>('projects');
   const [selectedRibaStages, setSelectedRibaStages] = useState<string[]>([]);
-  const [filters, setFilters] = useState({
-    typology: 'all',
-    projectType: 'all',
-    ribaStage: 'all',
-    dateRange: 'all',
-    carbonRange: [0, 100],
-    energyRange: [0, 200]
-  });
 
-  const handleFilterChange = (newFilters: typeof filters) => {
-    setFilters(newFilters);
-    
-    const filtered = sampleProjects.filter(project => {
-      const typologyMatch = newFilters.typology === 'all' || project.typology === newFilters.typology;
-      const projectTypeMatch = newFilters.projectType === 'all' || project.projectType === newFilters.projectType;
-      const ribaStageMatch = newFilters.ribaStage === 'all' || project.ribaStage === newFilters.ribaStage;
-      const carbonMatch = project.carbonIntensity >= newFilters.carbonRange[0] && 
-                         project.carbonIntensity <= newFilters.carbonRange[1];
-      const energyMatch = project.operationalEnergy >= newFilters.energyRange[0] && 
-                         project.operationalEnergy <= newFilters.energyRange[1];
-      
-      let dateMatch = true;
-      if (newFilters.dateRange !== 'all') {
-        const projectYear = new Date(project.completionDate).getFullYear();
-        const currentYear = new Date().getFullYear();
-        
-        switch (newFilters.dateRange) {
-          case 'recent':
-            dateMatch = currentYear - projectYear <= 2;
-            break;
-          case 'older':
-            dateMatch = currentYear - projectYear > 2;
-            break;
-        }
-      }
-      
-      return typologyMatch && projectTypeMatch && ribaStageMatch && carbonMatch && energyMatch && dateMatch;
-    });
-    
-    setFilteredProjects(filtered);
-  };
+  const getFilteredProjects = (): Project[] => {
+    if (comparisonMode === 'self' && selectedProject) {
+      const baseProject = sampleProjects.find(p => p.id === selectedProject);
+      if (!baseProject) return [];
 
-  const handleComparisonChange = (projects: string[], compareToSelfFlag: boolean, ribaStages: string[]) => {
-    setComparisonProjects(projects);
-    setCompareToSelf(compareToSelfFlag);
-    setSelectedRibaStages(ribaStages);
-  };
+      if (selectedRibaStages.length === 0) return [baseProject];
 
-  // Generate comparison data for charts and grid
-  const getDisplayProjects = () => {
-    if (compareToSelf && selectedRibaStages.length > 0) {
-      const primaryProjectData = sampleProjects.find(p => p.id === primaryProject);
-      if (!primaryProjectData) return [];
-      
-      // Generate project variants for different RIBA stages
-      return selectedRibaStages.map(stageId => ({
-        ...primaryProjectData,
-        id: `${primaryProjectData.id}-${stageId}`,
-        ribaStage: stageId as any,
-        name: primaryProjectData.name // Keep original name, numbering handled in display
+      return selectedRibaStages.map(stage => ({
+        ...baseProject,
+        id: `${baseProject.id}-${stage}`,
+        ribaStage: stage as Project['ribaStage'],
+        // Simulate different values for different stages
+        totalEmbodiedCarbon: baseProject.totalEmbodiedCarbon * (stage === 'stage-1' ? 0.3 : stage === 'stage-2' ? 0.5 : stage === 'stage-3' ? 0.7 : stage === 'stage-4' ? 0.85 : 1),
+        operationalEnergy: baseProject.operationalEnergy * (stage === 'stage-1' ? 1.2 : stage === 'stage-2' ? 1.1 : stage === 'stage-3' ? 1.05 : stage === 'stage-4' ? 1.02 : 1),
       }));
     }
-    
-    // If comparing to other projects, show primary + comparison projects
-    if (comparisonProjects.length > 0) {
-      const projectsToShow = [primaryProject, ...comparisonProjects];
-      return filteredProjects.filter(p => projectsToShow.includes(p.id));
+
+    if (selectedProjects.length > 0) {
+      return sampleProjects.filter(project => selectedProjects.includes(project.id));
     }
-    
-    // Default: show all filtered projects
-    return filteredProjects;
+
+    return sampleProjects;
   };
 
-  const displayProjects = getDisplayProjects();
+  const filteredProjects = getFilteredProjects();
 
   return (
     <div className="min-h-screen bg-gray-50">
       <DashboardHeader />
       
-      <div className="container mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Filter Panel */}
-          <div className="lg:col-span-1">
-            <FilterPanel filters={filters} onFilterChange={handleFilterChange} />
-          </div>
-          
-          {/* Main Content */}
-          <div className="lg:col-span-3 space-y-8">
-            {/* Sector Performance Analysis */}
-            <SectorPerformance projects={filteredProjects} />
-            
-            {/* Project Comparison */}
-            <ProjectComparison 
-              projects={filteredProjects}
-              primaryProject={primaryProject}
-              comparisonProjects={comparisonProjects}
-              onPrimaryProjectChange={setPrimaryProject}
-              onComparisonProjectsChange={handleComparisonChange}
-            />
-            
-            {/* Chart Type Selector */}
-            <ChartTypeSelector 
-              chartType={chartType}
-              selectedKPI1={selectedKPI1}
-              selectedKPI2={selectedKPI2}
-              embodiedCarbonBreakdown={embodiedCarbonBreakdown}
-              valueType={valueType}
-              onChartTypeChange={setChartType}
-              onKPI1Change={setSelectedKPI1}
-              onKPI2Change={setSelectedKPI2}
-              onEmbodiedCarbonBreakdownChange={setEmbodiedCarbonBreakdown}
-              onValueTypeChange={setValueType}
-            />
-            
-            {/* Charts Section */}
-            <ChartSection 
-              projects={displayProjects}
-              chartType={chartType}
-              selectedKPI1={selectedKPI1}
-              selectedKPI2={selectedKPI2}
-              embodiedCarbonBreakdown={embodiedCarbonBreakdown}
-              valueType={valueType}
-              isComparingToSelf={compareToSelf}
-              selectedRibaStages={selectedRibaStages}
-            />
-            
-            {/* Projects Grid */}
-            <ProjectGrid 
-              projects={displayProjects} 
-              isComparingToSelf={compareToSelf}
-              selectedRibaStages={selectedRibaStages}
-            />
-          </div>
-        </div>
+      <div className="container mx-auto px-6 py-8 space-y-8">
+        <FilterPanel
+          projects={sampleProjects}
+          selectedProject={selectedProject}
+          onProjectChange={setSelectedProject}
+          selectedKPIs={selectedKPIs}
+          onKPIsChange={setSelectedKPIs}
+          selectedProjects={selectedProjects}
+          onProjectsChange={setSelectedProjects}
+          chartType={chartType}
+          onChartTypeChange={setChartType}
+          comparisonMode={comparisonMode}
+          onComparisonModeChange={setComparisonMode}
+          selectedRibaStages={selectedRibaStages}
+          onRibaStagesChange={setSelectedRibaStages}
+        />
+
+        <ProjectGrid 
+          projects={filteredProjects} 
+          isComparingToSelf={comparisonMode === 'self'}
+          selectedRibaStages={selectedRibaStages}
+        />
+
+        <ChartSection
+          projects={filteredProjects}
+          selectedKPIs={selectedKPIs}
+          chartType={chartType}
+          comparisonMode={comparisonMode}
+        />
+
+        <SectorPerformance projects={sampleProjects} />
+
+        <CertificationAnalysis projects={sampleProjects} />
+
+        <ProjectComparison projects={filteredProjects} />
+
+        <EmbodiedCarbonBreakdown projects={filteredProjects} />
       </div>
     </div>
   );
