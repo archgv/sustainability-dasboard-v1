@@ -1,5 +1,6 @@
+
 import { useState } from 'react';
-import { ChevronDown, ChevronRight } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 
 interface SectorPerformanceProps {
@@ -35,16 +36,11 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <h2 className="text-xl font-semibold text-gray-900">Sector Performance Analysis</h2>
-        <div className="flex items-center space-x-2">
-          <span className="text-sm text-gray-500">
-            {Object.keys(typologyStats).length} sectors
-          </span>
-          {isExpanded ? (
-            <ChevronDown className="h-5 w-5 text-gray-400" />
-          ) : (
-            <ChevronRight className="h-5 w-5 text-gray-400" />
-          )}
-        </div>
+        <ChevronDown 
+          className={`h-5 w-5 text-gray-400 transition-transform duration-200 ${
+            isExpanded ? 'transform rotate-180' : ''
+          }`} 
+        />
       </div>
       
       {isExpanded && (
