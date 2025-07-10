@@ -1,3 +1,4 @@
+
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, MapPin, Zap, Leaf } from 'lucide-react';
@@ -17,14 +18,33 @@ export const ProjectGrid = ({
 }: ProjectGridProps) => {
   const getPerformanceColor = (value: number, type: 'carbon' | 'energy') => {
     if (type === 'carbon') {
-      if (value <= 30) return 'bg-green-100 text-green-800';
-      if (value <= 50) return 'bg-yellow-100 text-yellow-800';
+      if (value <= 700) return 'bg-green-100 text-green-800';
+      if (value <= 800) return 'bg-yellow-100 text-yellow-800';
       return 'bg-red-100 text-red-800';
     } else {
       if (value <= 80) return 'bg-green-100 text-green-800';
       if (value <= 120) return 'bg-yellow-100 text-yellow-800';
       return 'bg-red-100 text-red-800';
     }
+  };
+
+  const getRibaStageDisplay = (stage: string) => {
+    const stageMap: Record<string, string> = {
+      'stage-1': 'Strategic Definition',
+      'stage-2': 'Preparation & Brief',
+      'stage-3': 'Concept Design',
+      'stage-4': 'Spatial Coordination',
+      'stage-5': 'Technical Design',
+      'stage-6': 'Manufacturing & Construction',
+      'stage-7': 'In Use'
+    };
+    return stageMap[stage] || stage;
+  };
+
+  const getProjectTypeColor = (type: string) => {
+    return type === 'new-build' 
+      ? 'bg-blue-100 text-blue-800' 
+      : 'bg-purple-100 text-purple-800';
   };
 
   return (
@@ -63,23 +83,26 @@ export const ProjectGrid = ({
                 </div>
                 <div className="flex items-center text-sm text-gray-600">
                   <Calendar className="h-4 w-4 mr-2" />
-                  Completed {new Date(project.completionDate).getFullYear()}
+                  {project.ribaStage === 'stage-7' ? 
+                    `Completed ${new Date(project.completionDate).getFullYear()}` :
+                    getRibaStageDisplay(project.ribaStage)
+                  }
                 </div>
-                {isComparingToSelf && (
-                  <div className="flex items-center text-sm text-gray-600">
-                    <span className="font-medium">RIBA Stage {project.ribaStage.replace('stage-', '')}</span>
-                  </div>
-                )}
+                <div className="flex gap-2">
+                  <Badge className={getProjectTypeColor(project.projectType)}>
+                    {project.projectType === 'new-build' ? 'New Build' : 'Retrofit'}
+                  </Badge>
+                </div>
               </div>
               
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
                     <Leaf className="h-4 w-4 mr-2 text-green-600" />
-                    <span className="text-sm text-gray-600">Carbon Intensity</span>
+                    <span className="text-sm text-gray-600">Embodied Carbon</span>
                   </div>
-                  <Badge className={getPerformanceColor(project.carbonIntensity, 'carbon')}>
-                    {project.carbonIntensity} kgCO2e/m²/yr
+                  <Badge className={getPerformanceColor(project.totalEmbodiedCarbon, 'carbon')}>
+                    {project.totalEmbodiedCarbon} kgCO2e/m²
                   </Badge>
                 </div>
                 

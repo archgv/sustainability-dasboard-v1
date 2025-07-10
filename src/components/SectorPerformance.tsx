@@ -1,3 +1,4 @@
+
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -14,6 +15,7 @@ interface SectorPerformanceProps {
 export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
   const [selectedKPI, setSelectedKPI] = useState('totalEmbodiedCarbon');
   const [valueType, setValueType] = useState<'per-sqm' | 'total'>('per-sqm');
+  const [dateFilter, setDateFilter] = useState<'all' | '2019' | '2020' | '2021' | '2022' | '2023'>('all');
   
   const kpiConfig = availableKPIs.find(kpi => kpi.key === selectedKPI);
   
@@ -25,8 +27,18 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
     return areas[projectId] || 10000;
   };
 
+  // Filter projects by date
+  const getFilteredProjects = () => {
+    if (dateFilter === 'all') return projects;
+    
+    return projects.filter(project => {
+      const projectYear = new Date(project.completionDate).getFullYear();
+      return projectYear >= parseInt(dateFilter);
+    });
+  };
+
   // Calculate sector statistics
-  const sectorStats = projects.reduce((acc: any, project) => {
+  const sectorStats = getFilteredProjects().reduce((acc: any, project) => {
     const typology = project.typology;
     let value = project[selectedKPI as keyof Project] as number;
     
@@ -136,7 +148,7 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
         <AccordionContent>
           <Card className="p-6">
             <div className="flex justify-between items-center mb-6">
-              <div className="flex gap-4 items-center">
+              <div className="flex gap-4 items-center flex-wrap">
                 <Select value={selectedKPI} onValueChange={setSelectedKPI}>
                   <SelectTrigger className="w-48">
                     <SelectValue />
@@ -172,6 +184,20 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                     Total
                   </button>
                 </div>
+
+                <Select value={dateFilter} onValueChange={(value: any) => setDateFilter(value)}>
+                  <SelectTrigger className="w-32">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Years</SelectItem>
+                    <SelectItem value="2023">From 2023</SelectItem>
+                    <SelectItem value="2022">From 2022</SelectItem>
+                    <SelectItem value="2021">From 2021</SelectItem>
+                    <SelectItem value="2020">From 2020</SelectItem>
+                    <SelectItem value="2019">From 2019</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div className="flex gap-2">
                 <Button variant="outline" size="sm" onClick={handleExportChart}>
@@ -190,7 +216,10 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
             </div>
 
             <div className="h-96">
-              <h3 className="text-lg font-medium mb-4">Performance by Sector ({valueType === 'per-sqm' ? 'per m²' : 'total'})</h3>
+              <h3 className="text-lg font-medium mb-4">
+                Performance by Sector ({valueType === 'per-sqm' ? 'per m²' : 'total'})
+                {dateFilter !== 'all' && ` - From ${dateFilter}`}
+              </h3>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
                   <CartesianGrid strokeDasharray="3 3" />

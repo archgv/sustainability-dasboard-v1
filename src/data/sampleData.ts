@@ -6,14 +6,14 @@ export const sampleProjects: Project[] = [
     id: '1',
     name: 'Green Office Tower',
     typology: 'office',
-    location: 'Copenhagen, Denmark',
+    location: 'London, UK',
     completionDate: '2023-05-15',
     projectType: 'new-build',
     ribaStage: 'stage-4',
     
     // Embodied Carbon
-    upfrontCarbon: 320,
-    totalEmbodiedCarbon: 450,
+    upfrontCarbon: 650,
+    totalEmbodiedCarbon: 750,
     refrigerants: 15,
     
     // Operational Energy
@@ -58,7 +58,7 @@ export const sampleProjects: Project[] = [
     shd: 15,
     wlc: 1250,
     
-    certifications: ['BREEAM Excellent', 'DGNB Gold'],
+    certifications: ['BREEAM Excellent'],
     
     embodiedCarbonBreakdown: {
       byLifeCycleStage: {
@@ -83,14 +83,14 @@ export const sampleProjects: Project[] = [
     id: '2',
     name: 'Sustainable Housing Complex',
     typology: 'residential',
-    location: 'Stockholm, Sweden',
+    location: 'Manchester, UK',
     completionDate: '2022-11-20',
     projectType: 'new-build',
-    ribaStage: 'stage-6',
+    ribaStage: 'stage-7',
     
     // Embodied Carbon
-    upfrontCarbon: 280,
-    totalEmbodiedCarbon: 380,
+    upfrontCarbon: 620,
+    totalEmbodiedCarbon: 680,
     refrigerants: 8,
     
     // Operational Energy
@@ -135,20 +135,20 @@ export const sampleProjects: Project[] = [
     shd: 12,
     wlc: 950,
     
-    certifications: ['Passive House', 'Nordic Swan']
+    certifications: ['Passivhaus']
   },
   {
     id: '3',
     name: 'Innovation Campus',
     typology: 'educational',
-    location: 'Oslo, Norway',
+    location: 'Edinburgh, UK',
     completionDate: '2023-08-30',
     projectType: 'new-build',
     ribaStage: 'stage-5',
     
     // Embodied Carbon
-    upfrontCarbon: 450,
-    totalEmbodiedCarbon: 620,
+    upfrontCarbon: 780,
+    totalEmbodiedCarbon: 820,
     refrigerants: 25,
     
     // Operational Energy
@@ -199,14 +199,14 @@ export const sampleProjects: Project[] = [
     id: '4',
     name: 'Community Health Center',
     typology: 'healthcare',
-    location: 'Helsinki, Finland',
+    location: 'Dublin, Ireland',
     completionDate: '2021-09-12',
     projectType: 'retrofit',
     ribaStage: 'stage-7',
     
     // Embodied Carbon
-    upfrontCarbon: 520,
-    totalEmbodiedCarbon: 680,
+    upfrontCarbon: 850,
+    totalEmbodiedCarbon: 900,
     refrigerants: 35,
     
     // Operational Energy
@@ -251,20 +251,20 @@ export const sampleProjects: Project[] = [
     shd: 25,
     wlc: 1950,
     
-    certifications: ['BREEAM Very Good']
+    certifications: ['BREEAM Very Good', 'WELL Silver']
   },
   {
     id: '5',
     name: 'Urban Retail Hub',
     typology: 'retail',
-    location: 'Gothenburg, Sweden',
-    completionDate: '2022-03-18',
+    location: 'Birmingham, UK',
+    completionDate: '2020-03-18',
     projectType: 'new-build',
-    ribaStage: 'stage-6',
+    ribaStage: 'stage-7',
     
     // Embodied Carbon
-    upfrontCarbon: 380,
-    totalEmbodiedCarbon: 520,
+    upfrontCarbon: 720,
+    totalEmbodiedCarbon: 780,
     refrigerants: 28,
     
     // Operational Energy
@@ -278,10 +278,10 @@ export const sampleProjects: Project[] = [
     operationalWaterUse: 200,
     
     // Accreditations
-    breeam: 'N/A',
-    leed: 'Gold',
+    breeam: 'Good',
+    leed: 'N/A',
     well: 'N/A',
-    nabers: '4 Stars',
+    nabers: 'N/A',
     passivhaus: false,
     
     // Social Value
@@ -309,6 +309,6 @@ export const sampleProjects: Project[] = [
     shd: 35,
     wlc: 2200,
     
-    certifications: ['LEED Gold']
+    certifications: ['BREEAM Good']
   }
 ];
