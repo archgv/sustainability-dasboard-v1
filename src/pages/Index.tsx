@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { DashboardHeader } from '@/components/DashboardHeader';
 import { FilterPanel } from '@/components/FilterPanel';
@@ -17,6 +18,8 @@ const Index = () => {
   const [chartType, setChartType] = useState<'bar' | 'line' | 'scatter'>('bar');
   const [comparisonMode, setComparisonMode] = useState<'projects' | 'self'>('projects');
   const [selectedRibaStages, setSelectedRibaStages] = useState<string[]>([]);
+  const [primaryProject, setPrimaryProject] = useState<string>('1');
+  const [comparisonProjects, setComparisonProjects] = useState<string[]>([]);
 
   const getFilteredProjects = (): Project[] => {
     if (comparisonMode === 'self' && selectedProject) {
@@ -43,6 +46,12 @@ const Index = () => {
   };
 
   const filteredProjects = getFilteredProjects();
+
+  const handleComparisonProjectsChange = (projectIds: string[], compareToSelf: boolean, ribaStages: string[]) => {
+    setComparisonProjects(projectIds);
+    setComparisonMode(compareToSelf ? 'self' : 'projects');
+    setSelectedRibaStages(ribaStages);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -82,9 +91,17 @@ const Index = () => {
 
         <CertificationAnalysis projects={sampleProjects} />
 
-        <ProjectComparison projects={filteredProjects} />
+        <ProjectComparison 
+          projects={filteredProjects}
+          primaryProject={primaryProject}
+          comparisonProjects={comparisonProjects}
+          onPrimaryProjectChange={setPrimaryProject}
+          onComparisonProjectsChange={handleComparisonProjectsChange}
+        />
 
-        <EmbodiedCarbonBreakdown projects={filteredProjects} />
+        {filteredProjects.length > 0 && filteredProjects[0].embodiedCarbonBreakdown && (
+          <EmbodiedCarbonBreakdown project={filteredProjects[0]} />
+        )}
       </div>
     </div>
   );
