@@ -1,37 +1,67 @@
-
 import { useState } from 'react';
 import { ChevronDown, Download, BarChart3, FileText } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-
 interface SectorPerformanceProps {
   projects: any[];
 }
-
-export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
+export const SectorPerformance = ({
+  projects
+}: SectorPerformanceProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedKPI, setSelectedKPI] = useState('totalEmbodiedCarbon');
   const [valueType, setValueType] = useState('per-sqm');
   const [yearFilter, setYearFilter] = useState('all');
-
-  const kpiOptions = [
-    { value: 'upfrontCarbon', label: 'Upfront Carbon', unit: 'kgCO2e/m²', totalUnit: 'tCO2e' },
-    { value: 'totalEmbodiedCarbon', label: 'Total Embodied Carbon', unit: 'kgCO2e/m²', totalUnit: 'tCO2e' },
-    { value: 'refrigerants', label: 'Refrigerants', unit: 'kgCO2e/m²', totalUnit: 'tCO2e' },
-    { value: 'operationalEnergy', label: 'Operational Energy', unit: 'kWh/m²/yr', totalUnit: 'MWh/yr' },
-    { value: 'gasUsage', label: 'Gas Usage', unit: 'kWh/m²/yr', totalUnit: 'MWh/yr' },
-    { value: 'biodiversityNetGain', label: 'Biodiversity Net Gain', unit: '%', totalUnit: '%' },
-    { value: 'habitatUnits', label: 'Habitat Units Gained', unit: 'units', totalUnit: 'units' },
-    { value: 'urbanGreeningFactor', label: 'Urban Greening Factor', unit: 'score', totalUnit: 'score' }
-  ];
-
+  const kpiOptions = [{
+    value: 'upfrontCarbon',
+    label: 'Upfront Carbon',
+    unit: 'kgCO2e/m²',
+    totalUnit: 'tCO2e'
+  }, {
+    value: 'totalEmbodiedCarbon',
+    label: 'Total Embodied Carbon',
+    unit: 'kgCO2e/m²',
+    totalUnit: 'tCO2e'
+  }, {
+    value: 'refrigerants',
+    label: 'Refrigerants',
+    unit: 'kgCO2e/m²',
+    totalUnit: 'tCO2e'
+  }, {
+    value: 'operationalEnergy',
+    label: 'Operational Energy',
+    unit: 'kWh/m²/yr',
+    totalUnit: 'MWh/yr'
+  }, {
+    value: 'gasUsage',
+    label: 'Gas Usage',
+    unit: 'kWh/m²/yr',
+    totalUnit: 'MWh/yr'
+  }, {
+    value: 'biodiversityNetGain',
+    label: 'Biodiversity Net Gain',
+    unit: '%',
+    totalUnit: '%'
+  }, {
+    value: 'habitatUnits',
+    label: 'Habitat Units Gained',
+    unit: 'units',
+    totalUnit: 'units'
+  }, {
+    value: 'urbanGreeningFactor',
+    label: 'Urban Greening Factor',
+    unit: 'score',
+    totalUnit: 'score'
+  }];
   const currentKPI = kpiOptions.find(kpi => kpi.value === selectedKPI);
 
   // Map typologies to the correct sectors
   const getSector = (typology: string) => {
-    const sectorMap: { [key: string]: string } = {
+    const sectorMap: {
+      [key: string]: string;
+    } = {
       'residential': 'Residential',
       'educational': 'Education',
       'healthcare': 'Healthcare',
@@ -45,15 +75,13 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
   };
 
   // Filter projects by year if needed
-  const filteredProjects = yearFilter === 'all' ? projects : 
-    projects.filter(project => {
-      const projectYear = new Date(project.completionDate).getFullYear();
-      if (yearFilter === 'from-2023') {
-        return projectYear >= 2023;
-      }
-      return projectYear.toString() === yearFilter;
-    });
-
+  const filteredProjects = yearFilter === 'all' ? projects : projects.filter(project => {
+    const projectYear = new Date(project.completionDate).getFullYear();
+    if (yearFilter === 'from-2023') {
+      return projectYear >= 2023;
+    }
+    return projectYear.toString() === yearFilter;
+  });
   const sectorStats = filteredProjects.reduce((acc: any, project: any) => {
     const sector = getSector(project.typology);
     if (!acc[sector]) {
@@ -69,7 +97,6 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
     acc[sector].count++;
     const value = project[selectedKPI] || 0;
     const gia = project.gia || 0;
-    
     if (valueType === 'total' && gia > 0) {
       let totalValue = value * gia;
       // Convert to appropriate units for totals
@@ -91,51 +118,36 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
     acc[sector].totalGIA += gia;
     return acc;
   }, {});
-
   const getAverage = (total: number, count: number) => {
     return count > 0 ? Math.round(total / count) : 0;
   };
-
   const chartData = Object.entries(sectorStats).map(([sector, stats]: [string, any]) => ({
     sector: sector,
     value: getAverage(stats.totalValue, stats.count),
     count: stats.count
   }));
-
   const getYearOptions = () => {
     const years = projects.map(p => new Date(p.completionDate).getFullYear());
     const uniqueYears = [...new Set(years)].sort((a, b) => b - a);
     return uniqueYears;
   };
-
   const handleDownload = (format: 'csv' | 'pdf' | 'chart') => {
     console.log(`Downloading ${format} for sector performance analysis`);
     // Implementation would go here
   };
-
   const getDisplayUnit = () => {
     if (valueType === 'total') {
       return currentKPI?.totalUnit || '';
     }
     return currentKPI?.unit || '';
   };
-
-  return (
-    <Card className="p-6">
-      <div 
-        className="flex items-center justify-between cursor-pointer"
-        onClick={() => setIsExpanded(!isExpanded)}
-      >
+  return <Card className="p-6">
+      <div className="flex items-center justify-between cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
         <h2 className="text-xl font-semibold text-gray-900">Sector Performance Analysis</h2>
-        <ChevronDown 
-          className={`h-5 w-5 text-gray-400 transition-transform duration-200 ${
-            isExpanded ? 'transform rotate-180' : ''
-          }`} 
-        />
+        <ChevronDown className={`h-5 w-5 text-gray-400 transition-transform duration-200 ${isExpanded ? 'transform rotate-180' : ''}`} />
       </div>
       
-      {isExpanded && (
-        <div className="mt-6 space-y-6">
+      {isExpanded && <div className="mt-6 space-y-6">
           {/* Controls Row */}
           <div className="flex flex-wrap items-center gap-4">
             <div className="flex items-center space-x-2">
@@ -145,43 +157,27 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {kpiOptions.map((kpi) => (
-                    <SelectItem key={kpi.value} value={kpi.value}>
+                  {kpiOptions.map(kpi => <SelectItem key={kpi.value} value={kpi.value}>
                       {kpi.label}
-                    </SelectItem>
-                  ))}
+                    </SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
 
             <div className="flex items-center space-x-2">
-              <label className="text-sm font-medium text-gray-700">Value Type:</label>
+              
               <div className="flex bg-gray-100 rounded-md p-1">
-                <button
-                  className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-                    valueType === 'per-sqm' 
-                      ? 'bg-white text-gray-900 shadow-sm' 
-                      : 'text-gray-600 hover:text-gray-900'
-                  }`}
-                  onClick={() => setValueType('per-sqm')}
-                >
+                <button className={`px-3 py-1 rounded text-sm font-medium transition-colors ${valueType === 'per-sqm' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-600 hover:text-gray-900'}`} onClick={() => setValueType('per-sqm')}>
                   Per m²
                 </button>
-                <button
-                  className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-                    valueType === 'total' 
-                      ? 'bg-white text-gray-900 shadow-sm' 
-                      : 'text-gray-600 hover:text-gray-900'
-                  }`}
-                  onClick={() => setValueType('total')}
-                >
+                <button className={`px-3 py-1 rounded text-sm font-medium transition-colors ${valueType === 'total' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-600 hover:text-gray-900'}`} onClick={() => setValueType('total')}>
                   Total
                 </button>
               </div>
             </div>
 
             <div className="flex items-center space-x-2">
-              <label className="text-sm font-medium text-gray-700">Year:</label>
+              
               <Select value={yearFilter} onValueChange={setYearFilter}>
                 <SelectTrigger className="w-40">
                   <SelectValue />
@@ -189,40 +185,23 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                 <SelectContent>
                   <SelectItem value="all">All years</SelectItem>
                   <SelectItem value="from-2023">From 2023</SelectItem>
-                  {getYearOptions().map((year) => (
-                    <SelectItem key={year} value={year.toString()}>
+                  {getYearOptions().map(year => <SelectItem key={year} value={year.toString()}>
                       {year}
-                    </SelectItem>
-                  ))}
+                    </SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
 
             <div className="flex items-center space-x-2 ml-auto">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleDownload('chart')}
-                className="flex items-center gap-2"
-              >
+              <Button variant="outline" size="sm" onClick={() => handleDownload('chart')} className="flex items-center gap-2">
                 <BarChart3 className="h-4 w-4" />
                 Chart
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleDownload('csv')}
-                className="flex items-center gap-2"
-              >
+              <Button variant="outline" size="sm" onClick={() => handleDownload('csv')} className="flex items-center gap-2">
                 <FileText className="h-4 w-4" />
                 CSV
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleDownload('pdf')}
-                className="flex items-center gap-2"
-              >
+              <Button variant="outline" size="sm" onClick={() => handleDownload('pdf')} className="flex items-center gap-2">
                 <Download className="h-4 w-4" />
                 PDF
               </Button>
@@ -236,18 +215,20 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
             </h3>
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                <BarChart data={chartData} margin={{
+              top: 20,
+              right: 30,
+              left: 20,
+              bottom: 5
+            }}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="sector" />
-                  <YAxis label={{ 
-                    value: getDisplayUnit(), 
-                    angle: -90, 
-                    position: 'insideLeft' 
-                  }} />
-                  <Tooltip 
-                    formatter={(value) => [`${value} ${getDisplayUnit()}`, 'Average']}
-                    labelFormatter={(label) => `Sector: ${label}`}
-                  />
+                  <YAxis label={{
+                value: getDisplayUnit(),
+                angle: -90,
+                position: 'insideLeft'
+              }} />
+                  <Tooltip formatter={value => [`${value} ${getDisplayUnit()}`, 'Average']} labelFormatter={label => `Sector: ${label}`} />
                   <Bar dataKey="value" fill="#3b82f6" />
                 </BarChart>
               </ResponsiveContainer>
@@ -271,13 +252,11 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                 </thead>
                 <tbody>
                   {Object.entries(sectorStats).map(([sector, stats]: [string, any]) => {
-                    const avg = getAverage(stats.totalValue, stats.count);
-                    const min = stats.minValue === Infinity ? 0 : Math.round(stats.minValue);
-                    const max = stats.maxValue === -Infinity ? 0 : Math.round(stats.maxValue);
-                    const range = max - min;
-                    
-                    return (
-                      <tr key={sector}>
+                const avg = getAverage(stats.totalValue, stats.count);
+                const min = stats.minValue === Infinity ? 0 : Math.round(stats.minValue);
+                const max = stats.maxValue === -Infinity ? 0 : Math.round(stats.maxValue);
+                const range = max - min;
+                return <tr key={sector}>
                         <td className="border border-gray-300 px-4 py-2 font-medium">{sector}</td>
                         <td className="border border-gray-300 px-4 py-2 text-center">{stats.count}</td>
                         <td className="border border-gray-300 px-4 py-2 text-center">
@@ -286,15 +265,12 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                         <td className="border border-gray-300 px-4 py-2 text-center">{min}</td>
                         <td className="border border-gray-300 px-4 py-2 text-center">{max}</td>
                         <td className="border border-gray-300 px-4 py-2 text-center">{range}</td>
-                      </tr>
-                    );
-                  })}
+                      </tr>;
+              })}
                 </tbody>
               </table>
             </div>
           </div>
-        </div>
-      )}
-    </Card>
-  );
+        </div>}
+    </Card>;
 };
