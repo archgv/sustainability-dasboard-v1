@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { Card } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface SectorPerformanceProps {
@@ -10,25 +11,33 @@ interface SectorPerformanceProps {
 
 export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [selectedKPI, setSelectedKPI] = useState('totalEmbodiedCarbon');
+
+  const kpiOptions = [
+    { value: 'totalEmbodiedCarbon', label: 'Total Embodied Carbon', unit: 'kgCO2e/m²' },
+    { value: 'operationalEnergy', label: 'Operational Energy', unit: 'kWh/m²/yr' },
+    { value: 'carbonIntensity', label: 'Carbon Intensity', unit: 'kgCO2e/m²' }
+  ];
+
+  const currentKPI = kpiOptions.find(kpi => kpi.value === selectedKPI);
 
   const typologyStats = projects.reduce((acc: any, project: any) => {
     const typology = project.typology;
     if (!acc[typology]) {
       acc[typology] = {
         count: 0,
-        totalCarbonIntensity: 0,
-        totalOperationalEnergy: 0,
-        minCarbon: Infinity,
-        maxCarbon: -Infinity,
+        totalValue: 0,
+        minValue: Infinity,
+        maxValue: -Infinity,
         values: []
       };
     }
     acc[typology].count++;
-    acc[typology].totalCarbonIntensity += project.totalEmbodiedCarbon;
-    acc[typology].totalOperationalEnergy += project.operationalEnergy;
-    acc[typology].minCarbon = Math.min(acc[typology].minCarbon, project.totalEmbodiedCarbon);
-    acc[typology].maxCarbon = Math.max(acc[typology].maxCarbon, project.totalEmbodiedCarbon);
-    acc[typology].values.push(project.totalEmbodiedCarbon);
+    const value = project[selectedKPI] || 0;
+    acc[typology].totalValue += value;
+    acc[typology].minValue = Math.min(acc[typology].minValue, value);
+    acc[typology].maxValue = Math.max(acc[typology].maxValue, value);
+    acc[typology].values.push(value);
     return acc;
   }, {});
 
@@ -38,7 +47,7 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
 
   const chartData = Object.entries(typologyStats).map(([typology, stats]: [string, any]) => ({
     sector: typology.charAt(0).toUpperCase() + typology.slice(1),
-    value: getAverage(stats.totalCarbonIntensity, stats.count),
+    value: getAverage(stats.totalValue, stats.count),
     count: stats.count
   }));
 
@@ -58,16 +67,37 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
       
       {isExpanded && (
         <div className="mt-6 space-y-6">
+          {/* KPI Selector */}
+          <div className="flex items-center space-x-4">
+            <label className="text-sm font-medium text-gray-700">
+              Select KPI:
+            </label>
+            <Select value={selectedKPI} onValueChange={setSelectedKPI}>
+              <SelectTrigger className="w-64">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {kpiOptions.map((kpi) => (
+                  <SelectItem key={kpi.value} value={kpi.value}>
+                    {kpi.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
           {/* Chart Section */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Performance by Sector (per m²)</h3>
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              {currentKPI?.label} by Sector (per m²)
+            </h3>
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="sector" />
-                  <YAxis label={{ value: 'kgCO2e/m²', angle: -90, position: 'insideLeft' }} />
-                  <Tooltip formatter={(value) => `${value} kgCO2e/m²`} />
+                  <YAxis label={{ value: currentKPI?.unit, angle: -90, position: 'insideLeft' }} />
+                  <Tooltip formatter={(value) => `${value} ${currentKPI?.unit}`} />
                   <Bar dataKey="value" fill="#3b82f6" />
                 </BarChart>
               </ResponsiveContainer>
@@ -91,16 +121,16 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                 </thead>
                 <tbody>
                   {Object.entries(typologyStats).map(([typology, stats]: [string, any]) => {
-                    const avg = getAverage(stats.totalCarbonIntensity, stats.count);
-                    const min = stats.minCarbon === Infinity ? 0 : stats.minCarbon;
-                    const max = stats.maxCarbon === -Infinity ? 0 : stats.maxCarbon;
+                    const avg = getAverage(stats.totalValue, stats.count);
+                    const min = stats.minValue === Infinity ? 0 : stats.minValue;
+                    const max = stats.maxValue === -Infinity ? 0 : stats.maxValue;
                     const range = max - min;
                     
                     return (
                       <tr key={typology}>
                         <td className="border border-gray-300 px-4 py-2 capitalize font-medium">{typology}</td>
                         <td className="border border-gray-300 px-4 py-2 text-center">{stats.count}</td>
-                        <td className="border border-gray-300 px-4 py-2 text-center">{avg} kgCO2e/m²</td>
+                        <td className="border border-gray-300 px-4 py-2 text-center">{avg} {currentKPI?.unit}</td>
                         <td className="border border-gray-300 px-4 py-2 text-center">{min}</td>
                         <td className="border border-gray-300 px-4 py-2 text-center">{max}</td>
                         <td className="border border-gray-300 px-4 py-2 text-center">{range}</td>

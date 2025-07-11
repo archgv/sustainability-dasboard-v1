@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { Card } from '@/components/ui/card';
@@ -76,7 +75,7 @@ export const CertificationAnalysis = ({ projects, anonymizeProjects = false, pri
   };
 
   const certificationData = getCertificationData(selectedCertification);
-  const maxCount = Math.max(...Object.values(certificationData).map(projects => projects.length), 1);
+  const maxCount = Math.max(...Object.values(certificationData).map(projects => projects.length), 4);
 
   const getRatingColor = (rating: string) => {
     const colors = {
@@ -164,7 +163,8 @@ export const CertificationAnalysis = ({ projects, anonymizeProjects = false, pri
           <div className="space-y-4">
             {Object.entries(certificationData).map(([rating, projectsWithRating]) => {
               const count = projectsWithRating.length;
-              const barWidth = count > 0 ? Math.max((count / maxCount) * 100, 8) : 8;
+              const baseWidth = 25; // Base width percentage for empty bars
+              const barWidth = count === 0 ? baseWidth : Math.max(baseWidth, (count / maxCount) * 100);
               
               return (
                 <div key={rating} className="space-y-2">
@@ -179,10 +179,12 @@ export const CertificationAnalysis = ({ projects, anonymizeProjects = false, pri
                   
                   <div className="relative">
                     <div className="w-full bg-gray-200 rounded-full h-6">
-                      <div 
-                        className={`${getBarColor(rating)} h-6 rounded-full transition-all duration-300 relative`}
-                        style={{ width: `${barWidth}%` }}
-                      />
+                      {count > 0 && (
+                        <div 
+                          className={`${getBarColor(rating)} h-6 rounded-full transition-all duration-300`}
+                          style={{ width: `${barWidth}%` }}
+                        />
+                      )}
                     </div>
                     
                     {count > 0 && (

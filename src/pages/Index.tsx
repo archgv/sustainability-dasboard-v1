@@ -3,6 +3,7 @@ import { FilterPanel } from '@/components/FilterPanel';
 import { ChartSection } from '@/components/ChartSection';
 import { ProjectGrid } from '@/components/ProjectGrid';
 import { DashboardHeader } from '@/components/DashboardHeader';
+import { AddProjectData } from '@/components/AddProjectData';
 import { ChartTypeSelector, ChartType, EmbodiedCarbonBreakdown, ValueType } from '@/components/ChartTypeSelector';
 import { ProjectComparison } from '@/components/ProjectComparison';
 import { SectorPerformance } from '@/components/SectorPerformance';
@@ -102,14 +103,17 @@ const Index = () => {
       
       <div className="container mx-auto px-6 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Filter Panel */}
+          {/* Filter Panel - Fixed/Sticky */}
           <div className="lg:col-span-1">
-            <FilterPanel 
-              filters={filters} 
-              onFilterChange={handleFilterChange}
-              anonymizeProjects={anonymizeProjects}
-              onAnonymizeChange={setAnonymizeProjects}
-            />
+            <div className="sticky top-8 space-y-6">
+              <AddProjectData />
+              <FilterPanel 
+                filters={filters} 
+                onFilterChange={handleFilterChange}
+                anonymizeProjects={anonymizeProjects}
+                onAnonymizeChange={setAnonymizeProjects}
+              />
+            </div>
           </div>
           
           {/* Main Content */}
@@ -157,6 +161,8 @@ const Index = () => {
               valueType={valueType}
               isComparingToSelf={compareToSelf}
               selectedRibaStages={selectedRibaStages}
+              anonymizeProjects={anonymizeProjects}
+              primaryProject={primaryProject}
             />
             
             {/* Projects Grid */}
