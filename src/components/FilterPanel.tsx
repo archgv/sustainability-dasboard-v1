@@ -3,7 +3,6 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Filter } from 'lucide-react';
-
 interface FilterPanelProps {
   filters: {
     typology: string;
@@ -17,31 +16,37 @@ interface FilterPanelProps {
   anonymizeProjects: boolean;
   onAnonymizeChange: (anonymize: boolean) => void;
 }
-
-export const FilterPanel = ({ 
-  filters, 
-  onFilterChange, 
-  anonymizeProjects, 
-  onAnonymizeChange 
+export const FilterPanel = ({
+  filters,
+  onFilterChange,
+  anonymizeProjects,
+  onAnonymizeChange
 }: FilterPanelProps) => {
   const handleTypologyChange = (value: string) => {
-    onFilterChange({ ...filters, typology: value });
+    onFilterChange({
+      ...filters,
+      typology: value
+    });
   };
-
   const handleDateRangeChange = (value: string) => {
-    onFilterChange({ ...filters, dateRange: value });
+    onFilterChange({
+      ...filters,
+      dateRange: value
+    });
   };
-
   const handleProjectTypeChange = (value: string) => {
-    onFilterChange({ ...filters, projectType: value });
+    onFilterChange({
+      ...filters,
+      projectType: value
+    });
   };
-
   const handleRibaStageChange = (value: string) => {
-    onFilterChange({ ...filters, ribaStage: value });
+    onFilterChange({
+      ...filters,
+      ribaStage: value
+    });
   };
-
-  return (
-    <Card className="p-6 sticky top-8">
+  return <Card className="p-6 sticky top-8">
       <div className="flex items-center space-x-2 mb-6">
         <Filter className="h-5 w-5 text-blue-600" />
         <h3 className="text-lg font-semibold text-gray-900">Filters</h3>
@@ -50,9 +55,7 @@ export const FilterPanel = ({
       <div className="space-y-6">
         {/* Typology Filter */}
         <div>
-          <Label htmlFor="typology" className="text-sm font-medium text-gray-700 mb-2 block">
-            Building Typology
-          </Label>
+          <Label htmlFor="typology" className="text-sm font-medium text-gray-700 mb-2 block">Sector</Label>
           <Select value={filters.typology} onValueChange={handleTypologyChange}>
             <SelectTrigger>
               <SelectValue placeholder="Select typology" />
@@ -131,17 +134,12 @@ export const FilterPanel = ({
             <Label htmlFor="anonymize-toggle" className="text-sm font-medium text-gray-700">
               Anonymise projects
             </Label>
-            <Switch
-              id="anonymize-toggle"
-              checked={anonymizeProjects}
-              onCheckedChange={onAnonymizeChange}
-            />
+            <Switch id="anonymize-toggle" checked={anonymizeProjects} onCheckedChange={onAnonymizeChange} />
           </div>
           <p className="text-xs text-gray-500 mt-1">
             Hide project names except primary project
           </p>
         </div>
       </div>
-    </Card>
-  );
+    </Card>;
 };
