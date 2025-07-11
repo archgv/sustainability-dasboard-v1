@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { FilterPanel } from '@/components/FilterPanel';
 import { ChartSection } from '@/components/ChartSection';
@@ -119,7 +118,11 @@ const Index = () => {
             <SectorPerformance projects={filteredProjects} />
             
             {/* Certification Analysis */}
-            <CertificationAnalysis projects={filteredProjects} />
+            <CertificationAnalysis 
+              projects={filteredProjects} 
+              anonymizeProjects={anonymizeProjects}
+              primaryProject={primaryProject}
+            />
             
             {/* Project Comparison */}
             <ProjectComparison 

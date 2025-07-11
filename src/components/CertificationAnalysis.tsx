@@ -8,19 +8,21 @@ import { Project } from '@/types/project';
 
 interface CertificationAnalysisProps {
   projects: Project[];
+  anonymizeProjects?: boolean;
+  primaryProject?: string;
 }
 
 const certificationRatings = {
   breeam: ['Outstanding', 'Excellent', 'Very Good', 'Good', 'Pass'],
-  leed: ['Platinum', 'Gold', 'Silver', 'Certified'],
-  well: ['Platinum', 'Gold', 'Silver', 'Bronze'],
+  leed: ['Outstanding', 'Platinum', 'Gold', 'Silver', 'Certified'],
+  well: ['Outstanding', 'Platinum', 'Gold', 'Silver', 'Bronze'],
   nabers: ['6 Star', '5.5 Star', '5 Star', '4.5 Star', '4 Star', '3.5 Star', '3 Star'],
   passivhaus: ['Certified'],
   enerphit: ['Certified'],
   uknzcbs: ['Net Zero', 'Near Zero', 'Low Carbon']
 };
 
-export const CertificationAnalysis = ({ projects }: CertificationAnalysisProps) => {
+export const CertificationAnalysis = ({ projects, anonymizeProjects = false, primaryProject = '' }: CertificationAnalysisProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedCertification, setSelectedCertification] = useState<string>('breeam');
 
@@ -74,7 +76,7 @@ export const CertificationAnalysis = ({ projects }: CertificationAnalysisProps) 
   };
 
   const certificationData = getCertificationData(selectedCertification);
-  const maxCount = Math.max(...Object.values(certificationData).map(projects => projects.length));
+  const maxCount = Math.max(...Object.values(certificationData).map(projects => projects.length), 1);
 
   const getRatingColor = (rating: string) => {
     const colors = {
@@ -114,6 +116,19 @@ export const CertificationAnalysis = ({ projects }: CertificationAnalysisProps) 
     return colors[rating as keyof typeof colors] || 'bg-gray-500';
   };
 
+  const getDisplayName = (project: Project) => {
+    const baseId = project.id.split('-')[0];
+    const projectNumber = `250${parseInt(baseId) + 116}`;
+    
+    // Show full name if it's the primary project or anonymization is off
+    if (!anonymizeProjects || project.id === primaryProject || baseId === primaryProject) {
+      return `${projectNumber}_${project.name}`;
+    }
+    
+    // Anonymize other projects
+    return `${projectNumber}_Project ${parseInt(baseId)}`;
+  };
+
   return (
     <Card className="p-6">
       <div 
@@ -149,7 +164,7 @@ export const CertificationAnalysis = ({ projects }: CertificationAnalysisProps) 
           <div className="space-y-4">
             {Object.entries(certificationData).map(([rating, projectsWithRating]) => {
               const count = projectsWithRating.length;
-              const barWidth = maxCount > 0 ? (count / maxCount) * 100 : 0;
+              const barWidth = count > 0 ? Math.max((count / maxCount) * 100, 8) : 8;
               
               return (
                 <div key={rating} className="space-y-2">
@@ -174,7 +189,7 @@ export const CertificationAnalysis = ({ projects }: CertificationAnalysisProps) 
                       <div className="mt-2 space-y-1">
                         {projectsWithRating.map((project) => (
                           <div key={project.id} className="text-sm text-gray-600 pl-2">
-                            250{parseInt(project.id) + 116}_{project.name}
+                            {getDisplayName(project)}
                           </div>
                         ))}
                       </div>

@@ -1,4 +1,3 @@
-
 export interface Project {
   id: string;
   name: string;
@@ -7,6 +6,7 @@ export interface Project {
   completionDate: string;
   projectType: 'new-build' | 'retrofit';
   ribaStage: 'stage-1' | 'stage-2' | 'stage-3' | 'stage-4' | 'stage-5' | 'stage-6' | 'stage-7';
+  gia?: number; // Gross Internal Area in m²
   
   // Embodied Carbon
   upfrontCarbon: number; // kgCO2e/m²

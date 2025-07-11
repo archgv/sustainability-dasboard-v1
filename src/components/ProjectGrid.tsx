@@ -103,6 +103,10 @@ export const ProjectGrid = ({
                     {project.projectType === 'new-build' ? 'New Build' : 'Retrofit'}
                   </Badge>
                 </div>
+                
+                <div className="text-sm text-gray-600">
+                  <span className="font-medium">GIA:</span> {project.gia || 'N/A'} m²
+                </div>
               </div>
               
               <div className="space-y-3">
@@ -125,6 +129,18 @@ export const ProjectGrid = ({
                     {project.operationalEnergy} kWh/m²/yr
                   </Badge>
                 </div>
+                
+                {project.projectType === 'retrofit' && project.existingBuildingEnergy && (
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <Zap className="h-4 w-4 mr-2 text-orange-600" />
+                      <span className="text-sm text-gray-600">Existing Building Energy</span>
+                    </div>
+                    <Badge className={getPerformanceColor(project.existingBuildingEnergy, 'energy')}>
+                      {project.existingBuildingEnergy} kWh/m²/yr
+                    </Badge>
+                  </div>
+                )}
               </div>
               
               {project.certifications && project.certifications.length > 0 && (
