@@ -157,7 +157,6 @@ const Index = () => {
               valueType={valueType}
               isComparingToSelf={compareToSelf}
               selectedRibaStages={selectedRibaStages}
-              primaryProject={primaryProject}
             />
             
             {/* Projects Grid */}
