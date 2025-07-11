@@ -17,29 +17,47 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
   const [yearFilter, setYearFilter] = useState('all');
 
   const kpiOptions = [
-    { value: 'upfrontCarbon', label: 'Upfront Carbon', unit: 'kgCO2e/m²' },
-    { value: 'totalEmbodiedCarbon', label: 'Total Embodied Carbon', unit: 'kgCO2e/m²' },
-    { value: 'refrigerants', label: 'Refrigerants', unit: 'kgCO2e/m²' },
-    { value: 'operationalEnergy', label: 'Operational Energy', unit: 'kWh/m²/yr' },
-    { value: 'gasUsage', label: 'Gas Usage', unit: 'kWh/m²/yr' },
-    { value: 'biodiversityNetGain', label: 'Biodiversity Net Gain', unit: '%' },
-    { value: 'habitatUnits', label: 'Habitat Units Gained', unit: 'units' },
-    { value: 'urbanGreeningFactor', label: 'Urban Greening Factor', unit: 'score' }
+    { value: 'upfrontCarbon', label: 'Upfront Carbon', unit: 'kgCO2e/m²', totalUnit: 'tCO2e' },
+    { value: 'totalEmbodiedCarbon', label: 'Total Embodied Carbon', unit: 'kgCO2e/m²', totalUnit: 'tCO2e' },
+    { value: 'refrigerants', label: 'Refrigerants', unit: 'kgCO2e/m²', totalUnit: 'tCO2e' },
+    { value: 'operationalEnergy', label: 'Operational Energy', unit: 'kWh/m²/yr', totalUnit: 'MWh/yr' },
+    { value: 'gasUsage', label: 'Gas Usage', unit: 'kWh/m²/yr', totalUnit: 'MWh/yr' },
+    { value: 'biodiversityNetGain', label: 'Biodiversity Net Gain', unit: '%', totalUnit: '%' },
+    { value: 'habitatUnits', label: 'Habitat Units Gained', unit: 'units', totalUnit: 'units' },
+    { value: 'urbanGreeningFactor', label: 'Urban Greening Factor', unit: 'score', totalUnit: 'score' }
   ];
 
   const currentKPI = kpiOptions.find(kpi => kpi.value === selectedKPI);
+
+  // Map typologies to the correct sectors
+  const getSector = (typology: string) => {
+    const sectorMap: { [key: string]: string } = {
+      'residential': 'Residential',
+      'educational': 'Education',
+      'healthcare': 'Healthcare',
+      'infrastructure': 'Infrastructure',
+      'ccc': 'CCC',
+      'office': 'Commercial',
+      'retail': 'Commercial',
+      'mixed-use': 'Commercial'
+    };
+    return sectorMap[typology] || 'Commercial';
+  };
 
   // Filter projects by year if needed
   const filteredProjects = yearFilter === 'all' ? projects : 
     projects.filter(project => {
       const projectYear = new Date(project.completionDate).getFullYear();
+      if (yearFilter === 'from-2023') {
+        return projectYear >= 2023;
+      }
       return projectYear.toString() === yearFilter;
     });
 
-  const typologyStats = filteredProjects.reduce((acc: any, project: any) => {
-    const typology = project.typology;
-    if (!acc[typology]) {
-      acc[typology] = {
+  const sectorStats = filteredProjects.reduce((acc: any, project: any) => {
+    const sector = getSector(project.typology);
+    if (!acc[sector]) {
+      acc[sector] = {
         count: 0,
         totalValue: 0,
         totalGIA: 0,
@@ -48,23 +66,29 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
         values: []
       };
     }
-    acc[typology].count++;
+    acc[sector].count++;
     const value = project[selectedKPI] || 0;
     const gia = project.gia || 0;
     
     if (valueType === 'total' && gia > 0) {
-      const totalValue = value * gia;
-      acc[typology].totalValue += totalValue;
-      acc[typology].minValue = Math.min(acc[typology].minValue, totalValue);
-      acc[typology].maxValue = Math.max(acc[typology].maxValue, totalValue);
-      acc[typology].values.push(totalValue);
+      let totalValue = value * gia;
+      // Convert to appropriate units for totals
+      if (selectedKPI === 'upfrontCarbon' || selectedKPI === 'totalEmbodiedCarbon' || selectedKPI === 'refrigerants') {
+        totalValue = totalValue / 1000; // Convert kg to tonnes
+      } else if (selectedKPI === 'operationalEnergy' || selectedKPI === 'gasUsage') {
+        totalValue = totalValue / 1000; // Convert kWh to MWh
+      }
+      acc[sector].totalValue += totalValue;
+      acc[sector].minValue = Math.min(acc[sector].minValue, totalValue);
+      acc[sector].maxValue = Math.max(acc[sector].maxValue, totalValue);
+      acc[sector].values.push(totalValue);
     } else {
-      acc[typology].totalValue += value;
-      acc[typology].minValue = Math.min(acc[typology].minValue, value);
-      acc[typology].maxValue = Math.max(acc[typology].maxValue, value);
-      acc[typology].values.push(value);
+      acc[sector].totalValue += value;
+      acc[sector].minValue = Math.min(acc[sector].minValue, value);
+      acc[sector].maxValue = Math.max(acc[sector].maxValue, value);
+      acc[sector].values.push(value);
     }
-    acc[typology].totalGIA += gia;
+    acc[sector].totalGIA += gia;
     return acc;
   }, {});
 
@@ -72,8 +96,8 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
     return count > 0 ? Math.round(total / count) : 0;
   };
 
-  const chartData = Object.entries(typologyStats).map(([typology, stats]: [string, any]) => ({
-    sector: typology.charAt(0).toUpperCase() + typology.slice(1),
+  const chartData = Object.entries(sectorStats).map(([sector, stats]: [string, any]) => ({
+    sector: sector,
     value: getAverage(stats.totalValue, stats.count),
     count: stats.count
   }));
@@ -87,6 +111,13 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
   const handleDownload = (format: 'csv' | 'pdf' | 'chart') => {
     console.log(`Downloading ${format} for sector performance analysis`);
     // Implementation would go here
+  };
+
+  const getDisplayUnit = () => {
+    if (valueType === 'total') {
+      return currentKPI?.totalUnit || '';
+    }
+    return currentKPI?.unit || '';
   };
 
   return (
@@ -125,25 +156,39 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
 
             <div className="flex items-center space-x-2">
               <label className="text-sm font-medium text-gray-700">Value Type:</label>
-              <Select value={valueType} onValueChange={setValueType}>
-                <SelectTrigger className="w-32">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="per-sqm">Per m²</SelectItem>
-                  <SelectItem value="total">Total</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="flex bg-gray-100 rounded-md p-1">
+                <button
+                  className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+                    valueType === 'per-sqm' 
+                      ? 'bg-white text-gray-900 shadow-sm' 
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                  onClick={() => setValueType('per-sqm')}
+                >
+                  Per m²
+                </button>
+                <button
+                  className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+                    valueType === 'total' 
+                      ? 'bg-white text-gray-900 shadow-sm' 
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                  onClick={() => setValueType('total')}
+                >
+                  Total
+                </button>
+              </div>
             </div>
 
             <div className="flex items-center space-x-2">
               <label className="text-sm font-medium text-gray-700">Year:</label>
               <Select value={yearFilter} onValueChange={setYearFilter}>
-                <SelectTrigger className="w-32">
+                <SelectTrigger className="w-40">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All years</SelectItem>
+                  <SelectItem value="from-2023">From 2023</SelectItem>
                   {getYearOptions().map((year) => (
                     <SelectItem key={year} value={year.toString()}>
                       {year}
@@ -187,7 +232,7 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
           {/* Chart Section */}
           <div>
             <h3 className="text-lg font-semibold text-gray-800 mb-4">
-              {currentKPI?.label} by Sector {valueType === 'per-sqm' ? '(per m²)' : '(total)'}
+              {currentKPI?.label} by Sector ({getDisplayUnit()})
             </h3>
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
@@ -195,11 +240,14 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="sector" />
                   <YAxis label={{ 
-                    value: valueType === 'per-sqm' ? currentKPI?.unit : `Total ${currentKPI?.unit}`, 
+                    value: getDisplayUnit(), 
                     angle: -90, 
                     position: 'insideLeft' 
                   }} />
-                  <Tooltip formatter={(value) => `${value} ${valueType === 'per-sqm' ? currentKPI?.unit : `Total ${currentKPI?.unit}`}`} />
+                  <Tooltip 
+                    formatter={(value) => [`${value} ${getDisplayUnit()}`, 'Average']}
+                    labelFormatter={(label) => `Sector: ${label}`}
+                  />
                   <Bar dataKey="value" fill="#3b82f6" />
                 </BarChart>
               </ResponsiveContainer>
@@ -222,18 +270,18 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {Object.entries(typologyStats).map(([typology, stats]: [string, any]) => {
+                  {Object.entries(sectorStats).map(([sector, stats]: [string, any]) => {
                     const avg = getAverage(stats.totalValue, stats.count);
                     const min = stats.minValue === Infinity ? 0 : Math.round(stats.minValue);
                     const max = stats.maxValue === -Infinity ? 0 : Math.round(stats.maxValue);
                     const range = max - min;
                     
                     return (
-                      <tr key={typology}>
-                        <td className="border border-gray-300 px-4 py-2 capitalize font-medium">{typology}</td>
+                      <tr key={sector}>
+                        <td className="border border-gray-300 px-4 py-2 font-medium">{sector}</td>
                         <td className="border border-gray-300 px-4 py-2 text-center">{stats.count}</td>
                         <td className="border border-gray-300 px-4 py-2 text-center">
-                          {avg} {valueType === 'per-sqm' ? currentKPI?.unit : `Total ${currentKPI?.unit}`}
+                          {avg} {getDisplayUnit()}
                         </td>
                         <td className="border border-gray-300 px-4 py-2 text-center">{min}</td>
                         <td className="border border-gray-300 px-4 py-2 text-center">{max}</td>
