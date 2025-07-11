@@ -1,3 +1,4 @@
+
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, MapPin, Zap, Leaf } from 'lucide-react';
@@ -18,6 +19,26 @@ export const ProjectGrid = ({
   anonymizeProjects = false,
   primaryProject = ''
 }: ProjectGridProps) => {
+  // Map typologies to the correct sectors
+  const getSectorDisplay = (typology: string) => {
+    const sectorMap: { [key: string]: string } = {
+      'residential': 'Residential',
+      'educational': 'Education',
+      'healthcare': 'Healthcare',
+      'infrastructure': 'Infrastructure',
+      'ccc': 'CCC',
+      'office': 'Commercial',
+      'retail': 'Commercial',
+      'mixed-use': 'Commercial'
+    };
+    return sectorMap[typology] || 'Commercial';
+  };
+
+  // Format numbers with commas
+  const formatNumber = (num: number) => {
+    return num.toLocaleString();
+  };
+
   const getPerformanceColor = (value: number, type: 'carbon' | 'energy') => {
     if (type === 'carbon') {
       if (value <= 700) return 'bg-green-100 text-green-800';
@@ -67,13 +88,14 @@ export const ProjectGrid = ({
           {isComparingToSelf ? 'Project RIBA Stages' : 'Project Portfolio'}
         </h2>
         <div className="text-sm text-gray-500">
-          Showing {projects.length} {isComparingToSelf ? 'stages' : 'projects'}
+          Showing {formatNumber(projects.length)} {isComparingToSelf ? 'stages' : 'projects'}
         </div>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {projects.map((project, index) => {
           const displayName = getDisplayName(project, index);
+          const sectorDisplay = getSectorDisplay(project.typology);
           
           return (
             <Card key={project.id} className="p-6 hover:shadow-lg transition-shadow duration-200">
@@ -82,7 +104,7 @@ export const ProjectGrid = ({
                   {displayName}
                 </h3>
                 <Badge variant="outline" className="ml-2 capitalize">
-                  {project.typology}
+                  {sectorDisplay}
                 </Badge>
               </div>
               
@@ -105,7 +127,7 @@ export const ProjectGrid = ({
                 </div>
                 
                 <div className="text-sm text-gray-600">
-                  <span className="font-medium">GIA:</span> {project.gia || 'N/A'} m²
+                  <span className="font-medium">GIA:</span> {formatNumber(project.gia || 0)} m²
                 </div>
               </div>
               
@@ -116,7 +138,7 @@ export const ProjectGrid = ({
                     <span className="text-sm text-gray-600">Embodied Carbon</span>
                   </div>
                   <Badge className={getPerformanceColor(project.totalEmbodiedCarbon, 'carbon')}>
-                    {project.totalEmbodiedCarbon} kgCO2e/m²
+                    {formatNumber(project.totalEmbodiedCarbon)} kgCO2e/m²
                   </Badge>
                 </div>
                 
@@ -126,7 +148,7 @@ export const ProjectGrid = ({
                     <span className="text-sm text-gray-600">Operational Energy</span>
                   </div>
                   <Badge className={getPerformanceColor(project.operationalEnergy, 'energy')}>
-                    {project.operationalEnergy} kWh/m²/yr
+                    {formatNumber(project.operationalEnergy)} kWh/m²/yr
                   </Badge>
                 </div>
                 
@@ -137,7 +159,7 @@ export const ProjectGrid = ({
                       <span className="text-sm text-gray-600">Existing Building Energy</span>
                     </div>
                     <Badge className={getPerformanceColor(project.existingBuildingEnergy, 'energy')}>
-                      {project.existingBuildingEnergy} kWh/m²/yr
+                      {formatNumber(project.existingBuildingEnergy)} kWh/m²/yr
                     </Badge>
                   </div>
                 )}

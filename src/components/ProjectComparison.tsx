@@ -41,6 +41,21 @@ export const ProjectComparison = ({
     { id: 'stage-7', label: 'RIBA 7' }
   ];
 
+  // Map typologies to the correct sectors
+  const getSectorDisplay = (typology: string) => {
+    const sectorMap: { [key: string]: string } = {
+      'residential': 'Residential',
+      'educational': 'Education',
+      'healthcare': 'Healthcare',
+      'infrastructure': 'Infrastructure',
+      'ccc': 'CCC',
+      'office': 'Commercial',
+      'retail': 'Commercial',
+      'mixed-use': 'Commercial'
+    };
+    return sectorMap[typology] || 'Commercial';
+  };
+
   const handleComparisonToggle = (projectId: string) => {
     const isSelected = comparisonProjects.includes(projectId);
     const newComparisonProjects = isSelected
@@ -77,16 +92,6 @@ export const ProjectComparison = ({
       return selectedRibaStages.length;
     }
     return comparisonProjects.length;
-  };
-
-  // Generate project variants for different RIBA stages when comparing to self
-  const generateProjectVariants = (project: Project) => {
-    return selectedRibaStages.map(stageId => ({
-      ...project,
-      id: `${project.id}-${stageId}`,
-      name: `${addProjectNumberToName(project.name, parseInt(project.id) - 1)} (${ribaStages.find(stage => stage.id === stageId)?.label})`,
-      ribaStage: stageId
-    }));
   };
 
   return (
@@ -160,7 +165,7 @@ export const ProjectComparison = ({
                   {primaryProjectData.location}
                 </div>
                 <Badge variant="outline" className="capitalize">
-                  {primaryProjectData.typology}
+                  {getSectorDisplay(primaryProjectData.typology)}
                 </Badge>
                 <Badge variant="outline" className="capitalize">
                   {primaryProjectData.projectType}
@@ -241,7 +246,7 @@ export const ProjectComparison = ({
                         </p>
                         <div className="flex items-center gap-2 mt-1">
                           <Badge variant="outline" className="text-xs capitalize">
-                            {project.typology}
+                            {getSectorDisplay(project.typology)}
                           </Badge>
                           <Badge variant="outline" className="text-xs capitalize">
                             {project.projectType}

@@ -3,6 +3,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Filter } from 'lucide-react';
+
 interface FilterPanelProps {
   filters: {
     typology: string;
@@ -16,6 +17,7 @@ interface FilterPanelProps {
   anonymizeProjects: boolean;
   onAnonymizeChange: (anonymize: boolean) => void;
 }
+
 export const FilterPanel = ({
   filters,
   onFilterChange,
@@ -46,6 +48,7 @@ export const FilterPanel = ({
       ribaStage: value
     });
   };
+
   return <Card className="p-6 sticky top-8">
       <div className="flex items-center space-x-2 mb-6">
         <Filter className="h-5 w-5 text-blue-600" />
@@ -58,16 +61,16 @@ export const FilterPanel = ({
           <Label htmlFor="typology" className="text-sm font-medium text-gray-700 mb-2 block">Sector</Label>
           <Select value={filters.typology} onValueChange={handleTypologyChange}>
             <SelectTrigger>
-              <SelectValue placeholder="Select typology" />
+              <SelectValue placeholder="Select sector" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Types</SelectItem>
-              <SelectItem value="office">Office</SelectItem>
+              <SelectItem value="all">All Sectors</SelectItem>
               <SelectItem value="residential">Residential</SelectItem>
-              <SelectItem value="educational">Educational</SelectItem>
+              <SelectItem value="educational">Education</SelectItem>
               <SelectItem value="healthcare">Healthcare</SelectItem>
-              <SelectItem value="retail">Retail</SelectItem>
-              <SelectItem value="mixed-use">Mixed Use</SelectItem>
+              <SelectItem value="infrastructure">Infrastructure</SelectItem>
+              <SelectItem value="ccc">CCC</SelectItem>
+              <SelectItem value="office">Commercial</SelectItem>
             </SelectContent>
           </Select>
         </div>
