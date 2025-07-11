@@ -70,28 +70,24 @@ const Index = () => {
     setSelectedRibaStages(ribaStages);
   };
 
-  // Generate comparison data for charts and grid
   const getDisplayProjects = () => {
     if (compareToSelf && selectedRibaStages.length > 0) {
       const primaryProjectData = sampleProjects.find(p => p.id === primaryProject);
       if (!primaryProjectData) return [];
       
-      // Generate project variants for different RIBA stages
       return selectedRibaStages.map(stageId => ({
         ...primaryProjectData,
         id: `${primaryProjectData.id}-${stageId}`,
         ribaStage: stageId as any,
-        name: primaryProjectData.name // Keep original name, numbering handled in display
+        name: primaryProjectData.name
       }));
     }
     
-    // If comparing to other projects, show primary + comparison projects
     if (comparisonProjects.length > 0) {
       const projectsToShow = [primaryProject, ...comparisonProjects];
       return filteredProjects.filter(p => projectsToShow.includes(p.id));
     }
     
-    // Default: show all filtered projects
     return filteredProjects;
   };
 
@@ -161,7 +157,6 @@ const Index = () => {
               valueType={valueType}
               isComparingToSelf={compareToSelf}
               selectedRibaStages={selectedRibaStages}
-              anonymizeProjects={anonymizeProjects}
               primaryProject={primaryProject}
             />
             
