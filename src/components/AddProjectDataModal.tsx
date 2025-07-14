@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -5,7 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { X } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { HelpCircle } from 'lucide-react';
 
 interface AddProjectDataModalProps {
   isOpen: boolean;
@@ -15,8 +17,7 @@ interface AddProjectDataModalProps {
 
 export const AddProjectDataModal = ({ isOpen, onClose, onSave }: AddProjectDataModalProps) => {
   const [formData, setFormData] = useState({
-    projectNo: '',
-    projectName: '',
+    projectNameNumber: '',
     projectLocation: '',
     hbDiscipline: '',
     sector: '',
@@ -56,55 +57,57 @@ export const AddProjectDataModal = ({ isOpen, onClose, onSave }: AddProjectDataM
     onClose();
   };
 
+  const TooltipField = ({ label, tooltip, children }: { label: string; tooltip?: string; children: React.ReactNode }) => (
+    <div>
+      <Label className="flex items-center gap-1">
+        {label}
+        {tooltip && (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <HelpCircle className="h-3 w-3 text-gray-400" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p className="max-w-xs">{tooltip}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
+      </Label>
+      {children}
+    </div>
+  );
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center justify-between">
-            Add Project Data
-            <Button variant="ghost" size="sm" onClick={onClose}>
-              <X className="h-4 w-4" />
-            </Button>
-          </DialogTitle>
+          <DialogTitle>Add Project Data</DialogTitle>
         </DialogHeader>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
           {/* Project Information */}
           <div className="space-y-4">
             <h3 className="font-semibold text-gray-900">Project Information</h3>
             
-            <div>
-              <Label htmlFor="projectNo">Project No.</Label>
+            <TooltipField label="Project Name & Number">
               <Input
-                id="projectNo"
-                value={formData.projectNo}
-                onChange={(e) => handleInputChange('projectNo', e.target.value)}
-                placeholder="Enter project number"
+                value={formData.projectNameNumber}
+                onChange={(e) => handleInputChange('projectNameNumber', e.target.value)}
+                placeholder="e.g. 230151 Green Office Tower"
+                required
               />
-            </div>
+            </TooltipField>
 
-            <div>
-              <Label htmlFor="projectName">Project Name</Label>
+            <TooltipField label="Project Location">
               <Input
-                id="projectName"
-                value={formData.projectName}
-                onChange={(e) => handleInputChange('projectName', e.target.value)}
-                placeholder="Enter project name"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="projectLocation">Project Location</Label>
-              <Input
-                id="projectLocation"
                 value={formData.projectLocation}
                 onChange={(e) => handleInputChange('projectLocation', e.target.value)}
                 placeholder="Enter project location"
               />
-            </div>
+            </TooltipField>
 
-            <div>
-              <Label htmlFor="hbDiscipline">H&B Discipline</Label>
+            <TooltipField label="H&B Discipline">
               <Select value={formData.hbDiscipline} onValueChange={(value) => handleInputChange('hbDiscipline', value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select discipline" />
@@ -115,54 +118,56 @@ export const AddProjectDataModal = ({ isOpen, onClose, onSave }: AddProjectDataM
                   <SelectItem value="interior">Interior</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
+            </TooltipField>
 
-            <div>
-              <Label htmlFor="sector">Sector</Label>
-              <Input
-                id="sector"
-                value={formData.sector}
-                onChange={(e) => handleInputChange('sector', e.target.value)}
-                placeholder="Enter sector"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="eiScope">EI Scope</Label>
-              <Select value={formData.eiScope} onValueChange={(value) => handleInputChange('eiScope', value)}>
+            <TooltipField label="Primary Sector" tooltip="">
+              <Select value={formData.sector} onValueChange={(value) => handleInputChange('sector', value)} required>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select EI scope" />
+                  <SelectValue placeholder="Select sector" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="residential">Residential</SelectItem>
+                  <SelectItem value="education">Education</SelectItem>
+                  <SelectItem value="healthcare">Healthcare</SelectItem>
+                  <SelectItem value="infrastructure">Infrastructure</SelectItem>
+                  <SelectItem value="ccc">CCC</SelectItem>
+                  <SelectItem value="commercial">Commercial</SelectItem>
+                </SelectContent>
+              </Select>
+            </TooltipField>
+
+            <TooltipField label="EI Team: Paid Scope" tooltip="Does the Environmental Intelligence team have a paid scope?">
+              <Select value={formData.eiScope} onValueChange={(value) => handleInputChange('eiScope', value)} required>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select scope" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="yes">Yes</SelectItem>
                   <SelectItem value="no">No</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
+            </TooltipField>
 
-            <div>
-              <Label htmlFor="sustainabilityConsultant">Sustainability Consultant</Label>
+            <TooltipField label="External Sustainability Consultant" tooltip="Enter Company name of external sustainability consultant if one is appointed?">
               <Input
-                id="sustainabilityConsultant"
                 value={formData.sustainabilityConsultant}
                 onChange={(e) => handleInputChange('sustainabilityConsultant', e.target.value)}
                 placeholder="Enter company name"
+                required
               />
-            </div>
+            </TooltipField>
 
-            <div>
-              <Label htmlFor="sustainabilityChampion">Sustainability Champion</Label>
+            <TooltipField label="Sustainability Champion Name" tooltip="Name of the internal sustainability champion.">
               <Input
-                id="sustainabilityChampion"
                 value={formData.sustainabilityChampion}
                 onChange={(e) => handleInputChange('sustainabilityChampion', e.target.value)}
                 placeholder="Enter champion name"
+                required
               />
-            </div>
+            </TooltipField>
 
-            <div>
-              <Label htmlFor="projectType">Project Type</Label>
-              <Select value={formData.projectType} onValueChange={(value) => handleInputChange('projectType', value)}>
+            <TooltipField label="Project Type" tooltip="Is this a new build, retrofit, or extension?">
+              <Select value={formData.projectType} onValueChange={(value) => handleInputChange('projectType', value)} required>
                 <SelectTrigger>
                   <SelectValue placeholder="Select project type" />
                 </SelectTrigger>
@@ -172,18 +177,16 @@ export const AddProjectDataModal = ({ isOpen, onClose, onSave }: AddProjectDataM
                   <SelectItem value="retrofit-extension">Retrofit + Extension</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
+            </TooltipField>
           </div>
 
           {/* Technical Data */}
           <div className="space-y-4">
             <h3 className="font-semibold text-gray-900">Technical Data</h3>
 
-            {formData.projectType === 'retrofit' && (
-              <div>
-                <Label htmlFor="existingOperationalEnergy">Existing Operational Energy (kWh/m²/year)</Label>
+            {(formData.projectType === 'retrofit' || formData.projectType === 'retrofit-extension') && (
+              <TooltipField label="Existing Operational Energy (kWh/m²/year)" tooltip="Annual operational energy of the existing building (if retained).">
                 <Input
-                  id="existingOperationalEnergy"
                   type="number"
                   min="0"
                   max="500"
@@ -191,35 +194,32 @@ export const AddProjectDataModal = ({ isOpen, onClose, onSave }: AddProjectDataM
                   onChange={(e) => handleInputChange('existingOperationalEnergy', e.target.value)}
                   placeholder="0-500"
                 />
-              </div>
+              </TooltipField>
             )}
 
-            <div>
-              <Label htmlFor="gia">GIA (m²)</Label>
+            <TooltipField label="GIA (m²)">
               <Input
-                id="gia"
                 type="number"
                 min="0"
                 value={formData.gia}
                 onChange={(e) => handleInputChange('gia', e.target.value)}
                 placeholder="Enter GIA"
+                required
               />
-            </div>
+            </TooltipField>
 
-            <div>
-              <Label htmlFor="pcDate">PC Date (Year)</Label>
+            <TooltipField label="PC Date (Year)" tooltip="Expected or actual practical completion year.">
               <Input
-                id="pcDate"
                 type="number"
                 value={formData.pcDate}
                 onChange={(e) => handleInputChange('pcDate', e.target.value)}
                 placeholder="Enter year only"
+                required
               />
-            </div>
+            </TooltipField>
 
-            <div>
-              <Label htmlFor="ribaStage">RIBA Stage</Label>
-              <Select value={formData.ribaStage} onValueChange={(value) => handleInputChange('ribaStage', value)}>
+            <TooltipField label="RIBA Stage" tooltip="Current RIBA Plan of Work stage for the project.">
+              <Select value={formData.ribaStage} onValueChange={(value) => handleInputChange('ribaStage', value)} required>
                 <SelectTrigger>
                   <SelectValue placeholder="Select RIBA stage" />
                 </SelectTrigger>
@@ -233,12 +233,10 @@ export const AddProjectDataModal = ({ isOpen, onClose, onSave }: AddProjectDataM
                   <SelectItem value="stage-7">RIBA Stage 7</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
+            </TooltipField>
 
-            <div>
-              <Label htmlFor="upfrontCarbon">Upfront Carbon (kgCO2e/m²)</Label>
+            <TooltipField label="Upfront Carbon (kgCO₂e/m²)" tooltip="Embodied carbon for stages A1–A5">
               <Input
-                id="upfrontCarbon"
                 type="number"
                 min="0"
                 max="1500"
@@ -246,12 +244,10 @@ export const AddProjectDataModal = ({ isOpen, onClose, onSave }: AddProjectDataM
                 onChange={(e) => handleInputChange('upfrontCarbon', e.target.value)}
                 placeholder="0-1500"
               />
-            </div>
+            </TooltipField>
 
-            <div>
-              <Label htmlFor="totalEmbodiedCarbon">Total Embodied Carbon (kgCO2e/m²)</Label>
+            <TooltipField label="Total Embodied Carbon (kgCO₂e/m²)" tooltip="Total embodied carbon for life cycle stages A1–C4.">
               <Input
-                id="totalEmbodiedCarbon"
                 type="number"
                 min="0"
                 max="1500"
@@ -259,57 +255,126 @@ export const AddProjectDataModal = ({ isOpen, onClose, onSave }: AddProjectDataM
                 onChange={(e) => handleInputChange('totalEmbodiedCarbon', e.target.value)}
                 placeholder="0-1500"
               />
-            </div>
+            </TooltipField>
 
-            <div>
-              <Label htmlFor="refrigerantType">Refrigerant Type</Label>
+            <TooltipField label="Refrigerant Type" tooltip="Main refrigerant type used in active systems.">
               <Input
-                id="refrigerantType"
                 value={formData.refrigerantType}
                 onChange={(e) => handleInputChange('refrigerantType', e.target.value)}
                 placeholder="Enter refrigerant type"
               />
-            </div>
+            </TooltipField>
 
-            <div>
-              <Label htmlFor="operationalEnergyTotal">Operational Energy: Total (kWh/m²/yr)</Label>
+            <TooltipField label="Operational Energy: Total (kWh/m²/year)">
               <Input
-                id="operationalEnergyTotal"
                 type="number"
                 min="0"
                 max="150"
                 value={formData.operationalEnergyTotal}
                 onChange={(e) => handleInputChange('operationalEnergyTotal', e.target.value)}
                 placeholder="0-150"
+                required
               />
-            </div>
+            </TooltipField>
 
-            <div>
-              <Label htmlFor="operationalEnergyGas">Operational Energy: Gas (kWh/m²/yr)</Label>
+            <TooltipField label="Operational Energy: Gas (kWh/m²/year)">
               <Input
-                id="operationalEnergyGas"
                 type="number"
                 min="0"
                 max="150"
                 value={formData.operationalEnergyGas}
                 onChange={(e) => handleInputChange('operationalEnergyGas', e.target.value)}
                 placeholder="0-150"
+                required
               />
-            </div>
+            </TooltipField>
+          </div>
+
+          {/* Energy & Environmental Data */}
+          <div className="space-y-4">
+            <h3 className="font-semibold text-gray-900">Energy & Environmental</h3>
+
+            <TooltipField label="Space Heating Demand (kWh/m²/year)">
+              <Input
+                type="number"
+                min="0"
+                max="150"
+                value={formData.spaceHeatingDemand}
+                onChange={(e) => handleInputChange('spaceHeatingDemand', e.target.value)}
+                placeholder="0-150"
+                required
+              />
+            </TooltipField>
+
+            <TooltipField label="Renewable Energy Generation (kWh/m²/year)">
+              <Input
+                type="number"
+                min="0"
+                max="150"
+                value={formData.renewableEnergyGeneration}
+                onChange={(e) => handleInputChange('renewableEnergyGeneration', e.target.value)}
+                placeholder="0-150"
+                required
+              />
+            </TooltipField>
+
+            <TooltipField label="Water Use">
+              <Input
+                value={formData.waterUse}
+                onChange={(e) => handleInputChange('waterUse', e.target.value)}
+                placeholder="Enter water usage"
+                required
+              />
+            </TooltipField>
+
+            <TooltipField label="Biodiversity Net Gain (%)" tooltip="Predicted Biodiversity Net Gain percentage.">
+              <Input
+                type="number"
+                min="0"
+                max="200"
+                value={formData.biodiversityNetGain}
+                onChange={(e) => handleInputChange('biodiversityNetGain', e.target.value)}
+                placeholder="Up to 200%"
+              />
+            </TooltipField>
+
+            <TooltipField label="Habitat Units Gained" tooltip="Number of habitat units gained.">
+              <Input
+                type="number"
+                min="0"
+                max="50"
+                value={formData.habitatUnitsGained}
+                onChange={(e) => handleInputChange('habitatUnitsGained', e.target.value)}
+                placeholder="0-50"
+              />
+            </TooltipField>
+
+            <TooltipField label="Urban Greening Factor" tooltip="Urban Greening Factor score, if applicable.">
+              <Input
+                type="number"
+                min="0"
+                max="10"
+                step="0.1"
+                value={formData.urbanGreeningFactor}
+                onChange={(e) => handleInputChange('urbanGreeningFactor', e.target.value)}
+                placeholder="0-10"
+              />
+            </TooltipField>
           </div>
 
           {/* Certifications */}
-          <div className="space-y-4 md:col-span-2">
-            <h3 className="font-semibold text-gray-900">Certifications & Environmental</h3>
+          <div className="space-y-4 md:col-span-2 lg:col-span-3">
+            <h3 className="font-semibold text-gray-900">Certifications</h3>
             
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div>
-                <Label htmlFor="breeam">BREEAM</Label>
-                <Select value={formData.breeam} onValueChange={(value) => handleInputChange('breeam', value)}>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              <TooltipField label="BREEAM">
+                <Select value={formData.breeam} onValueChange={(value) => handleInputChange('breeam', value)} required>
                   <SelectTrigger>
                     <SelectValue placeholder="Select rating" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="not-targetted">Not Targetted</SelectItem>
+                    <SelectItem value="to-be-determined">To Be Determined</SelectItem>
                     <SelectItem value="outstanding">Outstanding</SelectItem>
                     <SelectItem value="excellent">Excellent</SelectItem>
                     <SelectItem value="very-good">Very Good</SelectItem>
@@ -318,44 +383,75 @@ export const AddProjectDataModal = ({ isOpen, onClose, onSave }: AddProjectDataM
                     <SelectItem value="unclassified">Unclassified</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
+              </TooltipField>
 
-              <div>
-                <Label htmlFor="leed">LEED</Label>
-                <Select value={formData.leed} onValueChange={(value) => handleInputChange('leed', value)}>
+              <TooltipField label="LEED">
+                <Select value={formData.leed} onValueChange={(value) => handleInputChange('leed', value)} required>
                   <SelectTrigger>
                     <SelectValue placeholder="Select rating" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="not-targetted">Not Targetted</SelectItem>
+                    <SelectItem value="to-be-determined">To Be Determined</SelectItem>
                     <SelectItem value="platinum">Platinum</SelectItem>
                     <SelectItem value="gold">Gold</SelectItem>
                     <SelectItem value="silver">Silver</SelectItem>
                     <SelectItem value="certified">Certified</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
+              </TooltipField>
 
-              <div>
-                <Label htmlFor="biodiversityNetGain">Biodiversity Net Gain (%)</Label>
-                <Input
-                  id="biodiversityNetGain"
-                  type="number"
-                  value={formData.biodiversityNetGain}
-                  onChange={(e) => handleInputChange('biodiversityNetGain', e.target.value)}
-                  placeholder="Enter percentage"
-                />
-              </div>
+              <TooltipField label="WELL">
+                <Select value={formData.well} onValueChange={(value) => handleInputChange('well', value)} required>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select rating" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="not-targetted">Not Targetted</SelectItem>
+                    <SelectItem value="to-be-determined">To Be Determined</SelectItem>
+                    <SelectItem value="yes">Yes</SelectItem>
+                  </SelectContent>
+                </Select>
+              </TooltipField>
 
-              <div>
-                <Label htmlFor="habitatUnitsGained">Habitat Units Gained</Label>
-                <Input
-                  id="habitatUnitsGained"
-                  type="number"
-                  value={formData.habitatUnitsGained}
-                  onChange={(e) => handleInputChange('habitatUnitsGained', e.target.value)}
-                  placeholder="Enter units"
-                />
-              </div>
+              <TooltipField label="NABERS">
+                <Select value={formData.nabers} onValueChange={(value) => handleInputChange('nabers', value)} required>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select rating" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="not-targetted">Not Targetted</SelectItem>
+                    <SelectItem value="to-be-determined">To Be Determined</SelectItem>
+                    <SelectItem value="yes">Yes</SelectItem>
+                  </SelectContent>
+                </Select>
+              </TooltipField>
+
+              <TooltipField label="Passivhaus or EnePHit">
+                <Select value={formData.passivhausOrEnephit} onValueChange={(value) => handleInputChange('passivhausOrEnephit', value)} required>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select rating" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="not-targetted">Not Targetted</SelectItem>
+                    <SelectItem value="to-be-determined">To Be Determined</SelectItem>
+                    <SelectItem value="yes">Yes</SelectItem>
+                  </SelectContent>
+                </Select>
+              </TooltipField>
+
+              <TooltipField label="UKNZCBS">
+                <Select value={formData.uknzcbs} onValueChange={(value) => handleInputChange('uknzcbs', value)} required>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select rating" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="not-targetted">Not Targetted</SelectItem>
+                    <SelectItem value="to-be-determined">To Be Determined</SelectItem>
+                    <SelectItem value="yes">Yes</SelectItem>
+                  </SelectContent>
+                </Select>
+              </TooltipField>
             </div>
           </div>
         </div>
