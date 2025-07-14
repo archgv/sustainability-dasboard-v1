@@ -1,4 +1,3 @@
-
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
@@ -373,43 +372,37 @@ export const ChartSection = ({
           })
           .sort((a, b) => a.date - b.date);
 
-        // Get benchmark data for timeline if showing per sqm and upfront/total embodied carbon
-        const shouldShowBenchmark = valueType === 'per-sqm' && 
-          (selectedKPI1 === 'upfrontCarbon' || selectedKPI1 === 'totalEmbodiedCarbon');
+        // Get benchmark data for timeline - ONLY for upfront carbon and per sqm
+        const shouldShowBenchmark = valueType === 'per-sqm' && selectedKPI1 === 'upfrontCarbon';
 
-        let benchmarkData: any[] = [];
-        if (shouldShowBenchmark && timelineData.length > 0) {
-          // Get unique years from the timeline data
-          const years = [...new Set(timelineData.map(d => d.completionYear))].sort();
+        // Create benchmark data if applicable
+        const createBenchmarkData = () => {
+          if (!shouldShowBenchmark || timelineData.length === 0) return [];
           
-          // For each project, get its sector and add benchmark points
-          timelineData.forEach(project => {
-            const sector = getSector(project.typology);
-            const benchmarks = uknzcbsBenchmarks[sector as keyof typeof uknzcbsBenchmarks];
-            
-            if (benchmarks) {
-              years.forEach(year => {
-                if (benchmarks[year as keyof typeof benchmarks]) {
-                  benchmarkData.push({
-                    completionYear: year,
-                    benchmark: benchmarks[year as keyof typeof benchmarks],
-                    sector: sector
-                  });
-                }
+          // Get all unique sectors from projects
+          const projectSectors = [...new Set(timelineData.map(d => getSector(d.typology)))];
+          
+          // Create benchmark line for each sector
+          const benchmarkLines: any[] = [];
+          
+          projectSectors.forEach(sector => {
+            const sectorBenchmarks = uknzcbsBenchmarks[sector as keyof typeof uknzcbsBenchmarks];
+            if (sectorBenchmarks) {
+              // Create continuous line data from 2025 to 2050
+              Object.entries(sectorBenchmarks).forEach(([year, value]) => {
+                benchmarkLines.push({
+                  completionYear: parseInt(year),
+                  [`benchmark_${sector}`]: value,
+                  sector: sector
+                });
               });
             }
           });
           
-          // Remove duplicates
-          benchmarkData = benchmarkData.reduce((acc, current) => {
-            const x = acc.find(item => item.completionYear === current.completionYear && item.sector === current.sector);
-            if (!x) {
-              return acc.concat([current]);
-            } else {
-              return acc;
-            }
-          }, [] as any[]);
-        }
+          return benchmarkLines.sort((a, b) => a.completionYear - b.completionYear);
+        };
+
+        const benchmarkData = createBenchmarkData();
 
         return (
           <ResponsiveContainer width="100%" height="100%">
@@ -428,13 +421,13 @@ export const ChartSection = ({
               <Tooltip 
                 formatter={(value: number, name: string) => [
                   `${formatNumber(value)} ${getUnitLabel(kpi1Config?.unit || '', valueType)}`,
-                  name === 'benchmark' ? 'UKNZCBS Benchmark' : kpi1Config?.label || selectedKPI1
+                  name.includes('benchmark') ? `UKNZCBS ${name.split('_')[1]}` : kpi1Config?.label || selectedKPI1
                 ]}
                 labelFormatter={(label) => `Year: ${label}`}
                 content={({ active, payload, label }) => {
                   if (active && payload && payload.length) {
                     const projectData = payload.find(p => p.dataKey === selectedKPI1);
-                    const benchmarkData = payload.find(p => p.dataKey === 'benchmark');
+                    const benchmarkData = payload.filter(p => p.dataKey && p.dataKey.toString().includes('benchmark'));
                     
                     return (
                       <div className="bg-white p-3 border rounded-lg shadow-lg">
@@ -447,11 +440,11 @@ export const ChartSection = ({
                             </p>
                           </>
                         )}
-                        {benchmarkData && (
-                          <p className="text-sm text-orange-600">
-                            UKNZCBS Benchmark: {formatNumber(benchmarkData.value)} {getUnitLabel(kpi1Config?.unit || '', valueType)}
+                        {benchmarkData.map((item, idx) => (
+                          <p key={idx} className="text-sm text-red-600">
+                            UKNZCBS {item.dataKey?.toString().split('_')[1]}: {formatNumber(item.value)} {getUnitLabel(kpi1Config?.unit || '', valueType)}
                           </p>
-                        )}
+                        ))}
                       </div>
                     );
                   }
@@ -459,40 +452,42 @@ export const ChartSection = ({
                 }}
               />
               <Legend />
+              
+              {/* Project data as scatter points */}
               <Line 
                 type="monotone"
                 dataKey={selectedKPI1}
                 stroke="#3b82f6" 
-                strokeWidth={2}
+                strokeWidth={0}
                 dot={{ fill: '#3b82f6', strokeWidth: 2, r: 6 }}
+                line={false}
                 name={kpi1Config?.label || selectedKPI1}
               />
               
-              {/* Add benchmark lines if applicable */}
-              {shouldShowBenchmark && benchmarkData.map((item, index) => {
-                const sectorColor = {
-                  'Commercial': '#f59e0b',
-                  'Residential': '#10b981',
-                  'CCC': '#ef4444',
-                  'Healthcare': '#8b5cf6',
-                  'Education': '#06b6d4',
-                  'Infrastructure': '#f97316'
-                }[item.sector] || '#6b7280';
-                
-                return (
-                  <Line
-                    key={`${item.sector}-${index}`}
-                    type="monotone"
-                    dataKey="benchmark"
-                    data={benchmarkData.filter(d => d.sector === item.sector)}
-                    stroke={sectorColor}
-                    strokeWidth={2}
-                    strokeDasharray="5 5"
-                    dot={{ fill: sectorColor, strokeWidth: 2, r: 4 }}
-                    name={`UKNZCBS ${item.sector}`}
-                  />
-                );
-              })}
+              {/* Benchmark lines if applicable */}
+              {shouldShowBenchmark && benchmarkData.length > 0 && (
+                <>
+                  {[...new Set(benchmarkData.map(d => d.sector))].map((sector, index) => {
+                    const sectorColor = '#ef4444'; // Red color for all benchmark lines
+                    const sectorData = benchmarkData.filter(d => d.sector === sector);
+                    
+                    return (
+                      <Line
+                        key={`benchmark_${sector}`}
+                        type="monotone"
+                        dataKey={`benchmark_${sector}`}
+                        data={sectorData}
+                        stroke={sectorColor}
+                        strokeWidth={2}
+                        strokeDasharray="5 5"
+                        dot={false}
+                        connectNulls={false}
+                        name={`UKNZCBS ${sector}`}
+                      />
+                    );
+                  })}
+                </>
+              )}
             </LineChart>
           </ResponsiveContainer>
         );
