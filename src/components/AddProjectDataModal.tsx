@@ -146,7 +146,7 @@ export const AddProjectDataModal = ({ isOpen, onClose, onSave }: AddProjectDataM
                 id="sustainabilityConsultant"
                 value={formData.sustainabilityConsultant}
                 onChange={(e) => handleInputChange('sustainabilityConsultant', e.target.value)}
-                placeholder="Enter consultant name"
+                placeholder="Enter company name"
               />
             </div>
 
