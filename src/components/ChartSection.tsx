@@ -460,7 +460,6 @@ export const ChartSection = ({
                 stroke="#3b82f6" 
                 strokeWidth={0}
                 dot={{ fill: '#3b82f6', strokeWidth: 2, r: 6 }}
-                line={false}
                 name={kpi1Config?.label || selectedKPI1}
               />
               
