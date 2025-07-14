@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { formatNumber } from '@/lib/utils';
 
 interface SectorPerformanceProps {
   projects: any[];
@@ -17,9 +18,9 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
   const [yearFilter, setYearFilter] = useState('all');
 
   const kpiOptions = [
-    { value: 'upfrontCarbon', label: 'Upfront Carbon', unit: 'kgCO2e/m²', totalUnit: 'tCO2e' },
-    { value: 'totalEmbodiedCarbon', label: 'Total Embodied Carbon', unit: 'kgCO2e/m²', totalUnit: 'tCO2e' },
-    { value: 'refrigerants', label: 'Refrigerants', unit: 'kgCO2e/m²', totalUnit: 'tCO2e' },
+    { value: 'upfrontCarbon', label: 'Upfront Carbon', unit: 'kgCO₂e/m²', totalUnit: 'tCO₂e' },
+    { value: 'totalEmbodiedCarbon', label: 'Total Embodied Carbon', unit: 'kgCO₂e/m²', totalUnit: 'tCO₂e' },
+    { value: 'refrigerants', label: 'Refrigerants', unit: 'kgCO₂e/m²', totalUnit: 'tCO₂e' },
     { value: 'operationalEnergy', label: 'Operational Energy', unit: 'kWh/m²/yr', totalUnit: 'MWh/yr' },
     { value: 'gasUsage', label: 'Gas Usage', unit: 'kWh/m²/yr', totalUnit: 'MWh/yr' },
     { value: 'biodiversityNetGain', label: 'Biodiversity Net Gain', unit: '%', totalUnit: '%' },
@@ -96,11 +97,6 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
 
   const getAverage = (total: number, count: number) => {
     return count > 0 ? Math.round(total / count) : 0;
-  };
-
-  // Format numbers with commas
-  const formatNumber = (num: number) => {
-    return num.toLocaleString();
   };
 
   // Create chart data ensuring all sectors are included

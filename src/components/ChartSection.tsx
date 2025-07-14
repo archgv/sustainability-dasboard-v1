@@ -6,6 +6,7 @@ import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, Responsive
 import { Project, availableKPIs } from '@/types/project';
 import { ChartType, EmbodiedCarbonBreakdown, ValueType } from './ChartTypeSelector';
 import { addProjectNumberToName } from '@/utils/projectUtils';
+import { formatNumber } from '@/lib/utils';
 
 interface ChartSectionProps {
   projects: Project[];
@@ -30,6 +31,31 @@ export const ChartSection = ({
 }: ChartSectionProps) => {
   const kpi1Config = availableKPIs.find(kpi => kpi.key === selectedKPI1);
   const kpi2Config = availableKPIs.find(kpi => kpi.key === selectedKPI2);
+
+  // UKNZCBS benchmark data by sector
+  const uknzcbsBenchmarks = {
+    'Commercial': { 2025: 580, 2026: 550, 2027: 525, 2028: 495, 2029: 465, 2030: 435, 2031: 405, 2032: 380, 2033: 350, 2034: 315, 2035: 285, 2036: 260, 2037: 240, 2038: 220, 2039: 200, 2040: 185, 2041: 165, 2042: 150, 2043: 135, 2044: 120, 2045: 105, 2046: 95, 2047: 80, 2048: 70, 2049: 60, 2050: 45 },
+    'Residential': { 2025: 570, 2026: 540, 2027: 515, 2028: 485, 2029: 460, 2030: 425, 2031: 400, 2032: 375, 2033: 340, 2034: 310, 2035: 280, 2036: 255, 2037: 235, 2038: 215, 2039: 200, 2040: 180, 2041: 165, 2042: 150, 2043: 135, 2044: 120, 2045: 105, 2046: 90, 2047: 80, 2048: 70, 2049: 55, 2050: 45 },
+    'CCC': { 2025: 855, 2026: 810, 2027: 770, 2028: 725, 2029: 685, 2030: 640, 2031: 595, 2032: 560, 2033: 510, 2034: 465, 2035: 420, 2036: 380, 2037: 350, 2038: 325, 2039: 295, 2040: 270, 2041: 245, 2042: 220, 2043: 200, 2044: 175, 2045: 155, 2046: 135, 2047: 120, 2048: 100, 2049: 85, 2050: 70 },
+    'Healthcare': { 2025: 790, 2026: 750, 2027: 710, 2028: 670, 2029: 635, 2030: 590, 2031: 550, 2032: 515, 2033: 475, 2034: 430, 2035: 390, 2036: 350, 2037: 325, 2038: 300, 2039: 275, 2040: 250, 2041: 225, 2042: 205, 2043: 185, 2044: 165, 2045: 145, 2046: 125, 2047: 110, 2048: 95, 2049: 80, 2050: 65 },
+    'Education': { 2025: 640, 2026: 610, 2027: 575, 2028: 545, 2029: 515, 2030: 480, 2031: 445, 2032: 420, 2033: 385, 2034: 350, 2035: 315, 2036: 285, 2037: 265, 2038: 240, 2039: 225, 2040: 205, 2041: 185, 2042: 165, 2043: 150, 2044: 135, 2045: 115, 2046: 105, 2047: 90, 2048: 75, 2049: 65, 2050: 50 },
+    'Infrastructure': { 2025: 565, 2026: 525, 2027: 490, 2028: 450, 2029: 420, 2030: 380, 2031: 355, 2032: 335, 2033: 305, 2034: 280, 2035: 250, 2036: 225, 2037: 210, 2038: 195, 2039: 175, 2040: 160, 2041: 145, 2042: 135, 2043: 120, 2044: 105, 2045: 95, 2046: 80, 2047: 70, 2048: 60, 2049: 50, 2050: 40 }
+  };
+
+  // Map typologies to the correct sectors for benchmark lookup
+  const getSector = (typology: string) => {
+    const sectorMap: { [key: string]: string } = {
+      'residential': 'Residential',
+      'educational': 'Education',
+      'healthcare': 'Healthcare',
+      'infrastructure': 'Infrastructure',
+      'ccc': 'CCC',
+      'office': 'Commercial',
+      'retail': 'Commercial',
+      'mixed-use': 'Commercial'
+    };
+    return sectorMap[typology] || 'Commercial';
+  };
 
   // Mock building area data for demonstration
   const getProjectArea = (projectId: string): number => {
@@ -65,7 +91,7 @@ export const ChartSection = ({
       chartContent += breakdownData.map(item => {
         const projectName = item.name;
         const categories = Object.keys(item).filter(key => key !== 'name');
-        return `${projectName}:\n` + categories.map(cat => `  ${cat}: ${item[cat]} ${valueType === 'per-sqm' ? 'kgCO2e/m²' : 'kgCO2e total'}`).join('\n');
+        return `${projectName}:\n` + categories.map(cat => `  ${cat}: ${item[cat]} ${valueType === 'per-sqm' ? 'kgCO₂e/m²' : 'kgCO₂e total'}`).join('\n');
       }).join('\n\n');
     } else {
       const transformedProjects = transformDataForValueType(projects);
@@ -85,10 +111,13 @@ export const ChartSection = ({
   };
 
   const getUnitLabel = (baseUnit: string, valueType: ValueType): string => {
+    // Replace CO2 with CO₂ in unit labels
+    let unit = baseUnit.replace(/CO2/g, 'CO₂');
+    
     if (valueType === 'total') {
-      return baseUnit.replace('/m²', '').replace('/year', '/year total');
+      return unit.replace('/m²', '').replace('/year', '/year total');
     }
-    return baseUnit;
+    return unit;
   };
 
   const getChartTitle = () => {
@@ -189,12 +218,12 @@ export const ChartSection = ({
               interval={0}
             />
             <YAxis 
-              label={{ value: valueType === 'per-sqm' ? 'kgCO2e/m²' : 'kgCO2e total', angle: -90, position: 'insideLeft' }}
+              label={{ value: valueType === 'per-sqm' ? 'kgCO₂e/m²' : 'kgCO₂e total', angle: -90, position: 'insideLeft' }}
             />
             <Tooltip 
               formatter={(value: number, name: string) => {
                 const category = categories.find(cat => cat.key === name);
-                return [`${value} ${valueType === 'per-sqm' ? 'kgCO2e/m²' : 'kgCO2e total'}`, category?.label || name];
+                return [`${formatNumber(value)} ${valueType === 'per-sqm' ? 'kgCO₂e/m²' : 'kgCO₂e total'}`, category?.label || name];
               }}
               labelFormatter={(label) => `Project: ${label}`}
             />
@@ -254,12 +283,12 @@ export const ChartSection = ({
                       <div className="bg-white p-3 border rounded-lg shadow-lg">
                         <p className="font-semibold">{displayName}</p>
                         <p className="text-sm text-gray-600">{data.typology}</p>
-                        <p className="text-sm">Area: {area.toLocaleString()} m²</p>
+                        <p className="text-sm">Area: {formatNumber(area)} m²</p>
                         <p className="text-sm">
-                          {kpi1Config?.label}: {data[selectedKPI1]} {getUnitLabel(kpi1Config?.unit || '', valueType)}
+                          {kpi1Config?.label}: {formatNumber(data[selectedKPI1])} {getUnitLabel(kpi1Config?.unit || '', valueType)}
                         </p>
                         <p className="text-sm">
-                          {kpi2Config?.label}: {data[selectedKPI2]} {getUnitLabel(kpi2Config?.unit || '', valueType)}
+                          {kpi2Config?.label}: {formatNumber(data[selectedKPI2])} {getUnitLabel(kpi2Config?.unit || '', valueType)}
                         </p>
                       </div>
                     );
@@ -309,7 +338,7 @@ export const ChartSection = ({
               />
               <Tooltip 
                 formatter={(value: number) => [
-                  `${value} ${getUnitLabel(kpi1Config?.unit || '', valueType)}`,
+                  `${formatNumber(value)} ${getUnitLabel(kpi1Config?.unit || '', valueType)}`,
                   kpi1Config?.label || selectedKPI1
                 ]}
                 labelFormatter={(label) => `Project: ${label}`}
@@ -332,55 +361,139 @@ export const ChartSection = ({
               ? `${addProjectNumberToName(project.name, parseInt(baseId) - 1)} (RIBA ${project.ribaStage.replace('stage-', '')})`
               : addProjectNumberToName(project.name, parseInt(project.id) - 1);
             
+            // Extract year only from completion date
+            const completionYear = new Date(project.completionDate).getFullYear();
+            
             return {
               ...project,
               displayName,
+              completionYear,
               date: new Date(project.completionDate).getTime()
             };
           })
           .sort((a, b) => a.date - b.date);
 
+        // Get benchmark data for timeline if showing per sqm and upfront/total embodied carbon
+        const shouldShowBenchmark = valueType === 'per-sqm' && 
+          (selectedKPI1 === 'upfrontCarbon' || selectedKPI1 === 'totalEmbodiedCarbon');
+
+        let benchmarkData: any[] = [];
+        if (shouldShowBenchmark && timelineData.length > 0) {
+          // Get unique years from the timeline data
+          const years = [...new Set(timelineData.map(d => d.completionYear))].sort();
+          
+          // For each project, get its sector and add benchmark points
+          timelineData.forEach(project => {
+            const sector = getSector(project.typology);
+            const benchmarks = uknzcbsBenchmarks[sector as keyof typeof uknzcbsBenchmarks];
+            
+            if (benchmarks) {
+              years.forEach(year => {
+                if (benchmarks[year as keyof typeof benchmarks]) {
+                  benchmarkData.push({
+                    completionYear: year,
+                    benchmark: benchmarks[year as keyof typeof benchmarks],
+                    sector: sector
+                  });
+                }
+              });
+            }
+          });
+          
+          // Remove duplicates
+          benchmarkData = benchmarkData.reduce((acc, current) => {
+            const x = acc.find(item => item.completionYear === current.completionYear && item.sector === current.sector);
+            if (!x) {
+              return acc.concat([current]);
+            } else {
+              return acc;
+            }
+          }, [] as any[]);
+        }
+
         return (
           <ResponsiveContainer width="100%" height="100%">
-            <ScatterChart data={timelineData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+            <LineChart data={timelineData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis 
-                dataKey="completionDate"
-                type="category"
+                dataKey="completionYear"
+                type="number"
+                scale="linear"
+                domain={['dataMin', 'dataMax']}
+                tickFormatter={(value) => value.toString()}
               />
               <YAxis 
                 label={{ value: getUnitLabel(kpi1Config?.unit || '', valueType), angle: -90, position: 'insideLeft' }}
               />
               <Tooltip 
-                formatter={(value: number) => [
-                  `${value} ${getUnitLabel(kpi1Config?.unit || '', valueType)}`,
-                  kpi1Config?.label || selectedKPI1
+                formatter={(value: number, name: string) => [
+                  `${formatNumber(value)} ${getUnitLabel(kpi1Config?.unit || '', valueType)}`,
+                  name === 'benchmark' ? 'UKNZCBS Benchmark' : kpi1Config?.label || selectedKPI1
                 ]}
-                labelFormatter={(label) => `Completion: ${label}`}
-                content={({ active, payload }) => {
+                labelFormatter={(label) => `Year: ${label}`}
+                content={({ active, payload, label }) => {
                   if (active && payload && payload.length) {
-                    const data = payload[0].payload;
+                    const projectData = payload.find(p => p.dataKey === selectedKPI1);
+                    const benchmarkData = payload.find(p => p.dataKey === 'benchmark');
+                    
                     return (
                       <div className="bg-white p-3 border rounded-lg shadow-lg">
-                        <p className="font-semibold">{data.displayName}</p>
-                        <p className="text-sm text-gray-600">Completion: {data.completionDate}</p>
-                        <p className="text-sm">
-                          {kpi1Config?.label}: {data[selectedKPI1]} {getUnitLabel(kpi1Config?.unit || '', valueType)}
-                        </p>
+                        <p className="font-semibold">Year: {label}</p>
+                        {projectData && (
+                          <>
+                            <p className="text-sm">Project: {projectData.payload.displayName}</p>
+                            <p className="text-sm">
+                              {kpi1Config?.label}: {formatNumber(projectData.value)} {getUnitLabel(kpi1Config?.unit || '', valueType)}
+                            </p>
+                          </>
+                        )}
+                        {benchmarkData && (
+                          <p className="text-sm text-orange-600">
+                            UKNZCBS Benchmark: {formatNumber(benchmarkData.value)} {getUnitLabel(kpi1Config?.unit || '', valueType)}
+                          </p>
+                        )}
                       </div>
                     );
                   }
                   return null;
                 }}
               />
-              <Scatter 
+              <Legend />
+              <Line 
+                type="monotone"
                 dataKey={selectedKPI1}
-                fill="#3b82f6" 
-                stroke="#3b82f6"
+                stroke="#3b82f6" 
                 strokeWidth={2}
-                r={6}
+                dot={{ fill: '#3b82f6', strokeWidth: 2, r: 6 }}
+                name={kpi1Config?.label || selectedKPI1}
               />
-            </ScatterChart>
+              
+              {/* Add benchmark lines if applicable */}
+              {shouldShowBenchmark && benchmarkData.map((item, index) => {
+                const sectorColor = {
+                  'Commercial': '#f59e0b',
+                  'Residential': '#10b981',
+                  'CCC': '#ef4444',
+                  'Healthcare': '#8b5cf6',
+                  'Education': '#06b6d4',
+                  'Infrastructure': '#f97316'
+                }[item.sector] || '#6b7280';
+                
+                return (
+                  <Line
+                    key={`${item.sector}-${index}`}
+                    type="monotone"
+                    dataKey="benchmark"
+                    data={benchmarkData.filter(d => d.sector === item.sector)}
+                    stroke={sectorColor}
+                    strokeWidth={2}
+                    strokeDasharray="5 5"
+                    dot={{ fill: sectorColor, strokeWidth: 2, r: 4 }}
+                    name={`UKNZCBS ${item.sector}`}
+                  />
+                );
+              })}
+            </LineChart>
           </ResponsiveContainer>
         );
 
