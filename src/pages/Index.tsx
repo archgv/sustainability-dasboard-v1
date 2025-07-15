@@ -102,7 +102,7 @@ const Index = () => {
           {/* Filter Panel - Fixed/Sticky */}
           <div className="lg:col-span-1">
             <div className="sticky top-8 space-y-6">
-              <AddProjectData />
+              <AddProjectData projects={sampleProjects} />
               <FilterPanel 
                 filters={filters} 
                 onFilterChange={handleFilterChange}
