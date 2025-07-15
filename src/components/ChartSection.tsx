@@ -18,6 +18,37 @@ interface ChartSectionProps {
   selectedRibaStages?: string[];
 }
 
+// Custom color palette based on your specifications
+const chartColors = {
+  primary: '#006ab4',      // Tech 300C - Main blue
+  secondary: '#009758',    // 340C - Green  
+  tertiary: '#9fc63b',     // 375C - Light green
+  quaternary: '#5dc5ed',   // 2985C - Light blue
+  accent1: '#eef4de',      // 7485C - Light green/cream
+  accent2: '#c9e1ea',      // 552C - Light blue/grey
+  dark: '#051b3f',         // 289C - Dark blue
+  darkGreen: '#004033',    // 3302C - Dark green
+  benchmark: '#e74c3c',    // Red for benchmark lines
+  // Additional complementary colors
+  warning: '#f39c12',      // Orange
+  info: '#3498db',         // Medium blue
+  success: '#27ae60',      // Medium green
+  muted: '#95a5a6'         // Grey
+};
+
+// Color arrays for different chart types
+const seriesColors = [
+  chartColors.primary,
+  chartColors.secondary,
+  chartColors.tertiary,
+  chartColors.quaternary,
+  chartColors.warning,
+  chartColors.info,
+  chartColors.success,
+  chartColors.muted,
+  chartColors.darkGreen
+];
+
 export const ChartSection = ({ 
   projects, 
   chartType, 
@@ -140,24 +171,24 @@ export const ChartSection = ({
   };
 
   const getLifecycleStageCategories = () => [
-    { key: 'biogenicCarbon', label: 'Biogenic carbon (A1-A3)', color: '#22c55e' },
-    { key: 'upfrontEmbodied', label: 'Upfront embodied carbon (A1-A5)', color: '#3b82f6' },
-    { key: 'inUseEmbodied', label: 'In-use embodied carbon (B1-B5)', color: '#f59e0b' },
-    { key: 'endOfLife', label: 'End of life (C1-C4)', color: '#ef4444' },
-    { key: 'benefitsLoads', label: 'Benefits and loads (D1)', color: '#8b5cf6' },
-    { key: 'facilitatingWorks', label: 'Facilitating works', color: '#06b6d4' }
+    { key: 'biogenicCarbon', label: 'Biogenic carbon (A1-A3)', color: chartColors.tertiary },
+    { key: 'upfrontEmbodied', label: 'Upfront embodied carbon (A1-A5)', color: chartColors.primary },
+    { key: 'inUseEmbodied', label: 'In-use embodied carbon (B1-B5)', color: chartColors.secondary },
+    { key: 'endOfLife', label: 'End of life (C1-C4)', color: chartColors.warning },
+    { key: 'benefitsLoads', label: 'Benefits and loads (D1)', color: chartColors.quaternary },
+    { key: 'facilitatingWorks', label: 'Facilitating works', color: chartColors.accent2 }
   ];
 
   const getBuildingElementCategories = () => [
-    { key: 'substructure', label: 'Substructure', color: '#22c55e' },
-    { key: 'superstructureFrame', label: 'Superstructure - Frame', color: '#3b82f6' },
-    { key: 'superstructureExternal', label: 'Superstructure - External envelope', color: '#f59e0b' },
-    { key: 'superstructureInternal', label: 'Superstructure - Internal assemblies', color: '#ef4444' },
-    { key: 'finishes', label: 'Finishes', color: '#8b5cf6' },
-    { key: 'ffe', label: 'FF&E', color: '#06b6d4' },
-    { key: 'mep', label: 'MEP', color: '#ec4899' },
-    { key: 'externalWorks', label: 'External works', color: '#10b981' },
-    { key: 'contingency', label: 'Contingency', color: '#6b7280' }
+    { key: 'substructure', label: 'Substructure', color: chartColors.primary },
+    { key: 'superstructureFrame', label: 'Superstructure - Frame', color: chartColors.secondary },
+    { key: 'superstructureExternal', label: 'Superstructure - External envelope', color: chartColors.tertiary },
+    { key: 'superstructureInternal', label: 'Superstructure - Internal assemblies', color: chartColors.quaternary },
+    { key: 'finishes', label: 'Finishes', color: chartColors.warning },
+    { key: 'ffe', label: 'FF&E', color: chartColors.info },
+    { key: 'mep', label: 'MEP', color: chartColors.success },
+    { key: 'externalWorks', label: 'External works', color: chartColors.darkGreen },
+    { key: 'contingency', label: 'Contingency', color: chartColors.muted }
   ];
 
   const getEmbodiedCarbonStackedData = () => {
@@ -208,16 +239,18 @@ export const ChartSection = ({
       return (
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={stackedData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} />
             <XAxis 
               dataKey="name" 
               angle={-45}
               textAnchor="end"
               height={80}
               interval={0}
+              tick={{ fill: chartColors.dark }}
             />
             <YAxis 
               label={{ value: valueType === 'per-sqm' ? 'kgCO₂e/m²' : 'kgCO₂e total', angle: -90, position: 'insideLeft' }}
+              tick={{ fill: chartColors.dark }}
             />
             <Tooltip 
               formatter={(value: number, name: string) => {
@@ -225,6 +258,7 @@ export const ChartSection = ({
                 return [`${formatNumber(value)} ${valueType === 'per-sqm' ? 'kgCO₂e/m²' : 'kgCO₂e total'}`, category?.label || name];
               }}
               labelFormatter={(label) => `Project: ${label}`}
+              contentStyle={{ backgroundColor: chartColors.accent1, border: `1px solid ${chartColors.primary}` }}
             />
             <Legend 
               wrapperStyle={{ paddingTop: '20px' }}
@@ -254,21 +288,24 @@ export const ChartSection = ({
         return (
           <ResponsiveContainer width="100%" height="100%">
             <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-              <CartesianGrid strokeDasharray="3 3" />
+              <CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} />
               <XAxis 
                 type="number" 
                 dataKey={selectedKPI1}
                 name={kpi1Config?.label || selectedKPI1}
                 unit={` ${getUnitLabel(kpi1Config?.unit || '', valueType)}`}
+                tick={{ fill: chartColors.dark }}
               />
               <YAxis 
                 type="number" 
                 dataKey={selectedKPI2}
                 name={kpi2Config?.label || selectedKPI2}
                 unit={` ${getUnitLabel(kpi2Config?.unit || '', valueType)}`}
+                tick={{ fill: chartColors.dark }}
               />
               <Tooltip 
                 cursor={{ strokeDasharray: '3 3' }}
+                contentStyle={{ backgroundColor: chartColors.accent1, border: `1px solid ${chartColors.primary}` }}
                 content={({ active, payload }) => {
                   if (active && payload && payload.length) {
                     const data = payload[0].payload;
@@ -279,14 +316,14 @@ export const ChartSection = ({
                       : addProjectNumberToName(data.name, parseInt(data.id) - 1);
                     
                     return (
-                      <div className="bg-white p-3 border rounded-lg shadow-lg">
-                        <p className="font-semibold">{displayName}</p>
-                        <p className="text-sm text-gray-600">{data.typology}</p>
-                        <p className="text-sm">Area: {formatNumber(area)} m²</p>
-                        <p className="text-sm">
+                      <div className="bg-white p-3 border rounded-lg shadow-lg" style={{ backgroundColor: chartColors.accent1, borderColor: chartColors.primary }}>
+                        <p className="font-semibold" style={{ color: chartColors.dark }}>{displayName}</p>
+                        <p className="text-sm" style={{ color: chartColors.darkGreen }}>{data.typology}</p>
+                        <p className="text-sm" style={{ color: chartColors.dark }}>Area: {formatNumber(area)} m²</p>
+                        <p className="text-sm" style={{ color: chartColors.dark }}>
                           {kpi1Config?.label}: {formatNumber(data[selectedKPI1])} {getUnitLabel(kpi1Config?.unit || '', valueType)}
                         </p>
-                        <p className="text-sm">
+                        <p className="text-sm" style={{ color: chartColors.dark }}>
                           {kpi2Config?.label}: {formatNumber(data[selectedKPI2])} {getUnitLabel(kpi2Config?.unit || '', valueType)}
                         </p>
                       </div>
@@ -298,15 +335,16 @@ export const ChartSection = ({
               <Scatter 
                 name="Projects" 
                 data={transformedProjects}
-                fill="#3b82f6"
-                fillOpacity={0.6}
+                fill={chartColors.primary}
+                fillOpacity={0.7}
               >
                 {transformedProjects.map((project, index) => {
                   const baseId = project.id.split('-')[0];
                   const area = getProjectArea(baseId);
                   const bubbleSize = valueType === 'per-sqm' ? Math.sqrt(area / 500) : 8;
+                  const colorIndex = index % seriesColors.length;
                   return (
-                    <Scatter key={index} r={Math.max(4, Math.min(20, bubbleSize))} />
+                    <Scatter key={index} r={Math.max(4, Math.min(20, bubbleSize))} fill={seriesColors[colorIndex]} />
                   );
                 })}
               </Scatter>
@@ -318,7 +356,7 @@ export const ChartSection = ({
         return (
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={transformedProjects} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
-              <CartesianGrid strokeDasharray="3 3" />
+              <CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} />
               <XAxis 
                 dataKey={(item) => {
                   const baseId = item.id.split('-')[0];
@@ -331,9 +369,11 @@ export const ChartSection = ({
                 textAnchor="end"
                 height={80}
                 interval={0}
+                tick={{ fill: chartColors.dark }}
               />
               <YAxis 
                 label={{ value: getUnitLabel(kpi1Config?.unit || '', valueType), angle: -90, position: 'insideLeft' }}
+                tick={{ fill: chartColors.dark }}
               />
               <Tooltip 
                 formatter={(value: number) => [
@@ -341,10 +381,11 @@ export const ChartSection = ({
                   kpi1Config?.label || selectedKPI1
                 ]}
                 labelFormatter={(label) => `Project: ${label}`}
+                contentStyle={{ backgroundColor: chartColors.accent1, border: `1px solid ${chartColors.primary}` }}
               />
               <Bar 
                 dataKey={selectedKPI1}
-                fill="#3b82f6" 
+                fill={chartColors.primary}
                 name={kpi1Config?.label || selectedKPI1}
                 radius={[4, 4, 0, 0]}
               />
@@ -407,16 +448,18 @@ export const ChartSection = ({
         return (
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={timelineData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-              <CartesianGrid strokeDasharray="3 3" />
+              <CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} />
               <XAxis 
                 dataKey="completionYear"
                 type="number"
                 scale="linear"
                 domain={['dataMin', 'dataMax']}
                 tickFormatter={(value) => value.toString()}
+                tick={{ fill: chartColors.dark }}
               />
               <YAxis 
                 label={{ value: getUnitLabel(kpi1Config?.unit || '', valueType), angle: -90, position: 'insideLeft' }}
+                tick={{ fill: chartColors.dark }}
               />
               <Tooltip 
                 formatter={(value: number, name: string) => [
@@ -424,24 +467,25 @@ export const ChartSection = ({
                   name.includes('benchmark') ? `UKNZCBS ${name.split('_')[1]}` : kpi1Config?.label || selectedKPI1
                 ]}
                 labelFormatter={(label) => `Year: ${label}`}
+                contentStyle={{ backgroundColor: chartColors.accent1, border: `1px solid ${chartColors.primary}` }}
                 content={({ active, payload, label }) => {
                   if (active && payload && payload.length) {
                     const projectData = payload.find(p => p.dataKey === selectedKPI1);
                     const benchmarkData = payload.filter(p => p.dataKey && p.dataKey.toString().includes('benchmark'));
                     
                     return (
-                      <div className="bg-white p-3 border rounded-lg shadow-lg">
-                        <p className="font-semibold">Year: {label}</p>
+                      <div className="bg-white p-3 border rounded-lg shadow-lg" style={{ backgroundColor: chartColors.accent1, borderColor: chartColors.primary }}>
+                        <p className="font-semibold" style={{ color: chartColors.dark }}>Year: {label}</p>
                         {projectData && (
                           <>
-                            <p className="text-sm">Project: {projectData.payload.displayName}</p>
-                            <p className="text-sm">
+                            <p className="text-sm" style={{ color: chartColors.dark }}>Project: {projectData.payload.displayName}</p>
+                            <p className="text-sm" style={{ color: chartColors.dark }}>
                               {kpi1Config?.label}: {formatNumber(projectData.value)} {getUnitLabel(kpi1Config?.unit || '', valueType)}
                             </p>
                           </>
                         )}
                         {benchmarkData.map((item, idx) => (
-                          <p key={idx} className="text-sm text-red-600">
+                          <p key={idx} className="text-sm" style={{ color: chartColors.benchmark }}>
                             UKNZCBS {item.dataKey?.toString().split('_')[1]}: {formatNumber(item.value)} {getUnitLabel(kpi1Config?.unit || '', valueType)}
                           </p>
                         ))}
@@ -457,9 +501,9 @@ export const ChartSection = ({
               <Line 
                 type="monotone"
                 dataKey={selectedKPI1}
-                stroke="#3b82f6" 
+                stroke={chartColors.primary}
                 strokeWidth={0}
-                dot={{ fill: '#3b82f6', strokeWidth: 2, r: 6 }}
+                dot={{ fill: chartColors.primary, strokeWidth: 2, r: 6 }}
                 name={kpi1Config?.label || selectedKPI1}
               />
               
@@ -467,7 +511,6 @@ export const ChartSection = ({
               {shouldShowBenchmark && benchmarkData.length > 0 && (
                 <>
                   {[...new Set(benchmarkData.map(d => d.sector))].map((sector, index) => {
-                    const sectorColor = '#ef4444'; // Red color for all benchmark lines
                     const sectorData = benchmarkData.filter(d => d.sector === sector);
                     
                     return (
@@ -476,7 +519,7 @@ export const ChartSection = ({
                         type="monotone"
                         dataKey={`benchmark_${sector}`}
                         data={sectorData}
-                        stroke={sectorColor}
+                        stroke={chartColors.benchmark}
                         strokeWidth={2}
                         strokeDasharray="5 5"
                         dot={false}
@@ -499,7 +542,7 @@ export const ChartSection = ({
   return (
     <Card className="p-6">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-gray-900">{getChartTitle()}</h2>
+        <h2 className="text-xl font-semibold" style={{ color: chartColors.dark }}>{getChartTitle()}</h2>
         <Button variant="outline" size="sm" onClick={handleExportChart}>
           <Download className="w-4 h-4 mr-2" />
           Export Chart

@@ -11,6 +11,18 @@ interface SectorPerformanceProps {
   projects: any[];
 }
 
+// Custom color palette matching ChartSection
+const chartColors = {
+  primary: '#006ab4',      // Tech 300C - Main blue
+  secondary: '#009758',    // 340C - Green  
+  tertiary: '#9fc63b',     // 375C - Light green
+  quaternary: '#5dc5ed',   // 2985C - Light blue
+  accent1: '#eef4de',      // 7485C - Light green/cream
+  accent2: '#c9e1ea',      // 552C - Light blue/grey
+  dark: '#051b3f',         // 289C - Dark blue
+  darkGreen: '#004033',    // 3302C - Dark green
+};
+
 export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedKPI, setSelectedKPI] = useState('totalEmbodiedCarbon');
@@ -130,8 +142,8 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
   return (
     <Card className="p-6">
       <div className="flex items-center justify-between cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
-        <h2 className="text-xl font-semibold text-gray-900">Sector Performance Analysis</h2>
-        <ChevronDown className={`h-5 w-5 text-gray-400 transition-transform duration-200 ${isExpanded ? 'transform rotate-180' : ''}`} />
+        <h2 className="text-xl font-semibold" style={{ color: chartColors.dark }}>Sector Performance Analysis</h2>
+        <ChevronDown className={`h-5 w-5 transition-transform duration-200 ${isExpanded ? 'transform rotate-180' : ''}`} style={{ color: chartColors.primary }} />
       </div>
       
       {isExpanded && (
@@ -139,7 +151,7 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
           {/* Controls Row */}
           <div className="flex flex-wrap items-center gap-4">
             <div className="flex items-center space-x-2">
-              <label className="text-sm font-medium text-gray-700">KPI:</label>
+              <label className="text-sm font-medium" style={{ color: chartColors.dark }}>KPI:</label>
               <Select value={selectedKPI} onValueChange={setSelectedKPI}>
                 <SelectTrigger className="w-64">
                   <SelectValue />
@@ -155,13 +167,17 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
             </div>
 
             <div className="flex items-center space-x-2">
-              <div className="flex bg-gray-100 rounded-md p-1">
+              <div className="flex rounded-md p-1" style={{ backgroundColor: chartColors.accent1 }}>
                 <button 
                   className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
                     valueType === 'per-sqm' 
-                      ? 'bg-white text-gray-900 shadow-sm' 
-                      : 'text-gray-600 hover:text-gray-900'
+                      ? 'bg-white shadow-sm' 
+                      : 'hover:opacity-80'
                   }`}
+                  style={{ 
+                    color: valueType === 'per-sqm' ? chartColors.dark : chartColors.darkGreen,
+                    backgroundColor: valueType === 'per-sqm' ? 'white' : 'transparent'
+                  }}
                   onClick={() => setValueType('per-sqm')}
                 >
                   Per m²
@@ -169,9 +185,13 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                 <button 
                   className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
                     valueType === 'total' 
-                      ? 'bg-white text-gray-900 shadow-sm' 
-                      : 'text-gray-600 hover:text-gray-900'
+                      ? 'bg-white shadow-sm' 
+                      : 'hover:opacity-80'
                   }`}
+                  style={{ 
+                    color: valueType === 'total' ? chartColors.dark : chartColors.darkGreen,
+                    backgroundColor: valueType === 'total' ? 'white' : 'transparent'
+                  }}
                   onClick={() => setValueType('total')}
                 >
                   Total
@@ -213,20 +233,24 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
 
           {/* Chart Section */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+            <h3 className="text-lg font-semibold mb-4" style={{ color: chartColors.dark }}>
               {currentKPI?.label} by Sector ({getDisplayUnit()})
             </h3>
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="sector" />
-                  <YAxis label={{ value: getDisplayUnit(), angle: -90, position: 'insideLeft' }} />
+                  <CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} />
+                  <XAxis dataKey="sector" tick={{ fill: chartColors.dark }} />
+                  <YAxis 
+                    label={{ value: getDisplayUnit(), angle: -90, position: 'insideLeft' }} 
+                    tick={{ fill: chartColors.dark }}
+                  />
                   <Tooltip 
                     formatter={value => [`${formatNumber(Number(value))} ${getDisplayUnit()}`, 'Average']} 
                     labelFormatter={label => `Sector: ${label}`} 
+                    contentStyle={{ backgroundColor: chartColors.accent1, border: `1px solid ${chartColors.primary}` }}
                   />
-                  <Bar dataKey="value" fill="#3b82f6" />
+                  <Bar dataKey="value" fill={chartColors.primary} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -234,17 +258,17 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
 
           {/* Summary Statistics Table */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Summary Statistics</h3>
+            <h3 className="text-lg font-semibold mb-4" style={{ color: chartColors.dark }}>Summary Statistics</h3>
             <div className="overflow-x-auto">
-              <table className="w-full border-collapse border border-gray-300">
+              <table className="w-full border-collapse border" style={{ borderColor: chartColors.primary }}>
                 <thead>
-                  <tr className="bg-gray-50">
-                    <th className="border border-gray-300 px-4 py-2 text-left">Sector</th>
-                    <th className="border border-gray-300 px-4 py-2 text-center">Projects</th>
-                    <th className="border border-gray-300 px-4 py-2 text-center">Average</th>
-                    <th className="border border-gray-300 px-4 py-2 text-center">Min</th>
-                    <th className="border border-gray-300 px-4 py-2 text-center">Max</th>
-                    <th className="border border-gray-300 px-4 py-2 text-center">Range</th>
+                  <tr style={{ backgroundColor: chartColors.accent1 }}>
+                    <th className="border px-4 py-2 text-left" style={{ borderColor: chartColors.primary, color: chartColors.dark }}>Sector</th>
+                    <th className="border px-4 py-2 text-center" style={{ borderColor: chartColors.primary, color: chartColors.dark }}>Projects</th>
+                    <th className="border px-4 py-2 text-center" style={{ borderColor: chartColors.primary, color: chartColors.dark }}>Average</th>
+                    <th className="border px-4 py-2 text-center" style={{ borderColor: chartColors.primary, color: chartColors.dark }}>Min</th>
+                    <th className="border px-4 py-2 text-center" style={{ borderColor: chartColors.primary, color: chartColors.dark }}>Max</th>
+                    <th className="border px-4 py-2 text-center" style={{ borderColor: chartColors.primary, color: chartColors.dark }}>Range</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -258,14 +282,14 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                     
                     return (
                       <tr key={sector}>
-                        <td className="border border-gray-300 px-4 py-2 font-medium">{sector}</td>
-                        <td className="border border-gray-300 px-4 py-2 text-center">{count}</td>
-                        <td className="border border-gray-300 px-4 py-2 text-center">
+                        <td className="border px-4 py-2 font-medium" style={{ borderColor: chartColors.primary, color: chartColors.dark }}>{sector}</td>
+                        <td className="border px-4 py-2 text-center" style={{ borderColor: chartColors.primary, color: chartColors.dark }}>{count}</td>
+                        <td className="border px-4 py-2 text-center" style={{ borderColor: chartColors.primary, color: chartColors.dark }}>
                           {formatNumber(avg)} {getDisplayUnit()}
                         </td>
-                        <td className="border border-gray-300 px-4 py-2 text-center">{formatNumber(min)}</td>
-                        <td className="border border-gray-300 px-4 py-2 text-center">{formatNumber(max)}</td>
-                        <td className="border border-gray-300 px-4 py-2 text-center">{formatNumber(range)}</td>
+                        <td className="border px-4 py-2 text-center" style={{ borderColor: chartColors.primary, color: chartColors.dark }}>{formatNumber(min)}</td>
+                        <td className="border px-4 py-2 text-center" style={{ borderColor: chartColors.primary, color: chartColors.dark }}>{formatNumber(max)}</td>
+                        <td className="border px-4 py-2 text-center" style={{ borderColor: chartColors.primary, color: chartColors.dark }}>{formatNumber(range)}</td>
                       </tr>
                     );
                   })}
