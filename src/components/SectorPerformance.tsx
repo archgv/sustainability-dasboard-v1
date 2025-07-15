@@ -1,6 +1,5 @@
-
 import { useState } from 'react';
-import { ChevronDown, Download, BarChart3, FileText } from 'lucide-react';
+import { ChevronDown, Download, FileText } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
@@ -127,9 +126,101 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
     return uniqueYears;
   };
 
-  const handleDownload = (format: 'csv' | 'pdf' | 'chart') => {
-    console.log(`Downloading ${format} for sector performance analysis`);
-    // Implementation would go here
+  const handleDownloadCSV = () => {
+    console.log('Downloading CSV for sector performance analysis');
+    
+    const csvContent = [
+      'Sector Performance Analysis',
+      `KPI: ${currentKPI?.label} (${getDisplayUnit()})`,
+      `Value Type: ${valueType}`,
+      `Year Filter: ${yearFilter}`,
+      '',
+      'Sector,Projects,Average,Min,Max,Range'
+    ].join('\n') + '\n';
+
+    const csvData = allSectors.map(sector => {
+      const stats = sectorStats[sector];
+      const avg = stats ? getAverage(stats.totalValue, stats.count) : 0;
+      const min = stats && stats.minValue !== Infinity ? Math.round(stats.minValue) : 0;
+      const max = stats && stats.maxValue !== -Infinity ? Math.round(stats.maxValue) : 0;
+      const range = max - min;
+      const count = stats ? stats.count : 0;
+      
+      return `${sector},${count},${formatNumber(avg)},${formatNumber(min)},${formatNumber(max)},${formatNumber(range)}`;
+    }).join('\n');
+
+    const fullCsvContent = csvContent + csvData;
+    
+    const blob = new Blob([fullCsvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `sector-performance-${selectedKPI}-${valueType}-${Date.now()}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleDownloadPNG = () => {
+    console.log('Downloading PNG for sector performance analysis');
+    
+    // Find the chart SVG element within this component
+    const chartContainer = document.querySelector('[data-chart="sector-chart"]');
+    if (!chartContainer) {
+      console.error('Sector chart container not found');
+      return;
+    }
+
+    const svgElement = chartContainer.querySelector('svg');
+    if (!svgElement) {
+      console.error('Sector chart SVG element not found');
+      return;
+    }
+
+    // Create a canvas element
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      console.error('Canvas context not available');
+      return;
+    }
+
+    // Set canvas dimensions
+    const svgRect = svgElement.getBoundingClientRect();
+    canvas.width = svgRect.width * 2; // Higher resolution
+    canvas.height = svgRect.height * 2;
+    ctx.scale(2, 2);
+
+    // Convert SVG to data URL
+    const svgData = new XMLSerializer().serializeToString(svgElement);
+    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+    const svgUrl = URL.createObjectURL(svgBlob);
+
+    // Create image and draw to canvas
+    const img = new Image();
+    img.onload = () => {
+      // Fill white background
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width / 2, canvas.height / 2);
+      
+      // Draw the SVG image
+      ctx.drawImage(img, 0, 0, svgRect.width, svgRect.height);
+      
+      // Convert canvas to PNG and download
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `sector-performance-${selectedKPI}-${valueType}-${Date.now()}.png`;
+          a.click();
+          URL.revokeObjectURL(url);
+        }
+      }, 'image/png');
+      
+      URL.revokeObjectURL(svgUrl);
+    };
+    
+    img.src = svgUrl;
   };
 
   const getDisplayUnit = () => {
@@ -216,17 +307,13 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
             </div>
 
             <div className="flex items-center space-x-2 ml-auto">
-              <Button variant="outline" size="sm" onClick={() => handleDownload('chart')} className="flex items-center gap-2">
-                <BarChart3 className="h-4 w-4" />
-                Chart
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => handleDownload('csv')} className="flex items-center gap-2">
+              <Button variant="outline" size="sm" onClick={handleDownloadCSV} className="flex items-center gap-2">
                 <FileText className="h-4 w-4" />
                 CSV
               </Button>
-              <Button variant="outline" size="sm" onClick={() => handleDownload('pdf')} className="flex items-center gap-2">
+              <Button variant="outline" size="sm" onClick={handleDownloadPNG} className="flex items-center gap-2">
                 <Download className="h-4 w-4" />
-                PDF
+                PNG
               </Button>
             </div>
           </div>
@@ -236,7 +323,7 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
             <h3 className="text-lg font-semibold mb-4" style={{ color: chartColors.dark }}>
               {currentKPI?.label} by Sector ({getDisplayUnit()})
             </h3>
-            <div className="h-80">
+            <div className="h-80" data-chart="sector-chart">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} />

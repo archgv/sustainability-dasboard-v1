@@ -1,6 +1,6 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Download } from 'lucide-react';
+import { Download, FileText } from 'lucide-react';
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, LineChart, Line, Legend } from 'recharts';
 import { Project, availableKPIs } from '@/types/project';
 import { ChartType, EmbodiedCarbonBreakdown, ValueType } from './ChartTypeSelector';
@@ -112,32 +112,137 @@ export const ChartSection = ({
     }));
   };
 
-  const handleExportChart = () => {
+  const handleExportCSV = () => {
     const chartTitle = getChartTitle();
-    let chartContent = `${chartTitle}\n\n`;
+    let csvContent = `${chartTitle}\n\n`;
     
     if (chartType === 'single-bar' && selectedKPI1 === 'totalEmbodiedCarbon' && embodiedCarbonBreakdown !== 'none') {
       const breakdownData = getEmbodiedCarbonStackedData();
-      chartContent += breakdownData.map(item => {
-        const projectName = item.name;
-        const categories = Object.keys(item).filter(key => key !== 'name');
-        return `${projectName}:\n` + categories.map(cat => `  ${cat}: ${item[cat]} ${valueType === 'per-sqm' ? 'kgCO₂e/m²' : 'kgCO₂e total'}`).join('\n');
-      }).join('\n\n');
+      
+      // CSV headers
+      const headers = ['Project Name'];
+      const categories = embodiedCarbonBreakdown === 'lifecycle' 
+        ? getLifecycleStageCategories()
+        : getBuildingElementCategories();
+      categories.forEach(cat => headers.push(cat.label));
+      
+      csvContent += headers.join(',') + '\n';
+      
+      // CSV data rows
+      breakdownData.forEach(item => {
+        const row = [item.name];
+        categories.forEach(cat => {
+          row.push(item[cat.key]?.toString() || '0');
+        });
+        csvContent += row.join(',') + '\n';
+      });
     } else {
       const transformedProjects = transformDataForValueType(projects);
-      chartContent += transformedProjects.map(project => 
-        `${project.name}: ${project[selectedKPI1 as keyof Project]} ${getUnitLabel(kpi1Config?.unit || '', valueType)}` +
-        (chartType === 'compare-bubble' ? ` | ${project[selectedKPI2 as keyof Project]} ${getUnitLabel(kpi2Config?.unit || '', valueType)}` : '')
-      ).join('\n');
+      
+      // CSV headers
+      const headers = ['Project Name', kpi1Config?.label || selectedKPI1];
+      if (chartType === 'compare-bubble') {
+        headers.push(kpi2Config?.label || selectedKPI2);
+        headers.push('Building Area (m²)');
+      }
+      if (chartType === 'single-timeline') {
+        headers.push('Completion Year');
+      }
+      csvContent += headers.join(',') + '\n';
+      
+      // CSV data rows
+      transformedProjects.forEach(project => {
+        const baseId = project.id.split('-')[0];
+        const displayName = isComparingToSelf && project.ribaStage 
+          ? `${addProjectNumberToName(project.name, parseInt(baseId) - 1)} (RIBA ${project.ribaStage.replace('stage-', '')})`
+          : addProjectNumberToName(project.name, parseInt(project.id) - 1);
+        
+        const row = [
+          `"${displayName}"`,
+          project[selectedKPI1 as keyof Project]?.toString() || '0'
+        ];
+        
+        if (chartType === 'compare-bubble') {
+          row.push(project[selectedKPI2 as keyof Project]?.toString() || '0');
+          row.push(getProjectArea(baseId).toString());
+        }
+        if (chartType === 'single-timeline') {
+          row.push(new Date(project.completionDate).getFullYear().toString());
+        }
+        
+        csvContent += row.join(',') + '\n';
+      });
     }
     
-    const blob = new Blob([chartContent], { type: 'text/plain' });
+    // Download CSV
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `chart-data-${selectedKPI1}-${valueType}.txt`;
+    a.download = `chart-data-${selectedKPI1}-${valueType}-${Date.now()}.csv`;
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  const handleExportPNG = () => {
+    // Find the chart SVG element
+    const chartContainer = document.querySelector('[data-chart]');
+    if (!chartContainer) {
+      console.error('Chart container not found');
+      return;
+    }
+
+    const svgElement = chartContainer.querySelector('svg');
+    if (!svgElement) {
+      console.error('SVG element not found');
+      return;
+    }
+
+    // Create a canvas element
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      console.error('Canvas context not available');
+      return;
+    }
+
+    // Set canvas dimensions
+    const svgRect = svgElement.getBoundingClientRect();
+    canvas.width = svgRect.width * 2; // Higher resolution
+    canvas.height = svgRect.height * 2;
+    ctx.scale(2, 2);
+
+    // Convert SVG to data URL
+    const svgData = new XMLSerializer().serializeToString(svgElement);
+    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+    const svgUrl = URL.createObjectURL(svgBlob);
+
+    // Create image and draw to canvas
+    const img = new Image();
+    img.onload = () => {
+      // Fill white background
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width / 2, canvas.height / 2);
+      
+      // Draw the SVG image
+      ctx.drawImage(img, 0, 0, svgRect.width, svgRect.height);
+      
+      // Convert canvas to PNG and download
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `chart-${selectedKPI1}-${valueType}-${Date.now()}.png`;
+          a.click();
+          URL.revokeObjectURL(url);
+        }
+      }, 'image/png');
+      
+      URL.revokeObjectURL(svgUrl);
+    };
+    
+    img.src = svgUrl;
   };
 
   const getUnitLabel = (baseUnit: string, valueType: ValueType): string => {
@@ -543,13 +648,19 @@ export const ChartSection = ({
     <Card className="p-6">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold" style={{ color: chartColors.dark }}>{getChartTitle()}</h2>
-        <Button variant="outline" size="sm" onClick={handleExportChart}>
-          <Download className="w-4 h-4 mr-2" />
-          Export Chart
-        </Button>
+        <div className="flex items-center space-x-2">
+          <Button variant="outline" size="sm" onClick={handleExportCSV} className="flex items-center gap-2">
+            <FileText className="w-4 h-4" />
+            CSV
+          </Button>
+          <Button variant="outline" size="sm" onClick={handleExportPNG} className="flex items-center gap-2">
+            <Download className="w-4 h-4" />
+            PNG
+          </Button>
+        </div>
       </div>
       
-      <div className="h-96">
+      <div className="h-96" data-chart="chart-container">
         {renderChart()}
       </div>
     </Card>
