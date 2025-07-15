@@ -4,8 +4,13 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { AddProjectDataModal } from './AddProjectDataModal';
+import { Project } from '@/types/project';
 
-export const AddProjectData = () => {
+interface AddProjectDataProps {
+  projects: Project[];
+}
+
+export const AddProjectData = ({ projects }: AddProjectDataProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSaveProjectData = (data: any) => {
@@ -32,6 +37,7 @@ export const AddProjectData = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSave={handleSaveProjectData}
+        projects={projects}
       />
     </>
   );

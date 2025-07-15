@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -7,15 +6,23 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { HelpCircle } from 'lucide-react';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { HelpCircle, Check, ChevronsUpDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Project } from '@/types/project';
+import { addProjectNumberToName } from '@/utils/projectUtils';
 
 interface AddProjectDataModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (data: any) => void;
+  projects: Project[];
 }
 
-export const AddProjectDataModal = ({ isOpen, onClose, onSave }: AddProjectDataModalProps) => {
+export const AddProjectDataModal = ({ isOpen, onClose, onSave, projects }: AddProjectDataModalProps) => {
+  const [selectedProjectId, setSelectedProjectId] = useState('');
+  const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     projectNameNumber: '',
     projectLocation: '',
@@ -47,6 +54,87 @@ export const AddProjectDataModal = ({ isOpen, onClose, onSave }: AddProjectDataM
     habitatUnitsGained: '',
     urbanGreeningFactor: ''
   });
+
+  const handleProjectSelect = (projectId: string) => {
+    setSelectedProjectId(projectId);
+    const project = projects.find(p => p.id === projectId);
+    
+    if (project) {
+      // Map project data to form fields
+      const getSectorFromTypology = (typology: string) => {
+        const sectorMap: { [key: string]: string } = {
+          'residential': 'residential',
+          'educational': 'education',
+          'healthcare': 'healthcare',
+          'infrastructure': 'infrastructure',
+          'ccc': 'ccc',
+          'office': 'commercial',
+          'retail': 'commercial',
+          'mixed-use': 'commercial'
+        };
+        return sectorMap[typology] || 'commercial';
+      };
+
+      const getBreeamRating = (rating: string) => {
+        const ratingMap: { [key: string]: string } = {
+          'Outstanding': 'outstanding',
+          'Excellent': 'excellent',
+          'Very Good': 'very-good',
+          'Good': 'good',
+          'Pass': 'pass',
+          'Unclassified': 'unclassified'
+        };
+        return ratingMap[rating] || 'not-targetted';
+      };
+
+      const getLeedRating = (rating: string) => {
+        const ratingMap: { [key: string]: string } = {
+          'Platinum': 'platinum',
+          'Gold': 'gold',
+          'Silver': 'silver',
+          'Certified': 'certified'
+        };
+        return ratingMap[rating] || 'not-targetted';
+      };
+
+      const getWellRating = (rating: string) => {
+        return rating && rating !== 'N/A' ? 'yes' : 'not-targetted';
+      };
+
+      setFormData({
+        projectNameNumber: addProjectNumberToName(project.name, parseInt(project.id) - 1),
+        projectLocation: project.location || '',
+        hbDiscipline: '',
+        sector: getSectorFromTypology(project.typology),
+        eiScope: '',
+        sustainabilityConsultant: '',
+        sustainabilityChampion: '',
+        projectType: project.projectType || '',
+        existingOperationalEnergy: project.existingBuildingEnergy?.toString() || '',
+        gia: project.gia?.toString() || '',
+        pcDate: project.completionDate ? new Date(project.completionDate).getFullYear().toString() : '',
+        ribaStage: project.ribaStage || '',
+        upfrontCarbon: project.upfrontCarbon?.toString() || '',
+        totalEmbodiedCarbon: project.totalEmbodiedCarbon?.toString() || '',
+        refrigerantType: '',
+        operationalEnergyTotal: project.operationalEnergy?.toString() || '',
+        operationalEnergyGas: project.gasUsage?.toString() || '',
+        spaceHeatingDemand: project.spaceHeatingDemand?.toString() || '',
+        renewableEnergyGeneration: project.renewableEnergyGeneration?.toString() || '',
+        waterUse: project.operationalWaterUse?.toString() || '',
+        breeam: getBreeamRating(project.breeam || ''),
+        leed: getLeedRating(project.leed || ''),
+        well: getWellRating(project.well || ''),
+        nabers: project.nabers && project.nabers !== 'N/A' ? 'yes' : 'not-targetted',
+        passivhausOrEnephit: project.passivhaus ? 'yes' : 'not-targetted',
+        uknzcbs: project.certifications?.some(cert => cert.includes('UKNZCBS')) ? 'yes' : 'not-targetted',
+        biodiversityNetGain: project.biodiversityNetGain?.toString() || '',
+        habitatUnitsGained: project.habitatUnits?.toString() || '',
+        urbanGreeningFactor: project.urbanGreeningFactor?.toString() || ''
+      });
+    }
+    setOpen(false);
+  };
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -91,12 +179,49 @@ export const AddProjectDataModal = ({ isOpen, onClose, onSave }: AddProjectDataM
             <h3 className="font-semibold text-gray-900">Project Information</h3>
             
             <TooltipField label="Project Name & Number">
-              <Input
-                value={formData.projectNameNumber}
-                onChange={(e) => handleInputChange('projectNameNumber', e.target.value)}
-                placeholder="e.g. 230151 Green Office Tower"
-                required
-              />
+              <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={open}
+                    className="w-full justify-between"
+                  >
+                    {selectedProjectId
+                      ? addProjectNumberToName(
+                          projects.find(p => p.id === selectedProjectId)?.name || '',
+                          parseInt(selectedProjectId) - 1
+                        )
+                      : "Select or search project..."}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-full p-0">
+                  <Command>
+                    <CommandInput placeholder="Search projects..." />
+                    <CommandList>
+                      <CommandEmpty>No project found.</CommandEmpty>
+                      <CommandGroup>
+                        {projects.map((project) => (
+                          <CommandItem
+                            key={project.id}
+                            value={`${addProjectNumberToName(project.name, parseInt(project.id) - 1)}`}
+                            onSelect={() => handleProjectSelect(project.id)}
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                selectedProjectId === project.id ? "opacity-100" : "opacity-0"
+                              )}
+                            />
+                            {addProjectNumberToName(project.name, parseInt(project.id) - 1)}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
             </TooltipField>
 
             <TooltipField label="Project Location">
