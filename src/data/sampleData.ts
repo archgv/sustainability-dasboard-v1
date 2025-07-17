@@ -4,7 +4,7 @@ import { Project } from '@/types/project';
 export const sampleProjects: Project[] = [
   {
     id: '1',
-    name: 'Green Office Tower',
+    name: '230151 Green Office Tower',
     typology: 'office',
     location: 'London, UK',
     completionDate: '2023-06-15',
@@ -63,7 +63,7 @@ export const sampleProjects: Project[] = [
   },
   {
     id: '2', 
-    name: 'Eco Housing Development',
+    name: '230152 Eco Housing Development',
     typology: 'residential',
     location: 'Manchester, UK',
     completionDate: '2022-11-30',
@@ -122,7 +122,7 @@ export const sampleProjects: Project[] = [
   },
   {
     id: '3',
-    name: 'Sustainable School Campus',
+    name: '230153 Sustainable School Campus',
     typology: 'educational', 
     location: 'Birmingham, UK',
     completionDate: '2023-01-20',
@@ -181,7 +181,7 @@ export const sampleProjects: Project[] = [
   },
   {
     id: '4',
-    name: 'Modern Hospital Wing',
+    name: '230154 Modern Hospital Wing',
     typology: 'healthcare',
     location: 'Leeds, UK', 
     completionDate: '2021-08-10',
@@ -240,7 +240,7 @@ export const sampleProjects: Project[] = [
   },
   {
     id: '5',
-    name: 'Retail Innovation Hub',
+    name: '230155 Retail Innovation Hub',
     typology: 'retail',
     location: 'Bristol, UK',
     completionDate: '2022-03-25',
@@ -299,7 +299,7 @@ export const sampleProjects: Project[] = [
   },
   {
     id: '6',
-    name: 'Mixed Use Development',
+    name: '230156 Mixed Use Development',
     typology: 'mixed-use',
     location: 'Edinburgh, UK',
     completionDate: '2023-09-05',

@@ -85,6 +85,8 @@ export const FilterPanel = ({
               <SelectItem value="infrastructure">Infrastructure</SelectItem>
               <SelectItem value="ccc">CCC</SelectItem>
               <SelectItem value="office">Commercial</SelectItem>
+              <SelectItem value="retail">Retail</SelectItem>
+              <SelectItem value="mixed-use">Mixed Use</SelectItem>
             </SelectContent>
           </Select>
         </div>
