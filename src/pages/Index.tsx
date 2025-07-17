@@ -65,6 +65,18 @@ const Index = () => {
     setFilteredProjects(filtered);
   };
 
+  const handleClearFilters = () => {
+    const defaultFilters = {
+      typology: 'all',
+      projectType: 'all',
+      ribaStage: 'all',
+      dateRange: 'all',
+      carbonRange: [0, 100],
+      energyRange: [0, 200]
+    };
+    handleFilterChange(defaultFilters);
+  };
+
   const handleComparisonChange = (projects: string[], compareToSelfFlag: boolean, ribaStages: string[]) => {
     setComparisonProjects(projects);
     setCompareToSelf(compareToSelfFlag);
@@ -74,7 +86,7 @@ const Index = () => {
   const getDisplayProjects = () => {
     // Handle self-comparison mode
     if (compareToSelf && selectedRibaStages.length > 0) {
-      const primaryProjectData = sampleProjects.find(p => p.id === primaryProject);
+      const primaryProjectData = filteredProjects.find(p => p.id === primaryProject);
       if (!primaryProjectData) return [];
       
       return selectedRibaStages.map(stageId => ({
@@ -116,6 +128,7 @@ const Index = () => {
               <FilterPanel 
                 filters={filters} 
                 onFilterChange={handleFilterChange}
+                onClearFilters={handleClearFilters}
                 anonymizeProjects={anonymizeProjects}
                 onAnonymizeChange={setAnonymizeProjects}
               />

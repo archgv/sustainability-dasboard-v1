@@ -2,7 +2,8 @@ import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { Filter } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Filter, X } from 'lucide-react';
 
 interface FilterPanelProps {
   filters: {
@@ -14,6 +15,7 @@ interface FilterPanelProps {
     ribaStage: string;
   };
   onFilterChange: (filters: any) => void;
+  onClearFilters: () => void;
   anonymizeProjects: boolean;
   onAnonymizeChange: (anonymize: boolean) => void;
 }
@@ -21,6 +23,7 @@ interface FilterPanelProps {
 export const FilterPanel = ({
   filters,
   onFilterChange,
+  onClearFilters,
   anonymizeProjects,
   onAnonymizeChange
 }: FilterPanelProps) => {
@@ -50,9 +53,20 @@ export const FilterPanel = ({
   };
 
   return <Card className="p-6 sticky top-8">
-      <div className="flex items-center space-x-2 mb-6">
-        <Filter className="h-5 w-5 text-blue-600" />
-        <h3 className="text-lg font-semibold text-gray-900">Filters</h3>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center space-x-2">
+          <Filter className="h-5 w-5 text-blue-600" />
+          <h3 className="text-lg font-semibold text-gray-900">Filters</h3>
+        </div>
+        <Button 
+          variant="outline" 
+          size="sm"
+          onClick={onClearFilters}
+          className="flex items-center gap-2"
+        >
+          <X className="h-4 w-4" />
+          Clear
+        </Button>
       </div>
       
       <div className="space-y-6">
