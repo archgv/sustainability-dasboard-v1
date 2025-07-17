@@ -241,7 +241,7 @@ export const sampleProjects: Project[] = [
   {
     id: '5',
     name: '230155 Retail Innovation Hub',
-    typology: 'retail',
+    typology: 'office',
     location: 'Bristol, UK',
     completionDate: '2022-03-25',
     gia: 8500,
@@ -300,7 +300,7 @@ export const sampleProjects: Project[] = [
   {
     id: '6',
     name: '230156 Mixed Use Development',
-    typology: 'mixed-use',
+    typology: 'residential',
     location: 'Edinburgh, UK',
     completionDate: '2023-09-05',
     gia: 22000,

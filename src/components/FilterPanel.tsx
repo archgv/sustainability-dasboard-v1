@@ -69,6 +69,10 @@ export const FilterPanel = ({
         </Button>
       </div>
       
+      <p className="text-sm text-gray-600 mb-4 italic">
+        Filters apply to project comparison only
+      </p>
+      
       <div className="space-y-6">
         {/* Typology Filter */}
         <div>
@@ -85,8 +89,6 @@ export const FilterPanel = ({
               <SelectItem value="infrastructure">Infrastructure</SelectItem>
               <SelectItem value="ccc">CCC</SelectItem>
               <SelectItem value="office">Commercial</SelectItem>
-              <SelectItem value="retail">Retail</SelectItem>
-              <SelectItem value="mixed-use">Mixed Use</SelectItem>
             </SelectContent>
           </Select>
         </div>

@@ -138,11 +138,11 @@ const Index = () => {
           {/* Main Content */}
           <div className="lg:col-span-3 space-y-8">
             {/* Sector Performance Analysis */}
-            <SectorPerformance projects={filteredProjects} />
+            <SectorPerformance projects={sampleProjects} />
             
             {/* Certification Analysis */}
             <CertificationAnalysis 
-              projects={filteredProjects} 
+              projects={sampleProjects} 
               anonymizeProjects={anonymizeProjects}
               primaryProject={primaryProject}
             />
