@@ -4,13 +4,11 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Project } from '@/types/project';
-
 interface CertificationAnalysisProps {
   projects: Project[];
   anonymizeProjects?: boolean;
   primaryProject?: string;
 }
-
 const certificationRatings = {
   breeam: ['Outstanding', 'Excellent', 'Very Good', 'Good', 'Pass'],
   leed: ['Outstanding', 'Platinum', 'Gold', 'Silver', 'Certified'],
@@ -20,23 +18,25 @@ const certificationRatings = {
   enerphit: ['Certified'],
   uknzcbs: ['Net Zero', 'Near Zero', 'Low Carbon']
 };
-
-export const CertificationAnalysis = ({ projects, anonymizeProjects = false, primaryProject = '' }: CertificationAnalysisProps) => {
+export const CertificationAnalysis = ({
+  projects,
+  anonymizeProjects = false,
+  primaryProject = ''
+}: CertificationAnalysisProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedCertification, setSelectedCertification] = useState<string>('breeam');
-
   const getCertificationData = (certification: string) => {
     const ratings = certificationRatings[certification as keyof typeof certificationRatings] || [];
-    const data: { [key: string]: Project[] } = {};
-    
+    const data: {
+      [key: string]: Project[];
+    } = {};
+
     // Initialize all ratings with empty arrays
     ratings.forEach(rating => {
       data[rating] = [];
     });
-
     projects.forEach(project => {
       let projectRating = '';
-      
       switch (certification) {
         case 'breeam':
           projectRating = project.breeam;
@@ -59,24 +59,18 @@ export const CertificationAnalysis = ({ projects, anonymizeProjects = false, pri
         case 'uknzcbs':
           const uknzcbsCert = project.certifications?.find(cert => cert.includes('UKNZCBS'));
           if (uknzcbsCert) {
-            if (uknzcbsCert.includes('Net Zero')) projectRating = 'Net Zero';
-            else if (uknzcbsCert.includes('Near Zero')) projectRating = 'Near Zero';
-            else if (uknzcbsCert.includes('Low Carbon')) projectRating = 'Low Carbon';
+            if (uknzcbsCert.includes('Net Zero')) projectRating = 'Net Zero';else if (uknzcbsCert.includes('Near Zero')) projectRating = 'Near Zero';else if (uknzcbsCert.includes('Low Carbon')) projectRating = 'Low Carbon';
           }
           break;
       }
-      
       if (projectRating && projectRating !== 'N/A' && data[projectRating]) {
         data[projectRating].push(project);
       }
     });
-
     return data;
   };
-
   const certificationData = getCertificationData(selectedCertification);
   const maxCount = Math.max(...Object.values(certificationData).map(projects => projects.length), 4);
-
   const getRatingColor = (rating: string) => {
     const colors = {
       'Outstanding': 'bg-green-100 text-green-800',
@@ -95,7 +89,6 @@ export const CertificationAnalysis = ({ projects, anonymizeProjects = false, pri
     };
     return colors[rating as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   };
-
   const getBarColor = (rating: string) => {
     const colors = {
       'Outstanding': 'bg-green-500',
@@ -114,32 +107,25 @@ export const CertificationAnalysis = ({ projects, anonymizeProjects = false, pri
     };
     return colors[rating as keyof typeof colors] || 'bg-gray-500';
   };
-
   const getDisplayName = (project: Project) => {
     const baseId = project.id.split('-')[0];
     const projectNumber = `250${parseInt(baseId) + 116}`;
-    
+
     // Show full name if it's the primary project or anonymization is off
     if (!anonymizeProjects || project.id === primaryProject || baseId === primaryProject) {
       return `${projectNumber}_${project.name}`;
     }
-    
+
     // Anonymize other projects
     return `${projectNumber}_Project ${parseInt(baseId)}`;
   };
-
-  return (
-    <Card className="p-6">
-      <div 
-        className="flex items-center justify-between cursor-pointer"
-        onClick={() => setIsExpanded(!isExpanded)}
-      >
+  return <Card className="p-6">
+      <div className="flex items-center justify-between cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
         <h2 className="text-xl font-semibold text-gray-900">Certification Analysis</h2>
         <ChevronDown className={`h-5 w-5 text-gray-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
       </div>
       
-      {isExpanded && (
-        <div className="mt-6 space-y-4">
+      {isExpanded && <div className="mt-6 space-y-4">
           <div className="flex items-center space-x-4">
             <label className="text-sm font-medium text-gray-700">
               Select Certification:
@@ -162,12 +148,10 @@ export const CertificationAnalysis = ({ projects, anonymizeProjects = false, pri
 
           <div className="space-y-4">
             {Object.entries(certificationData).map(([rating, projectsWithRating]) => {
-              const count = projectsWithRating.length;
-              const baseWidth = 25; // Base width percentage for empty bars
-              const barWidth = count === 0 ? baseWidth : Math.max(baseWidth, (count / maxCount) * 100);
-              
-              return (
-                <div key={rating} className="space-y-2">
+          const count = projectsWithRating.length;
+          const baseWidth = 25; // Base width percentage for empty bars
+          const barWidth = count === 0 ? baseWidth : Math.max(baseWidth, count / maxCount * 100);
+          return <div key={rating} className="space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
                       <Badge className={getRatingColor(rating)}>
@@ -178,31 +162,21 @@ export const CertificationAnalysis = ({ projects, anonymizeProjects = false, pri
                   </div>
                   
                   <div className="relative">
-                    <div className="w-full bg-gray-200 rounded-full h-6">
-                      {count > 0 && (
-                        <div 
-                          className={`${getBarColor(rating)} h-6 rounded-full transition-all duration-300`}
-                          style={{ width: `${barWidth}%` }}
-                        />
-                      )}
+                    <div className="w-full rounded-full h-6 bg-gray-50">
+                      {count > 0 && <div className={`${getBarColor(rating)} h-6 rounded-full transition-all duration-300`} style={{
+                  width: `${barWidth}%`
+                }} />}
                     </div>
                     
-                    {count > 0 && (
-                      <div className="mt-2 space-y-1">
-                        {projectsWithRating.map((project) => (
-                          <div key={project.id} className="text-sm text-gray-600 pl-2">
+                    {count > 0 && <div className="mt-2 space-y-1">
+                        {projectsWithRating.map(project => <div key={project.id} className="text-sm text-gray-600 pl-2">
                             {getDisplayName(project)}
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                          </div>)}
+                      </div>}
                   </div>
-                </div>
-              );
-            })}
+                </div>;
+        })}
           </div>
-        </div>
-      )}
-    </Card>
-  );
+        </div>}
+    </Card>;
 };
