@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { FilterPanel } from '@/components/FilterPanel';
 import { ChartSection } from '@/components/ChartSection';
@@ -71,6 +72,7 @@ const Index = () => {
   };
 
   const getDisplayProjects = () => {
+    // Handle self-comparison mode
     if (compareToSelf && selectedRibaStages.length > 0) {
       const primaryProjectData = sampleProjects.find(p => p.id === primaryProject);
       if (!primaryProjectData) return [];
@@ -83,11 +85,19 @@ const Index = () => {
       }));
     }
     
+    // Handle comparison mode with multiple projects
     if (comparisonProjects.length > 0) {
       const projectsToShow = [primaryProject, ...comparisonProjects];
       return filteredProjects.filter(p => projectsToShow.includes(p.id));
     }
     
+    // Default: show only the primary project when no comparisons are selected
+    if (primaryProject) {
+      const primaryProjectData = filteredProjects.find(p => p.id === primaryProject);
+      return primaryProjectData ? [primaryProjectData] : [];
+    }
+    
+    // Fallback to all filtered projects if no primary project is selected
     return filteredProjects;
   };
 
