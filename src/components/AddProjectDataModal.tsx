@@ -102,7 +102,7 @@ export const AddProjectDataModal = ({ isOpen, onClose, onSave, projects }: AddPr
       };
 
       setFormData({
-        projectNameNumber: addProjectNumberToName(project.name, parseInt(project.id) - 1),
+        projectNameNumber: project.name,
         projectLocation: project.location || '',
         hbDiscipline: '',
         sector: getSectorFromTypology(project.typology),
@@ -188,10 +188,7 @@ export const AddProjectDataModal = ({ isOpen, onClose, onSave, projects }: AddPr
                     className="w-full justify-between"
                   >
                     {selectedProjectId
-                      ? addProjectNumberToName(
-                          projects.find(p => p.id === selectedProjectId)?.name || '',
-                          parseInt(selectedProjectId) - 1
-                        )
+                      ? projects.find(p => p.id === selectedProjectId)?.name || ''
                       : "Select or search project..."}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
@@ -205,7 +202,7 @@ export const AddProjectDataModal = ({ isOpen, onClose, onSave, projects }: AddPr
                         {projects.map((project) => (
                           <CommandItem
                             key={project.id}
-                            value={`${addProjectNumberToName(project.name, parseInt(project.id) - 1)}`}
+                            value={project.name}
                             onSelect={() => handleProjectSelect(project.id)}
                           >
                             <Check
@@ -214,7 +211,7 @@ export const AddProjectDataModal = ({ isOpen, onClose, onSave, projects }: AddPr
                                 selectedProjectId === project.id ? "opacity-100" : "opacity-0"
                               )}
                             />
-                            {addProjectNumberToName(project.name, parseInt(project.id) - 1)}
+                            {project.name}
                           </CommandItem>
                         ))}
                       </CommandGroup>

@@ -28,7 +28,7 @@ const Index = () => {
     projectType: 'all',
     ribaStage: 'all',
     dateRange: 'all',
-    carbonRange: [0, 100],
+    carbonRange: [0, 200],
     energyRange: [0, 200]
   });
 
@@ -71,7 +71,7 @@ const Index = () => {
       projectType: 'all',
       ribaStage: 'all',
       dateRange: 'all',
-      carbonRange: [0, 100],
+      carbonRange: [0, 200],
       energyRange: [0, 200]
     };
     handleFilterChange(defaultFilters);

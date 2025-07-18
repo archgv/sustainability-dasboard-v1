@@ -154,8 +154,8 @@ export const ChartSection = ({
       transformedProjects.forEach(project => {
         const baseId = project.id.split('-')[0];
         const displayName = isComparingToSelf && project.ribaStage 
-          ? `${addProjectNumberToName(project.name, parseInt(baseId) - 1)} (RIBA ${project.ribaStage.replace('stage-', '')})`
-          : addProjectNumberToName(project.name, parseInt(project.id) - 1);
+          ? `${project.name} (RIBA ${project.ribaStage.replace('stage-', '')})`
+          : project.name;
         
         const row = [
           `"${displayName}"`,
@@ -306,8 +306,8 @@ export const ChartSection = ({
     return projects.map(project => {
       const baseId = project.id.split('-')[0];
       const displayName = isComparingToSelf && project.ribaStage 
-        ? `${addProjectNumberToName(project.name, parseInt(baseId) - 1)} (RIBA ${project.ribaStage.replace('stage-', '')})`
-        : addProjectNumberToName(project.name, parseInt(baseId) - 1);
+        ? `${project.name} (RIBA ${project.ribaStage.replace('stage-', '')})`
+        : project.name;
       
       const projectData: any = { name: displayName };
       
@@ -417,8 +417,8 @@ export const ChartSection = ({
                     const baseId = data.id.split('-')[0];
                     const area = getProjectArea(baseId);
                     const displayName = isComparingToSelf && data.ribaStage 
-                      ? `${addProjectNumberToName(data.name, parseInt(baseId) - 1)} (RIBA ${data.ribaStage.replace('stage-', '')})`
-                      : addProjectNumberToName(data.name, parseInt(data.id) - 1);
+                      ? `${data.name} (RIBA ${data.ribaStage.replace('stage-', '')})`
+                      : data.name;
                     
                     return (
                       <div className="bg-white p-3 border rounded-lg shadow-lg" style={{ backgroundColor: chartColors.accent1, borderColor: chartColors.primary }}>
@@ -466,8 +466,8 @@ export const ChartSection = ({
                 dataKey={(item) => {
                   const baseId = item.id.split('-')[0];
                   const displayName = isComparingToSelf && item.ribaStage 
-                    ? `${addProjectNumberToName(item.name, parseInt(baseId) - 1)} (RIBA ${item.ribaStage.replace('stage-', '')})`
-                    : addProjectNumberToName(item.name, parseInt(item.id) - 1);
+                    ? `${item.name} (RIBA ${item.ribaStage.replace('stage-', '')})`
+                    : item.name;
                   return displayName;
                 }}
                 angle={-45}
@@ -503,8 +503,8 @@ export const ChartSection = ({
           .map(project => {
             const baseId = project.id.split('-')[0];
             const displayName = isComparingToSelf && project.ribaStage 
-              ? `${addProjectNumberToName(project.name, parseInt(baseId) - 1)} (RIBA ${project.ribaStage.replace('stage-', '')})`
-              : addProjectNumberToName(project.name, parseInt(project.id) - 1);
+              ? `${project.name} (RIBA ${project.ribaStage.replace('stage-', '')})`
+              : project.name;
             
             // Extract year only from completion date
             const completionYear = new Date(project.completionDate).getFullYear();

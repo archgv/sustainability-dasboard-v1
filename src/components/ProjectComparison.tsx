@@ -113,10 +113,7 @@ export const ProjectComparison = ({
                 className="w-full justify-between"
               >
                 {primaryProject
-                  ? addProjectNumberToName(
-                      projects.find(p => p.id === primaryProject)?.name || '',
-                      parseInt(primaryProject) - 1
-                    )
+                  ? projects.find(p => p.id === primaryProject)?.name || ''
                   : "Select primary project..."}
                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
@@ -130,7 +127,7 @@ export const ProjectComparison = ({
                     {projects.map((project) => (
                       <CommandItem
                         key={project.id}
-                        value={`${addProjectNumberToName(project.name, parseInt(project.id) - 1)}`}
+                        value={project.name}
                         onSelect={() => {
                           onPrimaryProjectChange(project.id);
                           setOpen(false);
@@ -142,7 +139,7 @@ export const ProjectComparison = ({
                             primaryProject === project.id ? "opacity-100" : "opacity-0"
                           )}
                         />
-                        {addProjectNumberToName(project.name, parseInt(project.id) - 1)}
+                        {project.name}
                       </CommandItem>
                     ))}
                   </CommandGroup>
@@ -156,7 +153,7 @@ export const ProjectComparison = ({
               <div className="flex items-center gap-2 mb-2">
                 <Building2 className="h-4 w-4 text-blue-600" />
                 <span className="font-medium text-blue-900">
-                  {addProjectNumberToName(primaryProjectData.name, parseInt(primaryProjectData.id) - 1)}
+                  {primaryProjectData.name}
                 </span>
               </div>
               <div className="flex items-center gap-4 text-sm text-blue-700">
@@ -242,7 +239,7 @@ export const ProjectComparison = ({
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="font-medium text-gray-900">
-                          {addProjectNumberToName(project.name, parseInt(project.id) - 1)}
+                          {project.name}
                         </p>
                         <div className="flex items-center gap-2 mt-1">
                           <Badge variant="outline" className="text-xs capitalize">
