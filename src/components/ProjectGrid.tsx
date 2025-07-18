@@ -1,7 +1,7 @@
 
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, MapPin, Zap, Leaf } from 'lucide-react';
+import { Calendar, MapPin, Zap, Leaf, FileText } from 'lucide-react';
 import { Project } from '@/types/project';
 
 interface ProjectGridProps {
@@ -116,9 +116,15 @@ export const ProjectGrid = ({
                 <div className="flex items-center text-sm text-gray-600">
                   <Calendar className="h-4 w-4 mr-2" />
                   {project.ribaStage === 'stage-7' ? 
-                    `Completed ${new Date(project.completionDate).getFullYear()}` :
-                    getRibaStageDisplay(project.ribaStage)
+                    `PC date ${new Date(project.completionDate).getFullYear()}` :
+                    `PC date ${new Date(project.completionDate).getFullYear()}`
                   }
+                </div>
+                <div className="flex items-center text-sm text-gray-600">
+                  <FileText className="h-4 w-4 mr-2" />
+                  <Badge variant="outline">
+                    {getRibaStageDisplay(project.ribaStage)}
+                  </Badge>
                 </div>
                 <div className="flex gap-2">
                   <Badge className={getProjectTypeColor(project.projectType)}>
