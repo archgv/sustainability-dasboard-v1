@@ -460,9 +460,46 @@ export const ChartSection = ({
         );
 
       case 'single-bar':
+        const MultiLineTickComponent = (props: any) => {
+          const { x, y, payload } = props;
+          const words = payload.value.split(' ');
+          const lines = [];
+          let currentLine = '';
+          
+          // Split text into lines of max 2-3 words
+          for (let i = 0; i < words.length; i++) {
+            const testLine = currentLine + (currentLine ? ' ' : '') + words[i];
+            if (testLine.length > 15 && currentLine) {
+              lines.push(currentLine);
+              currentLine = words[i];
+            } else {
+              currentLine = testLine;
+            }
+          }
+          if (currentLine) lines.push(currentLine);
+          
+          return (
+            <g transform={`translate(${x},${y})`}>
+              {lines.map((line, index) => (
+                <text
+                  key={index}
+                  x={0}
+                  y={index * 16 + 10}
+                  textAnchor="end"
+                  fill={chartColors.dark}
+                  fontSize="12"
+                  transform="rotate(-45)"
+                >
+                  {line}
+                </text>
+              ))}
+            </g>
+          );
+        };
+        
         return (
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={transformedProjects} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
+            <BarChart data={transformedProjects} margin={{ top: 20, right: 30, left: 20, bottom: 100 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} />
               <XAxis 
                 dataKey={(item) => {
@@ -472,11 +509,9 @@ export const ChartSection = ({
                     : item.name;
                   return displayName;
                 }}
-                angle={-45}
-                textAnchor="end"
-                height={80}
+                height={100}
                 interval={0}
-                tick={{ fill: chartColors.dark }}
+                tick={<MultiLineTickComponent />}
               />
               <YAxis 
                 label={{ value: `${kpi1Config?.label || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType)})`, angle: -90, position: 'insideLeft', style: { textAnchor: 'middle' } }}
