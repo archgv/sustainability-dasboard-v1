@@ -479,12 +479,12 @@ export const ChartSection = ({
           if (currentLine) lines.push(currentLine);
           
           return (
-            <g transform={`translate(${x},${y})`}>
+            <g transform={`translate(${x},${y + 20})`}>
               {lines.map((line, index) => (
                 <text
                   key={index}
                   x={0}
-                  y={index * 16 + 10}
+                  y={index * 16}
                   textAnchor="end"
                   fill={chartColors.dark}
                   fontSize="12"
@@ -499,7 +499,7 @@ export const ChartSection = ({
         
         return (
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={transformedProjects} margin={{ top: 20, right: 30, left: 20, bottom: 100 }}>
+            <BarChart data={transformedProjects} margin={{ top: 20, right: 30, left: 20, bottom: 80 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} />
               <XAxis 
                 dataKey={(item) => {
@@ -509,9 +509,11 @@ export const ChartSection = ({
                     : item.name;
                   return displayName;
                 }}
-                height={100}
+                height={80}
                 interval={0}
                 tick={<MultiLineTickComponent />}
+                axisLine={false}
+                tickLine={false}
               />
               <YAxis 
                 label={{ value: `${kpi1Config?.label || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType)})`, angle: -90, position: 'insideLeft', style: { textAnchor: 'middle' } }}
