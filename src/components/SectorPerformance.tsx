@@ -339,12 +339,13 @@ export const SectorPerformance = ({
                 fill: chartColors.dark
               }} />
                   <YAxis label={{
-                value: getDisplayUnit(),
+                value: `${currentKPI?.label} (${getDisplayUnit()})`,
                 angle: -90,
                 position: 'insideLeft'
               }} tick={{
                 fill: chartColors.dark
-              }} />
+              }} 
+              tickFormatter={(value) => formatNumber(value)} />
                   <Tooltip formatter={value => [`${formatNumber(Number(value))} ${getDisplayUnit()}`, 'Average']} labelFormatter={label => `Sector: ${label}`} contentStyle={{
                 backgroundColor: chartColors.accent1,
                 border: `1px solid ${chartColors.primary}`

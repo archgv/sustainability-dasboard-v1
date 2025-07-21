@@ -398,17 +398,17 @@ export const ChartSection = ({
                 type="number" 
                 dataKey={selectedKPI1}
                 name={kpi1Config?.label || selectedKPI1}
-                unit={` ${getUnitLabel(kpi1Config?.unit || '', valueType)}`}
                 label={{ value: `${kpi1Config?.label || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType)})`, position: 'insideBottom', offset: -5 }}
                 tick={{ fill: chartColors.dark }}
+                tickFormatter={(value) => formatNumber(value)}
               />
               <YAxis 
                 type="number" 
                 dataKey={selectedKPI2}
                 name={kpi2Config?.label || selectedKPI2}
-                unit={` ${getUnitLabel(kpi2Config?.unit || '', valueType)}`}
                 label={{ value: `${kpi2Config?.label || selectedKPI2} (${getUnitLabel(kpi2Config?.unit || '', valueType)})`, angle: -90, position: 'insideLeft' }}
                 tick={{ fill: chartColors.dark }}
+                tickFormatter={(value) => formatNumber(value)}
               />
               <Tooltip 
                 cursor={{ strokeDasharray: '3 3' }}
@@ -479,8 +479,9 @@ export const ChartSection = ({
                 tick={{ fill: chartColors.dark }}
               />
               <YAxis 
-                label={{ value: getUnitLabel(kpi1Config?.unit || '', valueType), angle: -90, position: 'insideLeft' }}
+                label={{ value: `${kpi1Config?.label || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType)})`, angle: -90, position: 'insideLeft' }}
                 tick={{ fill: chartColors.dark }}
+                tickFormatter={(value) => formatNumber(value)}
               />
               <Tooltip 
                 formatter={(value: number) => [
@@ -566,8 +567,9 @@ export const ChartSection = ({
                 tick={{ fill: chartColors.dark }}
               />
               <YAxis 
-                label={{ value: getUnitLabel(kpi1Config?.unit || '', valueType), angle: -90, position: 'insideLeft' }}
+                label={{ value: `${kpi1Config?.label || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType)})`, angle: -90, position: 'insideLeft' }}
                 tick={{ fill: chartColors.dark }}
+                tickFormatter={(value) => formatNumber(value)}
               />
               <Tooltip 
                 formatter={(value: number, name: string) => [
