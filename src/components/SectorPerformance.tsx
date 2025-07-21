@@ -341,7 +341,8 @@ export const SectorPerformance = ({
                   <YAxis label={{
                 value: `${currentKPI?.label} (${getDisplayUnit()})`,
                 angle: -90,
-                position: 'insideLeft'
+                position: 'insideLeft',
+                style: { textAnchor: 'middle' }
               }} tick={{
                 fill: chartColors.dark
               }} 

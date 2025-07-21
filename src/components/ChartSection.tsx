@@ -479,7 +479,7 @@ export const ChartSection = ({
                 tick={{ fill: chartColors.dark }}
               />
               <YAxis 
-                label={{ value: `${kpi1Config?.label || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType)})`, angle: -90, position: 'insideLeft' }}
+                label={{ value: `${kpi1Config?.label || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType)})`, angle: -90, position: 'insideLeft', style: { textAnchor: 'middle' } }}
                 tick={{ fill: chartColors.dark }}
                 tickFormatter={(value) => formatNumber(value)}
               />
@@ -555,7 +555,7 @@ export const ChartSection = ({
 
         return (
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={timelineData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+            <LineChart data={timelineData} margin={{ top: 20, right: 30, left: 60, bottom: 60 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} />
               <XAxis 
                 dataKey="completionYear"
@@ -567,7 +567,7 @@ export const ChartSection = ({
                 tick={{ fill: chartColors.dark }}
               />
               <YAxis 
-                label={{ value: `${kpi1Config?.label || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType)})`, angle: -90, position: 'insideLeft' }}
+                label={{ value: `${kpi1Config?.label || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType)})`, angle: -90, position: 'insideLeft', style: { textAnchor: 'middle' } }}
                 tick={{ fill: chartColors.dark }}
                 tickFormatter={(value) => formatNumber(value)}
               />
@@ -605,7 +605,6 @@ export const ChartSection = ({
                   return null;
                 }}
               />
-              <Legend />
               
               {/* Project data as scatter points */}
               <Line 
@@ -615,6 +614,7 @@ export const ChartSection = ({
                 strokeWidth={0}
                 dot={{ fill: chartColors.primary, strokeWidth: 2, r: 6 }}
                 name={kpi1Config?.label || selectedKPI1}
+                legendType="none"
               />
               
               {/* Benchmark lines if applicable */}
@@ -635,6 +635,7 @@ export const ChartSection = ({
                         dot={false}
                         connectNulls={false}
                         name={`UKNZCBS ${sector}`}
+                        legendType="line"
                       />
                     );
                   })}
