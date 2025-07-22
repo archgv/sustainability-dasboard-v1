@@ -11,21 +11,15 @@ interface SectorPerformanceProps {
 
 // Custom color palette matching ChartSection
 const chartColors = {
-  primary: '#006ab4',
-  // Tech 300C - Main blue
-  secondary: '#009758',
-  // 340C - Green  
-  tertiary: '#9fc63b',
-  // 375C - Light green
-  quaternary: '#5dc5ed',
-  // 2985C - Light blue
-  accent1: '#eef4de',
-  // 7485C - Light green/cream
-  accent2: '#c9e1ea',
-  // 552C - Light blue/grey
-  dark: '#051b3f',
-  // 289C - Dark blue
-  darkGreen: '#004033' // 3302C - Dark green
+  primary: '#2D9B4D',      // Updated to green as requested
+  secondary: '#48DE9D',    // Bright green
+  tertiary: '#FF8EE5',     // Updated bright pink as requested
+  quaternary: '#5dc5ed',   // Light blue
+  accent1: '#E9E8D3',      // Updated light green fill as requested
+  accent2: '#c9e1ea',      // Light blue/grey
+  dark: '#272727',         // Updated dark gray as requested
+  darkGreen: '#004033',    // Dark green
+  muted: '#272727'         // Updated to use new dark gray
 };
 export const SectorPerformance = ({
   projects

@@ -20,20 +20,20 @@ interface ChartSectionProps {
 
 // Custom color palette based on your specifications
 const chartColors = {
-  primary: '#006ab4',      // Tech 300C - Main blue
-  secondary: '#48DE9D',    // Bright green - updated per user request
-  tertiary: '#FF33E5',     // Bright magenta - updated per user request
-  quaternary: '#5dc5ed',   // 2985C - Light blue
-  accent1: '#eef4de',      // 7485C - Light green/cream
-  accent2: '#c9e1ea',      // 552C - Light blue/grey
-  dark: '#051b3f',         // 289C - Dark blue
-  darkGreen: '#004033',    // 3302C - Dark green
+  primary: '#2D9B4D',      // Updated to green as requested
+  secondary: '#48DE9D',    // Bright green
+  tertiary: '#FF8EE5',     // Updated bright pink as requested
+  quaternary: '#5dc5ed',   // Light blue
+  accent1: '#E9E8D3',      // Updated light green fill as requested
+  accent2: '#c9e1ea',      // Light blue/grey
+  dark: '#272727',         // Updated dark gray as requested
+  darkGreen: '#004033',    // Dark green
   benchmark: '#e74c3c',    // Red for benchmark lines
   // Additional complementary colors
   warning: '#f39c12',      // Orange
   info: '#3498db',         // Medium blue
-  success: '#48DE9D',      // Updated to use new bright green
-  muted: '#95a5a6'         // Grey
+  success: '#2D9B4D',      // Updated to use new green
+  muted: '#272727'         // Updated to use new dark gray
 };
 
 // Color arrays for different chart types
