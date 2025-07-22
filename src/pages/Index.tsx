@@ -120,10 +120,10 @@ const Index = () => {
       <DashboardHeader />
       
       <div className="container mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Filter Panel - Fixed/Sticky */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-8 space-y-6">
+        <div className="flex">
+          {/* Fixed Filter Panel */}
+          <div className="fixed left-6 top-24 w-80 h-[calc(100vh-6rem)] overflow-y-auto z-10">
+            <div className="space-y-6">
               <AddProjectData projects={sampleProjects} />
               <FilterPanel 
                 filters={filters} 
@@ -133,8 +133,8 @@ const Index = () => {
             </div>
           </div>
           
-          {/* Main Content */}
-          <div className="lg:col-span-3 space-y-8">
+          {/* Main Content with left margin to account for fixed sidebar */}
+          <div className="flex-1 ml-96 space-y-8">
             {/* Sector Performance Analysis */}
             <SectorPerformance projects={sampleProjects} />
             
