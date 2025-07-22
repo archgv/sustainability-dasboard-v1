@@ -1,14 +1,11 @@
-
 import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { availableKPIs } from '@/types/project';
-
 export type ChartType = 'compare-bubble' | 'single-bar' | 'single-timeline';
 export type EmbodiedCarbonBreakdown = 'none' | 'lifecycle' | 'element';
 export type ValueType = 'total' | 'per-sqm';
-
 interface ChartTypeSelectorProps {
   chartType: ChartType;
   selectedKPI1: string;
@@ -45,7 +42,6 @@ const kpiCompatibilityMatrix: Record<string, string[]> = {
   'ozoneDepletion': ['upfrontCarbon', 'totalEmbodiedCarbon', 'refrigerants'],
   'reusedRecycledMaterial': ['upfrontCarbon', 'totalEmbodiedCarbon']
 };
-
 export const ChartTypeSelector = ({
   chartType,
   selectedKPI1,
@@ -62,12 +58,8 @@ export const ChartTypeSelector = ({
   const showEmbodiedCarbonBreakdown = chartType === 'single-bar' && selectedKPI1 === 'totalEmbodiedCarbon';
 
   // Get compatible KPI2 options based on selected KPI1
-  const compatibleKPI2Options = showKPI2 ? 
-    availableKPIs.filter(kpi => kpiCompatibilityMatrix[selectedKPI1]?.includes(kpi.key)) : 
-    [];
-
-  return (
-    <Card className="p-4 mb-6">
+  const compatibleKPI2Options = showKPI2 ? availableKPIs.filter(kpi => kpiCompatibilityMatrix[selectedKPI1]?.includes(kpi.key)) : [];
+  return <Card className="p-4 mb-6">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div>
           <Label htmlFor="chart-type" className="text-sm font-medium text-gray-700 mb-2 block">
@@ -109,17 +101,14 @@ export const ChartTypeSelector = ({
               <SelectValue placeholder="Select first KPI" />
             </SelectTrigger>
             <SelectContent>
-              {availableKPIs.map((kpi) => (
-                <SelectItem key={kpi.key} value={kpi.key}>
+              {availableKPIs.map(kpi => <SelectItem key={kpi.key} value={kpi.key}>
                   {kpi.label} ({kpi.unit})
-                </SelectItem>
-              ))}
+                </SelectItem>)}
             </SelectContent>
           </Select>
         </div>
 
-        {showKPI2 && (
-          <div>
+        {showKPI2 && <div>
             <Label htmlFor="kpi2" className="text-sm font-medium text-gray-700 mb-2 block">
               KPI 2
             </Label>
@@ -128,47 +117,14 @@ export const ChartTypeSelector = ({
                 <SelectValue placeholder="Select second KPI" />
               </SelectTrigger>
               <SelectContent>
-                {compatibleKPI2Options.map((kpi) => (
-                  <SelectItem key={kpi.key} value={kpi.key}>
+                {compatibleKPI2Options.map(kpi => <SelectItem key={kpi.key} value={kpi.key}>
                     {kpi.label} ({kpi.unit})
-                  </SelectItem>
-                ))}
+                  </SelectItem>)}
               </SelectContent>
             </Select>
-          </div>
-        )}
+          </div>}
       </div>
 
-      {showEmbodiedCarbonBreakdown && (
-        <div className="mt-4 pt-4 border-t">
-          <Label className="text-sm font-medium text-gray-700 mb-2 block">
-            Embodied Carbon Breakdown
-          </Label>
-          <div className="flex gap-2">
-            <Button
-              variant={embodiedCarbonBreakdown === 'none' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => onEmbodiedCarbonBreakdownChange('none')}
-            >
-              Total Values
-            </Button>
-            <Button
-              variant={embodiedCarbonBreakdown === 'lifecycle' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => onEmbodiedCarbonBreakdownChange('lifecycle')}
-            >
-              By Lifecycle Stage
-            </Button>
-            <Button
-              variant={embodiedCarbonBreakdown === 'element' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => onEmbodiedCarbonBreakdownChange('element')}
-            >
-              By Building Element
-            </Button>
-          </div>
-        </div>
-      )}
-    </Card>
-  );
+      {showEmbodiedCarbonBreakdown}
+    </Card>;
 };
