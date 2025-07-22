@@ -22,7 +22,7 @@ const Index = () => {
   const [comparisonProjects, setComparisonProjects] = useState<string[]>([]);
   const [compareToSelf, setCompareToSelf] = useState(false);
   const [selectedRibaStages, setSelectedRibaStages] = useState<string[]>([]);
-  const [anonymizeProjects, setAnonymizeProjects] = useState(false);
+  
   const [filters, setFilters] = useState({
     typology: 'all',
     projectType: 'all',
@@ -129,8 +129,6 @@ const Index = () => {
                 filters={filters} 
                 onFilterChange={handleFilterChange}
                 onClearFilters={handleClearFilters}
-                anonymizeProjects={anonymizeProjects}
-                onAnonymizeChange={setAnonymizeProjects}
               />
             </div>
           </div>
@@ -143,7 +141,6 @@ const Index = () => {
             {/* Certification Analysis */}
             <CertificationAnalysis 
               projects={sampleProjects} 
-              anonymizeProjects={anonymizeProjects}
               primaryProject={primaryProject}
             />
             
@@ -187,7 +184,6 @@ const Index = () => {
               projects={displayProjects} 
               isComparingToSelf={compareToSelf}
               selectedRibaStages={selectedRibaStages}
-              anonymizeProjects={anonymizeProjects}
               primaryProject={primaryProject}
             />
           </div>

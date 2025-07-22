@@ -15,15 +15,11 @@ interface FilterPanelProps {
   };
   onFilterChange: (filters: any) => void;
   onClearFilters: () => void;
-  anonymizeProjects: boolean;
-  onAnonymizeChange: (anonymize: boolean) => void;
 }
 export const FilterPanel = ({
   filters,
   onFilterChange,
-  onClearFilters,
-  anonymizeProjects,
-  onAnonymizeChange
+  onClearFilters
 }: FilterPanelProps) => {
   const handleTypologyChange = (value: string) => {
     onFilterChange({
@@ -141,18 +137,6 @@ export const FilterPanel = ({
           </Select>
         </div>
 
-        {/* Anonymize Projects Toggle */}
-        <div className="pt-4 border-t">
-          <div className="flex items-center justify-between">
-            <Label htmlFor="anonymize-toggle" className="text-sm font-medium text-gray-700">
-              Anonymise projects
-            </Label>
-            <Switch id="anonymize-toggle" checked={anonymizeProjects} onCheckedChange={onAnonymizeChange} />
-          </div>
-          <p className="text-xs text-gray-500 mt-1">
-            Hide project names except primary project
-          </p>
-        </div>
       </div>
     </Card>;
 };

@@ -8,7 +8,6 @@ interface ProjectGridProps {
   projects: Project[];
   isComparingToSelf?: boolean;
   selectedRibaStages?: string[];
-  anonymizeProjects?: boolean;
   primaryProject?: string;
 }
 
@@ -16,7 +15,6 @@ export const ProjectGrid = ({
   projects, 
   isComparingToSelf = false, 
   selectedRibaStages = [],
-  anonymizeProjects = false,
   primaryProject = ''
 }: ProjectGridProps) => {
   // Map typologies to the correct sectors
@@ -65,20 +63,10 @@ export const ProjectGrid = ({
   const getDisplayName = (project: Project, index: number) => {
     const baseId = project.id.split('-')[0];
     const projectNumber = `250${parseInt(baseId) + 116}`;
-    
-    // Show full name if it's the primary project or anonymization is off
-    if (!anonymizeProjects || project.id === primaryProject || baseId === primaryProject) {
-      const fullName = `${projectNumber}_${project.name}`;
-      return isComparingToSelf && project.ribaStage 
-        ? `${fullName} (${getRibaStageDisplay(project.ribaStage)})`
-        : fullName;
-    }
-    
-    // Anonymize other projects
-    const anonymizedName = `${projectNumber}_Project ${parseInt(baseId)}`;
+    const fullName = `${projectNumber}_${project.name}`;
     return isComparingToSelf && project.ribaStage 
-      ? `${anonymizedName} (${getRibaStageDisplay(project.ribaStage)})`
-      : anonymizedName;
+      ? `${fullName} (${getRibaStageDisplay(project.ribaStage)})`
+      : fullName;
   };
 
   return (

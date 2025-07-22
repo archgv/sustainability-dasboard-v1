@@ -6,7 +6,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Project } from '@/types/project';
 interface CertificationAnalysisProps {
   projects: Project[];
-  anonymizeProjects?: boolean;
   primaryProject?: string;
 }
 const certificationRatings = {
@@ -20,7 +19,6 @@ const certificationRatings = {
 };
 export const CertificationAnalysis = ({
   projects,
-  anonymizeProjects = false,
   primaryProject = ''
 }: CertificationAnalysisProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -110,14 +108,7 @@ export const CertificationAnalysis = ({
   const getDisplayName = (project: Project) => {
     const baseId = project.id.split('-')[0];
     const projectNumber = `250${parseInt(baseId) + 116}`;
-
-    // Show full name if it's the primary project or anonymization is off
-    if (!anonymizeProjects || project.id === primaryProject || baseId === primaryProject) {
-      return `${projectNumber}_${project.name}`;
-    }
-
-    // Anonymize other projects
-    return `${projectNumber}_Project ${parseInt(baseId)}`;
+    return `${projectNumber}_${project.name}`;
   };
   return <Card className="p-6">
       <div className="flex items-center justify-between cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>

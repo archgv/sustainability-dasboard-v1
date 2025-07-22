@@ -512,7 +512,7 @@ export const ChartSection = ({
                 height={80}
                 interval={0}
                 tick={<MultiLineTickComponent />}
-                axisLine={false}
+                axisLine={{ stroke: chartColors.dark, strokeWidth: 1 }}
                 tickLine={false}
               />
               <YAxis 
