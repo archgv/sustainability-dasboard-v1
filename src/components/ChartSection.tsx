@@ -21,8 +21,8 @@ interface ChartSectionProps {
 // Custom color palette based on your specifications
 const chartColors = {
   primary: '#006ab4',      // Tech 300C - Main blue
-  secondary: '#009758',    // 340C - Green  
-  tertiary: '#9fc63b',     // 375C - Light green
+  secondary: '#48DE9D',    // Bright green - updated per user request
+  tertiary: '#FF33E5',     // Bright magenta - updated per user request
   quaternary: '#5dc5ed',   // 2985C - Light blue
   accent1: '#eef4de',      // 7485C - Light green/cream
   accent2: '#c9e1ea',      // 552C - Light blue/grey
@@ -32,7 +32,7 @@ const chartColors = {
   // Additional complementary colors
   warning: '#f39c12',      // Orange
   info: '#3498db',         // Medium blue
-  success: '#27ae60',      // Medium green
+  success: '#48DE9D',      // Updated to use new bright green
   muted: '#95a5a6'         // Grey
 };
 
