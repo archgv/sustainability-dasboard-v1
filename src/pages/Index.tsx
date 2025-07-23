@@ -122,7 +122,7 @@ const Index = () => {
       <div className="container mx-auto px-6 py-8">
         <div className="flex">
           {/* Fixed Filter Panel - aligned with main content */}
-          <div className="fixed left-6 top-32 w-80 h-[calc(100vh-8rem)] overflow-y-auto z-10 pt-8">
+          <div className="fixed left-6 top-[calc(4rem+4rem)] w-80 h-[calc(100vh-8rem)] overflow-y-auto z-10">
             <div className="space-y-6">
               <AddProjectData projects={sampleProjects} />
               <FilterPanel 
