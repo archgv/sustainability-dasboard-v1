@@ -75,28 +75,28 @@ export const CertificationAnalysis = ({
   };
   const getBarColor = (rating: string) => {
     const colors = {
-      'Outstanding': '#95382C',
-      'Excellent': '#2D984D', 
+      'Outstanding': '#253E2C',
+      'Excellent': '#2D9B4D', 
       'Very Good': '#39FF8D',
       'Good': '#C2FF39',
-      'Pass': '#F9E8D3',
-      'Platinum': '#95382C',
-      'Gold': '#C2FF39',
+      'Pass': '#E9E8D3',
+      'Platinum': '#253E2C',
+      'Gold': '#2D9B4D',
       'Silver': '#39FF8D',
-      'Bronze': '#F9E8D3',
-      'Certified': '#95382C',
-      'Net Zero': '#95382C',
-      'Near Zero': '#2D984D',
-      'Low Carbon': '#C2FF39',
-      '6 Star': '#95382C',
-      '5.5 Star': '#2D984D',
+      'Bronze': '#C2FF39',
+      'Certified': '#253E2C',
+      'Net Zero': '#253E2C',
+      'Near Zero': '#2D9B4D',
+      'Low Carbon': '#39FF8D',
+      '6 Star': '#253E2C',
+      '5.5 Star': '#2D9B4D',
       '5 Star': '#39FF8D',
       '4.5 Star': '#C2FF39',
-      '4 Star': '#F9E8D3',
-      '3.5 Star': '#F9E8D3',
-      '3 Star': '#F9E8D3'
+      '4 Star': '#E9E8D3',
+      '3.5 Star': '#E9E8D3',
+      '3 Star': '#E9E8D3'
     };
-    return colors[rating as keyof typeof colors] || '#F9E8D3';
+    return colors[rating as keyof typeof colors] || '#E9E8D3';
   };
   const getDisplayName = (project: Project) => {
     const baseId = project.id.split('-')[0];
