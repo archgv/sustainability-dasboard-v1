@@ -10,8 +10,8 @@ interface CertificationAnalysisProps {
 }
 const certificationRatings = {
   breeam: ['Outstanding', 'Excellent', 'Very Good', 'Good', 'Pass'],
-  leed: ['Outstanding', 'Platinum', 'Gold', 'Silver', 'Certified'],
-  well: ['Outstanding', 'Platinum', 'Gold', 'Silver', 'Bronze'],
+  leed: ['Platinum', 'Gold', 'Silver', 'Certified'],
+  well: ['Platinum', 'Gold', 'Silver', 'Bronze'],
   nabers: ['6 Star', '5.5 Star', '5 Star', '4.5 Star', '4 Star', '3.5 Star', '3 Star'],
   passivhaus: ['Certified'],
   enerphit: ['Certified'],
@@ -84,17 +84,17 @@ export const CertificationAnalysis = ({
       'Gold': '#2D9B4D',
       'Silver': '#39FF8D',
       'Bronze': '#C2FF39',
-      'Certified': '#253E2C',
+      'Certified': selectedCertification === 'leed' ? '#E9E8D3' : '#253E2C',
       'Net Zero': '#253E2C',
       'Near Zero': '#2D9B4D',
       'Low Carbon': '#39FF8D',
       '6 Star': '#253E2C',
       '5.5 Star': '#2D9B4D',
-      '5 Star': '#39FF8D',
-      '4.5 Star': '#C2FF39',
-      '4 Star': '#E9E8D3',
-      '3.5 Star': '#E9E8D3',
-      '3 Star': '#E9E8D3'
+      '5 Star': '#2D9B4D',
+      '4.5 Star': '#39FF8D',
+      '4 Star': '#39FF8D',
+      '3.5 Star': '#C2FF39',
+      '3 Star': '#C2FF39'
     };
     return colors[rating as keyof typeof colors] || '#E9E8D3';
   };
