@@ -70,40 +70,33 @@ export const CertificationAnalysis = ({
   const certificationData = getCertificationData(selectedCertification);
   const maxCount = Math.max(...Object.values(certificationData).map(projects => projects.length), 4);
   const getRatingColor = (rating: string) => {
-    const colors = {
-      'Outstanding': 'bg-green-100 text-green-800',
-      'Excellent': 'bg-blue-100 text-blue-800',
-      'Very Good': 'bg-purple-100 text-purple-800',
-      'Good': 'bg-yellow-100 text-yellow-800',
-      'Pass': 'bg-gray-100 text-gray-800',
-      'Platinum': 'bg-slate-100 text-slate-800',
-      'Gold': 'bg-yellow-100 text-yellow-800',
-      'Silver': 'bg-gray-100 text-gray-800',
-      'Bronze': 'bg-orange-100 text-orange-800',
-      'Certified': 'bg-green-100 text-green-800',
-      'Net Zero': 'bg-green-100 text-green-800',
-      'Near Zero': 'bg-blue-100 text-blue-800',
-      'Low Carbon': 'bg-yellow-100 text-yellow-800'
-    };
-    return colors[rating as keyof typeof colors] || 'bg-gray-100 text-gray-800';
+    // Return black text on white background for all ratings
+    return 'text-black';
   };
   const getBarColor = (rating: string) => {
     const colors = {
-      'Outstanding': 'bg-green-500',
-      'Excellent': 'bg-blue-500',
-      'Very Good': 'bg-purple-500',
-      'Good': 'bg-yellow-500',
-      'Pass': 'bg-gray-500',
-      'Platinum': 'bg-slate-500',
-      'Gold': 'bg-yellow-500',
-      'Silver': 'bg-gray-500',
-      'Bronze': 'bg-orange-500',
-      'Certified': 'bg-green-500',
-      'Net Zero': 'bg-green-500',
-      'Near Zero': 'bg-blue-500',
-      'Low Carbon': 'bg-yellow-500'
+      'Outstanding': '#95382C',
+      'Excellent': '#2D984D', 
+      'Very Good': '#39FF8D',
+      'Good': '#C2FF39',
+      'Pass': '#F9E8D3',
+      'Platinum': '#95382C',
+      'Gold': '#C2FF39',
+      'Silver': '#39FF8D',
+      'Bronze': '#F9E8D3',
+      'Certified': '#95382C',
+      'Net Zero': '#95382C',
+      'Near Zero': '#2D984D',
+      'Low Carbon': '#C2FF39',
+      '6 Star': '#95382C',
+      '5.5 Star': '#2D984D',
+      '5 Star': '#39FF8D',
+      '4.5 Star': '#C2FF39',
+      '4 Star': '#F9E8D3',
+      '3.5 Star': '#F9E8D3',
+      '3 Star': '#F9E8D3'
     };
-    return colors[rating as keyof typeof colors] || 'bg-gray-500';
+    return colors[rating as keyof typeof colors] || '#F9E8D3';
   };
   const getDisplayName = (project: Project) => {
     const baseId = project.id.split('-')[0];
@@ -145,17 +138,18 @@ export const CertificationAnalysis = ({
           return <div key={rating} className="space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
-                      <Badge className={getRatingColor(rating)}>
+                      <span className={`text-sm font-medium ${getRatingColor(rating)}`}>
                         {rating}
-                      </Badge>
+                      </span>
                     </div>
                     <span className="text-sm font-medium text-gray-700">{count}</span>
                   </div>
                   
                   <div className="relative">
                     <div className="w-full rounded-full h-6 bg-gray-50">
-                      {count > 0 && <div className={`${getBarColor(rating)} h-6 rounded-full transition-all duration-300`} style={{
-                  width: `${barWidth}%`
+                      {count > 0 && <div className="h-6 rounded-full transition-all duration-300" style={{
+                  width: `${barWidth}%`,
+                  backgroundColor: getBarColor(rating)
                 }} />}
                     </div>
                     
