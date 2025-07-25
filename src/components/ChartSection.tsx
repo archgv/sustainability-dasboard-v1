@@ -423,7 +423,7 @@ export const ChartSection = ({
                       : data.name;
                     
                     return (
-                      <div className="bg-white p-3 border rounded-lg shadow-lg" style={{ backgroundColor: chartColors.accent1, borderColor: chartColors.primary }}>
+                      <div className="bg-white p-3 border rounded-lg shadow-lg" style={{ backgroundColor: 'white', borderColor: chartColors.primary }}>
                         <p className="font-semibold" style={{ color: chartColors.dark }}>{displayName}</p>
                         <p className="text-sm" style={{ color: chartColors.darkGreen }}>{data.typology}</p>
                         <p className="text-sm" style={{ color: chartColors.dark }}>Area: {formatNumber(area)} m²</p>
