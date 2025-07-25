@@ -343,7 +343,8 @@ export const SectorPerformance = ({
               tickFormatter={(value) => formatNumber(value)} />
                   <Tooltip formatter={value => [`${formatNumber(Number(value))} ${getDisplayUnit()}`, 'Average']} labelFormatter={label => `Sector: ${label}`} contentStyle={{
                 backgroundColor: 'white',
-                border: `1px solid ${chartColors.primary}`
+                border: `1px solid ${chartColors.primary}`,
+                borderRadius: '8px'
               }} />
                   <Bar dataKey="value" fill={chartColors.primary} />
                 </BarChart>

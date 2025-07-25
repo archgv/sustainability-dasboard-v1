@@ -363,7 +363,7 @@ export const ChartSection = ({
                 return [`${formatNumber(value)} ${valueType === 'per-sqm' ? 'kgCO₂e/m²' : 'kgCO₂e total'}`, category?.label || name];
               }}
               labelFormatter={(label) => `Project: ${label}`}
-              contentStyle={{ backgroundColor: chartColors.accent1, border: `1px solid ${chartColors.primary}` }}
+              contentStyle={{ backgroundColor: 'white', border: `1px solid ${chartColors.primary}`, borderRadius: '8px' }}
             />
             <Legend 
               wrapperStyle={{ paddingTop: '20px' }}
@@ -412,7 +412,7 @@ export const ChartSection = ({
               />
               <Tooltip 
                 cursor={{ strokeDasharray: '3 3' }}
-                contentStyle={{ backgroundColor: chartColors.accent1, border: `1px solid ${chartColors.primary}` }}
+                contentStyle={{ backgroundColor: 'white', border: `1px solid ${chartColors.primary}`, borderRadius: '8px' }}
                 content={({ active, payload }) => {
                   if (active && payload && payload.length) {
                     const data = payload[0].payload;
@@ -526,7 +526,7 @@ export const ChartSection = ({
                   kpi1Config?.label || selectedKPI1
                 ]}
                 labelFormatter={(label) => `Project: ${label}`}
-                contentStyle={{ backgroundColor: chartColors.accent1, border: `1px solid ${chartColors.primary}` }}
+                contentStyle={{ backgroundColor: 'white', border: `1px solid ${chartColors.primary}`, borderRadius: '8px' }}
               />
               <Bar 
                 dataKey={selectedKPI1}
@@ -614,14 +614,14 @@ export const ChartSection = ({
                   name.includes('benchmark') ? `UKNZCBS ${name.split('_')[1]}` : kpi1Config?.label || selectedKPI1
                 ]}
                 labelFormatter={(label) => `Year: ${label}`}
-                contentStyle={{ backgroundColor: chartColors.accent1, border: `1px solid ${chartColors.primary}` }}
+                contentStyle={{ backgroundColor: 'white', border: `1px solid ${chartColors.primary}`, borderRadius: '8px' }}
                 content={({ active, payload, label }) => {
                   if (active && payload && payload.length) {
                     const projectData = payload.find(p => p.dataKey === selectedKPI1);
                     const benchmarkData = payload.filter(p => p.dataKey && p.dataKey.toString().includes('benchmark'));
                     
                     return (
-                      <div className="bg-white p-3 border rounded-lg shadow-lg" style={{ backgroundColor: chartColors.accent1, borderColor: chartColors.primary }}>
+                        <div className="bg-white p-3 border rounded-lg shadow-lg" style={{ backgroundColor: 'white', borderColor: chartColors.primary }}>
                         <p className="font-semibold" style={{ color: chartColors.dark }}>Year: {label}</p>
                         {projectData && (
                           <>
