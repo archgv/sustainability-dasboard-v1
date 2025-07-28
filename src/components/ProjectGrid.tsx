@@ -91,9 +91,9 @@ export const ProjectGrid = ({
                 <h3 className="text-lg font-semibold text-gray-900 line-clamp-2">
                   {displayName}
                 </h3>
-                <Badge variant="outline" className="ml-2 capitalize">
+                <span className="ml-2 capitalize text-sm text-gray-600">
                   {sectorDisplay}
-                </Badge>
+                </span>
               </div>
               
               <div className="space-y-3 mb-4">
@@ -110,14 +110,12 @@ export const ProjectGrid = ({
                 </div>
                 <div className="flex items-center text-sm text-gray-600">
                   <FileText className="h-4 w-4 mr-2" />
-                  <Badge variant="outline">
+                  <span className="text-sm text-gray-600">
                     {getRibaStageDisplay(project.ribaStage)}
-                  </Badge>
+                  </span>
                 </div>
-                <div className="flex gap-2">
-                  <Badge className={getProjectTypeColor(project.projectType)}>
-                    {project.projectType === 'new-build' ? 'New Build' : 'Retrofit'}
-                  </Badge>
+                <div className="text-sm text-gray-600">
+                  <span className="font-medium">Project Type:</span> {project.projectType === 'new-build' ? 'New Build' : 'Retrofit'}
                 </div>
                 
                 <div className="text-sm text-gray-600">
@@ -131,9 +129,9 @@ export const ProjectGrid = ({
                     <Leaf className="h-4 w-4 mr-2 text-green-600" />
                     <span className="text-sm text-gray-600">Embodied Carbon</span>
                   </div>
-                  <Badge className={getPerformanceColor(project.totalEmbodiedCarbon, 'carbon')}>
+                  <span className="text-sm text-gray-600">
                     {formatNumber(project.totalEmbodiedCarbon)} kgCO2e/m²
-                  </Badge>
+                  </span>
                 </div>
                 
                 <div className="flex items-center justify-between">
@@ -141,9 +139,9 @@ export const ProjectGrid = ({
                     <Zap className="h-4 w-4 mr-2 text-blue-600" />
                     <span className="text-sm text-gray-600">Operational Energy</span>
                   </div>
-                  <Badge className={getPerformanceColor(project.operationalEnergy, 'energy')}>
+                  <span className="text-sm text-gray-600">
                     {formatNumber(project.operationalEnergy)} kWh/m²/yr
-                  </Badge>
+                  </span>
                 </div>
                 
                 {project.projectType === 'retrofit' && project.existingBuildingEnergy && (
@@ -152,9 +150,9 @@ export const ProjectGrid = ({
                       <Zap className="h-4 w-4 mr-2 text-orange-600" />
                       <span className="text-sm text-gray-600">Existing Building Energy</span>
                     </div>
-                    <Badge className={getPerformanceColor(project.existingBuildingEnergy, 'energy')}>
+                    <span className="text-sm text-gray-600">
                       {formatNumber(project.existingBuildingEnergy)} kWh/m²/yr
-                    </Badge>
+                    </span>
                   </div>
                 )}
               </div>
@@ -163,9 +161,9 @@ export const ProjectGrid = ({
                 <div className="mt-4 pt-4 border-t">
                   <div className="flex flex-wrap gap-1">
                     {project.certifications.map((cert, index) => (
-                      <Badge key={index} variant="secondary" className="text-xs">
+                      <span key={index} className="text-xs text-gray-600 mr-2">
                         {cert}
-                      </Badge>
+                      </span>
                     ))}
                   </div>
                 </div>
