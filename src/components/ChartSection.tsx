@@ -1,11 +1,12 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Download, FileText } from 'lucide-react';
-import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, LineChart, Line, Legend } from 'recharts';
+import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, LineChart, Line, Legend, Cell } from 'recharts';
 import { Project, availableKPIs } from '@/types/project';
 import { ChartType, EmbodiedCarbonBreakdown, ValueType } from './ChartTypeSelector';
-import { addProjectNumberToName } from '@/utils/projectUtils';
+import { addProjectNumberToName, getSector, getSectorColor, getSectorShape, sectorConfig } from '@/utils/projectUtils';
 import { formatNumber } from '@/lib/utils';
+import { CustomShape } from './CustomShapes';
 
 interface ChartSectionProps {
   projects: Project[];
@@ -72,20 +73,6 @@ export const ChartSection = ({
     'Infrastructure': { 2025: 565, 2026: 525, 2027: 490, 2028: 450, 2029: 420, 2030: 380, 2031: 355, 2032: 335, 2033: 305, 2034: 280, 2035: 250, 2036: 225, 2037: 210, 2038: 195, 2039: 175, 2040: 160, 2041: 145, 2042: 135, 2043: 120, 2044: 105, 2045: 95, 2046: 80, 2047: 70, 2048: 60, 2049: 50, 2050: 40 }
   };
 
-  // Map typologies to the correct sectors for benchmark lookup
-  const getSector = (typology: string) => {
-    const sectorMap: { [key: string]: string } = {
-      'residential': 'Residential',
-      'educational': 'Education',
-      'healthcare': 'Healthcare',
-      'infrastructure': 'Infrastructure',
-      'ccc': 'CCC',
-      'office': 'Commercial',
-      'retail': 'Commercial',
-      'mixed-use': 'Commercial'
-    };
-    return sectorMap[typology] || 'Commercial';
-  };
 
   // Mock building area data for demonstration
   const getProjectArea = (projectId: string): number => {
@@ -443,18 +430,28 @@ export const ChartSection = ({
                 name="Projects" 
                 data={transformedProjects}
                 fill={chartColors.primary}
-                fillOpacity={0.7}
-              >
-                {transformedProjects.map((project, index) => {
-                  const baseId = project.id.split('-')[0];
+                fillOpacity={0.8}
+                shape={(props: any) => {
+                  const { cx, cy, payload } = props;
+                  if (!payload) return null;
+                  
+                  const baseId = payload.id.split('-')[0];
                   const area = getProjectArea(baseId);
                   const bubbleSize = valueType === 'per-sqm' ? Math.sqrt(area / 500) : 8;
-                  const colorIndex = index % seriesColors.length;
+                  const sectorColor = getSectorColor(payload.typology);
+                  const shape = getSectorShape(payload.typology);
+                  
                   return (
-                    <Scatter key={index} r={Math.max(4, Math.min(20, bubbleSize))} fill={seriesColors[colorIndex]} />
+                    <CustomShape
+                      cx={cx}
+                      cy={cy}
+                      fill={sectorColor}
+                      shape={shape}
+                      size={Math.max(8, Math.min(20, bubbleSize))}
+                    />
                   );
-                })}
-              </Scatter>
+                }}
+              />
             </ScatterChart>
           </ResponsiveContainer>
         );
@@ -528,12 +525,17 @@ export const ChartSection = ({
                 labelFormatter={(label) => `Project: ${label}`}
                 contentStyle={{ backgroundColor: 'white', border: `1px solid ${chartColors.primary}`, borderRadius: '8px' }}
               />
-              <Bar 
+               <Bar 
                 dataKey={selectedKPI1}
                 fill={chartColors.primary}
                 name={kpi1Config?.label || selectedKPI1}
                 radius={[4, 4, 0, 0]}
-              />
+              >
+                {transformedProjects.map((project, index) => {
+                  const sectorColor = getSectorColor(project.typology);
+                  return <Cell key={index} fill={sectorColor} />;
+                })}
+              </Bar>
             </BarChart>
           </ResponsiveContainer>
         );

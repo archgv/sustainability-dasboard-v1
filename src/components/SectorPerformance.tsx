@@ -3,8 +3,9 @@ import { ChevronDown, Download, FileText } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { formatNumber } from '@/lib/utils';
+import { getSector, getSectorColor, sectorConfig } from '@/utils/projectUtils';
 
 interface SectorPerformanceProps {
   projects: any[];
@@ -45,20 +46,6 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
   const currentKPI = kpiOptions.find(kpi => kpi.value === selectedKPI);
   const allSectors = ['Residential', 'Education', 'Healthcare', 'Infrastructure', 'CCC', 'Commercial'];
 
-  // Map typologies to the correct sectors
-  const getSector = (typology: string) => {
-    const sectorMap: { [key: string]: string } = {
-      'residential': 'Residential',
-      'educational': 'Education',
-      'healthcare': 'Healthcare',
-      'infrastructure': 'Infrastructure',
-      'ccc': 'CCC',
-      'office': 'Commercial',
-      'retail': 'Commercial',
-      'mixed-use': 'Commercial'
-    };
-    return sectorMap[typology] || 'Commercial';
-  };
 
   // Filter projects by year if needed
   const filteredProjects = yearFilter === 'all' ? projects : projects.filter(project => {
@@ -322,7 +309,11 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                       borderRadius: '8px'
                     }}
                   />
-                  <Bar dataKey="value" fill={chartColors.primary} />
+                  <Bar dataKey="value" fill={chartColors.primary}>
+                    {chartData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={sectorConfig[entry.sector as keyof typeof sectorConfig]?.color || chartColors.primary} />
+                    ))}
+                  </Bar>
                 </BarChart>
               </ResponsiveContainer>
             </div>
