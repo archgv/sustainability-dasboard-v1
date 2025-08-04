@@ -49,7 +49,7 @@ export const sampleProjects: Project[] = [
     // Biodiversity
     biodiversityNetGain: 15,
     habitatUnits: 12,
-    urbanGreeningFactor: 0.4,
+    urbanGreeningFactor: 12,
     
     // Embodied Impacts
     ozoneDepletion: 0.001,
@@ -112,7 +112,7 @@ export const sampleProjects: Project[] = [
     // Biodiversity
     biodiversityNetGain: 10,
     habitatUnits: 8,
-    urbanGreeningFactor: 0.3,
+    urbanGreeningFactor: 8,
     
     // Embodied Impacts
     ozoneDepletion: 0.0012,
@@ -175,7 +175,7 @@ export const sampleProjects: Project[] = [
     // Biodiversity
     biodiversityNetGain: 20,
     habitatUnits: 15,
-    urbanGreeningFactor: 0.5,
+    urbanGreeningFactor: 15,
     
     // Embodied Impacts
     ozoneDepletion: 0.0008,
@@ -238,7 +238,7 @@ export const sampleProjects: Project[] = [
     // Biodiversity
     biodiversityNetGain: 5,
     habitatUnits: 4,
-    urbanGreeningFactor: 0.2,
+    urbanGreeningFactor: 5,
     
     // Embodied Impacts
     ozoneDepletion: 0.0015,
@@ -301,7 +301,7 @@ export const sampleProjects: Project[] = [
     // Biodiversity
     biodiversityNetGain: 12,
     habitatUnits: 9,
-    urbanGreeningFactor: 0.35,
+    urbanGreeningFactor: 10,
     
     // Embodied Impacts
     ozoneDepletion: 0.0011,
@@ -364,7 +364,7 @@ export const sampleProjects: Project[] = [
     // Biodiversity
     biodiversityNetGain: 18,
     habitatUnits: 14,
-    urbanGreeningFactor: 0.45,
+    urbanGreeningFactor: 13,
     
     // Embodied Impacts
     ozoneDepletion: 0.0009,

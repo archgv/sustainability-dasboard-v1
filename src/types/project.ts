@@ -116,9 +116,9 @@ export const availableKPIs: KPIOption[] = [
   { key: 'daylightFactor', label: 'Daylight Factor', unit: '%', category: 'wellbeing', numericOnly: true },
   
   // Biodiversity
-  { key: 'biodiversityNetGain', label: 'Biodiversity Net Gain', unit: '%', category: 'biodiversity', numericOnly: true },
+  { key: 'biodiversityNetGain', label: 'Biodiversity net gain', unit: '%', category: 'biodiversity', numericOnly: true },
   { key: 'habitatUnits', label: 'Habitat Units Gained', unit: 'units', category: 'biodiversity', numericOnly: true },
-  { key: 'urbanGreeningFactor', label: 'Urban Greening Factor', unit: 'score', category: 'biodiversity', numericOnly: true },
+  { key: 'urbanGreeningFactor', label: 'Urban greening factor', unit: '%', category: 'biodiversity', numericOnly: true },
   
   // Circular Economy
   { key: 'reusedRecycledMaterial', label: 'Reused/Recycled Material', unit: '% of total mass', category: 'circular', numericOnly: true },
