@@ -21,26 +21,16 @@ interface ChartTypeSelectorProps {
 
 // KPI compatibility matrix based on the provided matrix
 const kpiCompatibilityMatrix: Record<string, string[]> = {
-  'upfrontCarbon': ['totalEmbodiedCarbon', 'refrigerants', 'ozoneDepletion', 'reusedRecycledMaterial'],
-  'totalEmbodiedCarbon': ['upfrontCarbon', 'refrigerants', 'ozoneDepletion', 'reusedRecycledMaterial'],
-  'refrigerants': ['upfrontCarbon', 'totalEmbodiedCarbon', 'ozoneDepletion'],
-  'operationalEnergy': ['gasUsage', 'spaceHeatingDemand', 'renewableEnergyGeneration', 'existingBuildingEnergy'],
-  'gasUsage': ['operationalEnergy', 'spaceHeatingDemand', 'renewableEnergyGeneration', 'existingBuildingEnergy'],
-  'spaceHeatingDemand': ['operationalEnergy', 'gasUsage', 'renewableEnergyGeneration', 'existingBuildingEnergy'],
-  'renewableEnergyGeneration': ['operationalEnergy', 'gasUsage', 'spaceHeatingDemand', 'existingBuildingEnergy'],
-  'existingBuildingEnergy': ['operationalEnergy', 'gasUsage', 'spaceHeatingDemand', 'renewableEnergyGeneration'],
-  'breeam': ['leed', 'well', 'nabers', 'passivhaus'],
-  'leed': ['breeam', 'well', 'nabers', 'passivhaus'],
-  'well': ['breeam', 'leed', 'nabers', 'passivhaus', 'pmv', 'daylightFactor'],
-  'nabers': ['breeam', 'leed', 'well', 'passivhaus'],
-  'passivhaus': ['breeam', 'leed', 'well', 'nabers'],
-  'pmv': ['well', 'daylightFactor'],
-  'daylightFactor': ['well', 'pmv'],
-  'biodiversityNetGain': ['habitatUnits', 'urbanGreeningFactor'],
-  'habitatUnits': ['biodiversityNetGain', 'urbanGreeningFactor'],
-  'urbanGreeningFactor': ['biodiversityNetGain', 'habitatUnits'],
-  'ozoneDepletion': ['upfrontCarbon', 'totalEmbodiedCarbon', 'refrigerants'],
-  'reusedRecycledMaterial': ['upfrontCarbon', 'totalEmbodiedCarbon']
+  'operationalEnergyTotal': ['operationalEnergyPartL', 'operationalEnergyGas', 'spaceHeatingDemand', 'renewableEnergyGeneration', 'upfrontCarbon', 'totalEmbodiedCarbon', 'biogenicCarbon'],
+  'operationalEnergyPartL': ['operationalEnergyTotal', 'operationalEnergyGas', 'spaceHeatingDemand', 'renewableEnergyGeneration', 'upfrontCarbon', 'totalEmbodiedCarbon', 'biogenicCarbon'],
+  'operationalEnergyGas': ['operationalEnergyTotal', 'operationalEnergyPartL', 'spaceHeatingDemand', 'renewableEnergyGeneration', 'upfrontCarbon', 'totalEmbodiedCarbon', 'biogenicCarbon'],
+  'spaceHeatingDemand': ['operationalEnergyTotal', 'operationalEnergyPartL', 'operationalEnergyGas', 'renewableEnergyGeneration', 'upfrontCarbon', 'totalEmbodiedCarbon', 'biogenicCarbon'],
+  'renewableEnergyGeneration': ['operationalEnergyTotal', 'operationalEnergyPartL', 'operationalEnergyGas', 'spaceHeatingDemand', 'upfrontCarbon', 'totalEmbodiedCarbon', 'biogenicCarbon'],
+  'upfrontCarbon': ['operationalEnergyTotal', 'operationalEnergyPartL', 'operationalEnergyGas', 'spaceHeatingDemand', 'renewableEnergyGeneration', 'totalEmbodiedCarbon', 'biogenicCarbon'],
+  'totalEmbodiedCarbon': ['operationalEnergyTotal', 'operationalEnergyPartL', 'operationalEnergyGas', 'spaceHeatingDemand', 'renewableEnergyGeneration', 'upfrontCarbon', 'biogenicCarbon'],
+  'biogenicCarbon': ['operationalEnergyTotal', 'operationalEnergyPartL', 'operationalEnergyGas', 'spaceHeatingDemand', 'renewableEnergyGeneration', 'upfrontCarbon', 'totalEmbodiedCarbon'],
+  'biodiversityNetGain': ['urbanGreeningFactor'],
+  'urbanGreeningFactor': ['biodiversityNetGain']
 };
 export const ChartTypeSelector = ({
   chartType,
