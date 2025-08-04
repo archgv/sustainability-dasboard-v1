@@ -11,9 +11,13 @@ export interface Project {
   // Embodied Carbon
   upfrontCarbon: number; // kgCO2e/m²
   totalEmbodiedCarbon: number; // kgCO2e/m²
+  biogenicCarbon: number; // kgCO2e/m²
   refrigerants: number; // kgCO2e/m²
   
   // Operational Energy
+  operationalEnergyTotal: number; // kWh/m²/year
+  operationalEnergyPartL: number; // kWh/m²/year
+  operationalEnergyGas: number; // kWh/m²/year
   operationalEnergy: number; // kWh/m²/year
   gasUsage: number; // kWh/m²/year
   spaceHeatingDemand: number; // kWh/m²/year
@@ -90,13 +94,17 @@ export const availableKPIs: KPIOption[] = [
   // Embodied Carbon
   { key: 'upfrontCarbon', label: 'Upfront Carbon', unit: 'kgCO2e/m²', category: 'embodied-carbon', numericOnly: true },
   { key: 'totalEmbodiedCarbon', label: 'Total Embodied Carbon', unit: 'kgCO2e/m²', category: 'embodied-carbon', numericOnly: true },
+  { key: 'biogenicCarbon', label: 'Biogenic carbon', unit: 'kgCO2e/m²', category: 'embodied-carbon', numericOnly: true },
   { key: 'refrigerants', label: 'Refrigerants', unit: 'kgCO2e/m²', category: 'embodied-carbon', numericOnly: true },
   
   // Operational Energy
+  { key: 'operationalEnergyTotal', label: 'Operational energy: Total', unit: 'kWh/m²/year', category: 'operational-energy', numericOnly: true },
+  { key: 'operationalEnergyPartL', label: 'Operational energy Part L', unit: 'kWh/m²/year', category: 'operational-energy', numericOnly: true },
+  { key: 'operationalEnergyGas', label: 'Operational energy: Gas', unit: 'kWh/m²/year', category: 'operational-energy', numericOnly: true },
   { key: 'operationalEnergy', label: 'Operational Energy', unit: 'kWh/m²/year', category: 'operational-energy', numericOnly: true },
   { key: 'gasUsage', label: 'Gas Usage', unit: 'kWh/m²/year', category: 'operational-energy', numericOnly: true },
-  { key: 'spaceHeatingDemand', label: 'Space Heating Demand', unit: 'kWh/m²/year', category: 'operational-energy', numericOnly: true },
-  { key: 'renewableEnergyGeneration', label: 'Renewable Energy Generation', unit: 'kWh/m²/year', category: 'operational-energy', numericOnly: true },
+  { key: 'spaceHeatingDemand', label: 'Space heating demand', unit: 'kWh/m²/year', category: 'operational-energy', numericOnly: true },
+  { key: 'renewableEnergyGeneration', label: 'Renewable energy generation', unit: 'kWh/m²/year', category: 'operational-energy', numericOnly: true },
   { key: 'existingBuildingEnergy', label: 'Existing Building Energy', unit: 'kWh/m²/year', category: 'operational-energy', numericOnly: true },
   
   // Water

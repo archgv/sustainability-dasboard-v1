@@ -15,9 +15,13 @@ export const sampleProjects: Project[] = [
     // Embodied Carbon
     upfrontCarbon: 450,
     totalEmbodiedCarbon: 650,
+    biogenicCarbon: 50,
     refrigerants: 15,
     
     // Operational Energy
+    operationalEnergyTotal: 75,
+    operationalEnergyPartL: 65,
+    operationalEnergyGas: 25,
     operationalEnergy: 75,
     gasUsage: 25,
     spaceHeatingDemand: 30,
@@ -74,9 +78,13 @@ export const sampleProjects: Project[] = [
     // Embodied Carbon
     upfrontCarbon: 520,
     totalEmbodiedCarbon: 720,
+    biogenicCarbon: 60,
     refrigerants: 18,
     
     // Operational Energy
+    operationalEnergyTotal: 90,
+    operationalEnergyPartL: 80,
+    operationalEnergyGas: 35,
     operationalEnergy: 90,
     gasUsage: 35,
     spaceHeatingDemand: 40,
@@ -133,9 +141,13 @@ export const sampleProjects: Project[] = [
     // Embodied Carbon
     upfrontCarbon: 380,
     totalEmbodiedCarbon: 580,
+    biogenicCarbon: 40,
     refrigerants: 12,
     
     // Operational Energy
+    operationalEnergyTotal: 65,
+    operationalEnergyPartL: 55,
+    operationalEnergyGas: 20,
     operationalEnergy: 65,
     gasUsage: 20,
     spaceHeatingDemand: 25,
@@ -192,9 +204,13 @@ export const sampleProjects: Project[] = [
     // Embodied Carbon
     upfrontCarbon: 600,
     totalEmbodiedCarbon: 800,
+    biogenicCarbon: 70,
     refrigerants: 25,
     
     // Operational Energy
+    operationalEnergyTotal: 110,
+    operationalEnergyPartL: 100,
+    operationalEnergyGas: 45,
     operationalEnergy: 110,
     gasUsage: 45,
     spaceHeatingDemand: 50,
@@ -251,9 +267,13 @@ export const sampleProjects: Project[] = [
     // Embodied Carbon
     upfrontCarbon: 480,
     totalEmbodiedCarbon: 700,
+    biogenicCarbon: 55,
     refrigerants: 20,
     
     // Operational Energy
+    operationalEnergyTotal: 80,
+    operationalEnergyPartL: 70,
+    operationalEnergyGas: 30,
     operationalEnergy: 80,
     gasUsage: 30,
     spaceHeatingDemand: 35,
@@ -310,9 +330,13 @@ export const sampleProjects: Project[] = [
     // Embodied Carbon
     upfrontCarbon: 400,
     totalEmbodiedCarbon: 600,
+    biogenicCarbon: 45,
     refrigerants: 14,
     
     // Operational Energy
+    operationalEnergyTotal: 70,
+    operationalEnergyPartL: 60,
+    operationalEnergyGas: 22,
     operationalEnergy: 70,
     gasUsage: 22,
     spaceHeatingDemand: 28,
