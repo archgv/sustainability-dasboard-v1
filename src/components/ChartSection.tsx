@@ -649,12 +649,29 @@ export const ChartSection = ({
               <Line 
                 type="monotone"
                 dataKey={selectedKPI1}
-                stroke={chartColors.primary}
+                stroke="transparent"
                 strokeWidth={0}
-                dot={{ fill: chartColors.primary, strokeWidth: 2, r: 6 }}
+                dot={false}
                 name={kpi1Config?.label || selectedKPI1}
                 legendType="none"
               />
+              
+              {/* Render dots with sector colors */}
+              {timelineData.map((project, index) => {
+                const sectorColor = getSectorColor(project.typology);
+                return (
+                  <Line
+                    key={`dot-${index}`}
+                    type="monotone"
+                    dataKey={selectedKPI1}
+                    data={[project]}
+                    stroke="transparent"
+                    strokeWidth={0}
+                    dot={{ fill: sectorColor, strokeWidth: 2, r: 6 }}
+                    legendType="none"
+                  />
+                );
+              })}
               
               {/* Benchmark lines if applicable */}
               {shouldShowBenchmark && benchmarkData.length > 0 && (

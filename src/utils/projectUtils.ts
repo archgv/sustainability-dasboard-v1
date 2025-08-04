@@ -15,23 +15,43 @@ export const addProjectNumberToName = (name: string, index: number): string => {
 export const getSector = (typology: string): string => {
   const sectorMap: Record<string, string> = {
     'Office': 'Commercial',
+    'office': 'Commercial',
     'Warehouse': 'Commercial',
+    'warehouse': 'Commercial',
     'Retail': 'Commercial',
+    'retail': 'Commercial',
     'Commercial': 'Commercial',
+    'commercial': 'Commercial',
     'Residential': 'Residential',
+    'residential': 'Residential',
     'Housing': 'Residential',
+    'housing': 'Residential',
     'Apartment': 'Residential',
+    'apartment': 'Residential',
     'School': 'Education',
+    'school': 'Education',
     'University': 'Education',
+    'university': 'Education',
     'Education': 'Education',
+    'education': 'Education',
+    'Educational': 'Education',
+    'educational': 'Education',
     'Hospital': 'Healthcare',
+    'hospital': 'Healthcare',
     'Healthcare': 'Healthcare',
+    'healthcare': 'Healthcare',
     'Medical': 'Healthcare',
+    'medical': 'Healthcare',
     'Infrastructure': 'Infrastructure',
+    'infrastructure': 'Infrastructure',
     'Transport': 'Infrastructure',
+    'transport': 'Infrastructure',
     'Civic': 'CCC',
+    'civic': 'CCC',
     'Community': 'CCC',
+    'community': 'CCC',
     'Cultural': 'CCC',
+    'cultural': 'CCC',
   };
   
   return sectorMap[typology] || 'Commercial';
@@ -65,7 +85,7 @@ export const sectorConfig = {
     name: 'CCC'
   },
   'Commercial': { 
-    color: '#39F8D0', 
+    color: '#39FF8D', 
     shape: 'pentagon',
     name: 'Commercial'
   }
