@@ -19,6 +19,23 @@ interface ChartTypeSelectorProps {
   onValueTypeChange: (value: ValueType) => void;
 }
 
+// Define the 10 specific KPIs for charts
+const chartKPIs = [
+  'operationalEnergyTotal',
+  'operationalEnergyPartL', 
+  'operationalEnergyGas',
+  'spaceHeatingDemand',
+  'renewableEnergyGeneration',
+  'upfrontCarbon',
+  'totalEmbodiedCarbon',
+  'biogenicCarbon',
+  'biodiversityNetGain',
+  'urbanGreeningFactor'
+];
+
+// Filter availableKPIs to only include the chart KPIs
+const filteredKPIs = availableKPIs.filter(kpi => chartKPIs.includes(kpi.key));
+
 // KPI compatibility matrix based on the provided matrix
 const kpiCompatibilityMatrix: Record<string, string[]> = {
   'operationalEnergyTotal': ['operationalEnergyPartL', 'operationalEnergyGas', 'spaceHeatingDemand', 'renewableEnergyGeneration', 'upfrontCarbon', 'totalEmbodiedCarbon', 'biogenicCarbon'],
@@ -48,7 +65,7 @@ export const ChartTypeSelector = ({
   const showEmbodiedCarbonBreakdown = chartType === 'single-bar' && selectedKPI1 === 'totalEmbodiedCarbon';
 
   // Get compatible KPI2 options based on selected KPI1
-  const compatibleKPI2Options = showKPI2 ? availableKPIs.filter(kpi => kpiCompatibilityMatrix[selectedKPI1]?.includes(kpi.key)) : [];
+  const compatibleKPI2Options = showKPI2 ? filteredKPIs.filter(kpi => kpiCompatibilityMatrix[selectedKPI1]?.includes(kpi.key)) : [];
   return <Card className="p-4 mb-6">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div>
@@ -91,7 +108,7 @@ export const ChartTypeSelector = ({
               <SelectValue placeholder="Select first KPI" />
             </SelectTrigger>
             <SelectContent>
-              {availableKPIs.map(kpi => <SelectItem key={kpi.key} value={kpi.key}>
+              {filteredKPIs.map(kpi => <SelectItem key={kpi.key} value={kpi.key}>
                   {kpi.label} ({kpi.unit})
                 </SelectItem>)}
             </SelectContent>
