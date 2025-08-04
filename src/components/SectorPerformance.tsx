@@ -30,14 +30,16 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
   const [yearFilter, setYearFilter] = useState('all');
 
   const kpiOptions = [
+    { value: 'operationalEnergyTotal', label: 'Operational energy: Total', unit: 'kWh/m²/yr', totalUnit: 'MWh/yr' },
+    { value: 'operationalEnergyPartL', label: 'Operational energy Part L', unit: 'kWh/m²/yr', totalUnit: 'MWh/yr' },
+    { value: 'operationalEnergyGas', label: 'Operational energy: Gas', unit: 'kWh/m²/yr', totalUnit: 'MWh/yr' },
+    { value: 'spaceHeatingDemand', label: 'Space heating demand', unit: 'kWh/m²/yr', totalUnit: 'MWh/yr' },
+    { value: 'renewableEnergyGeneration', label: 'Renewable energy generation', unit: 'kWh/m²/yr', totalUnit: 'MWh/yr' },
     { value: 'upfrontCarbon', label: 'Upfront Carbon', unit: 'kgCO₂e/m²', totalUnit: 'tCO₂e' },
     { value: 'totalEmbodiedCarbon', label: 'Total Embodied Carbon', unit: 'kgCO₂e/m²', totalUnit: 'tCO₂e' },
-    { value: 'refrigerants', label: 'Refrigerants', unit: 'kgCO₂e/m²', totalUnit: 'tCO₂e' },
-    { value: 'operationalEnergy', label: 'Operational Energy', unit: 'kWh/m²/yr', totalUnit: 'MWh/yr' },
-    { value: 'gasUsage', label: 'Gas Usage', unit: 'kWh/m²/yr', totalUnit: 'MWh/yr' },
-    { value: 'biodiversityNetGain', label: 'Biodiversity Net Gain', unit: '%', totalUnit: '%' },
-    { value: 'habitatUnits', label: 'Habitat Units Gained', unit: 'units', totalUnit: 'units' },
-    { value: 'urbanGreeningFactor', label: 'Urban Greening Factor', unit: 'score', totalUnit: 'score' }
+    { value: 'biogenicCarbon', label: 'Biogenic carbon', unit: 'kgCO₂e/m²', totalUnit: 'tCO₂e' },
+    { value: 'biodiversityNetGain', label: 'Biodiversity net gain', unit: '%', totalUnit: '%' },
+    { value: 'urbanGreeningFactor', label: 'Urban greening factor', unit: 'score', totalUnit: 'score' }
   ];
 
   const currentKPI = kpiOptions.find(kpi => kpi.value === selectedKPI);
