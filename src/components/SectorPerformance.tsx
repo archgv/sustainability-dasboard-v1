@@ -248,7 +248,7 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                   }}
                   onClick={() => setValueType('per-sqm')}
                 >
-                  Per m²
+                  Average per m²
                 </button>
                 <button
                   className={`px-3 py-1 rounded text-sm font-medium transition-colors ${valueType === 'total' ? 'bg-white shadow-sm' : 'hover:opacity-80'}`}
@@ -258,7 +258,7 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                   }}
                   onClick={() => setValueType('total')}
                 >
-                  Total
+                  Cumulative total
                 </button>
               </div>
             </div>
@@ -334,11 +334,22 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                 <thead>
                   <tr style={{ backgroundColor: chartColors.accent1 }}>
                     <th className="border px-4 py-2 text-left" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>Sector</th>
-                    <th className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>Projects</th>
-                    <th className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>Average</th>
-                    <th className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>Min</th>
-                    <th className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>Max</th>
-                    <th className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>Range</th>
+                    <th className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>No. of projects</th>
+                    {valueType === 'per-sqm' ? (
+                      <>
+                        <th className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>Average ({getDisplayUnit()})</th>
+                        <th className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>Min</th>
+                        <th className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>Max</th>
+                        <th className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>Range</th>
+                      </>
+                    ) : (
+                      <>
+                        <th className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>Cumulative total ({getDisplayUnit()})</th>
+                        <th className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>Min</th>
+                        <th className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>Max</th>
+                        <th className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>Cumulative total Area (m²)</th>
+                      </>
+                    )}
                   </tr>
                 </thead>
                 <tbody>
@@ -349,16 +360,30 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                     const max = stats && stats.maxValue !== -Infinity ? Math.round(stats.maxValue) : 0;
                     const range = max - min;
                     const count = stats ? stats.count : 0;
+                    const totalArea = stats ? Math.round(stats.totalGIA) : 0;
                     return (
                       <tr key={sector}>
                         <td className="border px-4 py-2 font-medium" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>{sector}</td>
                         <td className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>{count}</td>
-                        <td className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>
-                          {formatNumber(avg)} {getDisplayUnit()}
-                        </td>
-                        <td className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>{formatNumber(min)}</td>
-                        <td className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>{formatNumber(max)}</td>
-                        <td className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>{formatNumber(range)}</td>
+                        {valueType === 'per-sqm' ? (
+                          <>
+                            <td className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>
+                              {formatNumber(avg)}
+                            </td>
+                            <td className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>{formatNumber(min)}</td>
+                            <td className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>{formatNumber(max)}</td>
+                            <td className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>{formatNumber(range)}</td>
+                          </>
+                        ) : (
+                          <>
+                            <td className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>
+                              {formatNumber(stats ? stats.totalValue : 0)}
+                            </td>
+                            <td className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>{formatNumber(min)}</td>
+                            <td className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>{formatNumber(max)}</td>
+                            <td className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>{formatNumber(totalArea)}</td>
+                          </>
+                        )}
                       </tr>
                     );
                   })}
