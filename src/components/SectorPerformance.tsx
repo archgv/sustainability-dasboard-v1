@@ -136,7 +136,36 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
   const handleDownloadPNG = () => {
     console.log('Downloading PNG for sector performance analysis');
 
-    // Find the chart SVG element within this component
+    // Create a canvas element with dimensions for full layout
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      console.error('Canvas context not available');
+      return;
+    }
+
+    // Set canvas dimensions for full layout
+    canvas.width = 800;
+    canvas.height = 1000;
+
+    // Fill white background
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Set font
+    ctx.font = '16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillStyle = '#272727';
+    ctx.textAlign = 'center';
+
+    let yPosition = 40;
+
+    // Draw title
+    const title = `${currentKPI?.label} by sector (${getDisplayUnit()})`;
+    ctx.font = 'bold 18px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(title, canvas.width / 2, yPosition);
+    yPosition += 60;
+
+    // Draw chart
     const chartContainer = document.querySelector('[data-chart="sector-chart"]');
     if (!chartContainer) {
       console.error('Sector chart container not found');
@@ -148,34 +177,87 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
       return;
     }
 
-    // Create a canvas element
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    if (!ctx) {
-      console.error('Canvas context not available');
-      return;
-    }
-
-    // Set canvas dimensions
-    const svgRect = svgElement.getBoundingClientRect();
-    canvas.width = svgRect.width * 2; // Higher resolution
-    canvas.height = svgRect.height * 2;
-    ctx.scale(2, 2);
-
-    // Convert SVG to data URL
     const svgData = new XMLSerializer().serializeToString(svgElement);
     const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
     const svgUrl = URL.createObjectURL(svgBlob);
 
-    // Create image and draw to canvas
     const img = new Image();
     img.onload = () => {
-      // Fill white background
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, canvas.width / 2, canvas.height / 2);
+      // Draw chart
+      const chartHeight = 320;
+      const chartWidth = 700;
+      const chartX = (canvas.width - chartWidth) / 2;
+      ctx.drawImage(img, chartX, yPosition, chartWidth, chartHeight);
+      yPosition += chartHeight + 30;
 
-      // Draw the SVG image
-      ctx.drawImage(img, 0, 0, svgRect.width, svgRect.height);
+      // Draw date range
+      ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.textAlign = 'left';
+      const dateRangeText = yearFilter === 'all' ? 'Date range: All years' : `Date range: From ${yearFilter.replace('from-', '')}`;
+      ctx.fillText(dateRangeText, 50, yPosition);
+      yPosition += 40;
+
+      // Draw table title
+      ctx.font = 'bold 16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillText('Summary Statistics', 50, yPosition);
+      yPosition += 30;
+
+      // Draw table
+      const tableHeaders = valueType === 'per-sqm' 
+        ? ['Sector', 'No. of projects', `Average (${getDisplayUnit()})`, 'Min', 'Max', 'Range']
+        : ['Sector', 'No. of projects', `Cumulative total (${getDisplayUnit()})`, 'Min', 'Max', `Cumulative total Area (m²)`];
+      
+      const colWidths = [120, 100, 140, 80, 80, 120];
+      const rowHeight = 25;
+      let startX = 50;
+
+      // Draw table headers
+      ctx.font = 'bold 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillStyle = '#E9E8D3';
+      ctx.fillRect(startX, yPosition, colWidths.reduce((a, b) => a + b, 0), rowHeight);
+      
+      ctx.fillStyle = '#272727';
+      ctx.strokeStyle = '#272727';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(startX, yPosition, colWidths.reduce((a, b) => a + b, 0), rowHeight);
+
+      let currentX = startX;
+      tableHeaders.forEach((header, i) => {
+        ctx.strokeRect(currentX, yPosition, colWidths[i], rowHeight);
+        ctx.textAlign = i === 0 ? 'left' : 'center';
+        const textX = i === 0 ? currentX + 5 : currentX + colWidths[i] / 2;
+        ctx.fillText(header, textX, yPosition + 16);
+        currentX += colWidths[i];
+      });
+      yPosition += rowHeight;
+
+      // Draw table rows
+      ctx.font = '12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      allSectors.forEach(sector => {
+        const stats = sectorStats[sector];
+        const avg = stats ? getAverage(stats.totalValue, stats.count) : 0;
+        const min = stats && stats.minValue !== Infinity ? Math.round(stats.minValue) : 0;
+        const max = stats && stats.maxValue !== -Infinity ? Math.round(stats.maxValue) : 0;
+        const range = max - min;
+        const count = stats ? stats.count : 0;
+        const totalArea = stats ? Math.round(stats.totalGIA) : 0;
+
+        const rowData = valueType === 'per-sqm'
+          ? [sector, count.toString(), formatNumber(avg), formatNumber(min), formatNumber(max), formatNumber(range)]
+          : [sector, count.toString(), formatNumber(stats ? stats.totalValue : 0), formatNumber(min), formatNumber(max), formatNumber(totalArea)];
+
+        ctx.strokeRect(startX, yPosition, colWidths.reduce((a, b) => a + b, 0), rowHeight);
+        
+        currentX = startX;
+        rowData.forEach((data, i) => {
+          ctx.strokeRect(currentX, yPosition, colWidths[i], rowHeight);
+          ctx.textAlign = i === 0 ? 'left' : 'center';
+          const textX = i === 0 ? currentX + 5 : currentX + colWidths[i] / 2;
+          ctx.fillText(data, textX, yPosition + 16);
+          currentX += colWidths[i];
+        });
+        yPosition += rowHeight;
+      });
 
       // Convert canvas to PNG and download
       canvas.toBlob(blob => {
