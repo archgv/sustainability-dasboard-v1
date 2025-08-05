@@ -8,7 +8,7 @@ interface CustomShapeProps {
   size?: number;
 }
 
-export const CustomShape: React.FC<CustomShapeProps> = ({ cx = 0, cy = 0, fill = '#000', shape, size = 8 }) => {
+export const CustomShape: React.FC<CustomShapeProps> = ({ cx = 0, cy = 0, fill = '#000', shape, size = 12 }) => {
   const renderShape = () => {
     switch (shape) {
       case 'square':
