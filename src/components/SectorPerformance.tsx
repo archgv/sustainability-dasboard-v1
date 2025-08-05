@@ -301,7 +301,7 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                     tickFormatter={(value) => formatNumber(value)}
                   />
                   <Tooltip
-                    formatter={value => [`${formatNumber(Number(value))} ${getDisplayUnit()}`, 'Average']}
+                    formatter={value => [`${formatNumber(Number(value))} ${getDisplayUnit()}`, valueType === 'total' ? 'Cumulative total' : 'Average']}
                     labelFormatter={label => `Sector: ${label}`}
                     contentStyle={{
                       backgroundColor: 'white',
