@@ -412,7 +412,7 @@ export const ChartSection = ({
                     return (
                       <div className="bg-white p-3 border rounded-lg shadow-lg" style={{ backgroundColor: 'white', borderColor: chartColors.primary }}>
                         <p className="font-semibold" style={{ color: chartColors.dark }}>{displayName}</p>
-                        <p className="text-sm" style={{ color: chartColors.darkGreen }}>{data.typology}</p>
+                        <p className="text-sm" style={{ color: chartColors.darkGreen }}>{sectorConfig[getSector(data.typology) as keyof typeof sectorConfig]?.name || data.typology}</p>
                         <p className="text-sm" style={{ color: chartColors.dark }}>Area: {formatNumber(area)} m²</p>
                         <p className="text-sm" style={{ color: chartColors.dark }}>
                           {kpi1Config?.label}: {formatNumber(data[selectedKPI1])} {getUnitLabel(kpi1Config?.unit || '', valueType)}
