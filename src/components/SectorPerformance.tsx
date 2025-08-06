@@ -420,12 +420,14 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
             </h3>
             <div className="h-80" data-chart="sector-chart">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} />
                   <XAxis 
                     dataKey="sector" 
-                    tick={{ fill: chartColors.dark }} 
+                    tick={{ fill: chartColors.dark, dy: 10 }} 
                     axisLine={false}
+                    tickLine={false}
+                    interval={0}
                   />
                   <YAxis
                     label={{
@@ -436,7 +438,10 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                     }}
                     tick={{ fill: chartColors.dark }}
                     tickFormatter={(value) => formatNumber(value)}
-                    domain={['dataMin', 'dataMax']}
+                    domain={selectedKPI === 'totalEmbodiedCarbon' ? 
+                      [(dataMin: number) => Math.min(dataMin * 1.2, -100), (dataMax: number) => dataMax * 1.1] : 
+                      ['dataMin', 'dataMax']
+                    }
                   />
                   <Tooltip
                     formatter={(value, name, props) => {
