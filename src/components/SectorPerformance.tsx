@@ -191,11 +191,13 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
         return;
       }
 
-      // Modify SVG to use consistent font
+      // Modify SVG to use Arial font for axis labels
       let svgData = new XMLSerializer().serializeToString(svgElement);
-      // Replace any font families with our consistent font
-      svgData = svgData.replace(/font-family="[^"]*"/g, 'font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif"');
-      svgData = svgData.replace(/font-family: [^;]*;/g, 'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;');
+      // Replace any font families with Arial
+      svgData = svgData.replace(/font-family="[^"]*"/g, 'font-family="Arial, sans-serif"');
+      svgData = svgData.replace(/font-family: [^;]*;/g, 'font-family: Arial, sans-serif;');
+      // Also ensure text elements use Arial
+      svgData = svgData.replace(/<text([^>]*)>/g, '<text$1 font-family="Arial, sans-serif">');
       
       const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
       const svgUrl = URL.createObjectURL(svgBlob);
