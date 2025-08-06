@@ -499,18 +499,18 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                       return null;
                     }}
                   />
-                  <Bar dataKey="value" stackId="1">
+                  <Bar dataKey="value">
                     {chartData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={sectorConfig[entry.sector as keyof typeof sectorConfig]?.color || chartColors.primary} />
                     ))}
                   </Bar>
-                  {/* Show biogenic data as negative bars in the same stack for Total Embodied Carbon */}
+                  {/* Show biogenic data as negative bars underneath for Total Embodied Carbon */}
                   {selectedKPI === 'totalEmbodiedCarbon' && (
-                    <Bar dataKey="biogenicValue" stackId="1">
+                    <Bar dataKey="biogenicValue">
                       {chartData.map((entry, index) => (
                         <Cell 
                           key={`biogenic-cell-${index}`} 
-                          fill="white" 
+                          fill="white"
                           stroke={sectorConfig[entry.sector as keyof typeof sectorConfig]?.color || chartColors.primary}
                           strokeWidth={2}
                         />
