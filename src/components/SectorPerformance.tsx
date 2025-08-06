@@ -28,6 +28,9 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedKPI, setSelectedKPI] = useState('totalEmbodiedCarbon');
   const [valueType, setValueType] = useState('per-sqm');
+
+  // Force per-sqm for biodiversity metrics
+  const effectiveValueType = ['biodiversityNetGain', 'urbanGreeningFactor'].includes(selectedKPI) ? 'per-sqm' : valueType;
   const [yearFilter, setYearFilter] = useState('all');
 
   const kpiOptions = [
@@ -69,7 +72,7 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
     acc[sector].count++;
     const value = project[selectedKPI] || 0;
     const gia = project.gia || 0;
-    if (valueType === 'total' && gia > 0) {
+    if (effectiveValueType === 'total' && gia > 0) {
       let totalValue = value * gia;
       // Convert to appropriate units for totals
       if (selectedKPI === 'upfrontCarbon' || selectedKPI === 'totalEmbodiedCarbon' || selectedKPI === 'refrigerants') {
@@ -113,7 +116,7 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
 
   const handleDownloadCSV = () => {
     console.log('Downloading CSV for sector performance analysis');
-    const csvContent = ['Sector Performance Analysis', `KPI: ${currentKPI?.label} (${getDisplayUnit()})`, `Value Type: ${valueType}`, `Year Filter: ${yearFilter}`, '', 'Sector,Projects,Average,Min,Max,Range'].join('\n') + '\n';
+    const csvContent = ['Sector Performance Analysis', `KPI: ${currentKPI?.label} (${getDisplayUnit()})`, `Value Type: ${effectiveValueType}`, `Year Filter: ${yearFilter}`, '', 'Sector,Projects,Average,Min,Max,Range'].join('\n') + '\n';
     const csvData = allSectors.map(sector => {
       const stats = sectorStats[sector];
       const avg = stats ? getAverage(stats.totalValue, stats.count) : 0;
@@ -128,7 +131,7 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `sector-performance-${selectedKPI}-${valueType}-${Date.now()}.csv`;
+    a.download = `sector-performance-${selectedKPI}-${effectiveValueType}-${Date.now()}.csv`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -171,7 +174,7 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
       yPosition = Math.max(yPosition + logoHeight + 20, 80);
 
       // Draw title with Average/Cumulative prefix
-      const prefix = valueType === 'total' ? 'Cumulative' : 'Average';
+      const prefix = effectiveValueType === 'total' ? 'Cumulative' : 'Average';
       const title = `${prefix} ${currentKPI?.label.toLowerCase()} by sector (${getDisplayUnit()})`;
       ctx.fillText(title, canvas.width / 2, yPosition);
       yPosition += 60;
@@ -188,7 +191,12 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
         return;
       }
 
-      const svgData = new XMLSerializer().serializeToString(svgElement);
+      // Modify SVG to use consistent font
+      let svgData = new XMLSerializer().serializeToString(svgElement);
+      // Replace any font families with our consistent font
+      svgData = svgData.replace(/font-family="[^"]*"/g, 'font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif"');
+      svgData = svgData.replace(/font-family: [^;]*;/g, 'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;');
+      
       const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
       const svgUrl = URL.createObjectURL(svgBlob);
 
@@ -214,7 +222,7 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
         yPosition += 30;
 
         // Draw table
-        const tableHeaders = valueType === 'per-sqm' 
+        const tableHeaders = effectiveValueType === 'per-sqm' 
           ? ['Sector', 'No. of projects', `Average (${getDisplayUnit()})`, 'Min', 'Max', 'Range']
           : ['Sector', 'No. of projects', `Cumulative total (${getDisplayUnit()})`, 'Min', 'Max', `Cumulative total Area (m²)`];
         
@@ -253,7 +261,7 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
           const count = stats ? stats.count : 0;
           const totalArea = stats ? Math.round(stats.totalGIA) : 0;
 
-          const rowData = valueType === 'per-sqm'
+          const rowData = effectiveValueType === 'per-sqm'
             ? [sector, count.toString(), formatNumber(avg), formatNumber(min), formatNumber(max), formatNumber(range)]
             : [sector, count.toString(), formatNumber(stats ? stats.totalValue : 0), formatNumber(min), formatNumber(max), formatNumber(totalArea)];
 
@@ -276,7 +284,7 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `sector-performance-${selectedKPI}-${valueType}-${Date.now()}.png`;
+            a.download = `sector-performance-${selectedKPI}-${effectiveValueType}-${Date.now()}.png`;
             a.click();
             URL.revokeObjectURL(url);
           }
@@ -289,7 +297,7 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
   };
 
   const getDisplayUnit = () => {
-    if (valueType === 'total') {
+    if (effectiveValueType === 'total') {
       return currentKPI?.totalUnit || '';
     }
     return currentKPI?.unit || '';
@@ -322,30 +330,33 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
               </Select>
             </div>
 
-            <div className="flex items-center space-x-2">
-              <div style={{ backgroundColor: chartColors.accent1 }} className="flex rounded-md p-1 bg-slate-100">
-                <button
-                  className={`px-3 py-1 rounded text-sm font-medium transition-colors ${valueType === 'per-sqm' ? 'bg-white shadow-sm' : 'hover:opacity-80'}`}
-                  style={{
-                    color: valueType === 'per-sqm' ? chartColors.dark : chartColors.darkGreen,
-                    backgroundColor: valueType === 'per-sqm' ? 'white' : 'transparent'
-                  }}
-                  onClick={() => setValueType('per-sqm')}
-                >
-                  Average per m²
-                </button>
-                <button
-                  className={`px-3 py-1 rounded text-sm font-medium transition-colors ${valueType === 'total' ? 'bg-white shadow-sm' : 'hover:opacity-80'}`}
-                  style={{
-                    color: valueType === 'total' ? chartColors.dark : chartColors.darkGreen,
-                    backgroundColor: valueType === 'total' ? 'white' : 'transparent'
-                  }}
-                  onClick={() => setValueType('total')}
-                >
-                  Cumulative total
-                </button>
+            {/* Only show value type selector for non-biodiversity KPIs */}
+            {!['biodiversityNetGain', 'urbanGreeningFactor'].includes(selectedKPI) && (
+              <div className="flex items-center space-x-2">
+                <div style={{ backgroundColor: chartColors.accent1 }} className="flex rounded-md p-1 bg-slate-100">
+                  <button
+                    className={`px-3 py-1 rounded text-sm font-medium transition-colors ${valueType === 'per-sqm' ? 'bg-white shadow-sm' : 'hover:opacity-80'}`}
+                    style={{
+                      color: valueType === 'per-sqm' ? chartColors.dark : chartColors.darkGreen,
+                      backgroundColor: valueType === 'per-sqm' ? 'white' : 'transparent'
+                    }}
+                    onClick={() => setValueType('per-sqm')}
+                  >
+                    Average per m²
+                  </button>
+                  <button
+                    className={`px-3 py-1 rounded text-sm font-medium transition-colors ${valueType === 'total' ? 'bg-white shadow-sm' : 'hover:opacity-80'}`}
+                    style={{
+                      color: valueType === 'total' ? chartColors.dark : chartColors.darkGreen,
+                      backgroundColor: valueType === 'total' ? 'white' : 'transparent'
+                    }}
+                    onClick={() => setValueType('total')}
+                  >
+                    Cumulative total
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
 
             <div className="flex items-center space-x-2">
               <Select value={yearFilter} onValueChange={setYearFilter}>
@@ -396,7 +407,7 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                     tickFormatter={(value) => formatNumber(value)}
                   />
                   <Tooltip
-                    formatter={value => [`${formatNumber(Number(value))} ${getDisplayUnit()}`, valueType === 'total' ? 'Cumulative total' : 'Average']}
+                    formatter={value => [`${formatNumber(Number(value))} ${getDisplayUnit()}`, effectiveValueType === 'total' ? 'Cumulative total' : 'Average']}
                     labelFormatter={label => `Sector: ${label}`}
                     contentStyle={{
                       backgroundColor: 'white',
@@ -423,7 +434,7 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                   <tr style={{ backgroundColor: chartColors.accent1 }}>
                     <th className="border px-4 py-2 text-left" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>Sector</th>
                     <th className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>No. of projects</th>
-                    {valueType === 'per-sqm' ? (
+                    {effectiveValueType === 'per-sqm' ? (
                       <>
                         <th className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>Average ({getDisplayUnit()})</th>
                         <th className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>Min</th>
@@ -453,7 +464,7 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                       <tr key={sector}>
                         <td className="border px-4 py-2 font-medium" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>{sector}</td>
                         <td className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>{count}</td>
-                        {valueType === 'per-sqm' ? (
+                        {effectiveValueType === 'per-sqm' ? (
                           <>
                             <td className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>
                               {formatNumber(avg)}
