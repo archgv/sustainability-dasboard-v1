@@ -424,7 +424,7 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                   <CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} />
                   <XAxis 
                     dataKey="sector" 
-                    tick={{ fill: chartColors.dark, dy: 10 }} 
+                    tick={{ fill: chartColors.dark, dy: 20 }} 
                     axisLine={false}
                     tickLine={false}
                     interval={0}
@@ -439,8 +439,12 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                     tick={{ fill: chartColors.dark }}
                     tickFormatter={(value) => formatNumber(value)}
                     domain={selectedKPI === 'totalEmbodiedCarbon' ? 
-                      [(dataMin: number) => Math.min(dataMin * 1.2, -100), (dataMax: number) => dataMax * 1.1] : 
+                      [-200, 800] : 
                       ['dataMin', 'dataMax']
+                    }
+                    ticks={selectedKPI === 'totalEmbodiedCarbon' ? 
+                      [-200, 0, 200, 400, 600, 800] : 
+                      undefined
                     }
                   />
                   <Tooltip
@@ -495,14 +499,14 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                       return null;
                     }}
                   />
-                  <Bar dataKey="value" fill={chartColors.primary} stackId="main">
+                  <Bar dataKey="value">
                     {chartData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={sectorConfig[entry.sector as keyof typeof sectorConfig]?.color || chartColors.primary} />
                     ))}
                   </Bar>
                   {/* Show biogenic data as negative bars underneath for Total Embodied Carbon */}
                   {selectedKPI === 'totalEmbodiedCarbon' && (
-                    <Bar dataKey="biogenicValue" fill="white" stackId="main">
+                    <Bar dataKey="biogenicValue">
                       {chartData.map((entry, index) => (
                         <Cell 
                           key={`biogenic-cell-${index}`} 
@@ -513,7 +517,7 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                       ))}
                     </Bar>
                   )}
-                  <ReferenceLine y={0} stroke="#333" strokeWidth={1} />
+                  <ReferenceLine y={0} stroke={chartColors.dark} strokeWidth={2} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
