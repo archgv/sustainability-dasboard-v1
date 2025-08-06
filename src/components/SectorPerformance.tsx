@@ -3,7 +3,7 @@ import { ChevronDown, Download, FileText } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine } from 'recharts';
 import { formatNumber } from '@/lib/utils';
 import { getSector, getSectorColor, sectorConfig } from '@/utils/projectUtils';
 
@@ -422,7 +422,11 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} />
-                  <XAxis dataKey="sector" tick={{ fill: chartColors.dark }} />
+                  <XAxis 
+                    dataKey="sector" 
+                    tick={{ fill: chartColors.dark }} 
+                    axisLine={false}
+                  />
                   <YAxis
                     label={{
                       value: `${currentKPI?.label} (${getDisplayUnit()})`,
@@ -432,6 +436,7 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                     }}
                     tick={{ fill: chartColors.dark }}
                     tickFormatter={(value) => formatNumber(value)}
+                    domain={['dataMin', 'dataMax']}
                   />
                   <Tooltip
                     formatter={(value, name, props) => {
@@ -485,19 +490,25 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                       return null;
                     }}
                   />
-                  <Bar dataKey="value" fill={chartColors.primary}>
+                  <Bar dataKey="value" fill={chartColors.primary} stackId="main">
                     {chartData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={sectorConfig[entry.sector as keyof typeof sectorConfig]?.color || chartColors.primary} />
                     ))}
                   </Bar>
-                  {/* Show biogenic data as negative bars for Total Embodied Carbon */}
+                  {/* Show biogenic data as negative bars underneath for Total Embodied Carbon */}
                   {selectedKPI === 'totalEmbodiedCarbon' && (
-                    <Bar dataKey="biogenicValue" fill={chartColors.dark}>
+                    <Bar dataKey="biogenicValue" fill="white" stackId="main">
                       {chartData.map((entry, index) => (
-                        <Cell key={`biogenic-cell-${index}`} fill={sectorConfig[entry.sector as keyof typeof sectorConfig]?.color || chartColors.dark} />
+                        <Cell 
+                          key={`biogenic-cell-${index}`} 
+                          fill="white"
+                          stroke={sectorConfig[entry.sector as keyof typeof sectorConfig]?.color || chartColors.primary}
+                          strokeWidth={2}
+                        />
                       ))}
                     </Bar>
                   )}
+                  <ReferenceLine y={0} stroke="#333" strokeWidth={1} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
