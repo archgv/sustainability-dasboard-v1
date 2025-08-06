@@ -494,9 +494,15 @@ export const ChartSection = ({
           );
         };
         
+        // Add biogenic data as negative values for totalEmbodiedCarbon
+        const chartData = transformedProjects.map(project => ({
+          ...project,
+          biogenic: selectedKPI1 === 'totalEmbodiedCarbon' ? -(project.biogenicCarbon || 0) * (valueType === 'total' ? getProjectArea(project.id.split('-')[0]) : 1) : 0
+        }));
+
         return (
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={transformedProjects} margin={{ top: 20, right: 30, left: 20, bottom: 80 }}>
+            <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 80 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} />
               <XAxis 
                 dataKey={(item) => {
@@ -517,13 +523,36 @@ export const ChartSection = ({
                 tick={{ fill: chartColors.dark }}
                 tickFormatter={(value) => formatNumber(value)}
               />
-              <Tooltip 
-                formatter={(value: number) => [
+               <Tooltip 
+                formatter={(value: number, name: string) => [
                   `${formatNumber(value)} ${getUnitLabel(kpi1Config?.unit || '', valueType)}`,
-                  kpi1Config?.label || selectedKPI1
+                  name === 'biogenic' ? 'Biogenic Carbon' : (kpi1Config?.label || selectedKPI1)
                 ]}
                 labelFormatter={(label) => `Project: ${label}`}
                 contentStyle={{ backgroundColor: 'white', border: `1px solid ${chartColors.primary}`, borderRadius: '8px' }}
+                content={({ active, payload, label }) => {
+                  if (active && payload && payload.length) {
+                    const mainData = payload.find(p => p.dataKey === selectedKPI1);
+                    const biogenicData = payload.find(p => p.dataKey === 'biogenic');
+                    
+                    return (
+                      <div className="bg-white p-3 border rounded-lg shadow-lg" style={{ backgroundColor: 'white', borderColor: chartColors.primary }}>
+                        <p className="font-semibold" style={{ color: chartColors.dark }}>Project: {label}</p>
+                        {mainData && (
+                          <p className="text-sm" style={{ color: chartColors.dark }}>
+                            {kpi1Config?.label}: {formatNumber(mainData.value)} {getUnitLabel(kpi1Config?.unit || '', valueType)}
+                          </p>
+                        )}
+                        {biogenicData && (
+                          <p className="text-sm" style={{ color: chartColors.dark }}>
+                            Biogenic Carbon: {formatNumber(Math.abs(biogenicData.value))} {getUnitLabel(kpi1Config?.unit || '', valueType)}
+                          </p>
+                        )}
+                      </div>
+                    );
+                  }
+                  return null;
+                }}
               />
                <Bar 
                 dataKey={selectedKPI1}
@@ -536,6 +565,19 @@ export const ChartSection = ({
                   return <Cell key={index} fill={sectorColor} />;
                 })}
               </Bar>
+              {selectedKPI1 === 'totalEmbodiedCarbon' && (
+                <Bar 
+                  dataKey="biogenic"
+                  fill="white"
+                  name="biogenic"
+                  radius={[0, 0, 4, 4]}
+                >
+                  {transformedProjects.map((project, index) => {
+                    const sectorColor = getSectorColor(project.typology);
+                    return <Cell key={index} fill="white" stroke={sectorColor} strokeWidth={2} />;
+                  })}
+                </Bar>
+              )}
             </BarChart>
           </ResponsiveContainer>
         );

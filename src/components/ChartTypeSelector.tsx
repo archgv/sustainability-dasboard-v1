@@ -108,7 +108,15 @@ export const ChartTypeSelector = ({
               <SelectValue placeholder="Select first KPI" />
             </SelectTrigger>
             <SelectContent>
-              {filteredKPIs.map(kpi => <SelectItem key={kpi.key} value={kpi.key}>
+              {filteredKPIs
+                .filter(kpi => {
+                  // Remove biogenic from single-bar and single-timeline charts
+                  if ((chartType === 'single-bar' || chartType === 'single-timeline') && kpi.key === 'biogenicCarbon') {
+                    return false;
+                  }
+                  return true;
+                })
+                .map(kpi => <SelectItem key={kpi.key} value={kpi.key}>
                   {kpi.label} ({kpi.unit})
                 </SelectItem>)}
             </SelectContent>
