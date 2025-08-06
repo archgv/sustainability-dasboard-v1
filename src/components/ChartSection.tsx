@@ -497,7 +497,7 @@ export const ChartSection = ({
         // Add biogenic data as negative values for totalEmbodiedCarbon
         const chartData = transformedProjects.map(project => ({
           ...project,
-          biogenic: selectedKPI1 === 'totalEmbodiedCarbon' ? -(project.biogenicCarbon || 0) * (valueType === 'total' ? getProjectArea(project.id.split('-')[0]) : 1) : 0
+          biogenic: selectedKPI1 === 'totalEmbodiedCarbon' ? -Math.abs(project.biogenicCarbon || 0) * (valueType === 'total' ? getProjectArea(project.id.split('-')[0]) : 1) : 0
         }));
 
         return (
