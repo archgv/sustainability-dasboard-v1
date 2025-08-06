@@ -41,7 +41,6 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
     { value: 'renewableEnergyGeneration', label: 'Renewable energy generation', unit: 'kWh/m²/yr', totalUnit: 'MWh/yr' },
     { value: 'upfrontCarbon', label: 'Upfront Carbon', unit: 'kgCO₂e/m²', totalUnit: 'tCO₂e' },
     { value: 'totalEmbodiedCarbon', label: 'Total Embodied Carbon', unit: 'kgCO₂e/m²', totalUnit: 'tCO₂e' },
-    { value: 'biogenicCarbon', label: 'Biogenic carbon', unit: 'kgCO₂e/m²', totalUnit: 'tCO₂e' },
     { value: 'biodiversityNetGain', label: 'Biodiversity net gain', unit: '%', totalUnit: '%' },
     { value: 'urbanGreeningFactor', label: 'Urban greening factor', unit: 'score', totalUnit: 'score' }
   ];
@@ -101,9 +100,35 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
   // Create chart data ensuring all sectors are included
   const chartData = allSectors.map(sector => {
     const stats = sectorStats[sector];
+    const baseValue = stats ? getAverage(stats.totalValue, stats.count) : 0;
+    
+    // For Total Embodied Carbon, also calculate biogenic data for negative columns
+    let biogenicValue = 0;
+    if (selectedKPI === 'totalEmbodiedCarbon' && stats) {
+      const biogenicStats = filteredProjects.reduce((acc: any, project: any) => {
+        const projectSector = getSector(project.typology);
+        if (projectSector === sector) {
+          const value = project.biogenicCarbon || 0;
+          const gia = project.gia || 0;
+          if (effectiveValueType === 'total' && gia > 0) {
+            let totalValue = value * gia;
+            totalValue = totalValue / 1000; // Convert kg to tonnes
+            acc.totalValue += totalValue;
+          } else {
+            acc.totalValue += value;
+          }
+          acc.count += 1;
+        }
+        return acc;
+      }, { totalValue: 0, count: 0 });
+      
+      biogenicValue = biogenicStats.count > 0 ? Math.round(biogenicStats.totalValue / biogenicStats.count) : 0;
+    }
+    
     return {
       sector: sector,
-      value: stats ? getAverage(stats.totalValue, stats.count) : 0,
+      value: baseValue,
+      biogenicValue: -Math.abs(biogenicValue), // Make it negative
       count: stats ? stats.count : 0
     };
   });
@@ -409,12 +434,55 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                     tickFormatter={(value) => formatNumber(value)}
                   />
                   <Tooltip
-                    formatter={value => [`${formatNumber(Number(value))} ${getDisplayUnit()}`, effectiveValueType === 'total' ? 'Cumulative total' : 'Average']}
+                    formatter={(value, name, props) => {
+                      if (selectedKPI === 'totalEmbodiedCarbon') {
+                        const data = props.payload;
+                        const wholeLifeCarbon = formatNumber(Number(data.value));
+                        const biogenic = formatNumber(Number(data.biogenicValue));
+                        return [
+                          `${wholeLifeCarbon} ${getDisplayUnit()}`,
+                          effectiveValueType === 'total' ? 'Average Whole Life Carbon' : 'Average Whole Life Carbon'
+                        ];
+                      }
+                      return [`${formatNumber(Number(value))} ${getDisplayUnit()}`, effectiveValueType === 'total' ? 'Cumulative total' : 'Average'];
+                    }}
                     labelFormatter={label => `Sector: ${label}`}
-                    contentStyle={{
-                      backgroundColor: 'white',
-                      border: `1px solid ${chartColors.primary}`,
-                      borderRadius: '8px'
+                    content={({ active, payload, label }) => {
+                      if (active && payload && payload.length && selectedKPI === 'totalEmbodiedCarbon') {
+                        const data = payload[0].payload;
+                        return (
+                          <div style={{
+                            backgroundColor: 'white',
+                            border: `1px solid ${chartColors.primary}`,
+                            borderRadius: '8px',
+                            padding: '8px'
+                          }}>
+                            <p style={{ margin: 0, fontWeight: 'bold' }}>{`Sector: ${label}`}</p>
+                            <p style={{ margin: 0, color: chartColors.primary }}>
+                              {`Average Whole Life Carbon: ${formatNumber(data.value)} ${getDisplayUnit()}`}
+                            </p>
+                            <p style={{ margin: 0, color: chartColors.dark }}>
+                              {`Average biogenic: ${formatNumber(data.biogenicValue)} ${getDisplayUnit()}`}
+                            </p>
+                          </div>
+                        );
+                      }
+                      if (active && payload && payload.length) {
+                        return (
+                          <div style={{
+                            backgroundColor: 'white',
+                            border: `1px solid ${chartColors.primary}`,
+                            borderRadius: '8px',
+                            padding: '8px'
+                          }}>
+                            <p style={{ margin: 0, fontWeight: 'bold' }}>{`Sector: ${label}`}</p>
+                            <p style={{ margin: 0, color: chartColors.primary }}>
+                              {`${effectiveValueType === 'total' ? 'Cumulative total' : 'Average'}: ${formatNumber(Number(payload[0].value))} ${getDisplayUnit()}`}
+                            </p>
+                          </div>
+                        );
+                      }
+                      return null;
                     }}
                   />
                   <Bar dataKey="value" fill={chartColors.primary}>
@@ -422,13 +490,21 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                       <Cell key={`cell-${index}`} fill={sectorConfig[entry.sector as keyof typeof sectorConfig]?.color || chartColors.primary} />
                     ))}
                   </Bar>
+                  {/* Show biogenic data as negative bars for Total Embodied Carbon */}
+                  {selectedKPI === 'totalEmbodiedCarbon' && (
+                    <Bar dataKey="biogenicValue" fill={chartColors.dark}>
+                      {chartData.map((entry, index) => (
+                        <Cell key={`biogenic-cell-${index}`} fill={sectorConfig[entry.sector as keyof typeof sectorConfig]?.color || chartColors.dark} />
+                      ))}
+                    </Bar>
+                  )}
                 </BarChart>
               </ResponsiveContainer>
             </div>
           </div>
 
           {/* Summary Statistics Table */}
-          <div>
+          <div className="mt-12">
             <h3 className="text-lg font-semibold mb-4" style={{ color: chartColors.dark }}>Summary Statistics</h3>
             <div className="overflow-x-auto">
               <table className="w-full border-collapse border" style={{ borderColor: chartColors.dark }}>
