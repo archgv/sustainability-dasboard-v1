@@ -375,6 +375,13 @@ export const ChartSection = ({
 
     const transformedProjects = transformDataForValueType(projects);
 
+    // Transform biogenic carbon values to negative for bubble chart display
+    const bubbleChartData = transformedProjects.map(project => ({
+      ...project,
+      [selectedKPI1]: selectedKPI1 === 'biogenicCarbon' ? -Math.abs(project[selectedKPI1] || 0) : project[selectedKPI1],
+      [selectedKPI2]: selectedKPI2 === 'biogenicCarbon' ? -Math.abs(project[selectedKPI2] || 0) : project[selectedKPI2]
+    }));
+
     switch (chartType) {
       case 'compare-bubble':
         return (
@@ -428,7 +435,7 @@ export const ChartSection = ({
               />
               <Scatter 
                 name="Projects" 
-                data={transformedProjects}
+                data={bubbleChartData}
                 fill={chartColors.primary}
                 fillOpacity={0.8}
                 shape={(props: any) => {
