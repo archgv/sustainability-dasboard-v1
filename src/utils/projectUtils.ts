@@ -61,31 +61,37 @@ export const getSector = (typology: string): string => {
 export const sectorConfig = {
   'Residential': { 
     color: '#FD7B7B', 
+    benchmarkColor: '#C94F4F',
     shape: 'square',
     name: 'Residential'
   },
   'Education': { 
     color: '#88F7FC', 
+    benchmarkColor: '#3BBCC2',
     shape: 'triangle',
     name: 'Education'
   },
   'Healthcare': { 
     color: '#767260', 
+    benchmarkColor: '#4F4B3F',
     shape: 'star',
     name: 'Healthcare'
   },
   'Infrastructure': { 
     color: '#FF8EE5', 
+    benchmarkColor: '#C75BAF',
     shape: 'circle',
     name: 'Infrastructure'
   },
   'CCC': { 
     color: '#253E2C', 
+    benchmarkColor: '#0F1A14',
     shape: 'diamond',
     name: 'CCC'
   },
   'Workplace': { 
     color: '#39FF8D', 
+    benchmarkColor: '#1E9F5A',
     shape: 'pentagon',
     name: 'Workplace'
   }
@@ -101,4 +107,10 @@ export const getSectorColor = (typology: string): string => {
 export const getSectorShape = (typology: string): string => {
   const sector = getSector(typology);
   return sectorConfig[sector as keyof typeof sectorConfig]?.shape || sectorConfig.Workplace.shape;
+};
+
+// Get sector benchmark color
+export const getSectorBenchmarkColor = (typology: string): string => {
+  const sector = getSector(typology);
+  return sectorConfig[sector as keyof typeof sectorConfig]?.benchmarkColor || sectorConfig.Workplace.benchmarkColor;
 };
