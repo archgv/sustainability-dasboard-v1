@@ -418,8 +418,16 @@ export const ChartSection = ({
 
     const transformedProjects = transformDataForValueType(projects);
 
-    // Transform biogenic carbon values to negative for bubble chart display
-    const bubbleChartData = transformedProjects.map(project => ({
+    // Ensure primary project appears first (leftmost) in bar charts
+    const sortedProjects = [...transformedProjects].sort((a, b) => {
+      // For comparison charts, ensure the primary project (first in original array) appears first
+      const aIndex = projects.findIndex(p => p.id === a.id);
+      const bIndex = projects.findIndex(p => p.id === b.id);
+      return aIndex - bIndex;
+    });
+
+    // Transform biogenic carbon values to negative for bubble chart display - use sorted projects
+    const bubbleChartData = sortedProjects.map(project => ({
       ...project,
       [selectedKPI1]: selectedKPI1 === 'biogenicCarbon' ? -Math.abs(project[selectedKPI1] || 0) : project[selectedKPI1],
       [selectedKPI2]: selectedKPI2 === 'biogenicCarbon' ? -Math.abs(project[selectedKPI2] || 0) : project[selectedKPI2]
@@ -544,8 +552,8 @@ export const ChartSection = ({
           );
         };
         
-        // Add biogenic data as negative values for totalEmbodiedCarbon
-        const chartData = transformedProjects.map(project => ({
+        // Add biogenic data as negative values for totalEmbodiedCarbon - use sorted projects
+        const chartData = sortedProjects.map(project => ({
           ...project,
           biogenic: selectedKPI1 === 'totalEmbodiedCarbon' ? -Math.abs(project.biogenicCarbon || 0) * (valueType === 'total' ? getProjectArea(project.id.split('-')[0]) : 1) : 0
         }));
@@ -642,25 +650,25 @@ export const ChartSection = ({
                 fill={chartColors.primary}
                 name={kpi1Config?.label || selectedKPI1}
                 radius={[4, 4, 0, 0]}
-              >
-                {transformedProjects.map((project, index) => {
-                  const sectorColor = getSectorColor(project.typology);
-                  return <Cell key={index} fill={sectorColor} />;
-                })}
-              </Bar>
-               {selectedKPI1 === 'totalEmbodiedCarbon' && (
-                 <Bar 
-                   dataKey="biogenic"
-                   fill="white"
-                   name="biogenic"
-                   radius={[0, 0, 4, 4]}
-                 >
-                   {transformedProjects.map((project, index) => {
-                     const sectorColor = getSectorColor(project.typology);
-                     return <Cell key={index} fill="white" stroke={sectorColor} strokeWidth={2} />;
-                   })}
-                 </Bar>
-               )}
+               >
+                 {sortedProjects.map((project, index) => {
+                   const sectorColor = getSectorColor(project.typology);
+                   return <Cell key={index} fill={sectorColor} />;
+                 })}
+               </Bar>
+                {selectedKPI1 === 'totalEmbodiedCarbon' && (
+                  <Bar 
+                    dataKey="biogenic"
+                    fill="white"
+                    name="biogenic"
+                    radius={[0, 0, 4, 4]}
+                  >
+                    {sortedProjects.map((project, index) => {
+                      const sectorColor = getSectorColor(project.typology);
+                      return <Cell key={index} fill="white" stroke={sectorColor} strokeWidth={2} />;
+                    })}
+                  </Bar>
+                )}
                 {selectedKPI1 === 'totalEmbodiedCarbon' && (
                   <ReferenceLine y={0} stroke="#A8A8A3" strokeWidth={2} />
                 )}
