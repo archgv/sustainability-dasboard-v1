@@ -51,6 +51,34 @@ const seriesColors = [
   chartColors.darkGreen
 ];
 
+// Utility function to generate nice, regular tick intervals
+const generateNiceTicks = (maxValue: number, tickCount: number = 5): number[] => {
+  if (maxValue <= 0) return [0];
+  
+  // Calculate step size
+  const roughStep = maxValue / (tickCount - 1);
+  
+  // Round step to nice numbers (1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, etc.)
+  const magnitude = Math.pow(10, Math.floor(Math.log10(roughStep)));
+  const normalizedStep = roughStep / magnitude;
+  
+  let niceStep;
+  if (normalizedStep <= 1) niceStep = 1;
+  else if (normalizedStep <= 2) niceStep = 2;
+  else if (normalizedStep <= 5) niceStep = 5;
+  else niceStep = 10;
+  
+  const finalStep = niceStep * magnitude;
+  
+  // Generate ticks
+  const ticks = [];
+  for (let i = 0; i <= Math.ceil(maxValue / finalStep); i++) {
+    ticks.push(i * finalStep);
+  }
+  
+  return ticks;
+};
+
 export const ChartSection = ({ 
   projects, 
   chartType, 
@@ -384,6 +412,13 @@ export const ChartSection = ({
             <YAxis 
               label={{ value: valueType === 'per-sqm' ? 'kgCO₂e/m²' : 'kgCO₂e total', angle: -90, position: 'insideLeft' }}
               tick={{ fill: chartColors.dark }}
+              tickFormatter={(value) => formatNumber(value)}
+              ticks={(() => {
+                const maxValue = Math.max(...stackedData.flatMap(item => 
+                  categories.map(cat => Math.abs(item[cat.key] || 0))
+                ));
+                return generateNiceTicks(maxValue * 1.1);
+              })()}
             />
             <Tooltip 
               formatter={(value: number, name: string) => {
@@ -446,6 +481,10 @@ export const ChartSection = ({
                 label={{ value: `${kpi1Config?.label || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType)})`, position: 'insideBottom', offset: -5 }}
                 tick={{ fill: chartColors.dark }}
                 tickFormatter={(value) => formatNumber(value)}
+                ticks={(() => {
+                  const maxValue = Math.max(...bubbleChartData.map(p => Math.abs(p[selectedKPI1] || 0)));
+                  return generateNiceTicks(maxValue * 1.1);
+                })()}
               />
               <YAxis 
                 type="number" 
@@ -454,6 +493,10 @@ export const ChartSection = ({
                 label={{ value: `${kpi2Config?.label || selectedKPI2} (${getUnitLabel(kpi2Config?.unit || '', valueType)})`, angle: -90, position: 'insideLeft' }}
                 tick={{ fill: chartColors.dark }}
                 tickFormatter={(value) => formatNumber(value)}
+                ticks={(() => {
+                  const maxValue = Math.max(...bubbleChartData.map(p => Math.abs(p[selectedKPI2] || 0)));
+                  return generateNiceTicks(maxValue * 1.1);
+                })()}
               />
               <Tooltip 
                 cursor={{ strokeDasharray: '3 3' }}
@@ -611,7 +654,10 @@ export const ChartSection = ({
                 }
                 ticks={selectedKPI1 === 'totalEmbodiedCarbon' ? 
                   [0, 400, 800, 1200, 1600] : 
-                  undefined
+                  (() => {
+                    const maxValue = Math.max(...chartData.map(p => Math.abs(p[selectedKPI1] || 0)));
+                    return generateNiceTicks(maxValue * 1.1);
+                  })()
                 }
               />
                <Tooltip 
@@ -770,7 +816,13 @@ export const ChartSection = ({
                 label={{ value: `${kpi1Config?.label || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType)})`, angle: -90, position: 'insideLeft', style: { textAnchor: 'middle' } }}
                 tick={{ fill: chartColors.dark }}
                 tickFormatter={(value) => formatNumber(value)}
-                domain={[0, 1000]}
+                ticks={(() => {
+                  const maxValue = Math.max(
+                    ...timelineData.map(p => Math.abs(p[selectedKPI1] || 0)),
+                    ...(shouldShowRibaBenchmark ? ribaBenchmarkData.map(b => b.benchmarkValue) : [])
+                  );
+                  return generateNiceTicks(maxValue * 1.1);
+                })()}
               />
               <Tooltip 
                 formatter={(value: number, name: string) => [
