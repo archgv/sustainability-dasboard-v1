@@ -61,12 +61,9 @@ export const ProjectGrid = ({
   };
 
   const getDisplayName = (project: Project, index: number) => {
-    const baseId = project.id.split('-')[0];
-    const projectNumber = `250${parseInt(baseId) + 116}`;
-    const fullName = `${projectNumber}_${project.name}`;
     return isComparingToSelf && project.ribaStage 
-      ? `${fullName} (${getRibaStageDisplay(project.ribaStage)})`
-      : fullName;
+      ? `${project.name} (${getRibaStageDisplay(project.ribaStage)})`
+      : project.name;
   };
 
   return (
