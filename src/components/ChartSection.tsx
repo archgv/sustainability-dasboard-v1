@@ -766,9 +766,8 @@ export const ChartSection = ({
         const createRibaBenchmarkData = () => {
           if (!shouldShowRibaBenchmark) return [];
           
-          // Get the sector of the primary project (first project in the original projects array)
-          const primaryProject = projects[0]; // Use original projects array for primary project
-          const primarySector = getSector(primaryProject.typology);
+          // ALWAYS use the sector of the primary project (first project in the projects array)
+          const primarySector = getSector(projects[0].typology);
           const sectorBenchmarks = totalEmbodiedCarbonBenchmarks[primarySector as keyof typeof totalEmbodiedCarbonBenchmarks];
           
           if (!sectorBenchmarks) return [];
@@ -796,7 +795,7 @@ export const ChartSection = ({
         };
 
         const ribaBenchmarkData = createRibaBenchmarkData();
-        const benchmarkColor = timelineData.length > 0 ? getSectorBenchmarkColor(timelineData[0].typology) : '#1E9F5A';
+        const benchmarkColor = projects.length > 0 ? getSectorBenchmarkColor(projects[0].typology) : '#1E9F5A';
 
         return (
           <ResponsiveContainer width="100%" height="100%">
@@ -899,33 +898,33 @@ export const ChartSection = ({
                        fill="white"
                        stroke={benchmarkColor}
                        strokeWidth={3}
-                        label={(props) => {
-                          const { x, y } = props;
-                          return (
-                            <g>
-                              <text
-                                x={x}
-                                y={y - 25}
-                                textAnchor="middle"
-                                fill={benchmarkColor}
-                                fontSize="12"
-                                fontWeight="bold"
-                              >
-                                {benchmark.benchmarkName}
-                              </text>
-                              <text
-                                x={x}
-                                y={y - 10}
-                                textAnchor="middle"
-                                fill={benchmarkColor}
-                                fontSize="12"
-                                fontWeight="bold"
-                              >
-                                ({benchmark.benchmarkValue} kgCO₂e/m²)
-                              </text>
-                            </g>
-                          );
-                        }}
+                         label={(props) => {
+                           const { x, y } = props;
+                           return (
+                             <g>
+                               <text
+                                 x={x}
+                                 y={y - 30}
+                                 textAnchor="middle"
+                                 fill={benchmarkColor}
+                                 fontSize="12"
+                                 fontWeight="bold"
+                               >
+                                 {benchmark.benchmarkName}
+                               </text>
+                               <text
+                                 x={x}
+                                 y={y - 15}
+                                 textAnchor="middle"
+                                 fill={benchmarkColor}
+                                 fontSize="12"
+                                 fontWeight="bold"
+                               >
+                                 ({benchmark.benchmarkValue} kgCO₂e/m²)
+                               </text>
+                             </g>
+                           );
+                         }}
                      />
                    ))}
                  </>
