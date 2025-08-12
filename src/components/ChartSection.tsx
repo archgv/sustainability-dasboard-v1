@@ -851,6 +851,14 @@ export const ChartSection = ({
     }
   };
 
+  // Check if there are benchmarks available for the current sector
+  const hasBenchmarks = () => {
+    if (projects.length === 0) return false;
+    const primaryProject = projects[0];
+    const primarySector = getSector(primaryProject.typology);
+    return !!totalEmbodiedCarbonBenchmarks[primarySector as keyof typeof totalEmbodiedCarbonBenchmarks];
+  };
+
   return (
     <Card className="p-6">
       <div className="flex justify-between items-center mb-6">
@@ -862,6 +870,7 @@ export const ChartSection = ({
               variant={showBenchmarks ? "default" : "outline"} 
               size="sm" 
               onClick={() => setShowBenchmarks(!showBenchmarks)}
+              disabled={!hasBenchmarks()}
               className="flex items-center gap-2"
             >
               {showBenchmarks ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
