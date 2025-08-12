@@ -1,11 +1,12 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Download, FileText } from 'lucide-react';
+import { Download, FileText, Eye, EyeOff } from 'lucide-react';
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, LineChart, Line, Legend, Cell, ReferenceLine } from 'recharts';
 import { Project, availableKPIs } from '@/types/project';
 import { ChartType, EmbodiedCarbonBreakdown, ValueType } from './ChartTypeSelector';
-import { addProjectNumberToName, getSector, getSectorColor, getSectorShape, sectorConfig } from '@/utils/projectUtils';
+import { addProjectNumberToName, getSector, getSectorColor, getSectorShape, sectorConfig, getSectorBenchmarkColor } from '@/utils/projectUtils';
 import { formatNumber } from '@/lib/utils';
+import { useState } from 'react';
 import { CustomShape } from './CustomShapes';
 
 interface ChartSectionProps {
@@ -60,8 +61,29 @@ export const ChartSection = ({
   isComparingToSelf = false,
   selectedRibaStages = []
 }: ChartSectionProps) => {
+  const [showBenchmarks, setShowBenchmarks] = useState(false);
+  
   const kpi1Config = availableKPIs.find(kpi => kpi.key === selectedKPI1);
   const kpi2Config = availableKPIs.find(kpi => kpi.key === selectedKPI2);
+
+  // Benchmark data for Total Embodied Carbon
+  const totalEmbodiedCarbonBenchmarks = {
+    'Residential': {
+      'Business as usual': 1200,
+      'RIBA 2025': 800,
+      'RIBA 2030': 625
+    },
+    'Workplace': {
+      'Business as usual': 1400,
+      'RIBA 2025': 970,
+      'RIBA 2030': 750
+    },
+    'Education': {
+      'Business as usual': 1400,
+      'RIBA 2025': 675,
+      'RIBA 2030': 540
+    }
+  };
 
   // UKNZCBS benchmark data by sector
   const uknzcbsBenchmarks = {
@@ -528,6 +550,31 @@ export const ChartSection = ({
           biogenic: selectedKPI1 === 'totalEmbodiedCarbon' ? -Math.abs(project.biogenicCarbon || 0) * (valueType === 'total' ? getProjectArea(project.id.split('-')[0]) : 1) : 0
         }));
 
+        // Get benchmark data for the primary project's sector (only for Total Embodied Carbon with per-sqm)
+        const getBenchmarkLines = () => {
+          if (!showBenchmarks || selectedKPI1 !== 'totalEmbodiedCarbon' || valueType !== 'per-sqm' || transformedProjects.length === 0) {
+            return [];
+          }
+          
+          // Get the sector of the first project (primary project)
+          const primaryProject = transformedProjects[0];
+          const primarySector = getSector(primaryProject.typology);
+          const benchmarkColor = getSectorBenchmarkColor(primaryProject.typology);
+          
+          // Get benchmark values for this sector
+          const sectorBenchmarks = totalEmbodiedCarbonBenchmarks[primarySector as keyof typeof totalEmbodiedCarbonBenchmarks];
+          
+          if (!sectorBenchmarks) return [];
+          
+          return Object.entries(sectorBenchmarks).map(([name, value]) => ({
+            name,
+            value,
+            color: benchmarkColor
+          }));
+        };
+
+        const benchmarkLines = getBenchmarkLines();
+
         return (
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 80 }}>
@@ -551,11 +598,11 @@ export const ChartSection = ({
                 tick={{ fill: chartColors.dark }}
                 tickFormatter={(value) => formatNumber(value)}
                 domain={selectedKPI1 === 'totalEmbodiedCarbon' ? 
-                  [0, 800] : 
+                  [0, 1600] : 
                   [0, 'dataMax']
                 }
                 ticks={selectedKPI1 === 'totalEmbodiedCarbon' ? 
-                  [0, 200, 400, 600, 800] : 
+                  [0, 400, 800, 1200, 1600] : 
                   undefined
                 }
               />
@@ -614,9 +661,26 @@ export const ChartSection = ({
                    })}
                  </Bar>
                )}
-               {selectedKPI1 === 'totalEmbodiedCarbon' && (
-                 <ReferenceLine y={0} stroke="#A8A8A3" strokeWidth={2} />
-               )}
+                {selectedKPI1 === 'totalEmbodiedCarbon' && (
+                  <ReferenceLine y={0} stroke="#A8A8A3" strokeWidth={2} />
+                )}
+                
+                {/* Benchmark lines */}
+                {benchmarkLines.map((benchmark, index) => (
+                  <ReferenceLine 
+                    key={benchmark.name}
+                    y={benchmark.value} 
+                    stroke={benchmark.color} 
+                    strokeWidth={2}
+                    strokeDasharray="5 5"
+                    label={{ 
+                      value: benchmark.name, 
+                      position: "insideTopRight",
+                      offset: 10,
+                      style: { fill: benchmark.color, fontSize: '12px', fontWeight: 'bold' }
+                    }}
+                  />
+                ))}
             </BarChart>
           </ResponsiveContainer>
         );
@@ -792,6 +856,18 @@ export const ChartSection = ({
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold" style={{ color: chartColors.dark }}>{getChartTitle()}</h2>
         <div className="flex items-center space-x-2">
+          {/* Show benchmark toggle only for Total Embodied Carbon with per-sqm values */}
+          {selectedKPI1 === 'totalEmbodiedCarbon' && valueType === 'per-sqm' && chartType === 'single-bar' && (
+            <Button 
+              variant={showBenchmarks ? "default" : "outline"} 
+              size="sm" 
+              onClick={() => setShowBenchmarks(!showBenchmarks)}
+              className="flex items-center gap-2"
+            >
+              {showBenchmarks ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              Show Benchmarks
+            </Button>
+          )}
           <Button variant="outline" size="sm" onClick={handleExportCSV} className="flex items-center gap-2">
             <FileText className="w-4 h-4" />
             CSV
