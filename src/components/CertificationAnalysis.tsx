@@ -15,7 +15,7 @@ const certificationRatings = {
   nabers: ['6 Star', '5.5 Star', '5 Star', '4.5 Star', '4 Star', '3.5 Star', '3 Star'],
   passivhaus: ['Certified'],
   enerphit: ['Certified'],
-  uknzcbs: ['Net Zero', 'Near Zero', 'Low Carbon']
+  uknzcbs: ['Net Zero']
 };
 export const CertificationAnalysis = ({
   projects,
