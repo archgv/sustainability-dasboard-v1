@@ -766,8 +766,9 @@ export const ChartSection = ({
         const createRibaBenchmarkData = () => {
           if (!shouldShowRibaBenchmark) return [];
           
-          // ALWAYS use the sector of the primary project (first project in the projects array)
-          const primarySector = getSector(projects[0].typology);
+          // ALWAYS use the sector of the primary project (the one without RIBA stage suffix or the first one)
+          const primaryProject = projects.find(p => !p.id.includes('-')) || projects[0];
+          const primarySector = getSector(primaryProject.typology);
           const sectorBenchmarks = totalEmbodiedCarbonBenchmarks[primarySector as keyof typeof totalEmbodiedCarbonBenchmarks];
           
           if (!sectorBenchmarks) return [];
@@ -795,7 +796,9 @@ export const ChartSection = ({
         };
 
         const ribaBenchmarkData = createRibaBenchmarkData();
-        const benchmarkColor = projects.length > 0 ? getSectorBenchmarkColor(projects[0].typology) : '#1E9F5A';
+        // Always use primary project's sector for benchmark color
+        const primaryProject = projects.find(p => !p.id.includes('-')) || projects[0];
+        const benchmarkColor = primaryProject ? getSectorBenchmarkColor(primaryProject.typology) : '#1E9F5A';
 
         return (
           <ResponsiveContainer width="100%" height="100%">
@@ -900,33 +903,45 @@ export const ChartSection = ({
                        strokeWidth={3}
                      />
                    ))}
-                   {/* Add text labels for benchmarks */}
-                   {ribaBenchmarkData.map((benchmark) => (
-                     <g key={`label-${benchmark.completionYear}`}>
-                       <text
-                         x={benchmark.completionYear}
-                         y={benchmark.benchmarkValue - 30}
-                         textAnchor="middle"
-                         fill={benchmarkColor}
-                         fontSize="12"
-                         fontWeight="bold"
-                       >
-                         {benchmark.benchmarkName}
-                       </text>
-                       <text
-                         x={benchmark.completionYear}
-                         y={benchmark.benchmarkValue - 15}
-                         textAnchor="middle"
-                         fill={benchmarkColor}
-                         fontSize="12"
-                         fontWeight="bold"
-                       >
-                         ({benchmark.benchmarkValue} kgCO₂e/m²)
-                       </text>
-                     </g>
-                   ))}
-                 </>
-               )}
+                    {/* Add text labels for benchmarks using ReferenceDot with custom label */}
+                    {ribaBenchmarkData.map((benchmark) => (
+                      <ReferenceDot
+                        key={`label-${benchmark.completionYear}`}
+                        x={benchmark.completionYear}
+                        y={benchmark.benchmarkValue + 50}
+                        r={0}
+                        fill="transparent"
+                        label={(props) => {
+                          const { x, y } = props;
+                          return (
+                            <g>
+                              <text
+                                x={x}
+                                y={(y as number) - 35}
+                                textAnchor="middle"
+                                fill={benchmarkColor}
+                                fontSize="12"
+                                fontWeight="bold"
+                              >
+                                {benchmark.benchmarkName}
+                              </text>
+                              <text
+                                x={x}
+                                y={(y as number) - 20}
+                                textAnchor="middle"
+                                fill={benchmarkColor}
+                                fontSize="11"
+                                fontWeight="bold"
+                              >
+                                ({benchmark.benchmarkValue} kgCO₂e/m²)
+                              </text>
+                            </g>
+                          );
+                        }}
+                      />
+                    ))}
+                  </>
+                )}
             </LineChart>
           </ResponsiveContainer>
         );
