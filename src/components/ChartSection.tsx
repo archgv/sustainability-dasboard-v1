@@ -172,8 +172,8 @@ export const ChartSection = ({
   };
 
   const handleExportPNG = () => {
-    // Find the chart SVG element
-    const chartContainer = document.querySelector('[data-chart]');
+    // Find the chart SVG element - use specific selector to avoid conflicts
+    const chartContainer = document.querySelector('[data-chart="chart-container"]');
     if (!chartContainer) {
       console.error('Chart container not found');
       return;
