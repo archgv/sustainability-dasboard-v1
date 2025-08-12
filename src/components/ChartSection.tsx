@@ -720,8 +720,8 @@ export const ChartSection = ({
         const createRibaBenchmarkData = () => {
           if (!shouldShowRibaBenchmark) return [];
           
-          // Get the sector of the primary project (first project in timeline)
-          const primaryProject = timelineData[0];
+          // Get the sector of the primary project (first project in the original projects array)
+          const primaryProject = projects[0]; // Use original projects array for primary project
           const primarySector = getSector(primaryProject.typology);
           const sectorBenchmarks = totalEmbodiedCarbonBenchmarks[primarySector as keyof typeof totalEmbodiedCarbonBenchmarks];
           
@@ -761,6 +761,7 @@ export const ChartSection = ({
                 type="number"
                 scale="linear"
                 domain={[2020, 2030]}
+                ticks={[2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030]}
                 tickFormatter={(value) => value.toString()}
                 label={{ value: 'Year', position: 'insideBottom', offset: -5 }}
                 tick={{ fill: chartColors.dark }}
@@ -846,16 +847,16 @@ export const ChartSection = ({
                        fill="white"
                        stroke={benchmarkColor}
                        strokeWidth={3}
-                       label={{
-                         value: `${benchmark.benchmarkName} (${benchmark.benchmarkValue} kgCO₂e/m²)`,
-                         position: 'top',
-                         offset: 10,
-                         style: { 
-                           fill: benchmarkColor, 
-                           fontSize: '12px', 
-                           fontWeight: 'bold' 
-                         }
-                       }}
+                        label={{
+                          value: `${benchmark.benchmarkName}\n${benchmark.benchmarkValue} kgCO₂e/m²`,
+                          position: 'top',
+                          offset: 10,
+                          style: { 
+                            fill: benchmarkColor, 
+                            fontSize: '12px', 
+                            fontWeight: 'bold' 
+                          }
+                        }}
                      />
                    ))}
                  </>
