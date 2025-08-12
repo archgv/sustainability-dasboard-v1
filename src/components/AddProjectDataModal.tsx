@@ -68,11 +68,11 @@ export const AddProjectDataModal = ({ isOpen, onClose, onSave, projects }: AddPr
           'healthcare': 'healthcare',
           'infrastructure': 'infrastructure',
           'ccc': 'ccc',
-          'office': 'commercial',
-          'retail': 'commercial',
-          'mixed-use': 'commercial'
+          'office': 'workplace',
+          'retail': 'workplace',
+          'mixed-use': 'workplace'
         };
-        return sectorMap[typology] || 'commercial';
+        return sectorMap[typology] || 'workplace';
       };
 
       const getBreeamRating = (rating: string) => {
@@ -253,7 +253,7 @@ export const AddProjectDataModal = ({ isOpen, onClose, onSave, projects }: AddPr
                   <SelectItem value="healthcare">Healthcare</SelectItem>
                   <SelectItem value="infrastructure">Infrastructure</SelectItem>
                   <SelectItem value="ccc">CCC</SelectItem>
-                  <SelectItem value="commercial">Commercial</SelectItem>
+                  <SelectItem value="workplace">Workplace</SelectItem>
                 </SelectContent>
               </Select>
             </TooltipField>

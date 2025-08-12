@@ -25,11 +25,11 @@ export const ProjectGrid = ({
       'healthcare': 'Healthcare',
       'infrastructure': 'Infrastructure',
       'ccc': 'CCC',
-      'office': 'Commercial',
-      'retail': 'Commercial',
-      'mixed-use': 'Commercial'
+      'office': 'Workplace',
+      'retail': 'Workplace',
+      'mixed-use': 'Workplace'
     };
-    return sectorMap[typology] || 'Commercial';
+    return sectorMap[typology] || 'Workplace';
   };
 
   // Format numbers with commas

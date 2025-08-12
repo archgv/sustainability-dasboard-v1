@@ -76,7 +76,7 @@ export const FilterPanel = ({
               <SelectItem value="healthcare">Healthcare</SelectItem>
               <SelectItem value="infrastructure">Infrastructure</SelectItem>
               <SelectItem value="ccc">CCC</SelectItem>
-              <SelectItem value="office">Commercial</SelectItem>
+              <SelectItem value="office">Workplace</SelectItem>
             </SelectContent>
           </Select>
         </div>

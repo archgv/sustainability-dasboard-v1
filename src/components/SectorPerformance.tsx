@@ -46,7 +46,7 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
   ];
 
   const currentKPI = kpiOptions.find(kpi => kpi.value === selectedKPI);
-  const allSectors = ['Residential', 'Education', 'Healthcare', 'Infrastructure', 'CCC', 'Commercial'];
+  const allSectors = ['Residential', 'Education', 'Healthcare', 'Infrastructure', 'CCC', 'Workplace'];
 
 
   // Filter projects by year if needed

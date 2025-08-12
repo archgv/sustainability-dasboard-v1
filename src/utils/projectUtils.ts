@@ -14,14 +14,14 @@ export const addProjectNumberToName = (name: string, index: number): string => {
 // Map project typology to sector
 export const getSector = (typology: string): string => {
   const sectorMap: Record<string, string> = {
-    'Office': 'Commercial',
-    'office': 'Commercial',
-    'Warehouse': 'Commercial',
-    'warehouse': 'Commercial',
-    'Retail': 'Commercial',
-    'retail': 'Commercial',
-    'Commercial': 'Commercial',
-    'commercial': 'Commercial',
+    'Office': 'Workplace',
+    'office': 'Workplace',
+    'Warehouse': 'Workplace',
+    'warehouse': 'Workplace',
+    'Retail': 'Workplace',
+    'retail': 'Workplace',
+    'Commercial': 'Workplace',
+    'commercial': 'Workplace',
     'Residential': 'Residential',
     'residential': 'Residential',
     'Housing': 'Residential',
@@ -54,7 +54,7 @@ export const getSector = (typology: string): string => {
     'cultural': 'CCC',
   };
   
-  return sectorMap[typology] || 'Commercial';
+  return sectorMap[typology] || 'Workplace';
 };
 
 // Sector color and shape mapping
@@ -84,21 +84,21 @@ export const sectorConfig = {
     shape: 'diamond',
     name: 'CCC'
   },
-  'Commercial': { 
+  'Workplace': { 
     color: '#39FF8D', 
     shape: 'pentagon',
-    name: 'Commercial'
+    name: 'Workplace'
   }
 };
 
 // Get sector color
 export const getSectorColor = (typology: string): string => {
   const sector = getSector(typology);
-  return sectorConfig[sector as keyof typeof sectorConfig]?.color || sectorConfig.Commercial.color;
+  return sectorConfig[sector as keyof typeof sectorConfig]?.color || sectorConfig.Workplace.color;
 };
 
 // Get sector shape
 export const getSectorShape = (typology: string): string => {
   const sector = getSector(typology);
-  return sectorConfig[sector as keyof typeof sectorConfig]?.shape || sectorConfig.Commercial.shape;
+  return sectorConfig[sector as keyof typeof sectorConfig]?.shape || sectorConfig.Workplace.shape;
 };
