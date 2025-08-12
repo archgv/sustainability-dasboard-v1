@@ -898,15 +898,32 @@ export const ChartSection = ({
                        fill="white"
                        stroke={benchmarkColor}
                        strokeWidth={3}
-                       label={{
-                         value: benchmark.benchmarkName,
-                         position: 'top',
-                         offset: 15,
-                         style: { 
-                           fill: benchmarkColor, 
-                           fontSize: '12px', 
-                           fontWeight: 'bold' 
-                         }
+                       label={(props) => {
+                         const { x, y } = props;
+                         return (
+                           <g>
+                             <text
+                               x={x}
+                               y={y - 30}
+                               textAnchor="middle"
+                               fill={benchmarkColor}
+                               fontSize="12"
+                               fontWeight="bold"
+                             >
+                               {benchmark.benchmarkName}
+                             </text>
+                             <text
+                               x={x}
+                               y={y - 15}
+                               textAnchor="middle"
+                               fill={benchmarkColor}
+                               fontSize="12"
+                               fontWeight="bold"
+                             >
+                               ({benchmark.benchmarkValue} kgCO₂e/m²)
+                             </text>
+                           </g>
+                         );
                        }}
                      />
                    ))}
