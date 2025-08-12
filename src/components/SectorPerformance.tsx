@@ -517,7 +517,7 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                       ))}
                     </Bar>
                   )}
-                  <ReferenceLine y={0} stroke={chartColors.dark} strokeWidth={2} />
+                  <ReferenceLine y={0} stroke="#A8A8A3" strokeWidth={2} />
                 </BarChart>
               </ResponsiveContainer>
             </div>

@@ -534,7 +534,7 @@ export const ChartSection = ({
                   [0, 'dataMax']
                 }
                 ticks={selectedKPI1 === 'totalEmbodiedCarbon' ? 
-                  [-200, 0, 200, 400, 600, 800] : 
+                  [0, 200, 400, 600, 800] : 
                   undefined
                 }
               />
@@ -594,7 +594,7 @@ export const ChartSection = ({
                  </Bar>
                )}
                {selectedKPI1 === 'totalEmbodiedCarbon' && (
-                 <ReferenceLine y={0} stroke={chartColors.dark} strokeWidth={2} />
+                 <ReferenceLine y={0} stroke="#A8A8A3" strokeWidth={2} />
                )}
             </BarChart>
           </ResponsiveContainer>
