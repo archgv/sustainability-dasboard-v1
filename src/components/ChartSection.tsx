@@ -530,7 +530,7 @@ export const ChartSection = ({
                 tick={{ fill: chartColors.dark }}
                 tickFormatter={(value) => formatNumber(value)}
                 domain={selectedKPI1 === 'totalEmbodiedCarbon' ? 
-                  [-200, 800] : 
+                  [0, 800] : 
                   [0, 'dataMax']
                 }
                 ticks={selectedKPI1 === 'totalEmbodiedCarbon' ? 
