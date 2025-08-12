@@ -1,7 +1,7 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Download, FileText } from 'lucide-react';
-import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, LineChart, Line, Legend, Cell } from 'recharts';
+import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, LineChart, Line, Legend, Cell, ReferenceLine } from 'recharts';
 import { Project, availableKPIs } from '@/types/project';
 import { ChartType, EmbodiedCarbonBreakdown, ValueType } from './ChartTypeSelector';
 import { addProjectNumberToName, getSector, getSectorColor, getSectorShape, sectorConfig } from '@/utils/projectUtils';
@@ -580,19 +580,22 @@ export const ChartSection = ({
                   return <Cell key={index} fill={sectorColor} />;
                 })}
               </Bar>
-              {selectedKPI1 === 'totalEmbodiedCarbon' && (
-                <Bar 
-                  dataKey="biogenic"
-                  fill="white"
-                  name="biogenic"
-                  radius={[0, 0, 4, 4]}
-                >
-                  {transformedProjects.map((project, index) => {
-                    const sectorColor = getSectorColor(project.typology);
-                    return <Cell key={index} fill="white" stroke={sectorColor} strokeWidth={2} />;
-                  })}
-                </Bar>
-              )}
+               {selectedKPI1 === 'totalEmbodiedCarbon' && (
+                 <Bar 
+                   dataKey="biogenic"
+                   fill="white"
+                   name="biogenic"
+                   radius={[0, 0, 4, 4]}
+                 >
+                   {transformedProjects.map((project, index) => {
+                     const sectorColor = getSectorColor(project.typology);
+                     return <Cell key={index} fill="white" stroke={sectorColor} strokeWidth={2} />;
+                   })}
+                 </Bar>
+               )}
+               {selectedKPI1 === 'totalEmbodiedCarbon' && (
+                 <ReferenceLine y={0} stroke={chartColors.dark} strokeWidth={2} />
+               )}
             </BarChart>
           </ResponsiveContainer>
         );
