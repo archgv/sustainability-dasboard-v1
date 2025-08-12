@@ -83,6 +83,14 @@ const Index = () => {
     setSelectedRibaStages(ribaStages);
   };
 
+  const handlePrimaryProjectChange = (newPrimaryProject: string) => {
+    setPrimaryProject(newPrimaryProject);
+    // Clear comparison projects when primary project changes
+    setComparisonProjects([]);
+    setCompareToSelf(false);
+    setSelectedRibaStages([]);
+  };
+
   const getDisplayProjects = () => {
     // Handle self-comparison mode
     if (compareToSelf && selectedRibaStages.length > 0) {
@@ -149,7 +157,7 @@ const Index = () => {
               projects={filteredProjects}
               primaryProject={primaryProject}
               comparisonProjects={comparisonProjects}
-              onPrimaryProjectChange={setPrimaryProject}
+              onPrimaryProjectChange={handlePrimaryProjectChange}
               onComparisonProjectsChange={handleComparisonChange}
             />
             
