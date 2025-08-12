@@ -529,7 +529,14 @@ export const ChartSection = ({
                 label={{ value: `${kpi1Config?.label || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType)})`, angle: -90, position: 'insideLeft', style: { textAnchor: 'middle' } }}
                 tick={{ fill: chartColors.dark }}
                 tickFormatter={(value) => formatNumber(value)}
-                domain={selectedKPI1 === 'totalEmbodiedCarbon' ? ['dataMin', 'dataMax'] : [0, 'dataMax']}
+                domain={selectedKPI1 === 'totalEmbodiedCarbon' ? 
+                  [-200, 800] : 
+                  [0, 'dataMax']
+                }
+                ticks={selectedKPI1 === 'totalEmbodiedCarbon' ? 
+                  [-200, 0, 200, 400, 600, 800] : 
+                  undefined
+                }
               />
                <Tooltip 
                 formatter={(value: number, name: string) => [
