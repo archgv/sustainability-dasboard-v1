@@ -141,7 +141,7 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
 
   const handleDownloadCSV = () => {
     console.log('Downloading CSV for sector performance analysis');
-    const csvContent = ['Sector Performance Analysis', `KPI: ${currentKPI?.label} (${getDisplayUnit()})`, `Value Type: ${effectiveValueType}`, `Year Filter: ${yearFilter}`, '', `Sector,Projects,Average (${getDisplayUnit()}),Min (${getDisplayUnit()}),Max (${getDisplayUnit()}),Range (${getDisplayUnit()})`].join('\n') + '\n';
+    const csvContent = ['Sector Performance Analysis', `KPI: ${currentKPI?.label} (${getDisplayUnit(true)})`, `Value Type: ${effectiveValueType}`, `Year Filter: ${yearFilter}`, '', `Sector,Projects,Average (${getDisplayUnit(true)}),Min (${getDisplayUnit(true)}),Max (${getDisplayUnit(true)}),Range (${getDisplayUnit(true)})`].join('\n') + '\n';
     const csvData = allSectors.map(sector => {
       const stats = sectorStats[sector];
       const avg = stats ? getAverage(stats.totalValue, stats.count) : 0;
@@ -323,11 +323,13 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
     logo.src = '/lovable-uploads/4ce0bfd4-e09c-45a3-bb7c-0a84df6eca91.png';
   };
 
-  const getDisplayUnit = () => {
+  const getDisplayUnit = (forCSV: boolean = false) => {
     if (effectiveValueType === 'total') {
-      return currentKPI?.totalUnit || '';
+      const unit = currentKPI?.totalUnit || '';
+      return forCSV ? unit.replace(/CO₂/g, 'CO2').replace(/²/g, '2') : unit;
     }
-    return currentKPI?.unit || '';
+    const unit = currentKPI?.unit || '';
+    return forCSV ? unit.replace(/CO₂/g, 'CO2').replace(/²/g, '2') : unit;
   };
 
   return (

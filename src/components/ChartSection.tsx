@@ -111,7 +111,7 @@ export const ChartSection = ({
       const categories = embodiedCarbonBreakdown === 'lifecycle' 
         ? getLifecycleStageCategories()
         : getBuildingElementCategories();
-      categories.forEach(cat => headers.push(`${cat.label} (${getUnitLabel(kpi1Config?.unit || '', valueType)})`));
+      categories.forEach(cat => headers.push(`${cat.label} (${getUnitLabel(kpi1Config?.unit || '', valueType, true)})`));
       
       csvContent += headers.join(',') + '\n';
       
@@ -127,9 +127,9 @@ export const ChartSection = ({
       const transformedProjects = transformDataForValueType(projects);
       
       // CSV headers
-      const headers = ['Project Name', `${kpi1Config?.label || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType)})`];
+      const headers = ['Project Name', `${kpi1Config?.label || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType, true)})`];
       if (chartType === 'compare-bubble') {
-        headers.push(`${kpi2Config?.label || selectedKPI2} (${getUnitLabel(kpi2Config?.unit || '', valueType)})`);
+        headers.push(`${kpi2Config?.label || selectedKPI2} (${getUnitLabel(kpi2Config?.unit || '', valueType, true)})`);
         headers.push('Building Area (m²)');
       }
       if (chartType === 'single-timeline') {
@@ -232,9 +232,9 @@ export const ChartSection = ({
     img.src = svgUrl;
   };
 
-  const getUnitLabel = (baseUnit: string, valueType: ValueType): string => {
-    // Replace CO2 with CO₂ in unit labels
-    let unit = baseUnit.replace(/CO2/g, 'CO₂');
+  const getUnitLabel = (baseUnit: string, valueType: ValueType, forCSV: boolean = false): string => {
+    // For CSV exports, use plain text to avoid encoding issues
+    let unit = forCSV ? baseUnit.replace(/CO2/g, 'CO2') : baseUnit.replace(/CO2/g, 'CO₂');
     
     if (valueType === 'total') {
       return unit.replace('/m²', '').replace('/year', '/year total');
