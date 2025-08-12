@@ -308,7 +308,9 @@ export const ChartSection = ({
         
         const categoryValue = baseValue * (multiplier || 0.1);
         const finalValue = valueType === 'total' ? categoryValue * getProjectArea(baseId) : categoryValue;
-        projectData[category.key] = Math.round(finalValue * 100) / 100;
+        // Make biogenic carbon negative in the data
+        const adjustedValue = category.key === 'biogenicCarbon' ? -Math.abs(finalValue) : finalValue;
+        projectData[category.key] = Math.round(adjustedValue * 100) / 100;
       });
       
       return projectData;
@@ -389,7 +391,7 @@ export const ChartSection = ({
         return (
           <ResponsiveContainer width="100%" height="100%">
             <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} />
+              <CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} horizontal={true} verticalPoints={[]} />
               <XAxis 
                 type="number" 
                 dataKey={selectedKPI1}
@@ -512,7 +514,7 @@ export const ChartSection = ({
         return (
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 80 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} />
+              <CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} horizontal={true} verticalPoints={[]} />
               <XAxis 
                 dataKey={(item) => {
                   const baseId = item.id.split('-')[0];
@@ -657,7 +659,7 @@ export const ChartSection = ({
         return (
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={timelineData} margin={{ top: 20, right: 30, left: 60, bottom: 60 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} />
+              <CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} horizontal={true} verticalPoints={[]} />
               <XAxis 
                 dataKey="completionYear"
                 type="number"
