@@ -331,7 +331,7 @@ export const ChartSection = ({
       return (
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={stackedData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} />
+            <CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} horizontal={true} verticalPoints={[]} />
             <XAxis 
               dataKey="name" 
               angle={-45}
@@ -347,7 +347,9 @@ export const ChartSection = ({
             <Tooltip 
               formatter={(value: number, name: string) => {
                 const category = categories.find(cat => cat.key === name);
-                return [`${formatNumber(value)} ${valueType === 'per-sqm' ? 'kgCO₂e/m²' : 'kgCO₂e total'}`, category?.label || name];
+                // Make biogenic carbon negative in tooltip
+                const displayValue = name === 'biogenicCarbon' ? -Math.abs(value) : value;
+                return [`${formatNumber(displayValue)} ${valueType === 'per-sqm' ? 'kgCO₂e/m²' : 'kgCO₂e total'}`, category?.label || name];
               }}
               labelFormatter={(label) => `Project: ${label}`}
               contentStyle={{ backgroundColor: 'white', border: `1px solid ${chartColors.primary}`, borderRadius: '8px' }}

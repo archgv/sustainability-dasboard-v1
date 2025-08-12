@@ -78,7 +78,7 @@ export const sampleProjects: Project[] = [
     // Embodied Carbon
     upfrontCarbon: 520,
     totalEmbodiedCarbon: 720,
-    biogenicCarbon: 60,
+    biogenicCarbon: -60,
     refrigerants: 18,
     
     // Operational Energy
