@@ -760,7 +760,7 @@ export const ChartSection = ({
                 dataKey="completionYear"
                 type="number"
                 scale="linear"
-                domain={['dataMin', 'dataMax']}
+                domain={[2020, 2030]}
                 tickFormatter={(value) => value.toString()}
                 label={{ value: 'Year', position: 'insideBottom', offset: -5 }}
                 tick={{ fill: chartColors.dark }}
@@ -769,6 +769,7 @@ export const ChartSection = ({
                 label={{ value: `${kpi1Config?.label || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType)})`, angle: -90, position: 'insideLeft', style: { textAnchor: 'middle' } }}
                 tick={{ fill: chartColors.dark }}
                 tickFormatter={(value) => formatNumber(value)}
+                domain={[0, 1000]}
               />
               <Tooltip 
                 formatter={(value: number, name: string) => [
@@ -833,32 +834,32 @@ export const ChartSection = ({
                 );
               })}
               
-              {/* RIBA benchmark points */}
-              {shouldShowRibaBenchmark && ribaBenchmarkData.length > 0 && (
-                <>
-                  {ribaBenchmarkData.map((benchmark) => (
-                    <ReferenceDot
-                      key={`riba-${benchmark.completionYear}`}
-                      x={benchmark.completionYear}
-                      y={benchmark.benchmarkValue}
-                      r={8}
-                      fill={benchmarkColor}
-                      stroke={benchmarkColor}
-                      strokeWidth={2}
-                      label={{
-                        value: `${benchmark.benchmarkName} (${benchmark.benchmarkValue} kgCO₂e/m²)`,
-                        position: 'top',
-                        offset: 10,
-                        style: { 
-                          fill: benchmarkColor, 
-                          fontSize: '12px', 
-                          fontWeight: 'bold' 
-                        }
-                      }}
-                    />
-                  ))}
-                </>
-              )}
+               {/* RIBA benchmark points */}
+               {shouldShowRibaBenchmark && ribaBenchmarkData.length > 0 && (
+                 <>
+                   {ribaBenchmarkData.map((benchmark) => (
+                     <ReferenceDot
+                       key={`riba-${benchmark.completionYear}`}
+                       x={benchmark.completionYear}
+                       y={benchmark.benchmarkValue}
+                       r={8}
+                       fill="white"
+                       stroke={benchmarkColor}
+                       strokeWidth={3}
+                       label={{
+                         value: `${benchmark.benchmarkName} (${benchmark.benchmarkValue} kgCO₂e/m²)`,
+                         position: 'top',
+                         offset: 10,
+                         style: { 
+                           fill: benchmarkColor, 
+                           fontSize: '12px', 
+                           fontWeight: 'bold' 
+                         }
+                       }}
+                     />
+                   ))}
+                 </>
+               )}
             </LineChart>
           </ResponsiveContainer>
         );
