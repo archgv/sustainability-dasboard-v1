@@ -111,7 +111,7 @@ export const ChartSection = ({
       const categories = embodiedCarbonBreakdown === 'lifecycle' 
         ? getLifecycleStageCategories()
         : getBuildingElementCategories();
-      categories.forEach(cat => headers.push(cat.label));
+      categories.forEach(cat => headers.push(`${cat.label} (${getUnitLabel(kpi1Config?.unit || '', valueType)})`));
       
       csvContent += headers.join(',') + '\n';
       
@@ -127,9 +127,9 @@ export const ChartSection = ({
       const transformedProjects = transformDataForValueType(projects);
       
       // CSV headers
-      const headers = ['Project Name', kpi1Config?.label || selectedKPI1];
+      const headers = ['Project Name', `${kpi1Config?.label || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType)})`];
       if (chartType === 'compare-bubble') {
-        headers.push(kpi2Config?.label || selectedKPI2);
+        headers.push(`${kpi2Config?.label || selectedKPI2} (${getUnitLabel(kpi2Config?.unit || '', valueType)})`);
         headers.push('Building Area (m²)');
       }
       if (chartType === 'single-timeline') {
