@@ -1,7 +1,7 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Download, FileText, Eye, EyeOff } from 'lucide-react';
-import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, LineChart, Line, Legend, Cell, ReferenceLine } from 'recharts';
+import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, LineChart, Line, Legend, Cell, ReferenceLine, ReferenceDot } from 'recharts';
 import { Project, availableKPIs } from '@/types/project';
 import { ChartType, EmbodiedCarbonBreakdown, ValueType } from './ChartTypeSelector';
 import { addProjectNumberToName, getSector, getSectorColor, getSectorShape, sectorConfig, getSectorBenchmarkColor } from '@/utils/projectUtils';
@@ -713,37 +713,44 @@ export const ChartSection = ({
           })
           .sort((a, b) => a.date - b.date);
 
-        // Get benchmark data for timeline - ONLY for upfront carbon and per sqm
-        const shouldShowBenchmark = valueType === 'per-sqm' && selectedKPI1 === 'upfrontCarbon';
+        // Get RIBA benchmark data for timeline - ONLY for Total Embodied Carbon and per sqm
+        const shouldShowRibaBenchmark = valueType === 'per-sqm' && selectedKPI1 === 'totalEmbodiedCarbon' && timelineData.length > 0;
 
-        // Create benchmark data if applicable
-        const createBenchmarkData = () => {
-          if (!shouldShowBenchmark || timelineData.length === 0) return [];
+        // Create RIBA benchmark data if applicable
+        const createRibaBenchmarkData = () => {
+          if (!shouldShowRibaBenchmark) return [];
           
-          // Get all unique sectors from projects
-          const projectSectors = [...new Set(timelineData.map(d => getSector(d.typology)))];
+          // Get the sector of the primary project (first project in timeline)
+          const primaryProject = timelineData[0];
+          const primarySector = getSector(primaryProject.typology);
+          const sectorBenchmarks = totalEmbodiedCarbonBenchmarks[primarySector as keyof typeof totalEmbodiedCarbonBenchmarks];
           
-          // Create benchmark line for each sector
-          const benchmarkLines: any[] = [];
+          if (!sectorBenchmarks) return [];
           
-          projectSectors.forEach(sector => {
-            const sectorBenchmarks = uknzcbsBenchmarks[sector as keyof typeof uknzcbsBenchmarks];
-            if (sectorBenchmarks) {
-              // Create continuous line data from 2025 to 2050
-              Object.entries(sectorBenchmarks).forEach(([year, value]) => {
-                benchmarkLines.push({
-                  completionYear: parseInt(year),
-                  [`benchmark_${sector}`]: value,
-                  sector: sector
-                });
-              });
-            }
-          });
+          // Create benchmark points for RIBA 2025 and RIBA 2030 only
+          const ribaBenchmarks = [];
+          if (sectorBenchmarks['RIBA 2025']) {
+            ribaBenchmarks.push({
+              completionYear: 2025,
+              benchmarkValue: sectorBenchmarks['RIBA 2025'],
+              benchmarkName: 'RIBA 2025',
+              sector: primarySector
+            });
+          }
+          if (sectorBenchmarks['RIBA 2030']) {
+            ribaBenchmarks.push({
+              completionYear: 2030,
+              benchmarkValue: sectorBenchmarks['RIBA 2030'],
+              benchmarkName: 'RIBA 2030',
+              sector: primarySector
+            });
+          }
           
-          return benchmarkLines.sort((a, b) => a.completionYear - b.completionYear);
+          return ribaBenchmarks;
         };
 
-        const benchmarkData = createBenchmarkData();
+        const ribaBenchmarkData = createRibaBenchmarkData();
+        const benchmarkColor = timelineData.length > 0 ? getSectorBenchmarkColor(timelineData[0].typology) : '#1E9F5A';
 
         return (
           <ResponsiveContainer width="100%" height="100%">
@@ -826,28 +833,30 @@ export const ChartSection = ({
                 );
               })}
               
-              {/* Benchmark lines if applicable */}
-              {shouldShowBenchmark && benchmarkData.length > 0 && (
+              {/* RIBA benchmark points */}
+              {shouldShowRibaBenchmark && ribaBenchmarkData.length > 0 && (
                 <>
-                  {[...new Set(benchmarkData.map(d => d.sector))].map((sector, index) => {
-                    const sectorData = benchmarkData.filter(d => d.sector === sector);
-                    
-                    return (
-                      <Line
-                        key={`benchmark_${sector}`}
-                        type="monotone"
-                        dataKey={`benchmark_${sector}`}
-                        data={sectorData}
-                        stroke={chartColors.benchmark}
-                        strokeWidth={2}
-                        strokeDasharray="5 5"
-                        dot={false}
-                        connectNulls={false}
-                        name={`UKNZCBS ${sector}`}
-                        legendType="line"
-                      />
-                    );
-                  })}
+                  {ribaBenchmarkData.map((benchmark) => (
+                    <ReferenceDot
+                      key={`riba-${benchmark.completionYear}`}
+                      x={benchmark.completionYear}
+                      y={benchmark.benchmarkValue}
+                      r={8}
+                      fill={benchmarkColor}
+                      stroke={benchmarkColor}
+                      strokeWidth={2}
+                      label={{
+                        value: `${benchmark.benchmarkName} (${benchmark.benchmarkValue} kgCO₂e/m²)`,
+                        position: 'top',
+                        offset: 10,
+                        style: { 
+                          fill: benchmarkColor, 
+                          fontSize: '12px', 
+                          fontWeight: 'bold' 
+                        }
+                      }}
+                    />
+                  ))}
                 </>
               )}
             </LineChart>
