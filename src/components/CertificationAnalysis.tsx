@@ -57,7 +57,7 @@ export const CertificationAnalysis = ({
         case 'uknzcbs':
           const uknzcbsCert = project.certifications?.find(cert => cert.includes('UKNZCBS'));
           if (uknzcbsCert) {
-            if (uknzcbsCert.includes('Net Zero')) projectRating = 'Net Zero';else if (uknzcbsCert.includes('Near Zero')) projectRating = 'Near Zero';else if (uknzcbsCert.includes('Low Carbon')) projectRating = 'Low Carbon';
+            if (uknzcbsCert.includes('Net Zero')) projectRating = 'Net Zero';
           }
           break;
       }
@@ -86,8 +86,6 @@ export const CertificationAnalysis = ({
       'Bronze': '#C2FF39',
       'Certified': selectedCertification === 'leed' ? '#E9E8D3' : '#253E2C',
       'Net Zero': '#253E2C',
-      'Near Zero': '#2D9B4D',
-      'Low Carbon': '#39FF8D',
       '6 Star': '#253E2C',
       '5.5 Star': '#2D9B4D',
       '5 Star': '#2D9B4D',

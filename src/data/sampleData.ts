@@ -189,7 +189,7 @@ export const sampleProjects: Project[] = [
     shd: 25,
     wlc: 580,
     
-    certifications: ['UKNZCBS - Near Zero']
+    certifications: ['UKNZCBS - Net Zero']
   },
   {
     id: '4',
@@ -378,6 +378,6 @@ export const sampleProjects: Project[] = [
     shd: 28,
     wlc: 600,
     
-    certifications: ['UKNZCBS - Low Carbon']
+    certifications: ['UKNZCBS - Net Zero']
   }
 ];
