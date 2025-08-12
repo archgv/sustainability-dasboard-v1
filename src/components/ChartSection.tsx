@@ -130,6 +130,12 @@ export const ChartSection = ({
       
       // CSV headers
       const headers = ['Project Name', `${kpi1Config?.label || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType, true)})`];
+      
+      // For Total Embodied Carbon charts, include biogenic carbon column
+      if (chartType === 'single-bar' && selectedKPI1 === 'totalEmbodiedCarbon') {
+        headers.push(`Biogenic (${getUnitLabel(kpi1Config?.unit || '', valueType, true)})`);
+      }
+      
       if (chartType === 'compare-bubble') {
         headers.push(`${kpi2Config?.label || selectedKPI2} (${getUnitLabel(kpi2Config?.unit || '', valueType, true)})`);
         headers.push('Building Area (m²)');
@@ -150,6 +156,15 @@ export const ChartSection = ({
           `"${displayName}"`,
           project[selectedKPI1 as keyof Project]?.toString() || '0'
         ];
+        
+        // For Total Embodied Carbon charts, add biogenic carbon as negative value
+        if (chartType === 'single-bar' && selectedKPI1 === 'totalEmbodiedCarbon') {
+          const biogenicValue = project.biogenicCarbon || 0;
+          const finalBiogenicValue = valueType === 'total' 
+            ? -Math.abs(biogenicValue * getProjectArea(baseId))
+            : -Math.abs(biogenicValue);
+          row.push(finalBiogenicValue.toString());
+        }
         
         if (chartType === 'compare-bubble') {
           row.push(project[selectedKPI2 as keyof Project]?.toString() || '0');
