@@ -119,7 +119,9 @@ export const ChartSection = ({
       breakdownData.forEach(item => {
         const row = [item.name];
         categories.forEach(cat => {
-          row.push(item[cat.key]?.toString() || '0');
+          // Make biogenic carbon negative in CSV export
+          const value = cat.key === 'biogenicCarbon' ? -Math.abs(item[cat.key] || 0) : (item[cat.key] || 0);
+          row.push(value.toString());
         });
         csvContent += row.join(',') + '\n';
       });
@@ -234,7 +236,7 @@ export const ChartSection = ({
 
   const getUnitLabel = (baseUnit: string, valueType: ValueType, forCSV: boolean = false): string => {
     // For CSV exports, use plain text to avoid encoding issues
-    let unit = forCSV ? baseUnit.replace(/CO2/g, 'CO2') : baseUnit.replace(/CO2/g, 'CO₂');
+    let unit = forCSV ? baseUnit.replace(/CO2/g, 'CO2').replace(/₂/g, '2') : baseUnit.replace(/CO2/g, 'CO₂');
     
     if (valueType === 'total') {
       return unit.replace('/m²', '').replace('/year', '/year total');
