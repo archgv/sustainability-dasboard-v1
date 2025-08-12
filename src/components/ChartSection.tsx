@@ -898,34 +898,32 @@ export const ChartSection = ({
                        fill="white"
                        stroke={benchmarkColor}
                        strokeWidth={3}
-                       label={(props) => {
-                         const { x, y } = props;
-                         return (
-                           <g>
-                             <text
-                               x={x}
-                               y={y - 30}
-                               textAnchor="middle"
-                               fill={benchmarkColor}
-                               fontSize="12"
-                               fontWeight="bold"
-                             >
-                               {benchmark.benchmarkName}
-                             </text>
-                             <text
-                               x={x}
-                               y={y - 15}
-                               textAnchor="middle"
-                               fill={benchmarkColor}
-                               fontSize="12"
-                               fontWeight="bold"
-                             >
-                               ({benchmark.benchmarkValue} kgCO₂e/m²)
-                             </text>
-                           </g>
-                         );
-                       }}
                      />
+                   ))}
+                   {/* Add text labels for benchmarks */}
+                   {ribaBenchmarkData.map((benchmark) => (
+                     <g key={`label-${benchmark.completionYear}`}>
+                       <text
+                         x={benchmark.completionYear}
+                         y={benchmark.benchmarkValue - 30}
+                         textAnchor="middle"
+                         fill={benchmarkColor}
+                         fontSize="12"
+                         fontWeight="bold"
+                       >
+                         {benchmark.benchmarkName}
+                       </text>
+                       <text
+                         x={benchmark.completionYear}
+                         y={benchmark.benchmarkValue - 15}
+                         textAnchor="middle"
+                         fill={benchmarkColor}
+                         fontSize="12"
+                         fontWeight="bold"
+                       >
+                         ({benchmark.benchmarkValue} kgCO₂e/m²)
+                       </text>
+                     </g>
                    ))}
                  </>
                )}
