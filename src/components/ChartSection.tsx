@@ -1030,6 +1030,7 @@ export const ChartSection = ({
   };
 
   const renderChart = () => {
+    console.log('renderChart function started', { chartType, selectedKPI1 });
     // Handle embodied carbon breakdown with stacked columns
     if (chartType === 'single-bar' && selectedKPI1 === 'totalEmbodiedCarbon' && embodiedCarbonBreakdown !== 'none') {
       const stackedData = getEmbodiedCarbonStackedData();
@@ -1272,30 +1273,31 @@ export const ChartSection = ({
           
           // Handle Upfront Carbon benchmarks
           if (selectedKPI1 === 'upfrontEmbodied') {
-            const sectorBenchmarks = upfrontCarbonBenchmarks[primarySector as keyof typeof upfrontCarbonBenchmarks];
-            
-            if (!sectorBenchmarks) return [];
-            
             // Get current year to show appropriate benchmark
             const currentYear = new Date().getFullYear();
             const benchmarkLines = [];
             
-            // Add New Building benchmark
-            if (sectorBenchmarks['New building'] && sectorBenchmarks['New building'][currentYear as keyof typeof sectorBenchmarks['New building']]) {
-              benchmarkLines.push({
-                name: 'New building',
-                value: sectorBenchmarks['New building'][currentYear as keyof typeof sectorBenchmarks['New building']],
-                color: benchmarkColor
-              });
-            }
-            
-            // Add Retrofit benchmark
-            if (sectorBenchmarks['Retrofit'] && sectorBenchmarks['Retrofit'][currentYear as keyof typeof sectorBenchmarks['Retrofit']]) {
-              benchmarkLines.push({
-                name: 'Retrofit',
-                value: sectorBenchmarks['Retrofit'][currentYear as keyof typeof sectorBenchmarks['Retrofit']],
-                color: benchmarkColor
-              });
+            // Only show benchmarks if defined for the primary project's sector
+            const yearData = upfrontCarbonBenchmarks[currentYear as keyof typeof upfrontCarbonBenchmarks];
+            if (yearData && yearData[primarySector]) {
+              // Check for sub-sector specific benchmarks first
+              if (primaryProject.subSector && yearData[primarySector][primaryProject.subSector]) {
+                const subSectorBenchmarks = yearData[primarySector][primaryProject.subSector];
+                if (subSectorBenchmarks && subSectorBenchmarks['New building']) {
+                  benchmarkLines.push({
+                    name: 'New building',
+                    value: subSectorBenchmarks['New building'],
+                    color: benchmarkColor
+                  });
+                }
+                if (subSectorBenchmarks && subSectorBenchmarks['Retrofit']) {
+                  benchmarkLines.push({
+                    name: 'Retrofit',
+                    value: subSectorBenchmarks['Retrofit'],
+                    color: benchmarkColor
+                  });
+                }
+              }
             }
             
             return benchmarkLines;
@@ -1485,44 +1487,44 @@ export const ChartSection = ({
           
           // Handle Upfront Carbon benchmarks
           if (selectedKPI1 === 'upfrontEmbodied') {
-            const sectorBenchmarks = upfrontCarbonBenchmarks[primarySector as keyof typeof upfrontCarbonBenchmarks];
-            
-            if (!sectorBenchmarks) return [];
-            
             // Create benchmark points for all years from 2025 to 2050
             const benchmarkPoints = [];
             
-            // Add New Building benchmarks
-            if (sectorBenchmarks['New building']) {
-              for (let year = 2025; year <= 2050; year++) {
-                const yearlyBenchmark = sectorBenchmarks['New building'][year as keyof typeof sectorBenchmarks['New building']];
-                if (yearlyBenchmark) {
-                  benchmarkPoints.push({
-                    completionYear: year,
-                    benchmarkValue: yearlyBenchmark,
-                    benchmarkName: 'New building',
-                    sector: primarySector,
-                    benchmarkType: 'newBuilding'
-                  });
+            // Only show benchmarks if defined for the primary project's sector
+            for (let year = 2025; year <= 2050; year++) {
+              const yearData = upfrontCarbonBenchmarks[year as keyof typeof upfrontCarbonBenchmarks];
+              if (yearData && yearData[primarySector]) {
+                // Check for sub-sector specific benchmarks first
+                if (primaryProject.subSector && yearData[primarySector][primaryProject.subSector]) {
+                  const subSectorBenchmarks = yearData[primarySector][primaryProject.subSector];
+                  
+                  // Add New Building benchmark for this year
+                  if (subSectorBenchmarks && subSectorBenchmarks['New building']) {
+                    benchmarkPoints.push({
+                      completionYear: year,
+                      benchmarkValue: subSectorBenchmarks['New building'],
+                      benchmarkName: 'New building',
+                      sector: primarySector,
+                      benchmarkType: 'newBuilding'
+                    });
+                  }
+                  
+                  // Add Retrofit benchmark for this year
+                  if (subSectorBenchmarks && subSectorBenchmarks['Retrofit']) {
+                    benchmarkPoints.push({
+                      completionYear: year,
+                      benchmarkValue: subSectorBenchmarks['Retrofit'],
+                      benchmarkName: 'Retrofit',
+                      sector: primarySector,
+                      benchmarkType: 'retrofit'
+                    });
+                  }
                 }
               }
             }
             
-            // Add Retrofit benchmarks
-            if (sectorBenchmarks['Retrofit']) {
-              for (let year = 2025; year <= 2050; year++) {
-                const yearlyBenchmark = sectorBenchmarks['Retrofit'][year as keyof typeof sectorBenchmarks['Retrofit']];
-                if (yearlyBenchmark) {
-                  benchmarkPoints.push({
-                    completionYear: year,
-                    benchmarkValue: yearlyBenchmark,
-                    benchmarkName: 'Retrofit',
-                    sector: primarySector,
-                    benchmarkType: 'retrofit'
-                  });
-                }
-              }
-            }
+            return benchmarkPoints;
+          }
             
             return benchmarkPoints;
           }
@@ -1708,7 +1710,17 @@ export const ChartSection = ({
     }
     
     if (selectedKPI1 === 'upfrontEmbodied') {
-      return !!upfrontCarbonBenchmarks[primarySector as keyof typeof upfrontCarbonBenchmarks];
+      // Check if benchmarks exist for the primary project's sector across any year
+      const currentYear = new Date().getFullYear();
+      const yearData = upfrontCarbonBenchmarks[currentYear as keyof typeof upfrontCarbonBenchmarks];
+      
+      if (yearData && yearData[primarySector]) {
+        // Check if there are sub-sector benchmarks for this project
+        if (primaryProject.subSector && yearData[primarySector][primaryProject.subSector]) {
+          return true;
+        }
+      }
+      return false;
     }
     
     return false;
