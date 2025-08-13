@@ -1,1696 +1,834 @@
+import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Download, FileText, Eye, EyeOff } from 'lucide-react';
-import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, LineChart, Line, Legend, Cell, ReferenceLine, ReferenceDot } from 'recharts';
-import { Project, availableKPIs } from '@/types/project';
-import { ChartType, EmbodiedCarbonBreakdown, ValueType } from './ChartTypeSelector';
-import { addProjectNumberToName, getSector, getSectorColor, getSectorShape, sectorConfig, getSectorBenchmarkColor } from '@/utils/projectUtils';
-import { formatNumber } from '@/lib/utils';
-import { useState } from 'react';
-import { CustomShape } from './CustomShapes';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, ScatterChart, Scatter, ReferenceLine } from 'recharts';
+import { Project } from '@/types/project';
+import html2canvas from 'html2canvas';
 
 interface ChartSectionProps {
   projects: Project[];
-  chartType: ChartType;
+  chartType: string;
   selectedKPI1: string;
   selectedKPI2: string;
-  embodiedCarbonBreakdown: EmbodiedCarbonBreakdown;
-  valueType: ValueType;
-  isComparingToSelf?: boolean;
-  selectedRibaStages?: string[];
+  valueType: string;
 }
 
-// Custom color palette based on your specifications
-const chartColors = {
-  primary: '#2D9B4D',      // Updated to green as requested
-  secondary: '#48DE9D',    // Bright green
-  tertiary: '#FF8EE5',     // Updated bright pink as requested
-  quaternary: '#5dc5ed',   // Light blue
-  accent1: '#E9E8D3',      // Updated light green fill as requested
-  accent2: '#c9e1ea',      // Light blue/grey
-  dark: '#272727',         // Updated dark gray as requested
-  darkGreen: '#004033',    // Dark green
-  benchmark: '#e74c3c',    // Red for benchmark lines
-  // Additional complementary colors
-  warning: '#f39c12',      // Orange
-  info: '#3498db',         // Medium blue
-  success: '#2D9B4D',      // Updated to use new green
-  muted: '#272727'         // Updated to use new dark gray
+// Total Embodied Carbon Benchmarks (fixed values by sector)
+const totalEmbodiedCarbonBenchmarks = {
+  'CCC': 550,
+  'Education': 425,
+  'Healthcare': 600,
+  'Residential': 425,
+  'Workplace': 500,
 };
 
-// Color arrays for different chart types
-const seriesColors = [
-  chartColors.primary,
-  chartColors.secondary,
-  chartColors.tertiary,
-  chartColors.quaternary,
-  chartColors.warning,
-  chartColors.info,
-  chartColors.success,
-  chartColors.muted,
-  chartColors.darkGreen
-];
-
-// Utility function to generate nice, regular tick intervals
-const generateNiceTicks = (maxValue: number, tickCount: number = 5): number[] => {
-  if (maxValue <= 0) return [0];
-  
-  // Calculate step size
-  const roughStep = maxValue / (tickCount - 1);
-  
-  // Round step to nice numbers (1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, etc.)
-  const magnitude = Math.pow(10, Math.floor(Math.log10(roughStep)));
-  const normalizedStep = roughStep / magnitude;
-  
-  let niceStep;
-  if (normalizedStep <= 1) niceStep = 1;
-  else if (normalizedStep <= 2) niceStep = 2;
-  else if (normalizedStep <= 5) niceStep = 5;
-  else niceStep = 10;
-  
-  const finalStep = niceStep * magnitude;
-  
-  // Generate ticks
-  const ticks = [];
-  for (let i = 0; i <= Math.ceil(maxValue / finalStep); i++) {
-    ticks.push(i * finalStep);
+// Upfront Carbon Benchmarks (2025-2050 by sector, sub-sector, and type)
+const upfrontCarbonBenchmarks = {
+  Residential: {
+    "Commercial residential": {
+      2025: { "New building": 580, Retrofit: 460 },
+      2026: { "New building": 550, Retrofit: 435 },
+      2027: { "New building": 525, Retrofit: 415 },
+      2028: { "New building": 495, Retrofit: 390 },
+      2029: { "New building": 465, Retrofit: 370 },
+      2030: { "New building": 435, Retrofit: 345 },
+      2031: { "New building": 405, Retrofit: 320 },
+      2032: { "New building": 380, Retrofit: 300 },
+      2033: { "New building": 350, Retrofit: 280 },
+      2034: { "New building": 315, Retrofit: 250 },
+      2035: { "New building": 285, Retrofit: 225 },
+      2036: { "New building": 260, Retrofit: 205 },
+      2037: { "New building": 240, Retrofit: 190 },
+      2038: { "New building": 220, Retrofit: 175 },
+      2039: { "New building": 200, Retrofit: 160 },
+      2040: { "New building": 185, Retrofit: 150 },
+      2041: { "New building": 165, Retrofit: 130 },
+      2042: { "New building": 150, Retrofit: 120 },
+      2043: { "New building": 135, Retrofit: 110 },
+      2044: { "New building": 120, Retrofit: 95 },
+      2045: { "New building": 105, Retrofit: 85 },
+      2046: { "New building": 95, Retrofit: 75 },
+      2047: { "New building": 80, Retrofit: 65 },
+      2048: { "New building": 70, Retrofit: 60 },
+      2049: { "New building": 60, Retrofit: 50 },
+      2050: { "New building": 45, Retrofit: 40 }
+    },
+    Flats: {
+      2025: { "New building": 565, Retrofit: 425 },
+      2026: { "New building": 525, Retrofit: 395 },
+      2027: { "New building": 490, Retrofit: 370 },
+      2028: { "New building": 450, Retrofit: 340 },
+      2029: { "New building": 420, Retrofit: 315 },
+      2030: { "New building": 380, Retrofit: 285 },
+      2031: { "New building": 355, Retrofit: 270 },
+      2032: { "New building": 335, Retrofit: 255 },
+      2033: { "New building": 305, Retrofit: 230 },
+      2034: { "New building": 280, Retrofit: 210 },
+      2035: { "New building": 250, Retrofit: 190 },
+      2036: { "New building": 225, Retrofit: 170 },
+      2037: { "New building": 210, Retrofit: 160 },
+      2038: { "New building": 195, Retrofit: 150 },
+      2039: { "New building": 175, Retrofit: 135 },
+      2040: { "New building": 160, Retrofit: 120 },
+      2041: { "New building": 145, Retrofit: 110 },
+      2042: { "New building": 135, Retrofit: 105 },
+      2043: { "New building": 120, Retrofit: 90 },
+      2044: { "New building": 105, Retrofit: 80 },
+      2045: { "New building": 95, Retrofit: 75 },
+      2046: { "New building": 80, Retrofit: 60 },
+      2047: { "New building": 70, Retrofit: 55 },
+      2048: { "New building": 60, Retrofit: 45 },
+      2049: { "New building": 50, Retrofit: 40 },
+      2050: { "New building": 40, Retrofit: 30 }
+    },
+    Hotels: {
+      2025: { "New building": 670, Retrofit: 520 },
+      2026: { "New building": 635, Retrofit: 490 },
+      2027: { "New building": 605, Retrofit: 470 },
+      2028: { "New building": 570, Retrofit: 440 },
+      2029: { "New building": 540, Retrofit: 420 },
+      2030: { "New building": 500, Retrofit: 390 },
+      2031: { "New building": 470, Retrofit: 365 },
+      2032: { "New building": 440, Retrofit: 340 },
+      2033: { "New building": 400, Retrofit: 310 },
+      2034: { "New building": 365, Retrofit: 285 },
+      2035: { "New building": 330, Retrofit: 255 },
+      2036: { "New building": 300, Retrofit: 235 },
+      2037: { "New building": 275, Retrofit: 215 },
+      2038: { "New building": 255, Retrofit: 200 },
+      2039: { "New building": 235, Retrofit: 185 },
+      2040: { "New building": 215, Retrofit: 170 },
+      2041: { "New building": 195, Retrofit: 155 },
+      2042: { "New building": 175, Retrofit: 135 },
+      2043: { "New building": 155, Retrofit: 120 },
+      2044: { "New building": 140, Retrofit: 110 },
+      2045: { "New building": 125, Retrofit: 100 },
+      2046: { "New building": 105, Retrofit: 85 },
+      2047: { "New building": 95, Retrofit: 75 },
+      2048: { "New building": 80, Retrofit: 65 },
+      2049: { "New building": 65, Retrofit: 55 },
+      2050: { "New building": 55, Retrofit: 45 }
+    },
+    "Single family homes": {
+      2025: { "New building": 430, Retrofit: 270 },
+      2026: { "New building": 400, Retrofit: 255 },
+      2027: { "New building": 375, Retrofit: 235 },
+      2028: { "New building": 345, Retrofit: 220 },
+      2029: { "New building": 320, Retrofit: 205 },
+      2030: { "New building": 290, Retrofit: 185 },
+      2031: { "New building": 270, Retrofit: 170 },
+      2032: { "New building": 255, Retrofit: 160 },
+      2033: { "New building": 235, Retrofit: 150 },
+      2034: { "New building": 210, Retrofit: 135 },
+      2035: { "New building": 190, Retrofit: 120 },
+      2036: { "New building": 175, Retrofit: 110 },
+      2037: { "New building": 160, Retrofit: 105 },
+      2038: { "New building": 150, Retrofit: 95 },
+      2039: { "New building": 135, Retrofit: 85 },
+      2040: { "New building": 125, Retrofit: 80 },
+      2041: { "New building": 110, Retrofit: 70 },
+      2042: { "New building": 100, Retrofit: 65 },
+      2043: { "New building": 90, Retrofit: 60 },
+      2044: { "New building": 80, Retrofit: 55 },
+      2045: { "New building": 70, Retrofit: 45 },
+      2046: { "New building": 65, Retrofit: 45 },
+      2047: { "New building": 55, Retrofit: 35 },
+      2048: { "New building": 45, Retrofit: 30 },
+      2049: { "New building": 40, Retrofit: 30 },
+      2050: { "New building": 30, Retrofit: 20 }
+    }
+  },
+  CCC: {
+    "Culture and entertainment (General)": {
+      2025: { "New building": 570, Retrofit: 450 },
+      2026: { "New building": 540, Retrofit: 425 },
+      2027: { "New building": 515, Retrofit: 405 },
+      2028: { "New building": 485, Retrofit: 385 },
+      2029: { "New building": 460, Retrofit: 365 },
+      2030: { "New building": 425, Retrofit: 335 },
+      2031: { "New building": 400, Retrofit: 315 },
+      2032: { "New building": 375, Retrofit: 295 },
+      2033: { "New building": 340, Retrofit: 270 },
+      2034: { "New building": 310, Retrofit: 245 },
+      2035: { "New building": 280, Retrofit: 220 },
+      2036: { "New building": 255, Retrofit: 200 },
+      2037: { "New building": 235, Retrofit: 185 },
+      2038: { "New building": 215, Retrofit: 170 },
+      2039: { "New building": 200, Retrofit: 160 },
+      2040: { "New building": 180, Retrofit: 145 },
+      2041: { "New building": 165, Retrofit: 130 },
+      2042: { "New building": 150, Retrofit: 120 },
+      2043: { "New building": 135, Retrofit: 110 },
+      2044: { "New building": 120, Retrofit: 95 },
+      2045: { "New building": 105, Retrofit: 85 },
+      2046: { "New building": 90, Retrofit: 75 },
+      2047: { "New building": 80, Retrofit: 65 },
+      2048: { "New building": 70, Retrofit: 55 },
+      2049: { "New building": 55, Retrofit: 45 },
+      2050: { "New building": 45, Retrofit: 40 }
+    },
+    "Culture and entertainment (Performance)": {
+      2025: { "New building": 855, Retrofit: 605 },
+      2026: { "New building": 810, Retrofit: 570 },
+      2027: { "New building": 770, Retrofit: 545 },
+      2028: { "New building": 725, Retrofit: 510 },
+      2029: { "New building": 685, Retrofit: 485 },
+      2030: { "New building": 640, Retrofit: 450 },
+      2031: { "New building": 595, Retrofit: 420 },
+      2032: { "New building": 560, Retrofit: 395 },
+      2033: { "New building": 510, Retrofit: 360 },
+      2034: { "New building": 465, Retrofit: 330 },
+      2035: { "New building": 420, Retrofit: 295 },
+      2036: { "New building": 380, Retrofit: 270 },
+      2037: { "New building": 350, Retrofit: 250 },
+      2038: { "New building": 325, Retrofit: 230 },
+      2039: { "New building": 295, Retrofit: 210 },
+      2040: { "New building": 270, Retrofit: 190 },
+      2041: { "New building": 245, Retrofit: 175 },
+      2042: { "New building": 220, Retrofit: 155 },
+      2043: { "New building": 200, Retrofit: 145 },
+      2044: { "New building": 175, Retrofit: 125 },
+      2045: { "New building": 155, Retrofit: 110 },
+      2046: { "New building": 135, Retrofit: 95 },
+      2047: { "New building": 120, Retrofit: 85 },
+      2048: { "New building": 100, Retrofit: 75 },
+      2049: { "New building": 85, Retrofit: 60 },
+      2050: { "New building": 70, Retrofit: 50 }
+    }
+  },
+  Healthcare: {
+    Healthcare: {
+      2025: { "New building": 790, Retrofit: 615 },
+      2026: { "New building": 750, Retrofit: 585 },
+      2027: { "New building": 710, Retrofit: 555 },
+      2028: { "New building": 670, Retrofit: 525 },
+      2029: { "New building": 635, Retrofit: 495 },
+      2030: { "New building": 590, Retrofit: 460 },
+      2031: { "New building": 550, Retrofit: 430 },
+      2032: { "New building": 515, Retrofit: 405 },
+      2033: { "New building": 475, Retrofit: 370 },
+      2034: { "New building": 430, Retrofit: 335 },
+      2035: { "New building": 390, Retrofit: 305 },
+      2036: { "New building": 350, Retrofit: 275 },
+      2037: { "New building": 325, Retrofit: 255 },
+      2038: { "New building": 300, Retrofit: 235 },
+      2039: { "New building": 275, Retrofit: 215 },
+      2040: { "New building": 250, Retrofit: 195 },
+      2041: { "New building": 225, Retrofit: 180 },
+      2042: { "New building": 205, Retrofit: 160 },
+      2043: { "New building": 185, Retrofit: 145 },
+      2044: { "New building": 165, Retrofit: 130 },
+      2045: { "New building": 145, Retrofit: 115 },
+      2046: { "New building": 125, Retrofit: 100 },
+      2047: { "New building": 110, Retrofit: 90 },
+      2048: { "New building": 95, Retrofit: 75 },
+      2049: { "New building": 80, Retrofit: 65 },
+      2050: { "New building": 65, Retrofit: 55 }
+    }
+  },
+  Education: {
+    "Higher education": {
+      2025: { "New building": 640, Retrofit: 475 },
+      2026: { "New building": 610, Retrofit: 455 },
+      2027: { "New building": 575, Retrofit: 425 },
+      2028: { "New building": 545, Retrofit: 405 },
+      2029: { "New building": 515, Retrofit: 385 },
+      2030: { "New building": 480, Retrofit: 355 },
+      2031: { "New building": 445, Retrofit: 330 },
+      2032: { "New building": 420, Retrofit: 315 },
+      2033: { "New building": 385, Retrofit: 285 },
+      2034: { "New building": 350, Retrofit: 260 },
+      2035: { "New building": 315, Retrofit: 235 },
+      2036: { "New building": 285, Retrofit: 215 },
+      2037: { "New building": 265, Retrofit: 200 },
+      2038: { "New building": 240, Retrofit: 180 },
+      2039: { "New building": 225, Retrofit: 170 },
+      2040: { "New building": 205, Retrofit: 155 },
+      2041: { "New building": 185, Retrofit: 140 },
+      2042: { "New building": 165, Retrofit: 125 },
+      2043: { "New building": 150, Retrofit: 115 },
+      2044: { "New building": 135, Retrofit: 100 },
+      2045: { "New building": 115, Retrofit: 85 },
+      2046: { "New building": 105, Retrofit: 80 },
+      2047: { "New building": 90, Retrofit: 70 },
+      2048: { "New building": 75, Retrofit: 60 },
+      2049: { "New building": 65, Retrofit: 50 },
+      2050: { "New building": 50, Retrofit: 40 }
+    },
+    Schools: {
+      2025: { "New building": 530, Retrofit: 380 },
+      2026: { "New building": 505, Retrofit: 365 },
+      2027: { "New building": 480, Retrofit: 345 },
+      2028: { "New building": 450, Retrofit: 325 },
+      2029: { "New building": 425, Retrofit: 305 },
+      2030: { "New building": 395, Retrofit: 285 },
+      2031: { "New building": 370, Retrofit: 265 },
+      2032: { "New building": 350, Retrofit: 255 },
+      2033: { "New building": 320, Retrofit: 230 },
+      2034: { "New building": 290, Retrofit: 210 },
+      2035: { "New building": 260, Retrofit: 190 },
+      2036: { "New building": 235, Retrofit: 170 },
+      2037: { "New building": 220, Retrofit: 160 },
+      2038: { "New building": 200, Retrofit: 145 },
+      2039: { "New building": 185, Retrofit: 135 },
+      2040: { "New building": 170, Retrofit: 125 },
+      2041: { "New building": 155, Retrofit: 115 },
+      2042: { "New building": 140, Retrofit: 105 },
+      2043: { "New building": 125, Retrofit: 90 },
+      2044: { "New building": 110, Retrofit: 80 },
+      2045: { "New building": 100, Retrofit: 75 },
+      2046: { "New building": 85, Retrofit: 65 },
+      2047: { "New building": 75, Retrofit: 55 },
+      2048: { "New building": 65, Retrofit: 50 },
+      2049: { "New building": 55, Retrofit: 40 },
+      2050: { "New building": 45, Retrofit: 35 }
+    }
+  },
+  Workplace: {
+    "Science and technology": {
+      2025: { "New building": 755, Retrofit: 605 },
+      2026: { "New building": 715, Retrofit: 575 },
+      2027: { "New building": 680, Retrofit: 545 },
+      2028: { "New building": 640, Retrofit: 515 },
+      2029: { "New building": 605, Retrofit: 485 },
+      2030: { "New building": 565, Retrofit: 455 },
+      2031: { "New building": 525, Retrofit: 420 },
+      2032: { "New building": 495, Retrofit: 395 },
+      2033: { "New building": 450, Retrofit: 360 },
+      2034: { "New building": 410, Retrofit: 330 },
+      2035: { "New building": 370, Retrofit: 300 },
+      2036: { "New building": 335, Retrofit: 270 },
+      2037: { "New building": 310, Retrofit: 250 },
+      2038: { "New building": 285, Retrofit: 230 },
+      2039: { "New building": 260, Retrofit: 210 },
+      2040: { "New building": 240, Retrofit: 195 },
+      2041: { "New building": 215, Retrofit: 175 },
+      2042: { "New building": 195, Retrofit: 160 },
+      2043: { "New building": 175, Retrofit: 140 },
+      2044: { "New building": 155, Retrofit: 125 },
+      2045: { "New building": 140, Retrofit: 115 },
+      2046: { "New building": 120, Retrofit: 100 },
+      2047: { "New building": 105, Retrofit: 85 },
+      2048: { "New building": 90, Retrofit: 75 },
+      2049: { "New building": 75, Retrofit: 60 },
+      2050: { "New building": 60, Retrofit: 50 }
+    },
+    "Workplace (Shell and core)": {
+      2025: { "New building": 475 },
+      2026: { "New building": 450 },
+      2027: { "New building": 425 },
+      2028: { "New building": 400 },
+      2029: { "New building": 380 },
+      2030: { "New building": 355 },
+      2031: { "New building": 330 },
+      2032: { "New building": 310 },
+      2033: { "New building": 285 },
+      2034: { "New building": 255 },
+      2035: { "New building": 230 },
+      2036: { "New building": 210 },
+      2037: { "New building": 190 },
+      2038: { "New building": 180 },
+      2039: { "New building": 165 },
+      2040: { "New building": 150 },
+      2041: { "New building": 135 },
+      2042: { "New building": 120 },
+      2043: { "New building": 110 },
+      2044: { "New building": 95 },
+      2045: { "New building": 85 },
+      2046: { "New building": 75 },
+      2047: { "New building": 60 },
+      2048: { "New building": 55 },
+      2049: { "New building": 45 },
+      2050: { "New building": 35 }
+    },
+    "Workplace (Whole building)": {
+      2025: { "New building": 735, Retrofit: 600 },
+      2026: { "New building": 700, Retrofit: 575 },
+      2027: { "New building": 660, Retrofit: 540 },
+      2028: { "New building": 625, Retrofit: 510 },
+      2029: { "New building": 590, Retrofit: 485 },
+      2030: { "New building": 550, Retrofit: 450 },
+      2031: { "New building": 515, Retrofit: 420 },
+      2032: { "New building": 480, Retrofit: 395 },
+      2033: { "New building": 440, Retrofit: 360 },
+      2034: { "New building": 400, Retrofit: 330 },
+      2035: { "New building": 360, Retrofit: 295 },
+      2036: { "New building": 325, Retrofit: 265 },
+      2037: { "New building": 300, Retrofit: 245 },
+      2038: { "New building": 280, Retrofit: 230 },
+      2039: { "New building": 255, Retrofit: 210 },
+      2040: { "New building": 235, Retrofit: 195 },
+      2041: { "New building": 210, Retrofit: 175 },
+      2042: { "New building": 190, Retrofit: 155 },
+      2043: { "New building": 170, Retrofit: 140 },
+      2044: { "New building": 150, Retrofit: 125 },
+      2045: { "New building": 135, Retrofit: 110 },
+      2046: { "New building": 120, Retrofit: 100 },
+      2047: { "New building": 100, Retrofit: 85 },
+      2048: { "New building": 85, Retrofit: 70 },
+      2049: { "New building": 70, Retrofit: 60 },
+      2050: { "New building": 60, Retrofit: 50 }
+    }
   }
-  
-  return ticks;
 };
 
-export const ChartSection = ({ 
-  projects, 
-  chartType, 
-  selectedKPI1, 
-  selectedKPI2, 
-  embodiedCarbonBreakdown,
-  valueType,
-  isComparingToSelf = false,
-  selectedRibaStages = []
-}: ChartSectionProps) => {
+// Sub-sector to sector mapping for upfront carbon
+const upfrontCarbonSubSectorMapping = {
+  'Culture and entertainment (Performance)': 'CCC',
+  'Culture and entertainment (General)': 'CCC',
+  'Higher education': 'Education',
+  'Schools': 'Education',
+  'Healthcare': 'Healthcare',
+  'Single family homes': 'Residential',
+  'Flats': 'Residential',
+  'Hotels': 'Residential',
+  'Commercial residential': 'Residential',
+  'Science and technology': 'Workplace',
+  'Workplace (Whole building)': 'Workplace',
+  'Workplace (Shell and core)': 'Workplace'
+};
+
+// Chart colors configuration
+const chartColors = {
+  primary: '#3B82F6',
+  secondary: '#EF4444',
+  accent: '#10B981',
+  dark: '#1F2937',
+  light: '#F3F4F6'
+};
+
+export const ChartSection: React.FC<ChartSectionProps> = ({
+  projects,
+  chartType,
+  selectedKPI1,
+  selectedKPI2,
+  valueType
+}) => {
   const [showBenchmarks, setShowBenchmarks] = useState(false);
-  
-  const kpi1Config = availableKPIs.find(kpi => kpi.key === selectedKPI1);
-  const kpi2Config = availableKPIs.find(kpi => kpi.key === selectedKPI2);
 
-  // Benchmark data for Total Embodied Carbon
-  const totalEmbodiedCarbonBenchmarks = {
-    'Residential': {
-      'Business as usual': 1200,
-      'RIBA 2025': 800,
-      'RIBA 2030': 625
-    },
-    'Workplace': {
-      'Business as usual': 1400,
-      'RIBA 2025': 970,
-      'RIBA 2030': 750
-    },
-    'Education': {
-      'Business as usual': 1400,
-      'RIBA 2025': 675,
-      'RIBA 2030': 540
-    }
-  };
-
-  // UKNZCBS benchmark data by sector
-  const uknzcbsBenchmarks = {
-    'Workplace': { 2025: 580, 2026: 550, 2027: 525, 2028: 495, 2029: 465, 2030: 435, 2031: 405, 2032: 380, 2033: 350, 2034: 315, 2035: 285, 2036: 260, 2037: 240, 2038: 220, 2039: 200, 2040: 185, 2041: 165, 2042: 150, 2043: 135, 2044: 120, 2045: 105, 2046: 95, 2047: 80, 2048: 70, 2049: 60, 2050: 45 },
-    'Residential': { 2025: 570, 2026: 540, 2027: 515, 2028: 485, 2029: 460, 2030: 425, 2031: 400, 2032: 375, 2033: 340, 2034: 310, 2035: 280, 2036: 255, 2037: 235, 2038: 215, 2039: 200, 2040: 180, 2041: 165, 2042: 150, 2043: 135, 2044: 120, 2045: 105, 2046: 90, 2047: 80, 2048: 70, 2049: 55, 2050: 45 },
-    'CCC': { 2025: 855, 2026: 810, 2027: 770, 2028: 725, 2029: 685, 2030: 640, 2031: 595, 2032: 560, 2033: 510, 2034: 465, 2035: 420, 2036: 380, 2037: 350, 2038: 325, 2039: 295, 2040: 270, 2041: 245, 2042: 220, 2043: 200, 2044: 175, 2045: 155, 2046: 135, 2047: 120, 2048: 100, 2049: 85, 2050: 70 },
-    'Healthcare': { 2025: 790, 2026: 750, 2027: 710, 2028: 670, 2029: 635, 2030: 590, 2031: 550, 2032: 515, 2033: 475, 2034: 430, 2035: 390, 2036: 350, 2037: 325, 2038: 300, 2039: 275, 2040: 250, 2041: 225, 2042: 205, 2043: 185, 2044: 165, 2045: 145, 2046: 125, 2047: 110, 2048: 95, 2049: 80, 2050: 65 },
-    'Education': { 2025: 640, 2026: 610, 2027: 575, 2028: 545, 2029: 515, 2030: 480, 2031: 445, 2032: 420, 2033: 385, 2034: 350, 2035: 315, 2036: 285, 2037: 265, 2038: 240, 2039: 225, 2040: 205, 2041: 185, 2042: 165, 2043: 150, 2044: 135, 2045: 115, 2046: 105, 2047: 90, 2048: 75, 2049: 65, 2050: 50 },
-    'Infrastructure': { 2025: 565, 2026: 525, 2027: 490, 2028: 450, 2029: 420, 2030: 380, 2031: 355, 2032: 335, 2033: 305, 2034: 280, 2035: 250, 2036: 225, 2037: 210, 2038: 195, 2039: 175, 2040: 160, 2041: 145, 2042: 135, 2043: 120, 2044: 105, 2045: 95, 2046: 80, 2047: 70, 2048: 60, 2049: 50, 2050: 40 }
-  };
-
-  // Upfront Carbon benchmark data - different from total embodied carbon
-  // Sub-sector mapping to sector benchmarks for upfront carbon
-  const upfrontCarbonSubSectorMapping = {
-    'Culture & entertainment (Performance)': 'CCC',
-    'Culture & entertainment (General)': 'CCC', 
-    'Higher education': 'Education',
-    'Schools': 'Education',
-    'Healthcare': 'Healthcare',
-    'Single family homes': 'Residential',
-    'Flats': 'Residential',
-    'Hotels': 'Residential',
-    'Commercial residential': 'Residential',
-    'Science & technology': 'Workplace',
-    'Workplace (Whole building)': 'Workplace',
-    'Workplace (Shell & core)': 'Workplace'
-  };
-
-  // Upfront Carbon benchmarks (comprehensive 2025-2050 data) for New building and Retrofit
-  const upfrontCarbonBenchmarks = {
-    2025: {
-      CCC: {
-        "Culture & entertainment (General)": { "New building": 570, "Retrofit": 450 },
-        "Culture & entertainment (Performance)": { "New building": 855, "Retrofit": 605 }
-      },
-      Education: {
-        Schools: { "New building": 530, "Retrofit": 380 },
-        "Higher education": { "New building": 640, "Retrofit": 475 }
-      },
-      Healthcare: {
-        Healthcare: { "New building": 790, "Retrofit": 615 }
-      },
-      Residential: {
-        "Single family homes": { "New building": 430, "Retrofit": 270 },
-        Flats: { "New building": 565, "Retrofit": 425 },
-        "Commercial residential": { "New building": 580, "Retrofit": 460 },
-        Hotels: { "New building": 670, "Retrofit": 520 }
-      },
-      Workplace: {
-        "Workplace (Whole building)": { "New building": 735, "Retrofit": 600 },
-        "Workplace (Shell & core)": { "New building": 475 },
-        "Science & technology": { "New building": 755, "Retrofit": 605 }
-      }
-    },
-    2026: {
-      CCC: {
-        "Culture & entertainment (General)": { "New building": 540, "Retrofit": 425 },
-        "Culture & entertainment (Performance)": { "New building": 810, "Retrofit": 570 }
-      },
-      Education: {
-        Schools: { "New building": 505, "Retrofit": 365 },
-        "Higher education": { "New building": 610, "Retrofit": 455 }
-      },
-      Healthcare: {
-        Healthcare: { "New building": 750, "Retrofit": 585 }
-      },
-      Residential: {
-        "Single family homes": { "New building": 400, "Retrofit": 255 },
-        Flats: { "New building": 525, "Retrofit": 395 },
-        "Commercial residential": { "New building": 550, "Retrofit": 435 },
-        Hotels: { "New building": 635, "Retrofit": 490 }
-      },
-      Workplace: {
-        "Workplace (Whole building)": { "New building": 700, "Retrofit": 575 },
-        "Workplace (Shell & core)": { "New building": 450 },
-        "Science & technology": { "New building": 715, "Retrofit": 575 }
-      }
-    },
-    2027: {
-      CCC: {
-        "Culture & entertainment (General)": { "New building": 515, "Retrofit": 405 },
-        "Culture & entertainment (Performance)": { "New building": 770, "Retrofit": 545 }
-      },
-      Education: {
-        Schools: { "New building": 480, "Retrofit": 345 },
-        "Higher education": { "New building": 575, "Retrofit": 425 }
-      },
-      Healthcare: {
-        Healthcare: { "New building": 710, "Retrofit": 555 }
-      },
-      Residential: {
-        "Single family homes": { "New building": 375, "Retrofit": 235 },
-        Flats: { "New building": 490, "Retrofit": 370 },
-        "Commercial residential": { "New building": 525, "Retrofit": 415 },
-        Hotels: { "New building": 605, "Retrofit": 470 }
-      },
-      Workplace: {
-        "Workplace (Whole building)": { "New building": 660, "Retrofit": 540 },
-        "Workplace (Shell & core)": { "New building": 425 },
-        "Science & technology": { "New building": 680, "Retrofit": 545 }
-      }
-    },
-    2028: {
-      CCC: {
-        "Culture & entertainment (General)": { "New building": 485, "Retrofit": 385 },
-        "Culture & entertainment (Performance)": { "New building": 725, "Retrofit": 510 }
-      },
-      Education: {
-        Schools: { "New building": 450, "Retrofit": 325 },
-        "Higher education": { "New building": 545, "Retrofit": 405 }
-      },
-      Healthcare: {
-        Healthcare: { "New building": 670, "Retrofit": 525 }
-      },
-      Residential: {
-        "Single family homes": { "New building": 345, "Retrofit": 220 },
-        Flats: { "New building": 450, "Retrofit": 340 },
-        "Commercial residential": { "New building": 495, "Retrofit": 390 },
-        Hotels: { "New building": 570, "Retrofit": 440 }
-      },
-      Workplace: {
-        "Workplace (Whole building)": { "New building": 625, "Retrofit": 510 },
-        "Workplace (Shell & core)": { "New building": 400 },
-        "Science & technology": { "New building": 640, "Retrofit": 515 }
-      }
-    },
-    2029: {
-      CCC: {
-        "Culture & entertainment (General)": { "New building": 460, "Retrofit": 365 },
-        "Culture & entertainment (Performance)": { "New building": 685, "Retrofit": 485 }
-      },
-      Education: {
-        Schools: { "New building": 425, "Retrofit": 305 },
-        "Higher education": { "New building": 515, "Retrofit": 385 }
-      },
-      Healthcare: {
-        Healthcare: { "New building": 635, "Retrofit": 495 }
-      },
-      Residential: {
-        "Single family homes": { "New building": 320, "Retrofit": 205 },
-        Flats: { "New building": 420, "Retrofit": 315 },
-        "Commercial residential": { "New building": 465, "Retrofit": 370 },
-        Hotels: { "New building": 540, "Retrofit": 420 }
-      },
-      Workplace: {
-        "Workplace (Whole building)": { "New building": 590, "Retrofit": 485 },
-        "Workplace (Shell & core)": { "New building": 380 },
-        "Science & technology": { "New building": 605, "Retrofit": 485 }
-      }
-    },
-    2030: {
-      CCC: {
-        "Culture & entertainment (General)": { "New building": 425, "Retrofit": 335 },
-        "Culture & entertainment (Performance)": { "New building": 640, "Retrofit": 450 }
-      },
-      Education: {
-        Schools: { "New building": 395, "Retrofit": 285 },
-        "Higher education": { "New building": 480, "Retrofit": 355 }
-      },
-      Healthcare: {
-        Healthcare: { "New building": 590, "Retrofit": 460 }
-      },
-      Residential: {
-        "Single family homes": { "New building": 290, "Retrofit": 185 },
-        Flats: { "New building": 380, "Retrofit": 285 },
-        "Commercial residential": { "New building": 435, "Retrofit": 345 },
-        Hotels: { "New building": 500, "Retrofit": 390 }
-      },
-      Workplace: {
-        "Workplace (Whole building)": { "New building": 550, "Retrofit": 450 },
-        "Workplace (Shell & core)": { "New building": 355 },
-        "Science & technology": { "New building": 565, "Retrofit": 455 }
-      }
-    },
-    2031: {
-      CCC: {
-        "Culture & entertainment (General)": { "New building": 400, "Retrofit": 315 },
-        "Culture & entertainment (Performance)": { "New building": 595, "Retrofit": 420 }
-      },
-      Education: {
-        Schools: { "New building": 370, "Retrofit": 265 },
-        "Higher education": { "New building": 445, "Retrofit": 330 }
-      },
-      Healthcare: {
-        Healthcare: { "New building": 550, "Retrofit": 430 }
-      },
-      Residential: {
-        "Single family homes": { "New building": 270, "Retrofit": 170 },
-        Flats: { "New building": 355, "Retrofit": 270 },
-        "Commercial residential": { "New building": 405, "Retrofit": 320 },
-        Hotels: { "New building": 470, "Retrofit": 365 }
-      },
-      Workplace: {
-        "Workplace (Whole building)": { "New building": 515, "Retrofit": 420 },
-        "Workplace (Shell & core)": { "New building": 330 },
-        "Science & technology": { "New building": 525, "Retrofit": 420 }
-      }
-    },
-    2032: {
-      CCC: {
-        "Culture & entertainment (General)": { "New building": 375, "Retrofit": 295 },
-        "Culture & entertainment (Performance)": { "New building": 560, "Retrofit": 395 }
-      },
-      Education: {
-        Schools: { "New building": 350, "Retrofit": 255 },
-        "Higher education": { "New building": 420, "Retrofit": 315 }
-      },
-      Healthcare: {
-        Healthcare: { "New building": 515, "Retrofit": 405 }
-      },
-      Residential: {
-        "Single family homes": { "New building": 255, "Retrofit": 160 },
-        Flats: { "New building": 335, "Retrofit": 255 },
-        "Commercial residential": { "New building": 380, "Retrofit": 300 },
-        Hotels: { "New building": 440, "Retrofit": 340 }
-      },
-      Workplace: {
-        "Workplace (Whole building)": { "New building": 480, "Retrofit": 395 },
-        "Workplace (Shell & core)": { "New building": 310 },
-        "Science & technology": { "New building": 495, "Retrofit": 395 }
-      }
-    },
-    2033: {
-      CCC: {
-        "Culture & entertainment (General)": { "New building": 340, "Retrofit": 270 },
-        "Culture & entertainment (Performance)": { "New building": 510, "Retrofit": 360 }
-      },
-      Education: {
-        Schools: { "New building": 320, "Retrofit": 230 },
-        "Higher education": { "New building": 385, "Retrofit": 285 }
-      },
-      Healthcare: {
-        Healthcare: { "New building": 475, "Retrofit": 370 }
-      },
-      Residential: {
-        "Single family homes": { "New building": 235, "Retrofit": 150 },
-        Flats: { "New building": 305, "Retrofit": 230 },
-        "Commercial residential": { "New building": 350, "Retrofit": 280 },
-        Hotels: { "New building": 400, "Retrofit": 310 }
-      },
-      Workplace: {
-        "Workplace (Whole building)": { "New building": 440, "Retrofit": 360 },
-        "Workplace (Shell & core)": { "New building": 285 },
-        "Science & technology": { "New building": 450, "Retrofit": 360 }
-      }
-    },
-    2034: {
-      CCC: {
-        "Culture & entertainment (General)": { "New building": 310, "Retrofit": 245 },
-        "Culture & entertainment (Performance)": { "New building": 465, "Retrofit": 330 }
-      },
-      Education: {
-        Schools: { "New building": 290, "Retrofit": 210 },
-        "Higher education": { "New building": 350, "Retrofit": 260 }
-      },
-      Healthcare: {
-        Healthcare: { "New building": 430, "Retrofit": 335 }
-      },
-      Residential: {
-        "Single family homes": { "New building": 210, "Retrofit": 135 },
-        Flats: { "New building": 280, "Retrofit": 210 },
-        "Commercial residential": { "New building": 315, "Retrofit": 250 },
-        Hotels: { "New building": 365, "Retrofit": 285 }
-      },
-      Workplace: {
-        "Workplace (Whole building)": { "New building": 400, "Retrofit": 330 },
-        "Workplace (Shell & core)": { "New building": 255 },
-        "Science & technology": { "New building": 410, "Retrofit": 330 }
-      }
-    },
-    2035: {
-      CCC: {
-        "Culture & entertainment (General)": { "New building": 280, "Retrofit": 220 },
-        "Culture & entertainment (Performance)": { "New building": 420, "Retrofit": 295 }
-      },
-      Education: {
-        Schools: { "New building": 260, "Retrofit": 190 },
-        "Higher education": { "New building": 315, "Retrofit": 235 }
-      },
-      Healthcare: {
-        Healthcare: { "New building": 390, "Retrofit": 305 }
-      },
-      Residential: {
-        "Single family homes": { "New building": 190, "Retrofit": 120 },
-        Flats: { "New building": 250, "Retrofit": 190 },
-        "Commercial residential": { "New building": 285, "Retrofit": 225 },
-        Hotels: { "New building": 330, "Retrofit": 255 }
-      },
-      Workplace: {
-        "Workplace (Whole building)": { "New building": 360, "Retrofit": 295 },
-        "Workplace (Shell & core)": { "New building": 230 },
-        "Science & technology": { "New building": 370, "Retrofit": 300 }
-      }
-    },
-    2036: {
-      CCC: {
-        "Culture & entertainment (General)": { "New building": 255, "Retrofit": 200 },
-        "Culture & entertainment (Performance)": { "New building": 380, "Retrofit": 270 }
-      },
-      Education: {
-        Schools: { "New building": 235, "Retrofit": 170 },
-        "Higher education": { "New building": 285, "Retrofit": 215 }
-      },
-      Healthcare: {
-        Healthcare: { "New building": 350, "Retrofit": 275 }
-      },
-      Residential: {
-        "Single family homes": { "New building": 175, "Retrofit": 110 },
-        Flats: { "New building": 225, "Retrofit": 170 },
-        "Commercial residential": { "New building": 260, "Retrofit": 205 },
-        Hotels: { "New building": 300, "Retrofit": 235 }
-      },
-      Workplace: {
-        "Workplace (Whole building)": { "New building": 325, "Retrofit": 265 },
-        "Workplace (Shell & core)": { "New building": 210 },
-        "Science & technology": { "New building": 335, "Retrofit": 270 }
-      }
-    },
-    2037: {
-      CCC: {
-        "Culture & entertainment (General)": { "New building": 235, "Retrofit": 185 },
-        "Culture & entertainment (Performance)": { "New building": 350, "Retrofit": 250 }
-      },
-      Education: {
-        Schools: { "New building": 220, "Retrofit": 160 },
-        "Higher education": { "New building": 265, "Retrofit": 200 }
-      },
-      Healthcare: {
-        Healthcare: { "New building": 325, "Retrofit": 255 }
-      },
-      Residential: {
-        "Single family homes": { "New building": 160, "Retrofit": 105 },
-        Flats: { "New building": 210, "Retrofit": 160 },
-        "Commercial residential": { "New building": 240, "Retrofit": 190 },
-        Hotels: { "New building": 275, "Retrofit": 215 }
-      },
-      Workplace: {
-        "Workplace (Whole building)": { "New building": 300, "Retrofit": 245 },
-        "Workplace (Shell & core)": { "New building": 190 },
-        "Science & technology": { "New building": 310, "Retrofit": 250 }
-      }
-    },
-    2038: {
-      CCC: {
-        "Culture & entertainment (General)": { "New building": 215, "Retrofit": 170 },
-        "Culture & entertainment (Performance)": { "New building": 325, "Retrofit": 230 }
-      },
-      Education: {
-        Schools: { "New building": 200, "Retrofit": 145 },
-        "Higher education": { "New building": 240, "Retrofit": 180 }
-      },
-      Healthcare: {
-        Healthcare: { "New building": 300, "Retrofit": 235 }
-      },
-      Residential: {
-        "Single family homes": { "New building": 150, "Retrofit": 95 },
-        Flats: { "New building": 195, "Retrofit": 150 },
-        "Commercial residential": { "New building": 220, "Retrofit": 175 },
-        Hotels: { "New building": 255, "Retrofit": 200 }
-      },
-      Workplace: {
-        "Workplace (Whole building)": { "New building": 280, "Retrofit": 230 },
-        "Workplace (Shell & core)": { "New building": 180 },
-        "Science & technology": { "New building": 285, "Retrofit": 230 }
-      }
-    },
-    2039: {
-      CCC: {
-        "Culture & entertainment (General)": { "New building": 200, "Retrofit": 160 },
-        "Culture & entertainment (Performance)": { "New building": 295, "Retrofit": 210 }
-      },
-      Education: {
-        Schools: { "New building": 185, "Retrofit": 135 },
-        "Higher education": { "New building": 225, "Retrofit": 170 }
-      },
-      Healthcare: {
-        Healthcare: { "New building": 275, "Retrofit": 215 }
-      },
-      Residential: {
-        "Single family homes": { "New building": 135, "Retrofit": 85 },
-        Flats: { "New building": 175, "Retrofit": 135 },
-        "Commercial residential": { "New building": 200, "Retrofit": 160 },
-        Hotels: { "New building": 235, "Retrofit": 185 }
-      },
-      Workplace: {
-        "Workplace (Whole building)": { "New building": 255, "Retrofit": 210 },
-        "Workplace (Shell & core)": { "New building": 165 },
-        "Science & technology": { "New building": 260, "Retrofit": 210 }
-      }
-    },
-    2040: {
-      CCC: {
-        "Culture & entertainment (General)": { "New building": 180, "Retrofit": 145 },
-        "Culture & entertainment (Performance)": { "New building": 270, "Retrofit": 190 }
-      },
-      Education: {
-        Schools: { "New building": 170, "Retrofit": 125 },
-        "Higher education": { "New building": 205, "Retrofit": 155 }
-      },
-      Healthcare: {
-        Healthcare: { "New building": 250, "Retrofit": 195 }
-      },
-      Residential: {
-        "Single family homes": { "New building": 125, "Retrofit": 80 },
-        Flats: { "New building": 160, "Retrofit": 120 },
-        "Commercial residential": { "New building": 185, "Retrofit": 150 },
-        Hotels: { "New building": 215, "Retrofit": 170 }
-      },
-      Workplace: {
-        "Workplace (Whole building)": { "New building": 235, "Retrofit": 195 },
-        "Workplace (Shell & core)": { "New building": 150 },
-        "Science & technology": { "New building": 240, "Retrofit": 195 }
-      }
-    },
-    2041: {
-      CCC: {
-        "Culture & entertainment (General)": { "New building": 165, "Retrofit": 130 },
-        "Culture & entertainment (Performance)": { "New building": 245, "Retrofit": 175 }
-      },
-      Education: {
-        Schools: { "New building": 155, "Retrofit": 115 },
-        "Higher education": { "New building": 185, "Retrofit": 140 }
-      },
-      Healthcare: {
-        Healthcare: { "New building": 225, "Retrofit": 180 }
-      },
-      Residential: {
-        "Single family homes": { "New building": 110, "Retrofit": 70 },
-        Flats: { "New building": 145, "Retrofit": 110 },
-        "Commercial residential": { "New building": 165, "Retrofit": 130 },
-        Hotels: { "New building": 195, "Retrofit": 155 }
-      },
-      Workplace: {
-        "Workplace (Whole building)": { "New building": 210, "Retrofit": 175 },
-        "Workplace (Shell & core)": { "New building": 135 },
-        "Science & technology": { "New building": 215, "Retrofit": 175 }
-      }
-    },
-    2042: {
-      CCC: {
-        "Culture & entertainment (General)": { "New building": 150, "Retrofit": 120 },
-        "Culture & entertainment (Performance)": { "New building": 220, "Retrofit": 155 }
-      },
-      Education: {
-        Schools: { "New building": 140, "Retrofit": 105 },
-        "Higher education": { "New building": 165, "Retrofit": 125 }
-      },
-      Healthcare: {
-        Healthcare: { "New building": 205, "Retrofit": 160 }
-      },
-      Residential: {
-        "Single family homes": { "New building": 100, "Retrofit": 65 },
-        Flats: { "New building": 135, "Retrofit": 105 },
-        "Commercial residential": { "New building": 150, "Retrofit": 120 },
-        Hotels: { "New building": 175, "Retrofit": 135 }
-      },
-      Workplace: {
-        "Workplace (Whole building)": { "New building": 190, "Retrofit": 155 },
-        "Workplace (Shell & core)": { "New building": 120 },
-        "Science & technology": { "New building": 195, "Retrofit": 160 }
-      }
-    },
-    2043: {
-      CCC: {
-        "Culture & entertainment (General)": { "New building": 135, "Retrofit": 110 },
-        "Culture & entertainment (Performance)": { "New building": 200, "Retrofit": 145 }
-      },
-      Education: {
-        Schools: { "New building": 125, "Retrofit": 90 },
-        "Higher education": { "New building": 150, "Retrofit": 115 }
-      },
-      Healthcare: {
-        Healthcare: { "New building": 185, "Retrofit": 145 }
-      },
-      Residential: {
-        "Single family homes": { "New building": 90, "Retrofit": 60 },
-        Flats: { "New building": 120, "Retrofit": 90 },
-        "Commercial residential": { "New building": 135, "Retrofit": 110 },
-        Hotels: { "New building": 155, "Retrofit": 120 }
-      },
-      Workplace: {
-        "Workplace (Whole building)": { "New building": 170, "Retrofit": 140 },
-        "Workplace (Shell & core)": { "New building": 110 },
-        "Science & technology": { "New building": 175, "Retrofit": 140 }
-      }
-    },
-    2044: {
-      CCC: {
-        "Culture & entertainment (General)": { "New building": 120, "Retrofit": 95 },
-        "Culture & entertainment (Performance)": { "New building": 175, "Retrofit": 125 }
-      },
-      Education: {
-        Schools: { "New building": 110, "Retrofit": 80 },
-        "Higher education": { "New building": 135, "Retrofit": 100 }
-      },
-      Healthcare: {
-        Healthcare: { "New building": 165, "Retrofit": 130 }
-      },
-      Residential: {
-        "Single family homes": { "New building": 80, "Retrofit": 55 },
-        Flats: { "New building": 105, "Retrofit": 80 },
-        "Commercial residential": { "New building": 120, "Retrofit": 95 },
-        Hotels: { "New building": 140, "Retrofit": 110 }
-      },
-      Workplace: {
-        "Workplace (Whole building)": { "New building": 150, "Retrofit": 125 },
-        "Workplace (Shell & core)": { "New building": 95 },
-        "Science & technology": { "New building": 155, "Retrofit": 125 }
-      }
-    },
-    2045: {
-      CCC: {
-        "Culture & entertainment (General)": { "New building": 105, "Retrofit": 85 },
-        "Culture & entertainment (Performance)": { "New building": 155, "Retrofit": 110 }
-      },
-      Education: {
-        Schools: { "New building": 100, "Retrofit": 75 },
-        "Higher education": { "New building": 115, "Retrofit": 85 }
-      },
-      Healthcare: {
-        Healthcare: { "New building": 145, "Retrofit": 115 }
-      },
-      Residential: {
-        "Single family homes": { "New building": 70, "Retrofit": 45 },
-        Flats: { "New building": 95, "Retrofit": 75 },
-        "Commercial residential": { "New building": 105, "Retrofit": 85 },
-        Hotels: { "New building": 125, "Retrofit": 100 }
-      },
-      Workplace: {
-        "Workplace (Whole building)": { "New building": 135, "Retrofit": 110 },
-        "Workplace (Shell & core)": { "New building": 85 },
-        "Science & technology": { "New building": 140, "Retrofit": 115 }
-      }
-    },
-    2046: {
-      CCC: {
-        "Culture & entertainment (General)": { "New building": 90, "Retrofit": 75 },
-        "Culture & entertainment (Performance)": { "New building": 135, "Retrofit": 95 }
-      },
-      Education: {
-        Schools: { "New building": 85, "Retrofit": 65 },
-        "Higher education": { "New building": 105, "Retrofit": 80 }
-      },
-      Healthcare: {
-        Healthcare: { "New building": 125, "Retrofit": 100 }
-      },
-      Residential: {
-        "Single family homes": { "New building": 65, "Retrofit": 45 },
-        Flats: { "New building": 80, "Retrofit": 60 },
-        "Commercial residential": { "New building": 95, "Retrofit": 75 },
-        Hotels: { "New building": 105, "Retrofit": 85 }
-      },
-      Workplace: {
-        "Workplace (Whole building)": { "New building": 120, "Retrofit": 100 },
-        "Workplace (Shell & core)": { "New building": 75 },
-        "Science & technology": { "New building": 120, "Retrofit": 100 }
-      }
-    },
-    2047: {
-      CCC: {
-        "Culture & entertainment (General)": { "New building": 80, "Retrofit": 65 },
-        "Culture & entertainment (Performance)": { "New building": 120, "Retrofit": 85 }
-      },
-      Education: {
-        Schools: { "New building": 75, "Retrofit": 55 },
-        "Higher education": { "New building": 90, "Retrofit": 70 }
-      },
-      Healthcare: {
-        Healthcare: { "New building": 110, "Retrofit": 90 }
-      },
-      Residential: {
-        "Single family homes": { "New building": 55, "Retrofit": 35 },
-        Flats: { "New building": 70, "Retrofit": 55 },
-        "Commercial residential": { "New building": 80, "Retrofit": 65 },
-        Hotels: { "New building": 95, "Retrofit": 75 }
-      },
-      Workplace: {
-        "Workplace (Whole building)": { "New building": 100, "Retrofit": 85 },
-        "Workplace (Shell & core)": { "New building": 60 },
-        "Science & technology": { "New building": 105, "Retrofit": 85 }
-      }
-    },
-    2048: {
-      CCC: {
-        "Culture & entertainment (General)": { "New building": 70, "Retrofit": 55 },
-        "Culture & entertainment (Performance)": { "New building": 100, "Retrofit": 75 }
-      },
-      Education: {
-        Schools: { "New building": 65, "Retrofit": 50 },
-        "Higher education": { "New building": 75, "Retrofit": 60 }
-      },
-      Healthcare: {
-        Healthcare: { "New building": 95, "Retrofit": 75 }
-      },
-      Residential: {
-        "Single family homes": { "New building": 45, "Retrofit": 30 },
-        Flats: { "New building": 60, "Retrofit": 45 },
-        "Commercial residential": { "New building": 70, "Retrofit": 60 },
-        Hotels: { "New building": 80, "Retrofit": 65 }
-      },
-      Workplace: {
-        "Workplace (Whole building)": { "New building": 85, "Retrofit": 70 },
-        "Workplace (Shell & core)": { "New building": 55 },
-        "Science & technology": { "New building": 90, "Retrofit": 75 }
-      }
-    },
-    2049: {
-      CCC: {
-        "Culture & entertainment (General)": { "New building": 55, "Retrofit": 45 },
-        "Culture & entertainment (Performance)": { "New building": 85, "Retrofit": 60 }
-      },
-      Education: {
-        Schools: { "New building": 55, "Retrofit": 40 },
-        "Higher education": { "New building": 65, "Retrofit": 50 }
-      },
-      Healthcare: {
-        Healthcare: { "New building": 80, "Retrofit": 65 }
-      },
-      Residential: {
-        "Single family homes": { "New building": 40, "Retrofit": 30 },
-        Flats: { "New building": 50, "Retrofit": 40 },
-        "Commercial residential": { "New building": 60, "Retrofit": 50 },
-        Hotels: { "New building": 65, "Retrofit": 55 }
-      },
-      Workplace: {
-        "Workplace (Whole building)": { "New building": 70, "Retrofit": 60 },
-        "Workplace (Shell & core)": { "New building": 45 },
-        "Science & technology": { "New building": 75, "Retrofit": 60 }
-      }
-    },
-    2050: {
-      CCC: {
-        "Culture & entertainment (General)": { "New building": 45, "Retrofit": 40 },
-        "Culture & entertainment (Performance)": { "New building": 70, "Retrofit": 50 }
-      },
-      Education: {
-        Schools: { "New building": 45, "Retrofit": 35 },
-        "Higher education": { "New building": 50, "Retrofit": 40 }
-      },
-      Healthcare: {
-        Healthcare: { "New building": 65, "Retrofit": 55 }
-      },
-      Residential: {
-        "Single family homes": { "New building": 30, "Retrofit": 20 },
-        Flats: { "New building": 40, "Retrofit": 30 },
-        "Commercial residential": { "New building": 45, "Retrofit": 40 },
-        Hotels: { "New building": 55, "Retrofit": 45 }
-      },
-      Workplace: {
-        "Workplace (Whole building)": { "New building": 60, "Retrofit": 50 },
-        "Workplace (Shell & core)": { "New building": 35 },
-        "Science & technology": { "New building": 60, "Retrofit": 50 }
-      }
-    }
-  };
-
-
-  // Mock building area data for demonstration
-  const getProjectArea = (projectId: string): number => {
-    const areas: Record<string, number> = {
-      '1': 15000, // Green Office Tower
-      '2': 8500,  // Sustainable Housing Complex
-      '3': 22000, // Innovation Campus
-      '4': 12000, // Community Health Center
-      '5': 18000  // Urban Retail Hub
+  const getKPIDisplayName = (kpi: string) => {
+    const displayNames: { [key: string]: string } = {
+      upfrontCarbon: 'Upfront Carbon',
+      upfrontEmbodied: 'Upfront Embodied Carbon',
+      totalEmbodiedCarbon: 'Total Embodied Carbon',
+      biogenicCarbon: 'Biogenic Carbon',
+      refrigerants: 'Refrigerants',
+      operationalEnergyTotal: 'Operational Energy Total',
+      operationalEnergyPartL: 'Operational Energy Part L',
+      operationalEnergyGas: 'Operational Energy Gas',
+      operationalEnergy: 'Operational Energy',
+      gasUsage: 'Gas Usage',
+      spaceHeatingDemand: 'Space Heating Demand',
+      renewableEnergyGeneration: 'Renewable Energy Generation',
+      existingBuildingEnergy: 'Existing Building Energy',
+      operationalWaterUse: 'Operational Water Use',
+      socialValue: 'Social Value',
+      pmv: 'PMV',
+      ppd: 'PPD',
+      daylightFactor: 'Daylight Factor',
+      biodiversityNetGain: 'Biodiversity Net Gain',
+      habitatUnits: 'Habitat Units',
+      urbanGreeningFactor: 'Urban Greening Factor',
+      ozoneDepletion: 'Ozone Depletion',
+      reusedRecycledMaterial: 'Reused/Recycled Material',
+      carbonIntensity: 'Carbon Intensity',
+      eui: 'EUI',
+      shd: 'SHD',
+      wlc: 'WLC'
     };
-    return areas[projectId] || 10000;
+    return displayNames[kpi] || kpi;
   };
 
-  const transformDataForValueType = (data: any[]) => {
-    if (valueType === 'per-sqm') {
-      return data; // Data is already per sqm in our KPIs
-    }
-    
-    // For total values, multiply by building area
-    return data.map(item => ({
-      ...item,
-      [selectedKPI1]: item[selectedKPI1] * getProjectArea(item.id.split('-')[0]), // Handle RIBA stage variants
-      [selectedKPI2]: selectedKPI2 ? item[selectedKPI2] * getProjectArea(item.id.split('-')[0]) : undefined
-    }));
-  };
-
-  const handleExportCSV = () => {
-    const chartTitle = getChartTitle();
-    let csvContent = `${chartTitle}\n\n`;
-    
-    if (chartType === 'single-bar' && selectedKPI1 === 'totalEmbodiedCarbon' && embodiedCarbonBreakdown !== 'none') {
-      const breakdownData = getEmbodiedCarbonStackedData();
-      
-      // CSV headers
-      const headers = ['Project Name'];
-      const categories = embodiedCarbonBreakdown === 'lifecycle' 
-        ? getLifecycleStageCategories()
-        : getBuildingElementCategories();
-      categories.forEach(cat => headers.push(`${cat.label} (${getUnitLabel(kpi1Config?.unit || '', valueType, true)})`));
-      
-      csvContent += headers.join(',') + '\n';
-      
-      // CSV data rows
-      breakdownData.forEach(item => {
-        const row = [item.name];
-        categories.forEach(cat => {
-          // Make biogenic carbon negative in CSV export
-          const value = cat.key === 'biogenicCarbon' ? -Math.abs(item[cat.key] || 0) : (item[cat.key] || 0);
-          row.push(value.toString());
-        });
-        csvContent += row.join(',') + '\n';
-      });
-    } else {
-      const transformedProjects = transformDataForValueType(projects);
-      
-      // CSV headers
-      const headers = ['Project Name', `${kpi1Config?.label || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType, true)})`];
-      
-      // For Total Embodied Carbon charts, include biogenic carbon column
-      if (chartType === 'single-bar' && selectedKPI1 === 'totalEmbodiedCarbon') {
-        headers.push(`Biogenic (${getUnitLabel(kpi1Config?.unit || '', valueType, true)})`);
-      }
-      
-      if (chartType === 'compare-bubble') {
-        headers.push(`${kpi2Config?.label || selectedKPI2} (${getUnitLabel(kpi2Config?.unit || '', valueType, true)})`);
-        headers.push('Building Area (m²)');
-      }
-      if (chartType === 'single-timeline') {
-        headers.push('Completion Year');
-      }
-      csvContent += headers.join(',') + '\n';
-      
-      // CSV data rows
-      transformedProjects.forEach(project => {
-        const baseId = project.id.split('-')[0];
-        const displayName = isComparingToSelf && project.ribaStage 
-          ? `${project.name} (RIBA ${project.ribaStage.replace('stage-', '')})`
-          : project.name;
-        
-        const row = [
-          `"${displayName}"`,
-          project[selectedKPI1 as keyof Project]?.toString() || '0'
-        ];
-        
-        // For Total Embodied Carbon charts, add biogenic carbon as negative value
-        if (chartType === 'single-bar' && selectedKPI1 === 'totalEmbodiedCarbon') {
-          const biogenicValue = project.biogenicCarbon || 0;
-          const finalBiogenicValue = valueType === 'total' 
-            ? -Math.abs(biogenicValue * getProjectArea(baseId))
-            : -Math.abs(biogenicValue);
-          row.push(finalBiogenicValue.toString());
-        }
-        
-        if (chartType === 'compare-bubble') {
-          row.push(project[selectedKPI2 as keyof Project]?.toString() || '0');
-          row.push(getProjectArea(baseId).toString());
-        }
-        if (chartType === 'single-timeline') {
-          row.push(new Date(project.completionDate).getFullYear().toString());
-        }
-        
-        csvContent += row.join(',') + '\n';
-      });
-    }
-    
-    // Download CSV
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `chart-data-${selectedKPI1}-${valueType}-${Date.now()}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const handleExportPNG = () => {
-    // Find the chart SVG element - use specific selector to avoid conflicts
-    const chartContainer = document.querySelector('[data-chart="chart-container"]');
-    if (!chartContainer) {
-      console.error('Chart container not found');
-      return;
-    }
-
-    const svgElement = chartContainer.querySelector('svg');
-    if (!svgElement) {
-      console.error('SVG element not found');
-      return;
-    }
-
-    // Create a canvas element
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    if (!ctx) {
-      console.error('Canvas context not available');
-      return;
-    }
-
-    // Set canvas dimensions
-    const svgRect = svgElement.getBoundingClientRect();
-    canvas.width = svgRect.width * 2; // Higher resolution
-    canvas.height = svgRect.height * 2;
-    ctx.scale(2, 2);
-
-    // Convert SVG to data URL
-    const svgData = new XMLSerializer().serializeToString(svgElement);
-    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
-    const svgUrl = URL.createObjectURL(svgBlob);
-
-    // Create image and draw to canvas
-    const img = new Image();
-    img.onload = () => {
-      // Fill white background
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, canvas.width / 2, canvas.height / 2);
-      
-      // Draw the SVG image
-      ctx.drawImage(img, 0, 0, svgRect.width, svgRect.height);
-      
-      // Convert canvas to PNG and download
-      canvas.toBlob((blob) => {
-        if (blob) {
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `chart-${selectedKPI1}-${valueType}-${Date.now()}.png`;
-          a.click();
-          URL.revokeObjectURL(url);
-        }
-      }, 'image/png');
-      
-      URL.revokeObjectURL(svgUrl);
+  const getSector = (typology: string): string => {
+    const sectorMapping = {
+      'office': 'Workplace',
+      'residential': 'Residential',
+      'educational': 'Education',
+      'healthcare': 'Healthcare',
+      'retail': 'Workplace',
+      'mixed-use': 'Workplace',
+      'industrial': 'Workplace',
     };
-    
-    img.src = svgUrl;
+    return sectorMapping[typology as keyof typeof sectorMapping] || 'Workplace';
   };
 
-  const getUnitLabel = (baseUnit: string, valueType: ValueType, forCSV: boolean = false): string => {
-    // For CSV exports, use plain text to avoid encoding issues
-    let unit = forCSV ? baseUnit.replace(/CO2/g, 'CO2').replace(/₂/g, '2') : baseUnit.replace(/CO2/g, 'CO₂');
+  // Function to get upfront carbon benchmark values
+  const getUpfrontCarbonBenchmark = (project: Project, year: number, type: 'New building' | 'Retrofit') => {
+    const primarySector = getSector(project.typology);
+    const subSector = getSubSectorFromTypology(project.typology);
     
-    if (valueType === 'total') {
-      return unit.replace('/m²', '').replace('/year', '/year total');
-    }
-    return unit;
+    const sectorData = upfrontCarbonBenchmarks[primarySector as keyof typeof upfrontCarbonBenchmarks];
+    if (!sectorData || !(sectorData as any)[subSector]) return null;
+    
+    const yearData = (sectorData as any)[subSector][year];
+    if (!yearData) return null;
+    
+    return yearData[type];
+  };
+
+  const getSectorColor = (sector: string) => {
+    const colors = {
+      'CCC': '#8B5CF6',
+      'Education': '#10B981',
+      'Healthcare': '#EF4444',
+      'Residential': '#F59E0B',
+      'Workplace': '#3B82F6',
+    };
+    return colors[sector as keyof typeof colors] || '#6B7280';
+  };
+
+  const getSubSectorFromTypology = (typology: string): string => {
+    const mapping = {
+      'office': 'Workplace (Whole building)',
+      'residential': 'Flats',
+      'educational': 'Higher education',
+      'healthcare': 'Healthcare',
+      'retail': 'Workplace (Whole building)',
+      'mixed-use': 'Workplace (Whole building)',
+      'industrial': 'Workplace (Whole building)',
+    };
+    return mapping[typology as keyof typeof mapping] || 'Workplace (Whole building)';
   };
 
   const getChartTitle = () => {
-    const valueTypeLabel = valueType === 'per-sqm' ? 'per sqm' : 'total';
+    const kpiName = getKPIDisplayName(selectedKPI1);
     
-    if (chartType === 'single-bar' && selectedKPI1 === 'totalEmbodiedCarbon' && embodiedCarbonBreakdown !== 'none') {
-      const breakdownType = embodiedCarbonBreakdown === 'lifecycle' ? 'Lifecycle Stage' : 'Building Element';
-      return `Embodied Carbon by ${breakdownType} (${valueTypeLabel}) - Stacked Column Chart`;
+    if (chartType === 'single-bar') {
+      return `${kpiName} - Single KPI Across Projects`;
+    } else if (chartType === 'single-timeline') {
+      return `${kpiName} - Single KPI Over Time`;
+    } else if (chartType === 'comparison') {
+      return `KPI Comparison - ${getKPIDisplayName(selectedKPI1)} vs ${getKPIDisplayName(selectedKPI2)}`;
     }
-    
-    switch (chartType) {
-      case 'compare-bubble':
-        return `${kpi1Config?.label} vs ${kpi2Config?.label} (${valueTypeLabel}) - Bubble Chart`;
-      case 'single-bar':
-        return `${kpi1Config?.label} by Project (${valueTypeLabel}) - Bar Chart`;
-      case 'single-timeline':
-        return `${kpi1Config?.label} Over Time (${valueTypeLabel}) - Timeline`;
-      default:
-        return 'Chart';
-    }
+    return 'Chart';
   };
 
-  const getLifecycleStageCategories = () => [
-    { key: 'biogenicCarbon', label: 'Biogenic carbon (A1-A3)', color: chartColors.tertiary },
-    { key: 'upfrontEmbodied', label: 'Upfront embodied carbon (A1-A5)', color: chartColors.primary },
-    { key: 'inUseEmbodied', label: 'In-use embodied carbon (B1-B5)', color: chartColors.secondary },
-    { key: 'endOfLife', label: 'End of life (C1-C4)', color: chartColors.warning },
-    { key: 'benefitsLoads', label: 'Benefits and loads (D1)', color: chartColors.quaternary },
-    { key: 'facilitatingWorks', label: 'Facilitating works', color: chartColors.accent2 }
-  ];
-
-  const getBuildingElementCategories = () => [
-    { key: 'substructure', label: 'Substructure', color: chartColors.primary },
-    { key: 'superstructureFrame', label: 'Superstructure - Frame', color: chartColors.secondary },
-    { key: 'superstructureExternal', label: 'Superstructure - External envelope', color: chartColors.tertiary },
-    { key: 'superstructureInternal', label: 'Superstructure - Internal assemblies', color: chartColors.quaternary },
-    { key: 'finishes', label: 'Finishes', color: chartColors.warning },
-    { key: 'ffe', label: 'FF&E', color: chartColors.info },
-    { key: 'mep', label: 'MEP', color: chartColors.success },
-    { key: 'externalWorks', label: 'External works', color: chartColors.darkGreen },
-    { key: 'contingency', label: 'Contingency', color: chartColors.muted }
-  ];
-
-  const getEmbodiedCarbonStackedData = () => {
-    if (embodiedCarbonBreakdown === 'none' || projects.length === 0) return [];
+  const handleExportCSV = () => {
+    let csvData = [];
     
-    const categories = embodiedCarbonBreakdown === 'lifecycle' 
-      ? getLifecycleStageCategories()
-      : getBuildingElementCategories();
-    
-    return projects.map(project => {
-      const baseId = project.id.split('-')[0];
-      const displayName = isComparingToSelf && project.ribaStage 
-        ? `${project.name} (RIBA ${project.ribaStage.replace('stage-', '')})`
-        : project.name;
-      
-      const projectData: any = { name: displayName };
-      
-      // Mock breakdown data - in real app this would come from project.embodiedCarbonBreakdown
-      categories.forEach((category, index) => {
-        // Generate mock values based on total embodied carbon
-        const baseValue = project.totalEmbodiedCarbon || 45;
-        const multiplier = embodiedCarbonBreakdown === 'lifecycle' 
-          ? [0.4, 0.15, 0.25, 0.1, 0.05, 0.05][index] // Lifecycle distribution
-          : [0.15, 0.2, 0.15, 0.1, 0.05, 0.05, 0.15, 0.1, 0.05][index]; // Building element distribution
-        
-        const categoryValue = baseValue * (multiplier || 0.1);
-        const finalValue = valueType === 'total' ? categoryValue * getProjectArea(baseId) : categoryValue;
-        // Make biogenic carbon negative in the data
-        const adjustedValue = category.key === 'biogenicCarbon' ? -Math.abs(finalValue) : finalValue;
-        projectData[category.key] = Math.round(adjustedValue * 100) / 100;
-      });
-      
-      return projectData;
-    });
+    if (chartType === 'comparison' && selectedKPI1 && selectedKPI2) {
+      csvData = projects.map(project => ({
+        'Project Name': project.name,
+        [getKPIDisplayName(selectedKPI1)]: project[selectedKPI1 as keyof Project] as number,
+        [getKPIDisplayName(selectedKPI2)]: project[selectedKPI2 as keyof Project] as number
+      }));
+    } else if (selectedKPI1) {
+      csvData = projects.map(project => ({
+        'Project Name': project.name,
+        [getKPIDisplayName(selectedKPI1)]: project[selectedKPI1 as keyof Project] as number
+      }));
+    }
+
+    const csvContent = "data:text/csv;charset=utf-8," 
+      + [Object.keys(csvData[0] || {}).join(",")]
+        .concat(csvData.map(row => Object.values(row).join(",")))
+        .join("\n");
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "chart_data.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleExportPNG = async () => {
+    const chartElement = document.querySelector('[data-chart="chart-container"]') as HTMLElement;
+    if (chartElement) {
+      try {
+        const canvas = await html2canvas(chartElement);
+        const link = document.createElement('a');
+        link.download = 'chart.png';
+        link.href = canvas.toDataURL();
+        link.click();
+      } catch (error) {
+        console.error('Error exporting chart:', error);
+      }
+    }
   };
 
   const renderChart = () => {
-    console.log('renderChart function started', { chartType, selectedKPI1 });
-    // Handle embodied carbon breakdown with stacked columns
-    if (chartType === 'single-bar' && selectedKPI1 === 'totalEmbodiedCarbon' && embodiedCarbonBreakdown !== 'none') {
-      const stackedData = getEmbodiedCarbonStackedData();
-      
-      if (stackedData.length === 0) {
-        return <div className="flex items-center justify-center h-full text-gray-500">No breakdown data available for selected projects</div>;
-      }
-      
-      const categories = embodiedCarbonBreakdown === 'lifecycle' 
-        ? getLifecycleStageCategories()
-        : getBuildingElementCategories();
-      
-      return (
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={stackedData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} horizontal={true} verticalPoints={[]} />
-            <XAxis 
-              dataKey="name" 
-              angle={-45}
-              textAnchor="end"
-              height={80}
-              interval={0}
-              tick={{ fill: chartColors.dark }}
-            />
-            <YAxis 
-              label={{ value: valueType === 'per-sqm' ? 'kgCO₂e/m²' : 'kgCO₂e total', angle: -90, position: 'insideLeft' }}
-              tick={{ fill: chartColors.dark }}
-              tickFormatter={(value) => formatNumber(value)}
-              ticks={(() => {
-                const maxValue = Math.max(...stackedData.flatMap(item => 
-                  categories.map(cat => Math.abs(item[cat.key] || 0))
-                ));
-                return generateNiceTicks(maxValue * 1.1);
-              })()}
-            />
-            <Tooltip 
-              formatter={(value: number, name: string) => {
-                const category = categories.find(cat => cat.key === name);
-                // Make biogenic carbon negative in tooltip
-                const displayValue = name === 'biogenicCarbon' ? -Math.abs(value) : value;
-                return [`${formatNumber(displayValue)} ${valueType === 'per-sqm' ? 'kgCO₂e/m²' : 'kgCO₂e total'}`, category?.label || name];
-              }}
-              labelFormatter={(label) => `Project: ${label}`}
-              contentStyle={{ backgroundColor: 'white', border: `1px solid ${chartColors.primary}`, borderRadius: '8px' }}
-            />
-            <Legend 
-              wrapperStyle={{ paddingTop: '20px' }}
-              formatter={(value) => {
-                const category = categories.find(cat => cat.key === value);
-                return category?.label || value;
-              }}
-            />
-            {categories.map((category) => (
-              <Bar 
-                key={category.key}
-                dataKey={category.key}
-                stackId="embodiedCarbon"
-                fill={category.color}
-                name={category.label}
-              />
-            ))}
-          </BarChart>
-        </ResponsiveContainer>
-      );
+    if (!selectedKPI1 || projects.length === 0) {
+      return <div>No data available</div>;
     }
 
-    const transformedProjects = transformDataForValueType(projects);
-
-    // Ensure primary project appears first (leftmost) in bar charts
-    const sortedProjects = [...transformedProjects].sort((a, b) => {
-      // For comparison charts, ensure the primary project (first in original array) appears first
-      const aIndex = projects.findIndex(p => p.id === a.id);
-      const bIndex = projects.findIndex(p => p.id === b.id);
-      return aIndex - bIndex;
-    });
-
-    // Transform biogenic carbon values to negative for bubble chart display - use sorted projects
-    const bubbleChartData = sortedProjects.map(project => ({
-      ...project,
-      [selectedKPI1]: selectedKPI1 === 'biogenicCarbon' ? -Math.abs(project[selectedKPI1] || 0) : project[selectedKPI1],
-      [selectedKPI2]: selectedKPI2 === 'biogenicCarbon' ? -Math.abs(project[selectedKPI2] || 0) : project[selectedKPI2]
-    }));
-
+    const kpiName = getKPIDisplayName(selectedKPI1);
+    
     switch (chartType) {
-      case 'compare-bubble':
+      case 'single-bar':
+        const chartData = projects.map(project => {
+          const baseValue = project[selectedKPI1 as keyof Project] as number;
+          const value = valueType === 'per-sqm' ? (baseValue / project.gia) * 1000 : baseValue;
+          
+          return {
+            name: project.name,
+            value: value,
+            sector: getSector(project.typology),
+            projectType: project.projectType,
+            completionYear: new Date(project.completionDate).getFullYear()
+          };
+        });
+
         return (
           <ResponsiveContainer width="100%" height="100%">
-            <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} horizontal={true} verticalPoints={[]} />
+            <BarChart data={chartData} margin={{ top: 20, right: 30, left: 60, bottom: 100 }}>
+              <CartesianGrid strokeDasharray="3 3" />
               <XAxis 
-                type="number" 
-                dataKey={selectedKPI1}
-                name={kpi1Config?.label || selectedKPI1}
-                label={{ value: `${kpi1Config?.label || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType)})`, position: 'insideBottom', offset: -5 }}
-                tick={{ fill: chartColors.dark }}
-                tickFormatter={(value) => formatNumber(value)}
-                ticks={(() => {
-                  const maxValue = Math.max(...bubbleChartData.map(p => Math.abs(p[selectedKPI1] || 0)));
-                  return generateNiceTicks(maxValue * 1.1);
-                })()}
+                dataKey="name" 
+                angle={-45} 
+                textAnchor="end" 
+                height={120}
+                fontSize={12}
               />
               <YAxis 
-                type="number" 
-                dataKey={selectedKPI2}
-                name={kpi2Config?.label || selectedKPI2}
-                label={{ value: `${kpi2Config?.label || selectedKPI2} (${getUnitLabel(kpi2Config?.unit || '', valueType)})`, angle: -90, position: 'insideLeft' }}
-                tick={{ fill: chartColors.dark }}
-                tickFormatter={(value) => formatNumber(value)}
-                ticks={(() => {
-                  const maxValue = Math.max(...bubbleChartData.map(p => Math.abs(p[selectedKPI2] || 0)));
-                  return generateNiceTicks(maxValue * 1.1);
-                })()}
+                label={{ value: valueType === 'per-sqm' ? `${kpiName} (per m² GIA)` : kpiName, angle: -90, position: 'insideLeft' }}
+                fontSize={12}
               />
               <Tooltip 
-                cursor={{ strokeDasharray: '3 3' }}
-                contentStyle={{ backgroundColor: 'white', border: `1px solid ${chartColors.primary}`, borderRadius: '8px' }}
-                content={({ active, payload }) => {
-                  if (active && payload && payload.length) {
-                    const data = payload[0].payload;
-                    const baseId = data.id.split('-')[0];
-                    const area = getProjectArea(baseId);
-                    const displayName = isComparingToSelf && data.ribaStage 
-                      ? `${data.name} (RIBA ${data.ribaStage.replace('stage-', '')})`
-                      : data.name;
-                    
-                    return (
-                      <div className="bg-white p-3 border rounded-lg shadow-lg" style={{ backgroundColor: 'white', borderColor: chartColors.primary }}>
-                        <p className="font-semibold" style={{ color: chartColors.dark }}>{displayName}</p>
-                        <p className="text-sm" style={{ color: chartColors.darkGreen }}>{sectorConfig[getSector(data.typology) as keyof typeof sectorConfig]?.name || data.typology}</p>
-                        <p className="text-sm" style={{ color: chartColors.dark }}>Area: {formatNumber(area)} m²</p>
-                        <p className="text-sm" style={{ color: chartColors.dark }}>
-                          {kpi1Config?.label}: {formatNumber(data[selectedKPI1])} {getUnitLabel(kpi1Config?.unit || '', valueType)}
-                        </p>
-                        <p className="text-sm" style={{ color: chartColors.dark }}>
-                          {kpi2Config?.label}: {formatNumber(data[selectedKPI2])} {getUnitLabel(kpi2Config?.unit || '', valueType)}
-                        </p>
-                      </div>
-                    );
-                  }
-                  return null;
-                }}
-              />
-              <Scatter 
-                name="Projects" 
-                data={bubbleChartData}
-                fill={chartColors.primary}
-                fillOpacity={0.8}
-                shape={(props: any) => {
-                  const { cx, cy, payload } = props;
-                  if (!payload) return null;
-                  
-                  const baseId = payload.id.split('-')[0];
-                  const area = getProjectArea(baseId);
-                  const bubbleSize = valueType === 'per-sqm' ? Math.sqrt(area / 500) : 8;
-                  const sectorColor = getSectorColor(payload.typology);
-                  const shape = getSectorShape(payload.typology);
-                  
-                  return (
-                    <CustomShape
-                      cx={cx}
-                      cy={cy}
-                      fill={sectorColor}
-                      shape={shape}
-                      size={Math.max(8, Math.min(20, bubbleSize))}
-                    />
-                  );
-                }}
-              />
-            </ScatterChart>
-          </ResponsiveContainer>
-        );
-
-      case 'single-bar':
-        const MultiLineTickComponent = (props: any) => {
-          const { x, y, payload } = props;
-          const words = payload.value.split(' ');
-          const lines = [];
-          let currentLine = '';
-          
-          // Split text into lines of max 2-3 words
-          for (let i = 0; i < words.length; i++) {
-            const testLine = currentLine + (currentLine ? ' ' : '') + words[i];
-            if (testLine.length > 15 && currentLine) {
-              lines.push(currentLine);
-              currentLine = words[i];
-            } else {
-              currentLine = testLine;
-            }
-          }
-          if (currentLine) lines.push(currentLine);
-          
-          return (
-            <g transform={`translate(${x},${y + 20})`}>
-              {lines.map((line, index) => (
-                <text
-                  key={index}
-                  x={0}
-                  y={index * 16}
-                  textAnchor="end"
-                  fill={chartColors.dark}
-                  fontSize="12"
-                  transform="rotate(-45)"
-                >
-                  {line}
-                </text>
-              ))}
-            </g>
-          );
-        };
-        
-        // Add biogenic data as negative values for totalEmbodiedCarbon - use sorted projects
-        const chartData = sortedProjects.map(project => ({
-          ...project,
-          biogenic: selectedKPI1 === 'totalEmbodiedCarbon' ? -Math.abs(project.biogenicCarbon || 0) * (valueType === 'total' ? getProjectArea(project.id.split('-')[0]) : 1) : 0
-        }));
-
-        // Get benchmark data for the primary project's sector
-        const getBenchmarkLines = () => {
-          if (!showBenchmarks || valueType !== 'per-sqm' || transformedProjects.length === 0) {
-            return [];
-          }
-          
-          // Get the sector of the first project (primary project)
-          const primaryProject = transformedProjects[0];
-          const primarySector = getSector(primaryProject.typology);
-          const benchmarkColor = getSectorBenchmarkColor(primaryProject.typology);
-          
-          // Handle Total Embodied Carbon benchmarks
-          if (selectedKPI1 === 'totalEmbodiedCarbon') {
-            const sectorBenchmarks = totalEmbodiedCarbonBenchmarks[primarySector as keyof typeof totalEmbodiedCarbonBenchmarks];
-            
-            if (!sectorBenchmarks) return [];
-            
-            return Object.entries(sectorBenchmarks).map(([name, value]) => ({
-              name,
-              value,
-              color: benchmarkColor
-            }));
-          }
-          
-          // Handle Upfront Carbon benchmarks
-          if (selectedKPI1 === 'upfrontEmbodied') {
-            // Get current year to show appropriate benchmark
-            const currentYear = new Date().getFullYear();
-            const benchmarkLines = [];
-            
-            // Only show benchmarks if defined for the primary project's sector
-            const yearData = upfrontCarbonBenchmarks[currentYear as keyof typeof upfrontCarbonBenchmarks];
-            if (yearData && yearData[primarySector]) {
-              // Check for sub-sector specific benchmarks first
-              if (primaryProject.subSector && yearData[primarySector][primaryProject.subSector]) {
-                const subSectorBenchmarks = yearData[primarySector][primaryProject.subSector];
-                if (subSectorBenchmarks && subSectorBenchmarks['New building']) {
-                  benchmarkLines.push({
-                    name: 'New building',
-                    value: subSectorBenchmarks['New building'],
-                    color: benchmarkColor
-                  });
-                }
-                if (subSectorBenchmarks && subSectorBenchmarks['Retrofit']) {
-                  benchmarkLines.push({
-                    name: 'Retrofit',
-                    value: subSectorBenchmarks['Retrofit'],
-                    color: benchmarkColor
-                  });
-                }
-              }
-            }
-            
-            return benchmarkLines;
-          }
-          
-          return [];
-        };
-
-        const benchmarkLines = getBenchmarkLines();
-
-        return (
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 80 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} horizontal={true} verticalPoints={[]} />
-              <XAxis 
-                dataKey={(item) => {
-                  const baseId = item.id.split('-')[0];
-                  const displayName = isComparingToSelf && item.ribaStage 
-                    ? `${item.name} (RIBA ${item.ribaStage.replace('stage-', '')})`
-                    : item.name;
-                  return displayName;
-                }}
-                height={80}
-                interval={0}
-                tick={<MultiLineTickComponent />}
-                axisLine={{ stroke: chartColors.dark, strokeWidth: 1 }}
-                tickLine={false}
-              />
-              <YAxis 
-                label={{ value: `${kpi1Config?.label || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType)})`, angle: -90, position: 'insideLeft', style: { textAnchor: 'middle' } }}
-                tick={{ fill: chartColors.dark }}
-                tickFormatter={(value) => formatNumber(value)}
-                domain={selectedKPI1 === 'totalEmbodiedCarbon' ? 
-                  [0, 1600] : 
-                  [0, 'dataMax']
-                }
-                ticks={selectedKPI1 === 'totalEmbodiedCarbon' ? 
-                  [0, 400, 800, 1200, 1600] : 
-                  (() => {
-                    const maxValue = Math.max(...chartData.map(p => Math.abs(p[selectedKPI1] || 0)));
-                    return generateNiceTicks(maxValue * 1.1);
-                  })()
-                }
-              />
-               <Tooltip 
-                formatter={(value: number, name: string) => [
-                  `${formatNumber(value)} ${getUnitLabel(kpi1Config?.unit || '', valueType)}`,
-                  name === 'biogenic' ? 'Biogenic Carbon' : (kpi1Config?.label || selectedKPI1)
+                formatter={(value: any) => [
+                  typeof value === 'number' ? value.toFixed(2) : value, 
+                  valueType === 'per-sqm' ? `${kpiName} (per m² GIA)` : kpiName
                 ]}
                 labelFormatter={(label) => `Project: ${label}`}
-                contentStyle={{ backgroundColor: 'white', border: `1px solid ${chartColors.primary}`, borderRadius: '8px' }}
-                content={({ active, payload, label }) => {
-                  if (active && payload && payload.length) {
-                    const mainData = payload.find(p => p.dataKey === selectedKPI1);
-                    const biogenicData = payload.find(p => p.dataKey === 'biogenic');
-                    
-                    return (
-                      <div className="bg-white p-3 border rounded-lg shadow-lg" style={{ backgroundColor: 'white', borderColor: chartColors.primary }}>
-                        <p className="font-semibold" style={{ color: chartColors.dark }}>Project: {label}</p>
-                        {mainData && (
-                          <p className="text-sm" style={{ color: chartColors.dark }}>
-                            {kpi1Config?.label}: {formatNumber(mainData.value)} {getUnitLabel(kpi1Config?.unit || '', valueType)}
-                          </p>
-                        )}
-                        {biogenicData && (
-                          <p className="text-sm" style={{ color: chartColors.dark }}>
-                            Biogenic Carbon: {formatNumber(Math.abs(biogenicData.value))} {getUnitLabel(kpi1Config?.unit || '', valueType)}
-                          </p>
-                        )}
-                      </div>
-                    );
-                  }
-                  return null;
-                }}
               />
-               <Bar 
-                dataKey={selectedKPI1}
+              <Bar 
+                dataKey="value" 
                 fill={chartColors.primary}
-                name={kpi1Config?.label || selectedKPI1}
-                radius={[4, 4, 0, 0]}
-               >
-                 {sortedProjects.map((project, index) => {
-                   const sectorColor = getSectorColor(project.typology);
-                   return <Cell key={index} fill={sectorColor} />;
-                 })}
-               </Bar>
-                {selectedKPI1 === 'totalEmbodiedCarbon' && (
-                  <Bar 
-                    dataKey="biogenic"
-                    fill="white"
-                    name="biogenic"
-                    radius={[0, 0, 4, 4]}
-                  >
-                    {sortedProjects.map((project, index) => {
-                      const sectorColor = getSectorColor(project.typology);
-                      return <Cell key={index} fill="white" stroke={sectorColor} strokeWidth={2} />;
-                    })}
-                  </Bar>
-                )}
-                {selectedKPI1 === 'totalEmbodiedCarbon' && (
-                  <ReferenceLine y={0} stroke="#A8A8A3" strokeWidth={2} />
-                )}
-                
-                {/* Benchmark lines */}
-                {benchmarkLines.map((benchmark, index) => (
-                  <ReferenceLine 
-                    key={benchmark.name}
-                    y={benchmark.value} 
-                    stroke={benchmark.color} 
-                    strokeWidth={2}
-                    strokeDasharray="5 5"
-                    label={{ 
-                      value: benchmark.name, 
-                      position: "insideTopRight",
-                      offset: 10,
-                      style: { fill: benchmark.color, fontSize: '12px', fontWeight: 'bold' }
-                    }}
-                  />
-                ))}
+                name={valueType === 'per-sqm' ? `${kpiName} (per m² GIA)` : kpiName}
+              />
+              
+              {/* Add benchmarks for total embodied carbon and upfront carbon with per-sqm values */}
+              {showBenchmarks && valueType === 'per-sqm' && (
+                <>
+                  {selectedKPI1 === 'totalEmbodiedCarbon' && (() => {
+                    const primaryProject = projects[0];
+                    const primarySector = getSector(primaryProject.typology);
+                    const benchmark = totalEmbodiedCarbonBenchmarks[primarySector as keyof typeof totalEmbodiedCarbonBenchmarks];
+                    
+                    if (benchmark) {
+                      return (
+                        <ReferenceLine 
+                          y={benchmark} 
+                          stroke={chartColors.accent} 
+                          strokeWidth={2}
+                          strokeDasharray="5 5"
+                          label={{ value: `${primarySector} Benchmark: ${benchmark}`, position: "top" }}
+                        />
+                      );
+                    }
+                    return null;
+                  })()}
+                  
+                  {selectedKPI1 === 'upfrontEmbodied' && (() => {
+                    const primaryProject = projects[0];
+                    const currentYear = new Date().getFullYear();
+                    
+                    const newBuildingBenchmark = getUpfrontCarbonBenchmark(primaryProject, currentYear, 'New building');
+                    const retrofitBenchmark = getUpfrontCarbonBenchmark(primaryProject, currentYear, 'Retrofit');
+                    
+                    const referenceLinesJSX = [];
+                    
+                    if (newBuildingBenchmark) {
+                      referenceLinesJSX.push(
+                        <ReferenceLine 
+                          key="new-building"
+                          y={newBuildingBenchmark} 
+                          stroke={chartColors.accent} 
+                          strokeWidth={2}
+                          strokeDasharray="5 5"
+                          label={{ value: `New building: ${newBuildingBenchmark}`, position: "top" }}
+                        />
+                      );
+                    }
+                    
+                    if (retrofitBenchmark) {
+                      referenceLinesJSX.push(
+                        <ReferenceLine 
+                          key="retrofit"
+                          y={retrofitBenchmark} 
+                          stroke={chartColors.secondary} 
+                          strokeWidth={2}
+                          strokeDasharray="8 3"
+                          label={{ value: `Retrofit: ${retrofitBenchmark}`, position: "top" }}
+                        />
+                      );
+                    }
+                    
+                    return referenceLinesJSX;
+                  })()}
+                </>
+              )}
             </BarChart>
           </ResponsiveContainer>
         );
 
       case 'single-timeline':
-        const timelineData = transformedProjects
-          .map(project => {
-            const baseId = project.id.split('-')[0];
-            const displayName = isComparingToSelf && project.ribaStage 
-              ? `${project.name} (RIBA ${project.ribaStage.replace('stage-', '')})`
-              : project.name;
-            
-            // Extract year only from completion date
-            const completionYear = new Date(project.completionDate).getFullYear();
-            
-            return {
-              ...project,
-              displayName,
-              completionYear,
-              date: new Date(project.completionDate).getTime()
-            };
-          })
-          .sort((a, b) => a.date - b.date);
-
-        // Get benchmark data for timeline - for Total Embodied Carbon and Upfront Carbon with per sqm
-        const shouldShowBenchmarks = valueType === 'per-sqm' && (selectedKPI1 === 'totalEmbodiedCarbon' || selectedKPI1 === 'upfrontEmbodied') && timelineData.length > 0;
-
-        // Create benchmark data if applicable
-        const createTimelineBenchmarkData = () => {
-          if (!shouldShowBenchmarks) return [];
+        // Group projects by completion year and calculate averages
+        const timelineData = projects.reduce((acc, project) => {
+          const year = new Date(project.completionDate).getFullYear();
+          const baseValue = project[selectedKPI1 as keyof Project] as number;
+          const value = valueType === 'per-sqm' ? (baseValue / project.gia) * 1000 : baseValue;
           
-          // Find the PRIMARY project (selected as main project, not comparison)
-          const primaryProject = projects[0];
-          if (!primaryProject) return [];
-          
-          const primarySector = getSector(primaryProject.typology);
-          
-          // Handle Total Embodied Carbon benchmarks
-          if (selectedKPI1 === 'totalEmbodiedCarbon') {
-            const sectorBenchmarks = totalEmbodiedCarbonBenchmarks[primarySector as keyof typeof totalEmbodiedCarbonBenchmarks];
-            
-            // CRITICAL: Only return benchmarks if the PRIMARY project's sector has benchmarks defined
-            if (!sectorBenchmarks) {
-              return [];
-            }
-            
-            // Create benchmark points for RIBA 2025 and RIBA 2030 only
-            const ribaBenchmarks = [];
-            if (sectorBenchmarks['RIBA 2025']) {
-              ribaBenchmarks.push({
-                completionYear: 2025,
-                benchmarkValue: sectorBenchmarks['RIBA 2025'],
-                benchmarkName: 'RIBA 2025',
-                sector: primarySector
-              });
-            }
-            if (sectorBenchmarks['RIBA 2030']) {
-              ribaBenchmarks.push({
-                completionYear: 2030,
-                benchmarkValue: sectorBenchmarks['RIBA 2030'],
-                benchmarkName: 'RIBA 2030',
-                sector: primarySector
-              });
-            }
-            
-            return ribaBenchmarks;
+          if (!acc[year]) {
+            acc[year] = { year, values: [], totalValue: 0, count: 0 };
           }
+          acc[year].values.push(value);
+          acc[year].totalValue += value;
+          acc[year].count += 1;
           
-          // Handle Upfront Carbon benchmarks
-          if (selectedKPI1 === 'upfrontEmbodied') {
-            // Create benchmark points for all years from 2025 to 2050
-            const benchmarkPoints = [];
-            
-            // Only show benchmarks if defined for the primary project's sector
-            for (let year = 2025; year <= 2050; year++) {
-              const yearData = upfrontCarbonBenchmarks[year as keyof typeof upfrontCarbonBenchmarks];
-              if (yearData && yearData[primarySector]) {
-                // Check for sub-sector specific benchmarks first
-                if (primaryProject.subSector && yearData[primarySector][primaryProject.subSector]) {
-                  const subSectorBenchmarks = yearData[primarySector][primaryProject.subSector];
-                  
-                  // Add New Building benchmark for this year
-                  if (subSectorBenchmarks && subSectorBenchmarks['New building']) {
-                    benchmarkPoints.push({
-                      completionYear: year,
-                      benchmarkValue: subSectorBenchmarks['New building'],
-                      benchmarkName: 'New building',
-                      sector: primarySector,
-                      benchmarkType: 'newBuilding'
-                    });
-                  }
-                  
-                  // Add Retrofit benchmark for this year
-                  if (subSectorBenchmarks && subSectorBenchmarks['Retrofit']) {
-                    benchmarkPoints.push({
-                      completionYear: year,
-                      benchmarkValue: subSectorBenchmarks['Retrofit'],
-                      benchmarkName: 'Retrofit',
-                      sector: primarySector,
-                      benchmarkType: 'retrofit'
-                    });
-                  }
-                }
-              }
-            }
-            
-            return benchmarkPoints;
-          }
-            
-            return benchmarkPoints;
-          }
-          
-          return [];
-        };
+          return acc;
+        }, {} as any);
 
-        const timelineBenchmarkData = createTimelineBenchmarkData();
-        // Always use primary project's sector for benchmark color
-        const primaryProject = projects.find(p => !p.id.includes('-')) || projects[0];
-        const benchmarkColor = primaryProject ? getSectorBenchmarkColor(primaryProject.typology) : '#1E9F5A';
+        const sortedTimelineData = Object.values(timelineData)
+          .map((item: any) => ({
+            year: item.year,
+            value: item.totalValue / item.count, // Average value
+            count: item.count
+          }))
+          .sort((a, b) => a.year - b.year);
 
         return (
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={timelineData} margin={{ top: 20, right: 30, left: 60, bottom: 60 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} horizontal={true} verticalPoints={[]} />
+            <LineChart data={sortedTimelineData} margin={{ top: 20, right: 30, left: 60, bottom: 20 }}>
+              <CartesianGrid strokeDasharray="3 3" />
               <XAxis 
-                dataKey="completionYear"
-                type="number"
-                scale="linear"
-                domain={[2020, 2030]}
-                ticks={[2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030]}
-                tickFormatter={(value) => value.toString()}
-                label={{ value: 'Year', position: 'insideBottom', offset: -5 }}
-                tick={{ fill: chartColors.dark }}
+                dataKey="year" 
+                fontSize={12}
               />
               <YAxis 
-                label={{ value: `${kpi1Config?.label || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType)})`, angle: -90, position: 'insideLeft', style: { textAnchor: 'middle' } }}
-                tick={{ fill: chartColors.dark }}
-                tickFormatter={(value) => formatNumber(value)}
-                ticks={(() => {
-                  const maxValue = Math.max(
-                    ...timelineData.map(p => Math.abs(p[selectedKPI1] || 0)),
-                    ...(shouldShowBenchmarks ? timelineBenchmarkData.map(b => b.benchmarkValue) : [])
-                  );
-                  return generateNiceTicks(maxValue * 1.1);
-                })()}
+                label={{ value: valueType === 'per-sqm' ? `${kpiName} (per m² GIA)` : kpiName, angle: -90, position: 'insideLeft' }}
+                fontSize={12}
               />
               <Tooltip 
-                formatter={(value: number, name: string) => [
-                  `${formatNumber(value)} ${getUnitLabel(kpi1Config?.unit || '', valueType)}`,
-                  name.includes('benchmark') ? `UKNZCBS ${name.split('_')[1]}` : kpi1Config?.label || selectedKPI1
+                formatter={(value: any) => [
+                  typeof value === 'number' ? value.toFixed(2) : value, 
+                  valueType === 'per-sqm' ? `${kpiName} (per m² GIA)` : kpiName
                 ]}
                 labelFormatter={(label) => `Year: ${label}`}
-                contentStyle={{ backgroundColor: 'white', border: `1px solid ${chartColors.primary}`, borderRadius: '8px' }}
-                content={({ active, payload, label }) => {
-                  if (active && payload && payload.length) {
-                    const projectData = payload.find(p => p.dataKey === selectedKPI1);
-                    const benchmarkData = payload.filter(p => p.dataKey && p.dataKey.toString().includes('benchmark'));
-                    
-                    return (
-                        <div className="bg-white p-3 border rounded-lg shadow-lg" style={{ backgroundColor: 'white', borderColor: chartColors.primary }}>
-                        <p className="font-semibold" style={{ color: chartColors.dark }}>Year: {label}</p>
-                        {projectData && (
-                          <>
-                            <p className="text-sm" style={{ color: chartColors.dark }}>Project: {projectData.payload.displayName}</p>
-                            <p className="text-sm" style={{ color: chartColors.dark }}>
-                              {kpi1Config?.label}: {formatNumber(projectData.value)} {getUnitLabel(kpi1Config?.unit || '', valueType)}
-                            </p>
-                          </>
-                        )}
-                        {benchmarkData.map((item, idx) => (
-                          <p key={idx} className="text-sm" style={{ color: chartColors.benchmark }}>
-                            UKNZCBS {item.dataKey?.toString().split('_')[1]}: {formatNumber(item.value)} {getUnitLabel(kpi1Config?.unit || '', valueType)}
-                          </p>
-                        ))}
-                      </div>
-                    );
+              />
+              <Line 
+                type="monotone" 
+                dataKey="value" 
+                stroke={chartColors.primary} 
+                strokeWidth={3}
+                dot={{ r: 6, fill: chartColors.primary }}
+                name={valueType === 'per-sqm' ? `${kpiName} (per m² GIA)` : kpiName}
+              />
+              
+              {/* Add benchmarks for upfront carbon with per-sqm values */}
+              {showBenchmarks && valueType === 'per-sqm' && selectedKPI1 === 'upfrontEmbodied' && (() => {
+                const primaryProject = projects[0];
+                
+                // Create benchmark lines for New building and Retrofit
+                const benchmarkYears = Array.from(new Set(sortedTimelineData.map(d => d.year)))
+                  .filter(year => year >= 2025 && year <= 2050);
+                
+                const newBuildingBenchmarkData = benchmarkYears.map(year => {
+                  const benchmark = getUpfrontCarbonBenchmark(primaryProject, year, 'New building');
+                  return { year, value: benchmark };
+                }).filter(d => d.value !== null);
+                
+                const retrofitBenchmarkData = benchmarkYears.map(year => {
+                  const benchmark = getUpfrontCarbonBenchmark(primaryProject, year, 'Retrofit');
+                  return { year, value: benchmark };
+                }).filter(d => d.value !== null);
+                
+                return (
+                  <>
+                    {newBuildingBenchmarkData.length > 0 && (
+                      <Line 
+                        type="monotone" 
+                        dataKey="value" 
+                        data={newBuildingBenchmarkData}
+                        stroke={chartColors.accent} 
+                        strokeWidth={2}
+                        strokeDasharray="5 5"
+                        dot={false}
+                        name="New building benchmark"
+                      />
+                    )}
+                    {retrofitBenchmarkData.length > 0 && (
+                      <Line 
+                        type="monotone" 
+                        dataKey="value" 
+                        data={retrofitBenchmarkData}
+                        stroke={chartColors.secondary} 
+                        strokeWidth={2}
+                        strokeDasharray="8 3"
+                        dot={false}
+                        name="Retrofit benchmark"
+                      />
+                    )}
+                  </>
+                );
+              })()}
+            </LineChart>
+          </ResponsiveContainer>
+        );
+
+      case 'comparison':
+        if (!selectedKPI2) {
+          return <div>Please select a second KPI for comparison</div>;
+        }
+
+        const comparisonData = projects.map(project => {
+          const baseValue1 = project[selectedKPI1 as keyof Project] as number;
+          const baseValue2 = project[selectedKPI2 as keyof Project] as number;
+          const value1 = valueType === 'per-sqm' ? (baseValue1 / project.gia) * 1000 : baseValue1;
+          const value2 = valueType === 'per-sqm' ? (baseValue2 / project.gia) * 1000 : baseValue2;
+          
+          return {
+            name: project.name,
+            [selectedKPI1]: value1,
+            [selectedKPI2]: value2,
+            sector: getSector(project.typology)
+          };
+        });
+
+        return (
+          <ResponsiveContainer width="100%" height="100%">
+            <ScatterChart data={comparisonData} margin={{ top: 20, right: 30, left: 60, bottom: 100 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis 
+                dataKey={selectedKPI1}
+                type="number"
+                label={{ 
+                  value: valueType === 'per-sqm' ? `${getKPIDisplayName(selectedKPI1)} (per m² GIA)` : getKPIDisplayName(selectedKPI1), 
+                  position: 'insideBottom', 
+                  offset: -10 
+                }}
+                fontSize={12}
+              />
+              <YAxis 
+                dataKey={selectedKPI2}
+                type="number"
+                label={{ 
+                  value: valueType === 'per-sqm' ? `${getKPIDisplayName(selectedKPI2)} (per m² GIA)` : getKPIDisplayName(selectedKPI2), 
+                  angle: -90, 
+                  position: 'insideLeft' 
+                }}
+                fontSize={12}
+              />
+              <Tooltip 
+                formatter={(value: any, name: string) => [
+                  typeof value === 'number' ? value.toFixed(2) : value, 
+                  valueType === 'per-sqm' ? `${getKPIDisplayName(name)} (per m² GIA)` : getKPIDisplayName(name)
+                ]}
+                labelFormatter={(label, payload) => {
+                  if (payload && payload[0]) {
+                    return `Project: ${payload[0].payload.name}`;
                   }
-                  return null;
+                  return '';
                 }}
               />
-              
-              {/* Project data as scatter points */}
-              <Line 
-                type="monotone"
-                dataKey={selectedKPI1}
-                stroke="transparent"
-                strokeWidth={0}
-                dot={false}
-                name={kpi1Config?.label || selectedKPI1}
-                legendType="none"
+              <Scatter 
+                dataKey={selectedKPI2}
+                fill={chartColors.primary}
+                name="Projects"
               />
-              
-              {/* Render dots with sector colors */}
-              {timelineData.map((project, index) => {
-                const sectorColor = getSectorColor(project.typology);
-                return (
-                  <Line
-                    key={`dot-${index}`}
-                    type="monotone"
-                    dataKey={selectedKPI1}
-                    data={[project]}
-                    stroke="transparent"
-                    strokeWidth={0}
-                    dot={{ fill: sectorColor, strokeWidth: 2, r: 6 }}
-                    legendType="none"
-                  />
-                );
-              })}
-              
-                {/* Benchmark points/lines */}
-                {shouldShowBenchmarks && timelineBenchmarkData.length > 0 && selectedKPI1 === 'totalEmbodiedCarbon' && (
-                  <>
-                    {/* RIBA benchmarks as dots for Total Embodied Carbon */}
-                    {timelineBenchmarkData.map((benchmark) => (
-                      <ReferenceDot
-                        key={`riba-${benchmark.completionYear}`}
-                        x={benchmark.completionYear}
-                        y={benchmark.benchmarkValue}
-                        r={8}
-                        fill="white"
-                        stroke={benchmarkColor}
-                        strokeWidth={3}
-                        label={{
-                          value: benchmark.benchmarkName,
-                          position: 'top',
-                          offset: 15,
-                          style: { 
-                            fill: benchmarkColor, 
-                            fontSize: '12px', 
-                            fontWeight: 'bold',
-                            textAnchor: 'middle'
-                          }
-                        }}
-                      />
-                    ))}
-                  </>
-                )}
-                
-                {/* Upfront Carbon benchmark lines */}
-                {shouldShowBenchmarks && timelineBenchmarkData.length > 0 && selectedKPI1 === 'upfrontEmbodied' && (
-                  <>
-                    {/* New Building benchmark line */}
-                    <Line
-                      type="monotone"
-                      dataKey="newBuildingBenchmark"
-                      data={timelineBenchmarkData.filter(b => b.benchmarkType === 'newBuilding').map(b => ({
-                        completionYear: b.completionYear,
-                        newBuildingBenchmark: b.benchmarkValue
-                      }))}
-                      stroke={benchmarkColor}
-                      strokeWidth={2}
-                      strokeDasharray="5 5"
-                      dot={false}
-                      name="New building"
-                      connectNulls={true}
-                    />
-                    {/* Retrofit benchmark line */}
-                    <Line
-                      type="monotone"
-                      dataKey="retrofitBenchmark"
-                      data={timelineBenchmarkData.filter(b => b.benchmarkType === 'retrofit').map(b => ({
-                        completionYear: b.completionYear,
-                        retrofitBenchmark: b.benchmarkValue
-                      }))}
-                      stroke={benchmarkColor}
-                      strokeWidth={2}
-                      strokeDasharray="10 5"
-                      dot={false}
-                      name="Retrofit"
-                      connectNulls={true}
-                    />
-                  </>
-                )}
-            </LineChart>
+            </ScatterChart>
           </ResponsiveContainer>
         );
 
@@ -1710,15 +848,12 @@ export const ChartSection = ({
     }
     
     if (selectedKPI1 === 'upfrontEmbodied') {
-      // Check if benchmarks exist for the primary project's sector across any year
-      const currentYear = new Date().getFullYear();
-      const yearData = upfrontCarbonBenchmarks[currentYear as keyof typeof upfrontCarbonBenchmarks];
+      // Check if benchmarks exist for the primary project's sector
+      const subSector = getSubSectorFromTypology(primaryProject.typology);
+      const sectorData = upfrontCarbonBenchmarks[primarySector as keyof typeof upfrontCarbonBenchmarks];
       
-      if (yearData && yearData[primarySector]) {
-        // Check if there are sub-sector benchmarks for this project
-        if (primaryProject.subSector && yearData[primarySector][primaryProject.subSector]) {
-          return true;
-        }
+      if (sectorData && sectorData[subSector]) {
+        return true;
       }
       return false;
     }
