@@ -774,9 +774,12 @@ export const ChartSection = ({
           const primarySector = getSector(primaryProject.typology);
           const sectorBenchmarks = totalEmbodiedCarbonBenchmarks[primarySector as keyof typeof totalEmbodiedCarbonBenchmarks];
           
-          // Only return benchmarks if the PRIMARY project's sector has benchmarks
-          // Healthcare, for example, has no benchmarks defined, so none should show
-          if (!sectorBenchmarks) return [];
+          // CRITICAL: Only return benchmarks if the PRIMARY project's sector has benchmarks defined
+          // Healthcare, Infrastructure, and CCC sectors have NO benchmarks in totalEmbodiedCarbonBenchmarks
+          // Therefore, no benchmarks should show regardless of comparison projects
+          if (!sectorBenchmarks) {
+            return [];
+          }
           
           // Create benchmark points for RIBA 2025 and RIBA 2030 only
           const ribaBenchmarks = [];
