@@ -140,31 +140,631 @@ export const ChartSection = ({
     'Workplace (Shell & core)': 'Workplace'
   };
 
-  // Upfront Carbon benchmarks for New Building and Retrofit by sector
+  // Upfront Carbon benchmarks (comprehensive 2025-2050 data) for New building and Retrofit
   const upfrontCarbonBenchmarks = {
-    'CCC': {
-      'New building': { 2025: 620, 2026: 590, 2027: 560, 2028: 530, 2029: 500, 2030: 470, 2031: 440, 2032: 415, 2033: 385, 2034: 355, 2035: 325, 2036: 295, 2037: 270, 2038: 250, 2039: 230, 2040: 210, 2041: 190, 2042: 175, 2043: 160, 2044: 145, 2045: 130, 2046: 115, 2047: 100, 2048: 85, 2049: 70, 2050: 55 },
-      'Retrofit': { 2025: 310, 2026: 295, 2027: 280, 2028: 265, 2029: 250, 2030: 235, 2031: 220, 2032: 207, 2033: 192, 2034: 177, 2035: 162, 2036: 147, 2037: 135, 2038: 125, 2039: 115, 2040: 105, 2041: 95, 2042: 87, 2043: 80, 2044: 72, 2045: 65, 2046: 57, 2047: 50, 2048: 42, 2049: 35, 2050: 27 }
+    2025: {
+      CCC: {
+        "Culture & entertainment (General)": { "New building": 570, "Retrofit": 450 },
+        "Culture & entertainment (Performance)": { "New building": 855, "Retrofit": 605 }
+      },
+      Education: {
+        Schools: { "New building": 530, "Retrofit": 380 },
+        "Higher education": { "New building": 640, "Retrofit": 475 }
+      },
+      Healthcare: {
+        Healthcare: { "New building": 790, "Retrofit": 615 }
+      },
+      Residential: {
+        "Single family homes": { "New building": 430, "Retrofit": 270 },
+        Flats: { "New building": 565, "Retrofit": 425 },
+        "Commercial residential": { "New building": 580, "Retrofit": 460 },
+        Hotels: { "New building": 670, "Retrofit": 520 }
+      },
+      Workplace: {
+        "Workplace (Whole building)": { "New building": 735, "Retrofit": 600 },
+        "Workplace (Shell & core)": { "New building": 475 },
+        "Science & technology": { "New building": 755, "Retrofit": 605 }
+      }
     },
-    'Education': {
-      'New building': { 2025: 465, 2026: 440, 2027: 420, 2028: 395, 2029: 375, 2030: 350, 2031: 325, 2032: 305, 2033: 280, 2034: 255, 2035: 230, 2036: 210, 2037: 195, 2038: 180, 2039: 165, 2040: 150, 2041: 135, 2042: 120, 2043: 110, 2044: 100, 2045: 90, 2046: 80, 2047: 70, 2048: 60, 2049: 50, 2050: 40 },
-      'Retrofit': { 2025: 232, 2026: 220, 2027: 210, 2028: 197, 2029: 187, 2030: 175, 2031: 162, 2032: 152, 2033: 140, 2034: 127, 2035: 115, 2036: 105, 2037: 97, 2038: 90, 2039: 82, 2040: 75, 2041: 67, 2042: 60, 2043: 55, 2044: 50, 2045: 45, 2046: 40, 2047: 35, 2048: 30, 2049: 25, 2050: 20 }
+    2026: {
+      CCC: {
+        "Culture & entertainment (General)": { "New building": 540, "Retrofit": 425 },
+        "Culture & entertainment (Performance)": { "New building": 810, "Retrofit": 570 }
+      },
+      Education: {
+        Schools: { "New building": 505, "Retrofit": 365 },
+        "Higher education": { "New building": 610, "Retrofit": 455 }
+      },
+      Healthcare: {
+        Healthcare: { "New building": 750, "Retrofit": 585 }
+      },
+      Residential: {
+        "Single family homes": { "New building": 400, "Retrofit": 255 },
+        Flats: { "New building": 525, "Retrofit": 395 },
+        "Commercial residential": { "New building": 550, "Retrofit": 435 },
+        Hotels: { "New building": 635, "Retrofit": 490 }
+      },
+      Workplace: {
+        "Workplace (Whole building)": { "New building": 700, "Retrofit": 575 },
+        "Workplace (Shell & core)": { "New building": 450 },
+        "Science & technology": { "New building": 715, "Retrofit": 575 }
+      }
     },
-    'Healthcare': {
-      'New building': { 2025: 575, 2026: 545, 2027: 515, 2028: 485, 2029: 460, 2030: 430, 2031: 400, 2032: 375, 2033: 345, 2034: 315, 2035: 285, 2036: 255, 2037: 235, 2038: 220, 2039: 200, 2040: 185, 2041: 165, 2042: 150, 2043: 135, 2044: 120, 2045: 105, 2046: 90, 2047: 80, 2048: 70, 2049: 60, 2050: 50 },
-      'Retrofit': { 2025: 287, 2026: 272, 2027: 257, 2028: 242, 2029: 230, 2030: 215, 2031: 200, 2032: 187, 2033: 172, 2034: 157, 2035: 142, 2036: 127, 2037: 117, 2038: 110, 2039: 100, 2040: 92, 2041: 82, 2042: 75, 2043: 67, 2044: 60, 2045: 52, 2046: 45, 2047: 40, 2048: 35, 2049: 30, 2050: 25 }
+    2027: {
+      CCC: {
+        "Culture & entertainment (General)": { "New building": 515, "Retrofit": 405 },
+        "Culture & entertainment (Performance)": { "New building": 770, "Retrofit": 545 }
+      },
+      Education: {
+        Schools: { "New building": 480, "Retrofit": 345 },
+        "Higher education": { "New building": 575, "Retrofit": 425 }
+      },
+      Healthcare: {
+        Healthcare: { "New building": 710, "Retrofit": 555 }
+      },
+      Residential: {
+        "Single family homes": { "New building": 375, "Retrofit": 235 },
+        Flats: { "New building": 490, "Retrofit": 370 },
+        "Commercial residential": { "New building": 525, "Retrofit": 415 },
+        Hotels: { "New building": 605, "Retrofit": 470 }
+      },
+      Workplace: {
+        "Workplace (Whole building)": { "New building": 660, "Retrofit": 540 },
+        "Workplace (Shell & core)": { "New building": 425 },
+        "Science & technology": { "New building": 680, "Retrofit": 545 }
+      }
     },
-    'Residential': {
-      'New building': { 2025: 415, 2026: 395, 2027: 375, 2028: 355, 2029: 335, 2030: 310, 2031: 290, 2032: 270, 2033: 245, 2034: 225, 2035: 205, 2036: 185, 2037: 170, 2038: 155, 2039: 145, 2040: 130, 2041: 120, 2042: 110, 2043: 100, 2044: 90, 2045: 80, 2046: 70, 2047: 60, 2048: 50, 2049: 40, 2050: 35 },
-      'Retrofit': { 2025: 207, 2026: 197, 2027: 187, 2028: 177, 2029: 167, 2030: 155, 2031: 145, 2032: 135, 2033: 122, 2034: 112, 2035: 102, 2036: 92, 2037: 85, 2038: 77, 2039: 72, 2040: 65, 2041: 60, 2042: 55, 2043: 50, 2044: 45, 2045: 40, 2046: 35, 2047: 30, 2048: 25, 2049: 20, 2050: 17 }
+    2028: {
+      CCC: {
+        "Culture & entertainment (General)": { "New building": 485, "Retrofit": 385 },
+        "Culture & entertainment (Performance)": { "New building": 725, "Retrofit": 510 }
+      },
+      Education: {
+        Schools: { "New building": 450, "Retrofit": 325 },
+        "Higher education": { "New building": 545, "Retrofit": 405 }
+      },
+      Healthcare: {
+        Healthcare: { "New building": 670, "Retrofit": 525 }
+      },
+      Residential: {
+        "Single family homes": { "New building": 345, "Retrofit": 220 },
+        Flats: { "New building": 450, "Retrofit": 340 },
+        "Commercial residential": { "New building": 495, "Retrofit": 390 },
+        Hotels: { "New building": 570, "Retrofit": 440 }
+      },
+      Workplace: {
+        "Workplace (Whole building)": { "New building": 625, "Retrofit": 510 },
+        "Workplace (Shell & core)": { "New building": 400 },
+        "Science & technology": { "New building": 640, "Retrofit": 515 }
+      }
     },
-    'Workplace': {
-      'New building': { 2025: 420, 2026: 400, 2027: 380, 2028: 360, 2029: 340, 2030: 315, 2031: 295, 2032: 275, 2033: 250, 2034: 230, 2035: 210, 2036: 190, 2037: 175, 2038: 160, 2039: 145, 2040: 135, 2041: 120, 2042: 110, 2043: 100, 2044: 90, 2045: 80, 2046: 70, 2047: 60, 2048: 50, 2049: 45, 2050: 35 },
-      'Retrofit': { 2025: 210, 2026: 200, 2027: 190, 2028: 180, 2029: 170, 2030: 157, 2031: 147, 2032: 137, 2033: 125, 2034: 115, 2035: 105, 2036: 95, 2037: 87, 2038: 80, 2039: 72, 2040: 67, 2041: 60, 2042: 55, 2043: 50, 2044: 45, 2045: 40, 2046: 35, 2047: 30, 2048: 25, 2049: 22, 2050: 17 }
+    2029: {
+      CCC: {
+        "Culture & entertainment (General)": { "New building": 460, "Retrofit": 365 },
+        "Culture & entertainment (Performance)": { "New building": 685, "Retrofit": 485 }
+      },
+      Education: {
+        Schools: { "New building": 425, "Retrofit": 305 },
+        "Higher education": { "New building": 515, "Retrofit": 385 }
+      },
+      Healthcare: {
+        Healthcare: { "New building": 635, "Retrofit": 495 }
+      },
+      Residential: {
+        "Single family homes": { "New building": 320, "Retrofit": 205 },
+        Flats: { "New building": 420, "Retrofit": 315 },
+        "Commercial residential": { "New building": 465, "Retrofit": 370 },
+        Hotels: { "New building": 540, "Retrofit": 420 }
+      },
+      Workplace: {
+        "Workplace (Whole building)": { "New building": 590, "Retrofit": 485 },
+        "Workplace (Shell & core)": { "New building": 380 },
+        "Science & technology": { "New building": 605, "Retrofit": 485 }
+      }
     },
-    'Infrastructure': {
-      'New building': { 2025: 410, 2026: 385, 2027: 360, 2028: 335, 2029: 315, 2030: 290, 2031: 270, 2032: 250, 2033: 225, 2034: 205, 2035: 185, 2036: 165, 2037: 150, 2038: 140, 2039: 125, 2040: 115, 2041: 105, 2042: 95, 2043: 85, 2044: 75, 2045: 70, 2046: 60, 2047: 50, 2048: 45, 2049: 35, 2050: 30 },
-      'Retrofit': { 2025: 205, 2026: 192, 2027: 180, 2028: 167, 2029: 157, 2030: 145, 2031: 135, 2032: 125, 2033: 112, 2034: 102, 2035: 92, 2036: 82, 2037: 75, 2038: 70, 2039: 62, 2040: 57, 2041: 52, 2042: 47, 2043: 42, 2044: 37, 2045: 35, 2046: 30, 2047: 25, 2048: 22, 2049: 17, 2050: 15 }
+    2030: {
+      CCC: {
+        "Culture & entertainment (General)": { "New building": 425, "Retrofit": 335 },
+        "Culture & entertainment (Performance)": { "New building": 640, "Retrofit": 450 }
+      },
+      Education: {
+        Schools: { "New building": 395, "Retrofit": 285 },
+        "Higher education": { "New building": 480, "Retrofit": 355 }
+      },
+      Healthcare: {
+        Healthcare: { "New building": 590, "Retrofit": 460 }
+      },
+      Residential: {
+        "Single family homes": { "New building": 290, "Retrofit": 185 },
+        Flats: { "New building": 380, "Retrofit": 285 },
+        "Commercial residential": { "New building": 435, "Retrofit": 345 },
+        Hotels: { "New building": 500, "Retrofit": 390 }
+      },
+      Workplace: {
+        "Workplace (Whole building)": { "New building": 550, "Retrofit": 450 },
+        "Workplace (Shell & core)": { "New building": 355 },
+        "Science & technology": { "New building": 565, "Retrofit": 455 }
+      }
+    },
+    2031: {
+      CCC: {
+        "Culture & entertainment (General)": { "New building": 400, "Retrofit": 315 },
+        "Culture & entertainment (Performance)": { "New building": 595, "Retrofit": 420 }
+      },
+      Education: {
+        Schools: { "New building": 370, "Retrofit": 265 },
+        "Higher education": { "New building": 445, "Retrofit": 330 }
+      },
+      Healthcare: {
+        Healthcare: { "New building": 550, "Retrofit": 430 }
+      },
+      Residential: {
+        "Single family homes": { "New building": 270, "Retrofit": 170 },
+        Flats: { "New building": 355, "Retrofit": 270 },
+        "Commercial residential": { "New building": 405, "Retrofit": 320 },
+        Hotels: { "New building": 470, "Retrofit": 365 }
+      },
+      Workplace: {
+        "Workplace (Whole building)": { "New building": 515, "Retrofit": 420 },
+        "Workplace (Shell & core)": { "New building": 330 },
+        "Science & technology": { "New building": 525, "Retrofit": 420 }
+      }
+    },
+    2032: {
+      CCC: {
+        "Culture & entertainment (General)": { "New building": 375, "Retrofit": 295 },
+        "Culture & entertainment (Performance)": { "New building": 560, "Retrofit": 395 }
+      },
+      Education: {
+        Schools: { "New building": 350, "Retrofit": 255 },
+        "Higher education": { "New building": 420, "Retrofit": 315 }
+      },
+      Healthcare: {
+        Healthcare: { "New building": 515, "Retrofit": 405 }
+      },
+      Residential: {
+        "Single family homes": { "New building": 255, "Retrofit": 160 },
+        Flats: { "New building": 335, "Retrofit": 255 },
+        "Commercial residential": { "New building": 380, "Retrofit": 300 },
+        Hotels: { "New building": 440, "Retrofit": 340 }
+      },
+      Workplace: {
+        "Workplace (Whole building)": { "New building": 480, "Retrofit": 395 },
+        "Workplace (Shell & core)": { "New building": 310 },
+        "Science & technology": { "New building": 495, "Retrofit": 395 }
+      }
+    },
+    2033: {
+      CCC: {
+        "Culture & entertainment (General)": { "New building": 340, "Retrofit": 270 },
+        "Culture & entertainment (Performance)": { "New building": 510, "Retrofit": 360 }
+      },
+      Education: {
+        Schools: { "New building": 320, "Retrofit": 230 },
+        "Higher education": { "New building": 385, "Retrofit": 285 }
+      },
+      Healthcare: {
+        Healthcare: { "New building": 475, "Retrofit": 370 }
+      },
+      Residential: {
+        "Single family homes": { "New building": 235, "Retrofit": 150 },
+        Flats: { "New building": 305, "Retrofit": 230 },
+        "Commercial residential": { "New building": 350, "Retrofit": 280 },
+        Hotels: { "New building": 400, "Retrofit": 310 }
+      },
+      Workplace: {
+        "Workplace (Whole building)": { "New building": 440, "Retrofit": 360 },
+        "Workplace (Shell & core)": { "New building": 285 },
+        "Science & technology": { "New building": 450, "Retrofit": 360 }
+      }
+    },
+    2034: {
+      CCC: {
+        "Culture & entertainment (General)": { "New building": 310, "Retrofit": 245 },
+        "Culture & entertainment (Performance)": { "New building": 465, "Retrofit": 330 }
+      },
+      Education: {
+        Schools: { "New building": 290, "Retrofit": 210 },
+        "Higher education": { "New building": 350, "Retrofit": 260 }
+      },
+      Healthcare: {
+        Healthcare: { "New building": 430, "Retrofit": 335 }
+      },
+      Residential: {
+        "Single family homes": { "New building": 210, "Retrofit": 135 },
+        Flats: { "New building": 280, "Retrofit": 210 },
+        "Commercial residential": { "New building": 315, "Retrofit": 250 },
+        Hotels: { "New building": 365, "Retrofit": 285 }
+      },
+      Workplace: {
+        "Workplace (Whole building)": { "New building": 400, "Retrofit": 330 },
+        "Workplace (Shell & core)": { "New building": 255 },
+        "Science & technology": { "New building": 410, "Retrofit": 330 }
+      }
+    },
+    2035: {
+      CCC: {
+        "Culture & entertainment (General)": { "New building": 280, "Retrofit": 220 },
+        "Culture & entertainment (Performance)": { "New building": 420, "Retrofit": 295 }
+      },
+      Education: {
+        Schools: { "New building": 260, "Retrofit": 190 },
+        "Higher education": { "New building": 315, "Retrofit": 235 }
+      },
+      Healthcare: {
+        Healthcare: { "New building": 390, "Retrofit": 305 }
+      },
+      Residential: {
+        "Single family homes": { "New building": 190, "Retrofit": 120 },
+        Flats: { "New building": 250, "Retrofit": 190 },
+        "Commercial residential": { "New building": 285, "Retrofit": 225 },
+        Hotels: { "New building": 330, "Retrofit": 255 }
+      },
+      Workplace: {
+        "Workplace (Whole building)": { "New building": 360, "Retrofit": 295 },
+        "Workplace (Shell & core)": { "New building": 230 },
+        "Science & technology": { "New building": 370, "Retrofit": 300 }
+      }
+    },
+    2036: {
+      CCC: {
+        "Culture & entertainment (General)": { "New building": 255, "Retrofit": 200 },
+        "Culture & entertainment (Performance)": { "New building": 380, "Retrofit": 270 }
+      },
+      Education: {
+        Schools: { "New building": 235, "Retrofit": 170 },
+        "Higher education": { "New building": 285, "Retrofit": 215 }
+      },
+      Healthcare: {
+        Healthcare: { "New building": 350, "Retrofit": 275 }
+      },
+      Residential: {
+        "Single family homes": { "New building": 175, "Retrofit": 110 },
+        Flats: { "New building": 225, "Retrofit": 170 },
+        "Commercial residential": { "New building": 260, "Retrofit": 205 },
+        Hotels: { "New building": 300, "Retrofit": 235 }
+      },
+      Workplace: {
+        "Workplace (Whole building)": { "New building": 325, "Retrofit": 265 },
+        "Workplace (Shell & core)": { "New building": 210 },
+        "Science & technology": { "New building": 335, "Retrofit": 270 }
+      }
+    },
+    2037: {
+      CCC: {
+        "Culture & entertainment (General)": { "New building": 235, "Retrofit": 185 },
+        "Culture & entertainment (Performance)": { "New building": 350, "Retrofit": 250 }
+      },
+      Education: {
+        Schools: { "New building": 220, "Retrofit": 160 },
+        "Higher education": { "New building": 265, "Retrofit": 200 }
+      },
+      Healthcare: {
+        Healthcare: { "New building": 325, "Retrofit": 255 }
+      },
+      Residential: {
+        "Single family homes": { "New building": 160, "Retrofit": 105 },
+        Flats: { "New building": 210, "Retrofit": 160 },
+        "Commercial residential": { "New building": 240, "Retrofit": 190 },
+        Hotels: { "New building": 275, "Retrofit": 215 }
+      },
+      Workplace: {
+        "Workplace (Whole building)": { "New building": 300, "Retrofit": 245 },
+        "Workplace (Shell & core)": { "New building": 190 },
+        "Science & technology": { "New building": 310, "Retrofit": 250 }
+      }
+    },
+    2038: {
+      CCC: {
+        "Culture & entertainment (General)": { "New building": 215, "Retrofit": 170 },
+        "Culture & entertainment (Performance)": { "New building": 325, "Retrofit": 230 }
+      },
+      Education: {
+        Schools: { "New building": 200, "Retrofit": 145 },
+        "Higher education": { "New building": 240, "Retrofit": 180 }
+      },
+      Healthcare: {
+        Healthcare: { "New building": 300, "Retrofit": 235 }
+      },
+      Residential: {
+        "Single family homes": { "New building": 150, "Retrofit": 95 },
+        Flats: { "New building": 195, "Retrofit": 150 },
+        "Commercial residential": { "New building": 220, "Retrofit": 175 },
+        Hotels: { "New building": 255, "Retrofit": 200 }
+      },
+      Workplace: {
+        "Workplace (Whole building)": { "New building": 280, "Retrofit": 230 },
+        "Workplace (Shell & core)": { "New building": 180 },
+        "Science & technology": { "New building": 285, "Retrofit": 230 }
+      }
+    },
+    2039: {
+      CCC: {
+        "Culture & entertainment (General)": { "New building": 200, "Retrofit": 160 },
+        "Culture & entertainment (Performance)": { "New building": 295, "Retrofit": 210 }
+      },
+      Education: {
+        Schools: { "New building": 185, "Retrofit": 135 },
+        "Higher education": { "New building": 225, "Retrofit": 170 }
+      },
+      Healthcare: {
+        Healthcare: { "New building": 275, "Retrofit": 215 }
+      },
+      Residential: {
+        "Single family homes": { "New building": 135, "Retrofit": 85 },
+        Flats: { "New building": 175, "Retrofit": 135 },
+        "Commercial residential": { "New building": 200, "Retrofit": 160 },
+        Hotels: { "New building": 235, "Retrofit": 185 }
+      },
+      Workplace: {
+        "Workplace (Whole building)": { "New building": 255, "Retrofit": 210 },
+        "Workplace (Shell & core)": { "New building": 165 },
+        "Science & technology": { "New building": 260, "Retrofit": 210 }
+      }
+    },
+    2040: {
+      CCC: {
+        "Culture & entertainment (General)": { "New building": 180, "Retrofit": 145 },
+        "Culture & entertainment (Performance)": { "New building": 270, "Retrofit": 190 }
+      },
+      Education: {
+        Schools: { "New building": 170, "Retrofit": 125 },
+        "Higher education": { "New building": 205, "Retrofit": 155 }
+      },
+      Healthcare: {
+        Healthcare: { "New building": 250, "Retrofit": 195 }
+      },
+      Residential: {
+        "Single family homes": { "New building": 125, "Retrofit": 80 },
+        Flats: { "New building": 160, "Retrofit": 120 },
+        "Commercial residential": { "New building": 185, "Retrofit": 150 },
+        Hotels: { "New building": 215, "Retrofit": 170 }
+      },
+      Workplace: {
+        "Workplace (Whole building)": { "New building": 235, "Retrofit": 195 },
+        "Workplace (Shell & core)": { "New building": 150 },
+        "Science & technology": { "New building": 240, "Retrofit": 195 }
+      }
+    },
+    2041: {
+      CCC: {
+        "Culture & entertainment (General)": { "New building": 165, "Retrofit": 130 },
+        "Culture & entertainment (Performance)": { "New building": 245, "Retrofit": 175 }
+      },
+      Education: {
+        Schools: { "New building": 155, "Retrofit": 115 },
+        "Higher education": { "New building": 185, "Retrofit": 140 }
+      },
+      Healthcare: {
+        Healthcare: { "New building": 225, "Retrofit": 180 }
+      },
+      Residential: {
+        "Single family homes": { "New building": 110, "Retrofit": 70 },
+        Flats: { "New building": 145, "Retrofit": 110 },
+        "Commercial residential": { "New building": 165, "Retrofit": 130 },
+        Hotels: { "New building": 195, "Retrofit": 155 }
+      },
+      Workplace: {
+        "Workplace (Whole building)": { "New building": 210, "Retrofit": 175 },
+        "Workplace (Shell & core)": { "New building": 135 },
+        "Science & technology": { "New building": 215, "Retrofit": 175 }
+      }
+    },
+    2042: {
+      CCC: {
+        "Culture & entertainment (General)": { "New building": 150, "Retrofit": 120 },
+        "Culture & entertainment (Performance)": { "New building": 220, "Retrofit": 155 }
+      },
+      Education: {
+        Schools: { "New building": 140, "Retrofit": 105 },
+        "Higher education": { "New building": 165, "Retrofit": 125 }
+      },
+      Healthcare: {
+        Healthcare: { "New building": 205, "Retrofit": 160 }
+      },
+      Residential: {
+        "Single family homes": { "New building": 100, "Retrofit": 65 },
+        Flats: { "New building": 135, "Retrofit": 105 },
+        "Commercial residential": { "New building": 150, "Retrofit": 120 },
+        Hotels: { "New building": 175, "Retrofit": 135 }
+      },
+      Workplace: {
+        "Workplace (Whole building)": { "New building": 190, "Retrofit": 155 },
+        "Workplace (Shell & core)": { "New building": 120 },
+        "Science & technology": { "New building": 195, "Retrofit": 160 }
+      }
+    },
+    2043: {
+      CCC: {
+        "Culture & entertainment (General)": { "New building": 135, "Retrofit": 110 },
+        "Culture & entertainment (Performance)": { "New building": 200, "Retrofit": 145 }
+      },
+      Education: {
+        Schools: { "New building": 125, "Retrofit": 90 },
+        "Higher education": { "New building": 150, "Retrofit": 115 }
+      },
+      Healthcare: {
+        Healthcare: { "New building": 185, "Retrofit": 145 }
+      },
+      Residential: {
+        "Single family homes": { "New building": 90, "Retrofit": 60 },
+        Flats: { "New building": 120, "Retrofit": 90 },
+        "Commercial residential": { "New building": 135, "Retrofit": 110 },
+        Hotels: { "New building": 155, "Retrofit": 120 }
+      },
+      Workplace: {
+        "Workplace (Whole building)": { "New building": 170, "Retrofit": 140 },
+        "Workplace (Shell & core)": { "New building": 110 },
+        "Science & technology": { "New building": 175, "Retrofit": 140 }
+      }
+    },
+    2044: {
+      CCC: {
+        "Culture & entertainment (General)": { "New building": 120, "Retrofit": 95 },
+        "Culture & entertainment (Performance)": { "New building": 175, "Retrofit": 125 }
+      },
+      Education: {
+        Schools: { "New building": 110, "Retrofit": 80 },
+        "Higher education": { "New building": 135, "Retrofit": 100 }
+      },
+      Healthcare: {
+        Healthcare: { "New building": 165, "Retrofit": 130 }
+      },
+      Residential: {
+        "Single family homes": { "New building": 80, "Retrofit": 55 },
+        Flats: { "New building": 105, "Retrofit": 80 },
+        "Commercial residential": { "New building": 120, "Retrofit": 95 },
+        Hotels: { "New building": 140, "Retrofit": 110 }
+      },
+      Workplace: {
+        "Workplace (Whole building)": { "New building": 150, "Retrofit": 125 },
+        "Workplace (Shell & core)": { "New building": 95 },
+        "Science & technology": { "New building": 155, "Retrofit": 125 }
+      }
+    },
+    2045: {
+      CCC: {
+        "Culture & entertainment (General)": { "New building": 105, "Retrofit": 85 },
+        "Culture & entertainment (Performance)": { "New building": 155, "Retrofit": 110 }
+      },
+      Education: {
+        Schools: { "New building": 100, "Retrofit": 75 },
+        "Higher education": { "New building": 115, "Retrofit": 85 }
+      },
+      Healthcare: {
+        Healthcare: { "New building": 145, "Retrofit": 115 }
+      },
+      Residential: {
+        "Single family homes": { "New building": 70, "Retrofit": 45 },
+        Flats: { "New building": 95, "Retrofit": 75 },
+        "Commercial residential": { "New building": 105, "Retrofit": 85 },
+        Hotels: { "New building": 125, "Retrofit": 100 }
+      },
+      Workplace: {
+        "Workplace (Whole building)": { "New building": 135, "Retrofit": 110 },
+        "Workplace (Shell & core)": { "New building": 85 },
+        "Science & technology": { "New building": 140, "Retrofit": 115 }
+      }
+    },
+    2046: {
+      CCC: {
+        "Culture & entertainment (General)": { "New building": 90, "Retrofit": 75 },
+        "Culture & entertainment (Performance)": { "New building": 135, "Retrofit": 95 }
+      },
+      Education: {
+        Schools: { "New building": 85, "Retrofit": 65 },
+        "Higher education": { "New building": 105, "Retrofit": 80 }
+      },
+      Healthcare: {
+        Healthcare: { "New building": 125, "Retrofit": 100 }
+      },
+      Residential: {
+        "Single family homes": { "New building": 65, "Retrofit": 45 },
+        Flats: { "New building": 80, "Retrofit": 60 },
+        "Commercial residential": { "New building": 95, "Retrofit": 75 },
+        Hotels: { "New building": 105, "Retrofit": 85 }
+      },
+      Workplace: {
+        "Workplace (Whole building)": { "New building": 120, "Retrofit": 100 },
+        "Workplace (Shell & core)": { "New building": 75 },
+        "Science & technology": { "New building": 120, "Retrofit": 100 }
+      }
+    },
+    2047: {
+      CCC: {
+        "Culture & entertainment (General)": { "New building": 80, "Retrofit": 65 },
+        "Culture & entertainment (Performance)": { "New building": 120, "Retrofit": 85 }
+      },
+      Education: {
+        Schools: { "New building": 75, "Retrofit": 55 },
+        "Higher education": { "New building": 90, "Retrofit": 70 }
+      },
+      Healthcare: {
+        Healthcare: { "New building": 110, "Retrofit": 90 }
+      },
+      Residential: {
+        "Single family homes": { "New building": 55, "Retrofit": 35 },
+        Flats: { "New building": 70, "Retrofit": 55 },
+        "Commercial residential": { "New building": 80, "Retrofit": 65 },
+        Hotels: { "New building": 95, "Retrofit": 75 }
+      },
+      Workplace: {
+        "Workplace (Whole building)": { "New building": 100, "Retrofit": 85 },
+        "Workplace (Shell & core)": { "New building": 60 },
+        "Science & technology": { "New building": 105, "Retrofit": 85 }
+      }
+    },
+    2048: {
+      CCC: {
+        "Culture & entertainment (General)": { "New building": 70, "Retrofit": 55 },
+        "Culture & entertainment (Performance)": { "New building": 100, "Retrofit": 75 }
+      },
+      Education: {
+        Schools: { "New building": 65, "Retrofit": 50 },
+        "Higher education": { "New building": 75, "Retrofit": 60 }
+      },
+      Healthcare: {
+        Healthcare: { "New building": 95, "Retrofit": 75 }
+      },
+      Residential: {
+        "Single family homes": { "New building": 45, "Retrofit": 30 },
+        Flats: { "New building": 60, "Retrofit": 45 },
+        "Commercial residential": { "New building": 70, "Retrofit": 60 },
+        Hotels: { "New building": 80, "Retrofit": 65 }
+      },
+      Workplace: {
+        "Workplace (Whole building)": { "New building": 85, "Retrofit": 70 },
+        "Workplace (Shell & core)": { "New building": 55 },
+        "Science & technology": { "New building": 90, "Retrofit": 75 }
+      }
+    },
+    2049: {
+      CCC: {
+        "Culture & entertainment (General)": { "New building": 55, "Retrofit": 45 },
+        "Culture & entertainment (Performance)": { "New building": 85, "Retrofit": 60 }
+      },
+      Education: {
+        Schools: { "New building": 55, "Retrofit": 40 },
+        "Higher education": { "New building": 65, "Retrofit": 50 }
+      },
+      Healthcare: {
+        Healthcare: { "New building": 80, "Retrofit": 65 }
+      },
+      Residential: {
+        "Single family homes": { "New building": 40, "Retrofit": 30 },
+        Flats: { "New building": 50, "Retrofit": 40 },
+        "Commercial residential": { "New building": 60, "Retrofit": 50 },
+        Hotels: { "New building": 65, "Retrofit": 55 }
+      },
+      Workplace: {
+        "Workplace (Whole building)": { "New building": 70, "Retrofit": 60 },
+        "Workplace (Shell & core)": { "New building": 45 },
+        "Science & technology": { "New building": 75, "Retrofit": 60 }
+      }
+    },
+    2050: {
+      CCC: {
+        "Culture & entertainment (General)": { "New building": 45, "Retrofit": 40 },
+        "Culture & entertainment (Performance)": { "New building": 70, "Retrofit": 50 }
+      },
+      Education: {
+        Schools: { "New building": 45, "Retrofit": 35 },
+        "Higher education": { "New building": 50, "Retrofit": 40 }
+      },
+      Healthcare: {
+        Healthcare: { "New building": 65, "Retrofit": 55 }
+      },
+      Residential: {
+        "Single family homes": { "New building": 30, "Retrofit": 20 },
+        Flats: { "New building": 40, "Retrofit": 30 },
+        "Commercial residential": { "New building": 45, "Retrofit": 40 },
+        Hotels: { "New building": 55, "Retrofit": 45 }
+      },
+      Workplace: {
+        "Workplace (Whole building)": { "New building": 60, "Retrofit": 50 },
+        "Workplace (Shell & core)": { "New building": 35 },
+        "Science & technology": { "New building": 60, "Retrofit": 50 }
+      }
     }
   };
 
