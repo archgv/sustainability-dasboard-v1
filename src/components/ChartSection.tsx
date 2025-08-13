@@ -766,12 +766,16 @@ export const ChartSection = ({
         const createRibaBenchmarkData = () => {
           if (!shouldShowRibaBenchmark) return [];
           
-          // ALWAYS use the sector of the primary project (the one without RIBA stage suffix or the first one)
-          const primaryProject = projects.find(p => !p.id.includes('-')) || projects[0];
+          // Find the PRIMARY project (selected as main project, not comparison)
+          // This should be the first project in the filtered list, which comes from the main selection
+          const primaryProject = projects[0];
+          if (!primaryProject) return [];
+          
           const primarySector = getSector(primaryProject.typology);
           const sectorBenchmarks = totalEmbodiedCarbonBenchmarks[primarySector as keyof typeof totalEmbodiedCarbonBenchmarks];
           
           // Only return benchmarks if the PRIMARY project's sector has benchmarks
+          // Healthcare, for example, has no benchmarks defined, so none should show
           if (!sectorBenchmarks) return [];
           
           // Create benchmark points for RIBA 2025 and RIBA 2030 only
