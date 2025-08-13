@@ -123,6 +123,51 @@ export const ChartSection = ({
     'Infrastructure': { 2025: 565, 2026: 525, 2027: 490, 2028: 450, 2029: 420, 2030: 380, 2031: 355, 2032: 335, 2033: 305, 2034: 280, 2035: 250, 2036: 225, 2037: 210, 2038: 195, 2039: 175, 2040: 160, 2041: 145, 2042: 135, 2043: 120, 2044: 105, 2045: 95, 2046: 80, 2047: 70, 2048: 60, 2049: 50, 2050: 40 }
   };
 
+  // Upfront Carbon benchmark data - different from total embodied carbon
+  // Sub-sector mapping to sector benchmarks for upfront carbon
+  const upfrontCarbonSubSectorMapping = {
+    'Culture & entertainment (Performance)': 'CCC',
+    'Culture & entertainment (General)': 'CCC', 
+    'Higher education': 'Education',
+    'Schools': 'Education',
+    'Healthcare': 'Healthcare',
+    'Single family homes': 'Residential',
+    'Flats': 'Residential',
+    'Hotels': 'Residential',
+    'Commercial residential': 'Residential',
+    'Science & technology': 'Workplace',
+    'Workplace (Whole building)': 'Workplace',
+    'Workplace (Shell & core)': 'Workplace'
+  };
+
+  // Upfront Carbon benchmarks for New Building and Retrofit by sector
+  const upfrontCarbonBenchmarks = {
+    'CCC': {
+      'New building': { 2025: 620, 2026: 590, 2027: 560, 2028: 530, 2029: 500, 2030: 470, 2031: 440, 2032: 415, 2033: 385, 2034: 355, 2035: 325, 2036: 295, 2037: 270, 2038: 250, 2039: 230, 2040: 210, 2041: 190, 2042: 175, 2043: 160, 2044: 145, 2045: 130, 2046: 115, 2047: 100, 2048: 85, 2049: 70, 2050: 55 },
+      'Retrofit': { 2025: 310, 2026: 295, 2027: 280, 2028: 265, 2029: 250, 2030: 235, 2031: 220, 2032: 207, 2033: 192, 2034: 177, 2035: 162, 2036: 147, 2037: 135, 2038: 125, 2039: 115, 2040: 105, 2041: 95, 2042: 87, 2043: 80, 2044: 72, 2045: 65, 2046: 57, 2047: 50, 2048: 42, 2049: 35, 2050: 27 }
+    },
+    'Education': {
+      'New building': { 2025: 465, 2026: 440, 2027: 420, 2028: 395, 2029: 375, 2030: 350, 2031: 325, 2032: 305, 2033: 280, 2034: 255, 2035: 230, 2036: 210, 2037: 195, 2038: 180, 2039: 165, 2040: 150, 2041: 135, 2042: 120, 2043: 110, 2044: 100, 2045: 90, 2046: 80, 2047: 70, 2048: 60, 2049: 50, 2050: 40 },
+      'Retrofit': { 2025: 232, 2026: 220, 2027: 210, 2028: 197, 2029: 187, 2030: 175, 2031: 162, 2032: 152, 2033: 140, 2034: 127, 2035: 115, 2036: 105, 2037: 97, 2038: 90, 2039: 82, 2040: 75, 2041: 67, 2042: 60, 2043: 55, 2044: 50, 2045: 45, 2046: 40, 2047: 35, 2048: 30, 2049: 25, 2050: 20 }
+    },
+    'Healthcare': {
+      'New building': { 2025: 575, 2026: 545, 2027: 515, 2028: 485, 2029: 460, 2030: 430, 2031: 400, 2032: 375, 2033: 345, 2034: 315, 2035: 285, 2036: 255, 2037: 235, 2038: 220, 2039: 200, 2040: 185, 2041: 165, 2042: 150, 2043: 135, 2044: 120, 2045: 105, 2046: 90, 2047: 80, 2048: 70, 2049: 60, 2050: 50 },
+      'Retrofit': { 2025: 287, 2026: 272, 2027: 257, 2028: 242, 2029: 230, 2030: 215, 2031: 200, 2032: 187, 2033: 172, 2034: 157, 2035: 142, 2036: 127, 2037: 117, 2038: 110, 2039: 100, 2040: 92, 2041: 82, 2042: 75, 2043: 67, 2044: 60, 2045: 52, 2046: 45, 2047: 40, 2048: 35, 2049: 30, 2050: 25 }
+    },
+    'Residential': {
+      'New building': { 2025: 415, 2026: 395, 2027: 375, 2028: 355, 2029: 335, 2030: 310, 2031: 290, 2032: 270, 2033: 245, 2034: 225, 2035: 205, 2036: 185, 2037: 170, 2038: 155, 2039: 145, 2040: 130, 2041: 120, 2042: 110, 2043: 100, 2044: 90, 2045: 80, 2046: 70, 2047: 60, 2048: 50, 2049: 40, 2050: 35 },
+      'Retrofit': { 2025: 207, 2026: 197, 2027: 187, 2028: 177, 2029: 167, 2030: 155, 2031: 145, 2032: 135, 2033: 122, 2034: 112, 2035: 102, 2036: 92, 2037: 85, 2038: 77, 2039: 72, 2040: 65, 2041: 60, 2042: 55, 2043: 50, 2044: 45, 2045: 40, 2046: 35, 2047: 30, 2048: 25, 2049: 20, 2050: 17 }
+    },
+    'Workplace': {
+      'New building': { 2025: 420, 2026: 400, 2027: 380, 2028: 360, 2029: 340, 2030: 315, 2031: 295, 2032: 275, 2033: 250, 2034: 230, 2035: 210, 2036: 190, 2037: 175, 2038: 160, 2039: 145, 2040: 135, 2041: 120, 2042: 110, 2043: 100, 2044: 90, 2045: 80, 2046: 70, 2047: 60, 2048: 50, 2049: 45, 2050: 35 },
+      'Retrofit': { 2025: 210, 2026: 200, 2027: 190, 2028: 180, 2029: 170, 2030: 157, 2031: 147, 2032: 137, 2033: 125, 2034: 115, 2035: 105, 2036: 95, 2037: 87, 2038: 80, 2039: 72, 2040: 67, 2041: 60, 2042: 55, 2043: 50, 2044: 45, 2045: 40, 2046: 35, 2047: 30, 2048: 25, 2049: 22, 2050: 17 }
+    },
+    'Infrastructure': {
+      'New building': { 2025: 410, 2026: 385, 2027: 360, 2028: 335, 2029: 315, 2030: 290, 2031: 270, 2032: 250, 2033: 225, 2034: 205, 2035: 185, 2036: 165, 2037: 150, 2038: 140, 2039: 125, 2040: 115, 2041: 105, 2042: 95, 2043: 85, 2044: 75, 2045: 70, 2046: 60, 2047: 50, 2048: 45, 2049: 35, 2050: 30 },
+      'Retrofit': { 2025: 205, 2026: 192, 2027: 180, 2028: 167, 2029: 157, 2030: 145, 2031: 135, 2032: 125, 2033: 112, 2034: 102, 2035: 92, 2036: 82, 2037: 75, 2038: 70, 2039: 62, 2040: 57, 2041: 52, 2042: 47, 2043: 42, 2044: 37, 2045: 35, 2046: 30, 2047: 25, 2048: 22, 2049: 17, 2050: 15 }
+    }
+  };
+
 
   // Mock building area data for demonstration
   const getProjectArea = (projectId: string): number => {
@@ -601,9 +646,9 @@ export const ChartSection = ({
           biogenic: selectedKPI1 === 'totalEmbodiedCarbon' ? -Math.abs(project.biogenicCarbon || 0) * (valueType === 'total' ? getProjectArea(project.id.split('-')[0]) : 1) : 0
         }));
 
-        // Get benchmark data for the primary project's sector (only for Total Embodied Carbon with per-sqm)
+        // Get benchmark data for the primary project's sector
         const getBenchmarkLines = () => {
-          if (!showBenchmarks || selectedKPI1 !== 'totalEmbodiedCarbon' || valueType !== 'per-sqm' || transformedProjects.length === 0) {
+          if (!showBenchmarks || valueType !== 'per-sqm' || transformedProjects.length === 0) {
             return [];
           }
           
@@ -612,16 +657,51 @@ export const ChartSection = ({
           const primarySector = getSector(primaryProject.typology);
           const benchmarkColor = getSectorBenchmarkColor(primaryProject.typology);
           
-          // Get benchmark values for this sector
-          const sectorBenchmarks = totalEmbodiedCarbonBenchmarks[primarySector as keyof typeof totalEmbodiedCarbonBenchmarks];
+          // Handle Total Embodied Carbon benchmarks
+          if (selectedKPI1 === 'totalEmbodiedCarbon') {
+            const sectorBenchmarks = totalEmbodiedCarbonBenchmarks[primarySector as keyof typeof totalEmbodiedCarbonBenchmarks];
+            
+            if (!sectorBenchmarks) return [];
+            
+            return Object.entries(sectorBenchmarks).map(([name, value]) => ({
+              name,
+              value,
+              color: benchmarkColor
+            }));
+          }
           
-          if (!sectorBenchmarks) return [];
+          // Handle Upfront Carbon benchmarks
+          if (selectedKPI1 === 'upfrontEmbodied') {
+            const sectorBenchmarks = upfrontCarbonBenchmarks[primarySector as keyof typeof upfrontCarbonBenchmarks];
+            
+            if (!sectorBenchmarks) return [];
+            
+            // Get current year to show appropriate benchmark
+            const currentYear = new Date().getFullYear();
+            const benchmarkLines = [];
+            
+            // Add New Building benchmark
+            if (sectorBenchmarks['New building'] && sectorBenchmarks['New building'][currentYear as keyof typeof sectorBenchmarks['New building']]) {
+              benchmarkLines.push({
+                name: 'New building',
+                value: sectorBenchmarks['New building'][currentYear as keyof typeof sectorBenchmarks['New building']],
+                color: benchmarkColor
+              });
+            }
+            
+            // Add Retrofit benchmark
+            if (sectorBenchmarks['Retrofit'] && sectorBenchmarks['Retrofit'][currentYear as keyof typeof sectorBenchmarks['Retrofit']]) {
+              benchmarkLines.push({
+                name: 'Retrofit',
+                value: sectorBenchmarks['Retrofit'][currentYear as keyof typeof sectorBenchmarks['Retrofit']],
+                color: benchmarkColor
+              });
+            }
+            
+            return benchmarkLines;
+          }
           
-          return Object.entries(sectorBenchmarks).map(([name, value]) => ({
-            name,
-            value,
-            color: benchmarkColor
-          }));
+          return [];
         };
 
         const benchmarkLines = getBenchmarkLines();
@@ -759,51 +839,98 @@ export const ChartSection = ({
           })
           .sort((a, b) => a.date - b.date);
 
-        // Get RIBA benchmark data for timeline - ONLY for Total Embodied Carbon and per sqm
-        const shouldShowRibaBenchmark = valueType === 'per-sqm' && selectedKPI1 === 'totalEmbodiedCarbon' && timelineData.length > 0;
+        // Get benchmark data for timeline - for Total Embodied Carbon and Upfront Carbon with per sqm
+        const shouldShowBenchmarks = valueType === 'per-sqm' && (selectedKPI1 === 'totalEmbodiedCarbon' || selectedKPI1 === 'upfrontEmbodied') && timelineData.length > 0;
 
-        // Create RIBA benchmark data if applicable
-        const createRibaBenchmarkData = () => {
-          if (!shouldShowRibaBenchmark) return [];
+        // Create benchmark data if applicable
+        const createTimelineBenchmarkData = () => {
+          if (!shouldShowBenchmarks) return [];
           
           // Find the PRIMARY project (selected as main project, not comparison)
-          // This should be the first project in the filtered list, which comes from the main selection
           const primaryProject = projects[0];
           if (!primaryProject) return [];
           
           const primarySector = getSector(primaryProject.typology);
-          const sectorBenchmarks = totalEmbodiedCarbonBenchmarks[primarySector as keyof typeof totalEmbodiedCarbonBenchmarks];
           
-          // CRITICAL: Only return benchmarks if the PRIMARY project's sector has benchmarks defined
-          // Healthcare, Infrastructure, and CCC sectors have NO benchmarks in totalEmbodiedCarbonBenchmarks
-          // Therefore, no benchmarks should show regardless of comparison projects
-          if (!sectorBenchmarks) {
-            return [];
+          // Handle Total Embodied Carbon benchmarks
+          if (selectedKPI1 === 'totalEmbodiedCarbon') {
+            const sectorBenchmarks = totalEmbodiedCarbonBenchmarks[primarySector as keyof typeof totalEmbodiedCarbonBenchmarks];
+            
+            // CRITICAL: Only return benchmarks if the PRIMARY project's sector has benchmarks defined
+            if (!sectorBenchmarks) {
+              return [];
+            }
+            
+            // Create benchmark points for RIBA 2025 and RIBA 2030 only
+            const ribaBenchmarks = [];
+            if (sectorBenchmarks['RIBA 2025']) {
+              ribaBenchmarks.push({
+                completionYear: 2025,
+                benchmarkValue: sectorBenchmarks['RIBA 2025'],
+                benchmarkName: 'RIBA 2025',
+                sector: primarySector
+              });
+            }
+            if (sectorBenchmarks['RIBA 2030']) {
+              ribaBenchmarks.push({
+                completionYear: 2030,
+                benchmarkValue: sectorBenchmarks['RIBA 2030'],
+                benchmarkName: 'RIBA 2030',
+                sector: primarySector
+              });
+            }
+            
+            return ribaBenchmarks;
           }
           
-          // Create benchmark points for RIBA 2025 and RIBA 2030 only
-          const ribaBenchmarks = [];
-          if (sectorBenchmarks['RIBA 2025']) {
-            ribaBenchmarks.push({
-              completionYear: 2025,
-              benchmarkValue: sectorBenchmarks['RIBA 2025'],
-              benchmarkName: 'RIBA 2025',
-              sector: primarySector
-            });
-          }
-          if (sectorBenchmarks['RIBA 2030']) {
-            ribaBenchmarks.push({
-              completionYear: 2030,
-              benchmarkValue: sectorBenchmarks['RIBA 2030'],
-              benchmarkName: 'RIBA 2030',
-              sector: primarySector
-            });
+          // Handle Upfront Carbon benchmarks
+          if (selectedKPI1 === 'upfrontEmbodied') {
+            const sectorBenchmarks = upfrontCarbonBenchmarks[primarySector as keyof typeof upfrontCarbonBenchmarks];
+            
+            if (!sectorBenchmarks) return [];
+            
+            // Create benchmark points for all years from 2025 to 2050
+            const benchmarkPoints = [];
+            
+            // Add New Building benchmarks
+            if (sectorBenchmarks['New building']) {
+              for (let year = 2025; year <= 2050; year++) {
+                const yearlyBenchmark = sectorBenchmarks['New building'][year as keyof typeof sectorBenchmarks['New building']];
+                if (yearlyBenchmark) {
+                  benchmarkPoints.push({
+                    completionYear: year,
+                    benchmarkValue: yearlyBenchmark,
+                    benchmarkName: 'New building',
+                    sector: primarySector,
+                    benchmarkType: 'newBuilding'
+                  });
+                }
+              }
+            }
+            
+            // Add Retrofit benchmarks
+            if (sectorBenchmarks['Retrofit']) {
+              for (let year = 2025; year <= 2050; year++) {
+                const yearlyBenchmark = sectorBenchmarks['Retrofit'][year as keyof typeof sectorBenchmarks['Retrofit']];
+                if (yearlyBenchmark) {
+                  benchmarkPoints.push({
+                    completionYear: year,
+                    benchmarkValue: yearlyBenchmark,
+                    benchmarkName: 'Retrofit',
+                    sector: primarySector,
+                    benchmarkType: 'retrofit'
+                  });
+                }
+              }
+            }
+            
+            return benchmarkPoints;
           }
           
-          return ribaBenchmarks;
+          return [];
         };
 
-        const ribaBenchmarkData = createRibaBenchmarkData();
+        const timelineBenchmarkData = createTimelineBenchmarkData();
         // Always use primary project's sector for benchmark color
         const primaryProject = projects.find(p => !p.id.includes('-')) || projects[0];
         const benchmarkColor = primaryProject ? getSectorBenchmarkColor(primaryProject.typology) : '#1E9F5A';
@@ -829,7 +956,7 @@ export const ChartSection = ({
                 ticks={(() => {
                   const maxValue = Math.max(
                     ...timelineData.map(p => Math.abs(p[selectedKPI1] || 0)),
-                    ...(shouldShowRibaBenchmark ? ribaBenchmarkData.map(b => b.benchmarkValue) : [])
+                    ...(shouldShowBenchmarks ? timelineBenchmarkData.map(b => b.benchmarkValue) : [])
                   );
                   return generateNiceTicks(maxValue * 1.1);
                 })()}
@@ -897,10 +1024,11 @@ export const ChartSection = ({
                 );
               })}
               
-                {/* RIBA benchmark points */}
-                {shouldShowRibaBenchmark && ribaBenchmarkData.length > 0 && (
+                {/* Benchmark points/lines */}
+                {shouldShowBenchmarks && timelineBenchmarkData.length > 0 && selectedKPI1 === 'totalEmbodiedCarbon' && (
                   <>
-                    {ribaBenchmarkData.map((benchmark) => (
+                    {/* RIBA benchmarks as dots for Total Embodied Carbon */}
+                    {timelineBenchmarkData.map((benchmark) => (
                       <ReferenceDot
                         key={`riba-${benchmark.completionYear}`}
                         x={benchmark.completionYear}
@@ -924,6 +1052,42 @@ export const ChartSection = ({
                     ))}
                   </>
                 )}
+                
+                {/* Upfront Carbon benchmark lines */}
+                {shouldShowBenchmarks && timelineBenchmarkData.length > 0 && selectedKPI1 === 'upfrontEmbodied' && (
+                  <>
+                    {/* New Building benchmark line */}
+                    <Line
+                      type="monotone"
+                      dataKey="newBuildingBenchmark"
+                      data={timelineBenchmarkData.filter(b => b.benchmarkType === 'newBuilding').map(b => ({
+                        completionYear: b.completionYear,
+                        newBuildingBenchmark: b.benchmarkValue
+                      }))}
+                      stroke={benchmarkColor}
+                      strokeWidth={2}
+                      strokeDasharray="5 5"
+                      dot={false}
+                      name="New building"
+                      connectNulls={true}
+                    />
+                    {/* Retrofit benchmark line */}
+                    <Line
+                      type="monotone"
+                      dataKey="retrofitBenchmark"
+                      data={timelineBenchmarkData.filter(b => b.benchmarkType === 'retrofit').map(b => ({
+                        completionYear: b.completionYear,
+                        retrofitBenchmark: b.benchmarkValue
+                      }))}
+                      stroke={benchmarkColor}
+                      strokeWidth={2}
+                      strokeDasharray="10 5"
+                      dot={false}
+                      name="Retrofit"
+                      connectNulls={true}
+                    />
+                  </>
+                )}
             </LineChart>
           </ResponsiveContainer>
         );
@@ -938,7 +1102,16 @@ export const ChartSection = ({
     if (projects.length === 0) return false;
     const primaryProject = projects[0];
     const primarySector = getSector(primaryProject.typology);
-    return !!totalEmbodiedCarbonBenchmarks[primarySector as keyof typeof totalEmbodiedCarbonBenchmarks];
+    
+    if (selectedKPI1 === 'totalEmbodiedCarbon') {
+      return !!totalEmbodiedCarbonBenchmarks[primarySector as keyof typeof totalEmbodiedCarbonBenchmarks];
+    }
+    
+    if (selectedKPI1 === 'upfrontEmbodied') {
+      return !!upfrontCarbonBenchmarks[primarySector as keyof typeof upfrontCarbonBenchmarks];
+    }
+    
+    return false;
   };
 
   return (
@@ -946,8 +1119,8 @@ export const ChartSection = ({
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold" style={{ color: chartColors.dark }}>{getChartTitle()}</h2>
         <div className="flex items-center space-x-2">
-          {/* Show benchmark toggle only for Total Embodied Carbon with per-sqm values */}
-          {selectedKPI1 === 'totalEmbodiedCarbon' && valueType === 'per-sqm' && chartType === 'single-bar' && (
+          {/* Show benchmark toggle for Total Embodied Carbon and Upfront Carbon with per-sqm values */}
+          {(selectedKPI1 === 'totalEmbodiedCarbon' || selectedKPI1 === 'upfrontEmbodied') && valueType === 'per-sqm' && (chartType === 'single-bar' || chartType === 'single-timeline') && (
             <Button 
               variant={showBenchmarks ? "default" : "outline"} 
               size="sm" 
