@@ -4,14 +4,18 @@ import { Button } from '@/components/ui/button';
 import { Download, FileText, Eye, EyeOff } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, ScatterChart, Scatter, ReferenceLine } from 'recharts';
 import { Project } from '@/types/project';
+import { ChartType, EmbodiedCarbonBreakdown, ValueType } from '@/components/ChartTypeSelector';
 import html2canvas from 'html2canvas';
 
 interface ChartSectionProps {
   projects: Project[];
-  chartType: string;
+  chartType: ChartType;
   selectedKPI1: string;
   selectedKPI2: string;
-  valueType: string;
+  embodiedCarbonBreakdown: EmbodiedCarbonBreakdown;
+  valueType: ValueType;
+  isComparingToSelf?: boolean;
+  selectedRibaStages?: string[];
 }
 
 // Total Embodied Carbon Benchmarks (fixed values by sector)
@@ -498,7 +502,7 @@ export const ChartSection: React.FC<ChartSectionProps> = ({
       return `${kpiName} - Single KPI Across Projects`;
     } else if (chartType === 'single-timeline') {
       return `${kpiName} - Single KPI Over Time`;
-    } else if (chartType === 'comparison') {
+    } else if (chartType === 'compare-bubble') {
       return `KPI Comparison - ${getKPIDisplayName(selectedKPI1)} vs ${getKPIDisplayName(selectedKPI2)}`;
     }
     return 'Chart';
@@ -507,7 +511,7 @@ export const ChartSection: React.FC<ChartSectionProps> = ({
   const handleExportCSV = () => {
     let csvData = [];
     
-    if (chartType === 'comparison' && selectedKPI1 && selectedKPI2) {
+    if (chartType === 'compare-bubble' && selectedKPI1 && selectedKPI2) {
       csvData = projects.map(project => ({
         'Project Name': project.name,
         [getKPIDisplayName(selectedKPI1)]: project[selectedKPI1 as keyof Project] as number,
@@ -768,7 +772,7 @@ export const ChartSection: React.FC<ChartSectionProps> = ({
           </ResponsiveContainer>
         );
 
-      case 'comparison':
+      case 'compare-bubble':
         if (!selectedKPI2) {
           return <div>Please select a second KPI for comparison</div>;
         }
