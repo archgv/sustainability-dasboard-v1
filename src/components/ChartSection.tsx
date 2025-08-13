@@ -771,6 +771,7 @@ export const ChartSection = ({
           const primarySector = getSector(primaryProject.typology);
           const sectorBenchmarks = totalEmbodiedCarbonBenchmarks[primarySector as keyof typeof totalEmbodiedCarbonBenchmarks];
           
+          // Only return benchmarks if the PRIMARY project's sector has benchmarks
           if (!sectorBenchmarks) return [];
           
           // Create benchmark points for RIBA 2025 and RIBA 2030 only
@@ -901,24 +902,13 @@ export const ChartSection = ({
                         fill="white"
                         stroke={benchmarkColor}
                         strokeWidth={3}
-                        label={`${benchmark.benchmarkName}`}
-                      />
-                    ))}
-                    {/* Add text labels for benchmarks */}
-                    {ribaBenchmarkData.map((benchmark) => (
-                      <ReferenceDot
-                        key={`text-${benchmark.completionYear}`}
-                        x={benchmark.completionYear}
-                        y={benchmark.benchmarkValue}
-                        r={0}
-                        fill="transparent"
                         label={{
-                          value: `${benchmark.benchmarkName}\n(${benchmark.benchmarkValue} kgCO₂e/m²)`,
+                          value: benchmark.benchmarkName,
                           position: 'top',
                           offset: 15,
                           style: { 
                             fill: benchmarkColor, 
-                            fontSize: '11px', 
+                            fontSize: '12px', 
                             fontWeight: 'bold',
                             textAnchor: 'middle'
                           }
