@@ -889,54 +889,39 @@ export const ChartSection = ({
                 );
               })}
               
-               {/* RIBA benchmark points */}
-               {shouldShowRibaBenchmark && ribaBenchmarkData.length > 0 && (
-                 <>
-                   {ribaBenchmarkData.map((benchmark) => (
-                     <ReferenceDot
-                       key={`riba-${benchmark.completionYear}`}
-                       x={benchmark.completionYear}
-                       y={benchmark.benchmarkValue}
-                       r={8}
-                       fill="white"
-                       stroke={benchmarkColor}
-                       strokeWidth={3}
-                     />
-                   ))}
-                    {/* Add text labels for benchmarks using ReferenceDot with custom label */}
+                {/* RIBA benchmark points */}
+                {shouldShowRibaBenchmark && ribaBenchmarkData.length > 0 && (
+                  <>
                     {ribaBenchmarkData.map((benchmark) => (
                       <ReferenceDot
-                        key={`label-${benchmark.completionYear}`}
+                        key={`riba-${benchmark.completionYear}`}
                         x={benchmark.completionYear}
-                        y={benchmark.benchmarkValue + 50}
+                        y={benchmark.benchmarkValue}
+                        r={8}
+                        fill="white"
+                        stroke={benchmarkColor}
+                        strokeWidth={3}
+                        label={`${benchmark.benchmarkName}`}
+                      />
+                    ))}
+                    {/* Add text labels for benchmarks */}
+                    {ribaBenchmarkData.map((benchmark) => (
+                      <ReferenceDot
+                        key={`text-${benchmark.completionYear}`}
+                        x={benchmark.completionYear}
+                        y={benchmark.benchmarkValue}
                         r={0}
                         fill="transparent"
-                        label={(props) => {
-                          const { x, y } = props;
-                          return (
-                            <g>
-                              <text
-                                x={x}
-                                y={(y as number) - 35}
-                                textAnchor="middle"
-                                fill={benchmarkColor}
-                                fontSize="12"
-                                fontWeight="bold"
-                              >
-                                {benchmark.benchmarkName}
-                              </text>
-                              <text
-                                x={x}
-                                y={(y as number) - 20}
-                                textAnchor="middle"
-                                fill={benchmarkColor}
-                                fontSize="11"
-                                fontWeight="bold"
-                              >
-                                ({benchmark.benchmarkValue} kgCO₂e/m²)
-                              </text>
-                            </g>
-                          );
+                        label={{
+                          value: `${benchmark.benchmarkName}\n(${benchmark.benchmarkValue} kgCO₂e/m²)`,
+                          position: 'top',
+                          offset: 15,
+                          style: { 
+                            fill: benchmarkColor, 
+                            fontSize: '11px', 
+                            fontWeight: 'bold',
+                            textAnchor: 'middle'
+                          }
                         }}
                       />
                     ))}
