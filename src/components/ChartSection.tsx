@@ -681,7 +681,7 @@ export const ChartSection = ({
           const retrofitValue = subSectorData['Retrofit']?.[benchmarkYear as keyof typeof subSectorData['Retrofit']];
           
           const benchmarkLines = [];
-          if (newBuildValue) {
+          if (newBuildValue !== undefined) {
             benchmarkLines.push({
               name: `New building (PC ${benchmarkYear})`,
               value: newBuildValue,
@@ -689,7 +689,7 @@ export const ChartSection = ({
               year: benchmarkYear
             });
           }
-          if (retrofitValue) {
+          if (retrofitValue !== undefined) {
             benchmarkLines.push({
               name: `Retrofit (PC ${benchmarkYear})`,
               value: retrofitValue,
@@ -938,6 +938,16 @@ export const ChartSection = ({
                             <p className="text-sm" style={{ color: chartColors.dark }}>
                               Biogenic Carbon: {formatNumber(Math.abs(biogenicData.value))} {getUnitLabel(kpi1Config?.unit || '', valueType)}
                             </p>
+                          )}
+                          {barChartBenchmarkLines.length > 0 && (
+                            <div className="mt-2 pt-2 border-t">
+                              <p className="text-xs font-medium" style={{ color: chartColors.dark }}>Benchmarks:</p>
+                              {barChartBenchmarkLines.map((benchmark, idx) => (
+                                <p key={idx} className="text-xs" style={{ color: chartColors.dark }}>
+                                  {benchmark.name}: {formatNumber(benchmark.value)} {getUnitLabel(kpi1Config?.unit || '', valueType)}
+                                </p>
+                              ))}
+                            </div>
                           )}
                         </div>
                       );
