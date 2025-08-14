@@ -904,15 +904,17 @@ export const ChartSection = ({
                 })()}
               />
               <Tooltip 
-                formatter={(value: number, name: string) => [
-                  `${formatNumber(value)} ${getUnitLabel(kpi1Config?.unit || '', valueType)}`,
-                  name.includes('benchmark') ? name : kpi1Config?.label || selectedKPI1
-                ]}
-                labelFormatter={(label) => `Year: ${label}`}
                 contentStyle={{ backgroundColor: 'white', border: `1px solid ${chartColors.primary}`, borderRadius: '8px' }}
                 content={({ active, payload, label }) => {
                   if (active && payload && payload.length) {
                     const projectData = payload.find(p => p.dataKey === selectedKPI1);
+                    const year = parseInt(label as string);
+                    
+                    // Find benchmark values for this year
+                    const newBuildBenchmark = shouldShowUpfrontBenchmark ? 
+                      upfrontBenchmarkData.newBuildData.find(d => d.completionYear === year)?.benchmarkValue : null;
+                    const retrofitBenchmark = shouldShowUpfrontBenchmark ? 
+                      upfrontBenchmarkData.retrofitData.find(d => d.completionYear === year)?.benchmarkValue : null;
                     
                     return (
                         <div className="bg-white p-3 border rounded-lg shadow-lg" style={{ backgroundColor: 'white', borderColor: chartColors.primary }}>
@@ -921,9 +923,23 @@ export const ChartSection = ({
                           <>
                             <p className="text-sm" style={{ color: chartColors.dark }}>Project: {projectData.payload.displayName}</p>
                             <p className="text-sm" style={{ color: chartColors.dark }}>
-                              {kpi1Config?.label}: {formatNumber(projectData.value)} {getUnitLabel(kpi1Config?.unit || '', valueType)}
+                              {kpi1Config?.label}: {formatNumber(projectData.value as number)} {getUnitLabel(kpi1Config?.unit || '', valueType)}
                             </p>
                           </>
+                        )}
+                        {(newBuildBenchmark || retrofitBenchmark) && (
+                          <div className="mt-2 pt-2 border-t border-gray-200">
+                            {newBuildBenchmark && (
+                              <p className="text-sm" style={{ color: benchmarkColor }}>
+                                New Build: {formatNumber(newBuildBenchmark)} {getUnitLabel(kpi1Config?.unit || '', valueType)}
+                              </p>
+                            )}
+                            {retrofitBenchmark && (
+                              <p className="text-sm" style={{ color: benchmarkColor }}>
+                                Retrofit: {formatNumber(retrofitBenchmark)} {getUnitLabel(kpi1Config?.unit || '', valueType)}
+                              </p>
+                            )}
+                          </div>
                         )}
                       </div>
                     );
@@ -1018,15 +1034,17 @@ export const ChartSection = ({
                       <div className="flex justify-center items-center gap-6 mt-4">
                         {legendItems.map((item, index) => (
                           <div key={index} className="flex items-center gap-2">
-                            <div 
-                              className="w-6 h-0.5" 
-                              style={{ 
-                                backgroundColor: item.color,
-                                backgroundImage: item.strokeDasharray === '5 5' 
-                                  ? `repeating-linear-gradient(to right, ${item.color} 0, ${item.color} 3px, transparent 3px, transparent 6px)`
-                                  : `repeating-linear-gradient(to right, ${item.color} 0, ${item.color} 6px, transparent 6px, transparent 9px)`
-                              }}
-                            />
+                            <svg width="24" height="2" className="inline-block">
+                              <line
+                                x1="0"
+                                y1="1"
+                                x2="24"
+                                y2="1"
+                                stroke={item.color}
+                                strokeWidth="2"
+                                strokeDasharray={item.strokeDasharray}
+                              />
+                            </svg>
                             <span className="text-sm" style={{ color: chartColors.dark }}>
                               {item.value}
                             </span>
