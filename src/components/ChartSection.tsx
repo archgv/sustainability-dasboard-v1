@@ -91,6 +91,7 @@ export const ChartSection = ({
 }: ChartSectionProps) => {
   const [showBenchmarks, setShowBenchmarks] = useState(false);
   const [selectedSubSector, setSelectedSubSector] = useState<string>('');
+  const [selectedBarChartBenchmark, setSelectedBarChartBenchmark] = useState<string>('');
   
   const kpi1Config = availableKPIs.find(kpi => kpi.key === selectedKPI1);
   const kpi2Config = availableKPIs.find(kpi => kpi.key === selectedKPI2);
@@ -653,6 +654,53 @@ export const ChartSection = ({
           biogenic: selectedKPI1 === 'totalEmbodiedCarbon' ? -Math.abs(project.biogenicCarbon || 0) * (valueType === 'total' ? getProjectArea(project.id.split('-')[0]) : 1) : 0
         }));
 
+        // Get UKNZCBS benchmark data for the bar chart
+        const getBarChartBenchmarkLines = () => {
+          if (!selectedBarChartBenchmark || selectedKPI1 !== 'upfrontCarbon' || valueType !== 'per-sqm' || transformedProjects.length === 0) {
+            return [];
+          }
+          
+          // Get the sector of the first project (primary project)
+          const primaryProject = transformedProjects[0];
+          const primarySector = getSector(primaryProject.typology);
+          const benchmarkColor = getSectorBenchmarkColor(primaryProject.typology);
+          
+          // Get the PC date from the primary project to determine benchmark year
+          const pcYear = primaryProject.additionalData?.find(data => data.label === 'PC Date (year)')?.value;
+          let benchmarkYear = parseInt(pcYear) || 2025;
+          if (benchmarkYear < 2025) benchmarkYear = 2025; // Use 2025 for years before 2025
+          
+          // Get benchmark values for this sector and sub-sector
+          const sectorData = uknzcbsBenchmarks[primarySector as keyof typeof uknzcbsBenchmarks];
+          if (!sectorData) return [];
+          
+          const subSectorData = sectorData[selectedBarChartBenchmark as keyof typeof sectorData];
+          if (!subSectorData) return [];
+          
+          const newBuildValue = subSectorData['New building']?.[benchmarkYear as keyof typeof subSectorData['New building']];
+          const retrofitValue = subSectorData['Retrofit']?.[benchmarkYear as keyof typeof subSectorData['Retrofit']];
+          
+          const benchmarkLines = [];
+          if (newBuildValue) {
+            benchmarkLines.push({
+              name: `New building (PC ${benchmarkYear})`,
+              value: newBuildValue,
+              color: benchmarkColor,
+              year: benchmarkYear
+            });
+          }
+          if (retrofitValue) {
+            benchmarkLines.push({
+              name: `Retrofit (PC ${benchmarkYear})`,
+              value: retrofitValue,
+              color: benchmarkColor,
+              year: benchmarkYear
+            });
+          }
+          
+          return benchmarkLines;
+        };
+
         // Get benchmark data for the primary project's sector (only for Total Embodied Carbon with per-sqm)
         const getBenchmarkLines = () => {
           if (!showBenchmarks || selectedKPI1 !== 'totalEmbodiedCarbon' || valueType !== 'per-sqm' || transformedProjects.length === 0) {
@@ -677,6 +725,7 @@ export const ChartSection = ({
         };
 
         const benchmarkLines = getBenchmarkLines();
+        const barChartBenchmarkLines = getBarChartBenchmarkLines();
 
         return (
           <ResponsiveContainer width="100%" height="100%">
@@ -771,24 +820,190 @@ export const ChartSection = ({
                   <ReferenceLine y={0} stroke="#A8A8A3" strokeWidth={2} />
                 )}
                 
-                {/* Benchmark lines */}
-                {benchmarkLines.map((benchmark, index) => (
-                  <ReferenceLine 
-                    key={benchmark.name}
-                    y={benchmark.value} 
-                    stroke={benchmark.color} 
-                    strokeWidth={2}
-                    strokeDasharray="5 5"
-                    label={{ 
-                      value: benchmark.name, 
-                      position: "insideTopRight",
-                      offset: 10,
-                      style: { fill: benchmark.color, fontSize: '12px', fontWeight: 'bold' }
-                    }}
-                  />
-                ))}
-            </BarChart>
-          </ResponsiveContainer>
+                 {/* Benchmark lines for Total Embodied Carbon */}
+                 {benchmarkLines.map((benchmark, index) => (
+                   <ReferenceLine 
+                     key={benchmark.name}
+                     y={benchmark.value} 
+                     stroke={benchmark.color} 
+                     strokeWidth={2}
+                     strokeDasharray="5 5"
+                     label={{ 
+                       value: benchmark.name, 
+                       position: "insideTopRight",
+                       offset: 10,
+                       style: { fill: benchmark.color, fontSize: '12px', fontWeight: 'bold' }
+                     }}
+                   />
+                 ))}
+                 
+                 {/* UKNZCBS Benchmark lines for Upfront Carbon */}
+                 {barChartBenchmarkLines.map((benchmark, index) => (
+                   <ReferenceLine 
+                     key={benchmark.name}
+                     y={benchmark.value} 
+                     stroke={benchmark.color} 
+                     strokeWidth={2}
+                     strokeDasharray={benchmark.name.includes('New building') ? "5 5" : "10 5"}
+                   />
+                 ))}
+             </BarChart>
+           </ResponsiveContainer>
+         );
+
+        // Add legend for UKNZCBS benchmarks as a separate component
+        const BarChartLegend = () => {
+          if (barChartBenchmarkLines.length === 0) return null;
+          
+          return (
+            <div className="flex justify-center items-center gap-6 mt-4">
+              {barChartBenchmarkLines.map((item, index) => (
+                <div key={index} className="flex items-center gap-2">
+                  <svg width="24" height="2" className="inline-block">
+                    <line
+                      x1="0"
+                      y1="1"
+                      x2="24"
+                      y2="1"
+                      stroke={item.color}
+                      strokeWidth="2"
+                      strokeDasharray={item.name.includes('New building') ? "5 5" : "10 5"}
+                    />
+                  </svg>
+                  <span className="text-sm" style={{ color: chartColors.dark }}>
+                    {item.name}
+                  </span>
+                </div>
+              ))}
+            </div>
+          );
+        };
+
+        return (
+          <div>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 80 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} horizontal={true} verticalPoints={[]} />
+                <XAxis 
+                  dataKey={(item) => {
+                    const baseId = item.id.split('-')[0];
+                    const displayName = isComparingToSelf && item.ribaStage 
+                      ? `${item.name} (RIBA ${item.ribaStage.replace('stage-', '')})`
+                      : item.name;
+                    return displayName;
+                  }}
+                  height={80}
+                  interval={0}
+                  tick={<MultiLineTickComponent />}
+                  axisLine={{ stroke: chartColors.dark, strokeWidth: 1 }}
+                  tickLine={false}
+                />
+                <YAxis 
+                  label={{ value: `${kpi1Config?.label || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType)})`, angle: -90, position: 'insideLeft', style: { textAnchor: 'middle' } }}
+                  tick={{ fill: chartColors.dark }}
+                  tickFormatter={(value) => formatNumber(value)}
+                  domain={selectedKPI1 === 'totalEmbodiedCarbon' ? 
+                    [0, 1600] : 
+                    [0, 'dataMax']
+                  }
+                  ticks={selectedKPI1 === 'totalEmbodiedCarbon' ? 
+                    [0, 400, 800, 1200, 1600] : 
+                    (() => {
+                      const maxValue = Math.max(...chartData.map(p => Math.abs(p[selectedKPI1] || 0)));
+                      return generateNiceTicks(maxValue * 1.1);
+                    })()
+                  }
+                />
+                 <Tooltip 
+                  formatter={(value: number, name: string) => [
+                    `${formatNumber(value)} ${getUnitLabel(kpi1Config?.unit || '', valueType)}`,
+                    name === 'biogenic' ? 'Biogenic Carbon' : (kpi1Config?.label || selectedKPI1)
+                  ]}
+                  labelFormatter={(label) => `Project: ${label}`}
+                  contentStyle={{ backgroundColor: 'white', border: `1px solid ${chartColors.primary}`, borderRadius: '8px' }}
+                  content={({ active, payload, label }) => {
+                    if (active && payload && payload.length) {
+                      const mainData = payload.find(p => p.dataKey === selectedKPI1);
+                      const biogenicData = payload.find(p => p.dataKey === 'biogenic');
+                      
+                      return (
+                        <div className="bg-white p-3 border rounded-lg shadow-lg" style={{ backgroundColor: 'white', borderColor: chartColors.primary }}>
+                          <p className="font-semibold" style={{ color: chartColors.dark }}>Project: {label}</p>
+                          {mainData && (
+                            <p className="text-sm" style={{ color: chartColors.dark }}>
+                              {kpi1Config?.label}: {formatNumber(mainData.value)} {getUnitLabel(kpi1Config?.unit || '', valueType)}
+                            </p>
+                          )}
+                          {biogenicData && (
+                            <p className="text-sm" style={{ color: chartColors.dark }}>
+                              Biogenic Carbon: {formatNumber(Math.abs(biogenicData.value))} {getUnitLabel(kpi1Config?.unit || '', valueType)}
+                            </p>
+                          )}
+                        </div>
+                      );
+                    }
+                    return null;
+                  }}
+                />
+                 <Bar 
+                  dataKey={selectedKPI1}
+                  fill={chartColors.primary}
+                  name={kpi1Config?.label || selectedKPI1}
+                  radius={[4, 4, 0, 0]}
+                 >
+                   {sortedProjects.map((project, index) => {
+                     const sectorColor = getSectorColor(project.typology);
+                     return <Cell key={index} fill={sectorColor} />;
+                   })}
+                 </Bar>
+                  {selectedKPI1 === 'totalEmbodiedCarbon' && (
+                    <Bar 
+                      dataKey="biogenic"
+                      fill="white"
+                      name="biogenic"
+                      radius={[0, 0, 4, 4]}
+                    >
+                      {sortedProjects.map((project, index) => {
+                        const sectorColor = getSectorColor(project.typology);
+                        return <Cell key={index} fill="white" stroke={sectorColor} strokeWidth={2} />;
+                      })}
+                    </Bar>
+                  )}
+                  {selectedKPI1 === 'totalEmbodiedCarbon' && (
+                    <ReferenceLine y={0} stroke="#A8A8A3" strokeWidth={2} />
+                  )}
+                  
+                  {/* Benchmark lines for Total Embodied Carbon */}
+                  {benchmarkLines.map((benchmark, index) => (
+                    <ReferenceLine 
+                      key={benchmark.name}
+                      y={benchmark.value} 
+                      stroke={benchmark.color} 
+                      strokeWidth={2}
+                      strokeDasharray="5 5"
+                      label={{ 
+                        value: benchmark.name, 
+                        position: "insideTopRight",
+                        offset: 10,
+                        style: { fill: benchmark.color, fontSize: '12px', fontWeight: 'bold' }
+                      }}
+                    />
+                  ))}
+                  
+                  {/* UKNZCBS Benchmark lines for Upfront Carbon */}
+                  {barChartBenchmarkLines.map((benchmark, index) => (
+                    <ReferenceLine 
+                      key={benchmark.name}
+                      y={benchmark.value} 
+                      stroke={benchmark.color} 
+                      strokeWidth={2}
+                      strokeDasharray={benchmark.name.includes('New building') ? "5 5" : "10 5"}
+                    />
+                  ))}
+              </BarChart>
+            </ResponsiveContainer>
+            <BarChartLegend />
+          </div>
         );
 
       case 'single-timeline':
@@ -1083,6 +1298,7 @@ export const ChartSection = ({
 
   const availableSubSectors = getAvailableSubSectors();
   const showSubSectorToggle = selectedKPI1 === 'upfrontCarbon' && valueType === 'per-sqm' && chartType === 'single-timeline' && availableSubSectors.length > 1;
+  const showBarChartSubSectorToggle = selectedKPI1 === 'upfrontCarbon' && valueType === 'per-sqm' && chartType === 'single-bar' && availableSubSectors.length > 0;
 
   return (
     <Card className="p-6">
@@ -1124,6 +1340,34 @@ export const ChartSection = ({
                 variant={selectedSubSector === subSector ? "default" : "outline"}
                 size="sm"
                 onClick={() => setSelectedSubSector(subSector)}
+                className="text-xs"
+              >
+                {subSector}
+              </Button>
+            ))}
+          </div>
+        </div>
+      )}
+      
+      {/* Sub-sector toggle for upfront carbon bar chart */}
+      {showBarChartSubSectorToggle && (
+        <div className="mb-4">
+          <p className="text-sm font-medium mb-2" style={{ color: chartColors.dark }}>UKNZCBS benchmarks</p>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant={selectedBarChartBenchmark === '' ? "default" : "outline"}
+              size="sm"
+              onClick={() => setSelectedBarChartBenchmark('')}
+              className="text-xs"
+            >
+              None
+            </Button>
+            {availableSubSectors.map((subSector) => (
+              <Button
+                key={subSector}
+                variant={selectedBarChartBenchmark === subSector ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedBarChartBenchmark(subSector)}
                 className="text-xs"
               >
                 {subSector}
