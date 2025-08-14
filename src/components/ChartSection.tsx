@@ -874,7 +874,7 @@ export const ChartSection = ({
         
         // Set X-axis domain to start at 2020 (or earlier project year) and extend to 2050
         const xAxisDomain = [Math.min(2020, minProjectYear), 2050];
-        const xAxisTicks = [2020, 2024, 2028, 2030, 2032, 2034, 2036, 2038, 2040, 2042, 2044, 2046, 2048, 2050];
+        const xAxisTicks = [2020, 2022, 2024, 2026, 2028, 2030, 2032, 2034, 2036, 2038, 2040, 2042, 2044, 2046, 2048, 2050];
 
         return (
           <ResponsiveContainer width="100%" height="100%">
@@ -989,31 +989,53 @@ export const ChartSection = ({
                 />
               )}
 
-              {/* Text labels for benchmark lines */}
-              {shouldShowUpfrontBenchmark && upfrontBenchmarkData.newBuildData.length > 0 && (
-                <text
-                  x="85%"
-                  y="25%"
-                  fill={benchmarkColor}
-                  fontSize="12"
-                  fontWeight="bold"
-                  textAnchor="middle"
-                >
-                  New Build
-                </text>
-              )}
               
-              {shouldShowUpfrontBenchmark && upfrontBenchmarkData.retrofitData.length > 0 && (
-                <text
-                  x="85%"
-                  y="75%"
-                  fill={benchmarkColor}
-                  fontSize="12"
-                  fontWeight="bold"
-                  textAnchor="middle"
-                >
-                  Retrofit
-                </text>
+              {/* Legend for benchmark lines */}
+              {shouldShowUpfrontBenchmark && (upfrontBenchmarkData.newBuildData.length > 0 || upfrontBenchmarkData.retrofitData.length > 0) && (
+                <Legend 
+                  verticalAlign="bottom" 
+                  height={36}
+                  content={(props) => {
+                    const legendItems = [];
+                    if (upfrontBenchmarkData.newBuildData.length > 0) {
+                      legendItems.push({
+                        value: 'New Build',
+                        type: 'line',
+                        color: benchmarkColor,
+                        strokeDasharray: '5 5'
+                      });
+                    }
+                    if (upfrontBenchmarkData.retrofitData.length > 0) {
+                      legendItems.push({
+                        value: 'Retrofit',
+                        type: 'line', 
+                        color: benchmarkColor,
+                        strokeDasharray: '10 5'
+                      });
+                    }
+                    
+                    return (
+                      <div className="flex justify-center items-center gap-6 mt-4">
+                        {legendItems.map((item, index) => (
+                          <div key={index} className="flex items-center gap-2">
+                            <div 
+                              className="w-6 h-0.5" 
+                              style={{ 
+                                backgroundColor: item.color,
+                                backgroundImage: item.strokeDasharray === '5 5' 
+                                  ? `repeating-linear-gradient(to right, ${item.color} 0, ${item.color} 3px, transparent 3px, transparent 6px)`
+                                  : `repeating-linear-gradient(to right, ${item.color} 0, ${item.color} 6px, transparent 6px, transparent 9px)`
+                              }}
+                            />
+                            <span className="text-sm" style={{ color: chartColors.dark }}>
+                              {item.value}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  }}
+                />
               )}
             </LineChart>
           </ResponsiveContainer>
