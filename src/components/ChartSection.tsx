@@ -90,6 +90,7 @@ export const ChartSection = ({
   selectedRibaStages = []
 }: ChartSectionProps) => {
   const [showBenchmarks, setShowBenchmarks] = useState(false);
+  const [selectedSubSector, setSelectedSubSector] = useState<string>('');
   
   const kpi1Config = availableKPIs.find(kpi => kpi.key === selectedKPI1);
   const kpi2Config = availableKPIs.find(kpi => kpi.key === selectedKPI2);
@@ -810,65 +811,81 @@ export const ChartSection = ({
           })
           .sort((a, b) => a.date - b.date);
 
-        // Get RIBA benchmark data for timeline - ONLY for Total Embodied Carbon and per sqm
-        const shouldShowRibaBenchmark = valueType === 'per-sqm' && selectedKPI1 === 'totalEmbodiedCarbon' && timelineData.length > 0;
+        // Get UKNZCBS benchmark data for timeline - ONLY for Upfront Carbon and per sqm
+        const shouldShowUpfrontBenchmark = valueType === 'per-sqm' && selectedKPI1 === 'upfrontCarbon' && timelineData.length > 0;
 
-        // Create RIBA benchmark data if applicable
-        const createRibaBenchmarkData = () => {
-          if (!shouldShowRibaBenchmark) return [];
-          
-          // Find the PRIMARY project (selected as main project, not comparison)
-          // This should be the first project in the filtered list, which comes from the main selection
-          const primaryProject = projects[0];
-          if (!primaryProject) return [];
-          
-          const primarySector = getSector(primaryProject.typology);
-          const sectorBenchmarks = totalEmbodiedCarbonBenchmarks[primarySector as keyof typeof totalEmbodiedCarbonBenchmarks];
-          
-          // CRITICAL: Only return benchmarks if the PRIMARY project's sector has benchmarks defined
-          // Healthcare, Infrastructure, and CCC sectors have NO benchmarks in totalEmbodiedCarbonBenchmarks
-          // Therefore, no benchmarks should show regardless of comparison projects
-          if (!sectorBenchmarks) {
-            return [];
-          }
-          
-          // Create benchmark points for RIBA 2025 and RIBA 2030 only
-          const ribaBenchmarks = [];
-          if (sectorBenchmarks['RIBA 2025']) {
-            ribaBenchmarks.push({
-              completionYear: 2025,
-              benchmarkValue: sectorBenchmarks['RIBA 2025'],
-              benchmarkName: 'RIBA 2025',
-              sector: primarySector
-            });
-          }
-          if (sectorBenchmarks['RIBA 2030']) {
-            ribaBenchmarks.push({
-              completionYear: 2030,
-              benchmarkValue: sectorBenchmarks['RIBA 2030'],
-              benchmarkName: 'RIBA 2030',
-              sector: primarySector
-            });
-          }
-          
-          return ribaBenchmarks;
+        // Helper function to get sub-sectors for a given sector
+        const getSubSectorsForSector = (sector: string): string[] => {
+          const sectorSubSectors = uknzcbsBenchmarks[sector as keyof typeof uknzcbsBenchmarks];
+          return sectorSubSectors ? Object.keys(sectorSubSectors) : [];
         };
 
-        const ribaBenchmarkData = createRibaBenchmarkData();
-        // Always use primary project's sector for benchmark color
-        const primaryProject = projects.find(p => !p.id.includes('-')) || projects[0];
+        // Get the primary project's sector and available sub-sectors
+        const primaryProject = projects[0];
+        const primarySector = primaryProject ? getSector(primaryProject.typology) : '';
+        const availableSubSectors = getSubSectorsForSector(primarySector);
+        
+        // Set default sub-sector if not already selected
+        if (!selectedSubSector && availableSubSectors.length > 0) {
+          setSelectedSubSector(availableSubSectors[0]);
+        }
+
+        // Create UKNZCBS benchmark data for upfront carbon
+        const createUpfrontBenchmarkData = () => {
+          if (!shouldShowUpfrontBenchmark || !primaryProject || !selectedSubSector) {
+            return { newBuildData: [], retrofitData: [] };
+          }
+          
+          const sectorData = uknzcbsBenchmarks[primarySector as keyof typeof uknzcbsBenchmarks];
+          if (!sectorData) {
+            return { newBuildData: [], retrofitData: [] };
+          }
+          
+          const subSectorData = sectorData[selectedSubSector as keyof typeof sectorData];
+          if (!subSectorData) {
+            return { newBuildData: [], retrofitData: [] };
+          }
+
+          // Create benchmark lines from 2025 to 2050
+          const years = Array.from({ length: 26 }, (_, i) => 2025 + i);
+          
+          const newBuildData = years.map(year => ({
+            completionYear: year,
+            benchmarkValue: subSectorData['New building'][year as keyof typeof subSectorData['New building']],
+            benchmarkType: 'New building'
+          })).filter(item => item.benchmarkValue !== undefined);
+
+          const retrofitData = subSectorData['Retrofit'] ? years.map(year => ({
+            completionYear: year,
+            benchmarkValue: subSectorData['Retrofit'][year as keyof typeof subSectorData['Retrofit']],
+            benchmarkType: 'Retrofit'
+          })).filter(item => item.benchmarkValue !== undefined) : [];
+
+          return { newBuildData, retrofitData };
+        };
+
+        const upfrontBenchmarkData = createUpfrontBenchmarkData();
         const benchmarkColor = primaryProject ? getSectorBenchmarkColor(primaryProject.typology) : '#1E9F5A';
+
+        // Determine graph range based on project data
+        const projectYears = timelineData.map(p => p.completionYear);
+        const minProjectYear = Math.min(...projectYears);
+        const maxProjectYear = Math.max(...projectYears);
+        
+        // Set X-axis domain to start at 2020 (or earlier project year) and extend to 2050
+        const xAxisDomain = [Math.min(2020, minProjectYear), 2050];
+        const xAxisTicks = [2020, 2024, 2028, 2030, 2032, 2034, 2036, 2038, 2040, 2042, 2044, 2046, 2048, 2050];
 
         return (
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={timelineData} margin={{ top: 20, right: 30, left: 60, bottom: 60 }}>
+            <LineChart data={timelineData} margin={{ top: 40, right: 30, left: 60, bottom: 80 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} horizontal={true} verticalPoints={[]} />
               <XAxis 
                 dataKey="completionYear"
                 type="number"
                 scale="linear"
-                domain={[2020, 2030]}
-                ticks={[2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030]}
+                domain={xAxisDomain}
+                ticks={xAxisTicks}
                 tickFormatter={(value) => value.toString()}
                 label={{ value: 'Year', position: 'insideBottom', offset: -5 }}
                 tick={{ fill: chartColors.dark }}
@@ -880,7 +897,8 @@ export const ChartSection = ({
                 ticks={(() => {
                   const maxValue = Math.max(
                     ...timelineData.map(p => Math.abs(p[selectedKPI1] || 0)),
-                    ...(shouldShowRibaBenchmark ? ribaBenchmarkData.map(b => b.benchmarkValue) : [])
+                    ...(shouldShowUpfrontBenchmark && upfrontBenchmarkData.newBuildData ? upfrontBenchmarkData.newBuildData.map(b => b.benchmarkValue) : []),
+                    ...(shouldShowUpfrontBenchmark && upfrontBenchmarkData.retrofitData ? upfrontBenchmarkData.retrofitData.map(b => b.benchmarkValue) : [])
                   );
                   return generateNiceTicks(maxValue * 1.1);
                 })()}
@@ -888,14 +906,13 @@ export const ChartSection = ({
               <Tooltip 
                 formatter={(value: number, name: string) => [
                   `${formatNumber(value)} ${getUnitLabel(kpi1Config?.unit || '', valueType)}`,
-                  name.includes('benchmark') ? `UKNZCBS ${name.split('_')[1]}` : kpi1Config?.label || selectedKPI1
+                  name.includes('benchmark') ? name : kpi1Config?.label || selectedKPI1
                 ]}
                 labelFormatter={(label) => `Year: ${label}`}
                 contentStyle={{ backgroundColor: 'white', border: `1px solid ${chartColors.primary}`, borderRadius: '8px' }}
                 content={({ active, payload, label }) => {
                   if (active && payload && payload.length) {
                     const projectData = payload.find(p => p.dataKey === selectedKPI1);
-                    const benchmarkData = payload.filter(p => p.dataKey && p.dataKey.toString().includes('benchmark'));
                     
                     return (
                         <div className="bg-white p-3 border rounded-lg shadow-lg" style={{ backgroundColor: 'white', borderColor: chartColors.primary }}>
@@ -908,11 +925,6 @@ export const ChartSection = ({
                             </p>
                           </>
                         )}
-                        {benchmarkData.map((item, idx) => (
-                          <p key={idx} className="text-sm" style={{ color: chartColors.benchmark }}>
-                            UKNZCBS {item.dataKey?.toString().split('_')[1]}: {formatNumber(item.value)} {getUnitLabel(kpi1Config?.unit || '', valueType)}
-                          </p>
-                        ))}
                       </div>
                     );
                   }
@@ -948,33 +960,61 @@ export const ChartSection = ({
                 );
               })}
               
-                {/* RIBA benchmark points */}
-                {shouldShowRibaBenchmark && ribaBenchmarkData.length > 0 && (
-                  <>
-                    {ribaBenchmarkData.map((benchmark) => (
-                      <ReferenceDot
-                        key={`riba-${benchmark.completionYear}`}
-                        x={benchmark.completionYear}
-                        y={benchmark.benchmarkValue}
-                        r={8}
-                        fill="white"
-                        stroke={benchmarkColor}
-                        strokeWidth={3}
-                        label={{
-                          value: benchmark.benchmarkName,
-                          position: 'top',
-                          offset: 15,
-                          style: { 
-                            fill: benchmarkColor, 
-                            fontSize: '12px', 
-                            fontWeight: 'bold',
-                            textAnchor: 'middle'
-                          }
-                        }}
-                      />
-                    ))}
-                  </>
-                )}
+              {/* UKNZCBS upfront carbon benchmark lines */}
+              {shouldShowUpfrontBenchmark && upfrontBenchmarkData.newBuildData.length > 0 && (
+                <Line
+                  type="monotone"
+                  dataKey="benchmarkValue"
+                  data={upfrontBenchmarkData.newBuildData}
+                  stroke={benchmarkColor}
+                  strokeWidth={2}
+                  strokeDasharray="5 5"
+                  dot={false}
+                  name="New building benchmark"
+                  connectNulls={false}
+                />
+              )}
+              
+              {shouldShowUpfrontBenchmark && upfrontBenchmarkData.retrofitData.length > 0 && (
+                <Line
+                  type="monotone"
+                  dataKey="benchmarkValue"
+                  data={upfrontBenchmarkData.retrofitData}
+                  stroke={benchmarkColor}
+                  strokeWidth={2}
+                  strokeDasharray="10 5"
+                  dot={false}
+                  name="Retrofit benchmark"
+                  connectNulls={false}
+                />
+              )}
+
+              {/* Text labels for benchmark lines */}
+              {shouldShowUpfrontBenchmark && upfrontBenchmarkData.newBuildData.length > 0 && (
+                <text
+                  x="85%"
+                  y="25%"
+                  fill={benchmarkColor}
+                  fontSize="12"
+                  fontWeight="bold"
+                  textAnchor="middle"
+                >
+                  New Build
+                </text>
+              )}
+              
+              {shouldShowUpfrontBenchmark && upfrontBenchmarkData.retrofitData.length > 0 && (
+                <text
+                  x="85%"
+                  y="75%"
+                  fill={benchmarkColor}
+                  fontSize="12"
+                  fontWeight="bold"
+                  textAnchor="middle"
+                >
+                  Retrofit
+                </text>
+              )}
             </LineChart>
           </ResponsiveContainer>
         );
@@ -991,6 +1031,18 @@ export const ChartSection = ({
     const primarySector = getSector(primaryProject.typology);
     return !!totalEmbodiedCarbonBenchmarks[primarySector as keyof typeof totalEmbodiedCarbonBenchmarks];
   };
+
+  // Get sub-sectors for the primary project's sector
+  const getAvailableSubSectors = (): string[] => {
+    if (projects.length === 0) return [];
+    const primaryProject = projects[0];
+    const primarySector = getSector(primaryProject.typology);
+    const sectorData = uknzcbsBenchmarks[primarySector as keyof typeof uknzcbsBenchmarks];
+    return sectorData ? Object.keys(sectorData) : [];
+  };
+
+  const availableSubSectors = getAvailableSubSectors();
+  const showSubSectorToggle = selectedKPI1 === 'upfrontCarbon' && valueType === 'per-sqm' && chartType === 'single-timeline' && availableSubSectors.length > 1;
 
   return (
     <Card className="p-6">
@@ -1020,6 +1072,26 @@ export const ChartSection = ({
           </Button>
         </div>
       </div>
+      
+      {/* Sub-sector toggle for upfront carbon timeline */}
+      {showSubSectorToggle && (
+        <div className="mb-4">
+          <p className="text-sm font-medium mb-2" style={{ color: chartColors.dark }}>UKNZCBS benchmarks</p>
+          <div className="flex flex-wrap gap-2">
+            {availableSubSectors.map((subSector) => (
+              <Button
+                key={subSector}
+                variant={selectedSubSector === subSector ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedSubSector(subSector)}
+                className="text-xs"
+              >
+                {subSector}
+              </Button>
+            ))}
+          </div>
+        </div>
+      )}
       
       <div className="h-96" data-chart="chart-container">
         {renderChart()}
