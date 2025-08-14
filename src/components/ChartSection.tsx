@@ -898,19 +898,28 @@ export const ChartSection = ({
                   axisLine={{ stroke: chartColors.dark, strokeWidth: 1 }}
                   tickLine={false}
                 />
-                <YAxis 
+                 <YAxis 
                   label={{ value: `${kpi1Config?.label || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType)})`, angle: -90, position: 'insideLeft', style: { textAnchor: 'middle' } }}
                   tick={{ fill: chartColors.dark }}
                   tickFormatter={(value) => formatNumber(value)}
                   domain={selectedKPI1 === 'totalEmbodiedCarbon' ? 
                     [0, 1600] : 
-                    [0, 'dataMax']
+                    (() => {
+                      const maxDataValue = Math.max(...chartData.map(p => Math.abs(p[selectedKPI1] || 0)));
+                      const maxBenchmarkValue = barChartBenchmarkLines.length > 0 ? 
+                        Math.max(...barChartBenchmarkLines.map(b => b.value)) : 0;
+                      const maxValue = Math.max(maxDataValue, maxBenchmarkValue, 800);
+                      return [0, Math.max(maxValue * 1.1, 800)];
+                    })()
                   }
                   ticks={selectedKPI1 === 'totalEmbodiedCarbon' ? 
                     [0, 400, 800, 1200, 1600] : 
                     (() => {
-                      const maxValue = Math.max(...chartData.map(p => Math.abs(p[selectedKPI1] || 0)));
-                      return generateNiceTicks(maxValue * 1.1);
+                      const maxDataValue = Math.max(...chartData.map(p => Math.abs(p[selectedKPI1] || 0)));
+                      const maxBenchmarkValue = barChartBenchmarkLines.length > 0 ? 
+                        Math.max(...barChartBenchmarkLines.map(b => b.value)) : 0;
+                      const maxValue = Math.max(maxDataValue, maxBenchmarkValue, 800);
+                      return generateNiceTicks(Math.max(maxValue * 1.1, 800));
                     })()
                   }
                 />
