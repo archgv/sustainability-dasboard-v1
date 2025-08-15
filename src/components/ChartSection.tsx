@@ -925,28 +925,28 @@ export const ChartSection = ({
                   label={{ value: `${kpi1Config?.label || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType)})`, angle: -90, position: 'insideLeft', style: { textAnchor: 'middle' } }}
                   tick={{ fill: chartColors.dark }}
                   tickFormatter={(value) => formatNumber(value)}
-                  domain={selectedKPI1 === 'totalEmbodiedCarbon' ? 
-                    [0, 1600] : 
-                    selectedKPI1 === 'upfrontCarbon' ? [0, 1000] :
-                    (() => {
-                      const maxDataValue = Math.max(...chartData.map(p => Math.abs(p[selectedKPI1] || 0)));
-                      const maxBenchmarkValue = barChartBenchmarkLines.length > 0 ? 
-                        Math.max(...barChartBenchmarkLines.map(b => b.value)) : 0;
-                      const maxValue = Math.max(maxDataValue, maxBenchmarkValue, 800);
-                      return [0, Math.max(maxValue * 1.1, 800)];
-                    })()
-                  }
-                  ticks={selectedKPI1 === 'totalEmbodiedCarbon' ? 
-                    [0, 400, 800, 1200, 1600] : 
-                    selectedKPI1 === 'upfrontCarbon' ? [0, 200, 400, 600, 800, 1000] :
-                    (() => {
-                      const maxDataValue = Math.max(...chartData.map(p => Math.abs(p[selectedKPI1] || 0)));
-                      const maxBenchmarkValue = barChartBenchmarkLines.length > 0 ? 
-                        Math.max(...barChartBenchmarkLines.map(b => b.value)) : 0;
-                      const maxValue = Math.max(maxDataValue, maxBenchmarkValue, 800);
-                      return generateNiceTicks(Math.max(maxValue * 1.1, 800));
-                    })()
-                  }
+                   domain={selectedKPI1 === 'totalEmbodiedCarbon' ? 
+                     [0, 1600] : 
+                     selectedKPI1 === 'upfrontCarbon' ? [0, 1000] :
+                     (() => {
+                       const maxDataValue = Math.max(...chartData.map(p => Math.abs(p[selectedKPI1] || 0)));
+                       const maxBenchmarkValue = barChartBenchmarkLines.length > 0 ? 
+                         Math.max(...barChartBenchmarkLines.map(b => b.value)) : 0;
+                       const maxValue = Math.max(maxDataValue, maxBenchmarkValue, 1000);
+                       return [0, Math.max(maxValue * 1.1, 1000)];
+                     })()
+                   }
+                   ticks={selectedKPI1 === 'totalEmbodiedCarbon' ? 
+                     [0, 400, 800, 1200, 1600] : 
+                     selectedKPI1 === 'upfrontCarbon' ? [0, 200, 400, 600, 800, 1000] :
+                     (() => {
+                       const maxDataValue = Math.max(...chartData.map(p => Math.abs(p[selectedKPI1] || 0)));
+                       const maxBenchmarkValue = barChartBenchmarkLines.length > 0 ? 
+                         Math.max(...barChartBenchmarkLines.map(b => b.value)) : 0;
+                       const maxValue = Math.max(maxDataValue, maxBenchmarkValue, 1000);
+                       return generateNiceTicks(Math.max(maxValue * 1.1, 1000));
+                     })()
+                   }
                 />
                  <Tooltip 
                   formatter={(value: number, name: string) => [
