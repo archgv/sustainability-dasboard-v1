@@ -1135,8 +1135,9 @@ export const ChartSection = ({
           })
           .sort((a, b) => a.date - b.date);
 
-        // Get UKNZCBS benchmark data for timeline - ONLY for Upfront Carbon and per sqm
+        // Get UKNZCBS benchmark data for timeline - ONLY for Upfront Carbon and Operational Energy with per sqm
         const shouldShowUpfrontBenchmark = valueType === 'per-sqm' && selectedKPI1 === 'upfrontCarbon' && timelineData.length > 0;
+        const shouldShowOperationalEnergyBenchmark = valueType === 'per-sqm' && selectedKPI1 === 'operationalEnergyTotal' && timelineData.length > 0;
 
         // Helper function to get sub-sectors for a given sector
         const getSubSectorsForSector = (sector: string): string[] => {
@@ -1189,6 +1190,69 @@ export const ChartSection = ({
         };
 
         const upfrontBenchmarkData = createUpfrontBenchmarkData();
+
+        // Create operational energy benchmark data for timeline
+        const createOperationalEnergyBenchmarkData = () => {
+          if (!shouldShowOperationalEnergyBenchmark || !primaryProject || !selectedSubSector) {
+            return { newBuildData: [], retrofitData: [] };
+          }
+          
+          const sectorData = uknzcbsOperationalEnergyBenchmarks[primarySector as keyof typeof uknzcbsOperationalEnergyBenchmarks];
+          if (!sectorData) {
+            return { newBuildData: [], retrofitData: [] };
+          }
+
+          const subSectorData = sectorData[selectedSubSector as keyof typeof sectorData];
+          if (!subSectorData) {
+            return { newBuildData: [], retrofitData: [] };
+          }
+
+          // Generate years from 2020 to 2050
+          const years = Array.from({ length: 31 }, (_, i) => 2020 + i);
+          
+          const newBuildData = years.map(year => {
+            const newBuildValues = subSectorData['New building'];
+            const retrofitValues = subSectorData['Retrofit'];
+            
+            // Use available data or interpolate/extrapolate
+            let newBuildValue = newBuildValues?.[year as keyof typeof newBuildValues];
+            let retrofitValue = retrofitValues?.[year as keyof typeof retrofitValues];
+            
+            // If no data for this year, use 2025 value as fallback
+            if (newBuildValue === undefined) {
+              newBuildValue = newBuildValues?.[2025] || 0;
+            }
+            if (retrofitValue === undefined) {
+              retrofitValue = retrofitValues?.[2025] || 0;
+            }
+            
+            return {
+              year,
+              date: new Date(year, 0, 1).getTime(),
+              'New building': newBuildValue,
+              'Retrofit': retrofitValue
+            };
+          });
+
+          const retrofitData = years.map(year => {
+            const retrofitValues = subSectorData['Retrofit'];
+            let retrofitValue = retrofitValues?.[year as keyof typeof retrofitValues];
+            
+            if (retrofitValue === undefined) {
+              retrofitValue = retrofitValues?.[2025] || 0;
+            }
+            
+            return {
+              year,
+              date: new Date(year, 0, 1).getTime(),
+              'Retrofit': retrofitValue
+            };
+          });
+
+          return { newBuildData, retrofitData };
+        };
+
+        const operationalEnergyBenchmarkData = createOperationalEnergyBenchmarkData();
         const benchmarkColor = primaryProject ? getSectorBenchmarkColor(primaryProject.typology) : '#1E9F5A';
 
         // Determine graph range based on project data
@@ -1329,15 +1393,46 @@ export const ChartSection = ({
                 />
               )}
 
+              {/* UKNZCBS operational energy benchmark lines */}
+              {shouldShowOperationalEnergyBenchmark && operationalEnergyBenchmarkData.newBuildData.length > 0 && (
+                <Line
+                  type="monotone"
+                  dataKey="New building"
+                  data={operationalEnergyBenchmarkData.newBuildData}
+                  stroke={benchmarkColor}
+                  strokeWidth={2}
+                  strokeDasharray="5 5"
+                  dot={false}
+                  name="New building benchmark"
+                  connectNulls={false}
+                />
+              )}
+              
+              {shouldShowOperationalEnergyBenchmark && operationalEnergyBenchmarkData.retrofitData.length > 0 && (
+                <Line
+                  type="monotone"
+                  dataKey="Retrofit"
+                  data={operationalEnergyBenchmarkData.retrofitData}
+                  stroke={benchmarkColor}
+                  strokeWidth={2}
+                  strokeDasharray="10 5"
+                  dot={false}
+                  name="Retrofit benchmark"
+                  connectNulls={false}
+                />
+              )}
+
               
               {/* Legend for benchmark lines */}
-              {shouldShowUpfrontBenchmark && (upfrontBenchmarkData.newBuildData.length > 0 || upfrontBenchmarkData.retrofitData.length > 0) && (
+              {((shouldShowUpfrontBenchmark && (upfrontBenchmarkData.newBuildData.length > 0 || upfrontBenchmarkData.retrofitData.length > 0)) ||
+                (shouldShowOperationalEnergyBenchmark && (operationalEnergyBenchmarkData.newBuildData.length > 0 || operationalEnergyBenchmarkData.retrofitData.length > 0))) && (
                 <Legend 
                   verticalAlign="bottom" 
                   height={36}
                   content={(props) => {
                     const legendItems = [];
-                    if (upfrontBenchmarkData.newBuildData.length > 0) {
+                    // Add upfront carbon benchmark items
+                    if (shouldShowUpfrontBenchmark && upfrontBenchmarkData.newBuildData.length > 0) {
                       legendItems.push({
                         value: 'New Build',
                         type: 'line',
@@ -1345,7 +1440,24 @@ export const ChartSection = ({
                         strokeDasharray: '5 5'
                       });
                     }
-                    if (upfrontBenchmarkData.retrofitData.length > 0) {
+                    if (shouldShowUpfrontBenchmark && upfrontBenchmarkData.retrofitData.length > 0) {
+                      legendItems.push({
+                        value: 'Retrofit',
+                        type: 'line', 
+                        color: benchmarkColor,
+                        strokeDasharray: '10 5'
+                      });
+                    }
+                    // Add operational energy benchmark items
+                    if (shouldShowOperationalEnergyBenchmark && operationalEnergyBenchmarkData.newBuildData.length > 0) {
+                      legendItems.push({
+                        value: 'New Build',
+                        type: 'line',
+                        color: benchmarkColor,
+                        strokeDasharray: '5 5'
+                      });
+                    }
+                    if (shouldShowOperationalEnergyBenchmark && operationalEnergyBenchmarkData.retrofitData.length > 0) {
                       legendItems.push({
                         value: 'Retrofit',
                         type: 'line', 
@@ -1401,12 +1513,21 @@ export const ChartSection = ({
     if (projects.length === 0) return [];
     const primaryProject = projects[0];
     const primarySector = getSector(primaryProject.typology);
-    const sectorData = uknzcbsBenchmarks[primarySector as keyof typeof uknzcbsBenchmarks];
-    return sectorData ? Object.keys(sectorData) : [];
+    
+    // Check both upfront carbon and operational energy benchmarks
+    if (selectedKPI1 === 'upfrontCarbon') {
+      const sectorData = uknzcbsBenchmarks[primarySector as keyof typeof uknzcbsBenchmarks];
+      return sectorData ? Object.keys(sectorData) : [];
+    } else if (selectedKPI1 === 'operationalEnergyTotal') {
+      const sectorData = uknzcbsOperationalEnergyBenchmarks[primarySector as keyof typeof uknzcbsOperationalEnergyBenchmarks];
+      return sectorData ? Object.keys(sectorData) : [];
+    }
+    
+    return [];
   };
 
   const availableSubSectors = getAvailableSubSectors();
-  const showSubSectorToggle = selectedKPI1 === 'upfrontCarbon' && valueType === 'per-sqm' && chartType === 'single-timeline' && availableSubSectors.length > 1;
+  const showSubSectorToggle = (selectedKPI1 === 'upfrontCarbon' || selectedKPI1 === 'operationalEnergyTotal') && valueType === 'per-sqm' && chartType === 'single-timeline' && availableSubSectors.length > 1;
   const showBarChartSubSectorToggle = selectedKPI1 === 'upfrontCarbon' && valueType === 'per-sqm' && chartType === 'single-bar' && availableSubSectors.length > 0;
 
   return (
