@@ -1207,37 +1207,26 @@ export const ChartSection = ({
             return { newBuildData: [], retrofitData: [] };
           }
 
-          // Generate years from 2020 to 2050
-          const years = Array.from({ length: 31 }, (_, i) => 2020 + i);
+          // Only include years from 2025 onwards for operational energy benchmarks
+          const benchmarkYears = Array.from({ length: 26 }, (_, i) => 2025 + i);
           
-          const newBuildData = years.map(year => {
+          const newBuildData = benchmarkYears.map(year => {
             const newBuildValues = subSectorData['New building'];
-            
-            // Use available data or interpolate/extrapolate
-            let newBuildValue = newBuildValues?.[year as keyof typeof newBuildValues];
-            
-            // If no data for this year, use 2025 value as fallback
-            if (newBuildValue === undefined) {
-              newBuildValue = newBuildValues?.[2025] || 0;
-            }
+            const value = newBuildValues?.[year as keyof typeof newBuildValues];
             
             return {
               completionYear: year,
-              benchmarkValue: newBuildValue
+              benchmarkValue: value || 0
             };
           });
 
-          const retrofitData = years.map(year => {
+          const retrofitData = benchmarkYears.map(year => {
             const retrofitValues = subSectorData['Retrofit'];
-            let retrofitValue = retrofitValues?.[year as keyof typeof retrofitValues];
-            
-            if (retrofitValue === undefined) {
-              retrofitValue = retrofitValues?.[2025] || 0;
-            }
+            const value = retrofitValues?.[year as keyof typeof retrofitValues];
             
             return {
               completionYear: year,
-              benchmarkValue: retrofitValue
+              benchmarkValue: value || 0
             };
           });
 
