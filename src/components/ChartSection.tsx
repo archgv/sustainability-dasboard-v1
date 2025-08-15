@@ -908,8 +908,9 @@ export const ChartSection = ({
                       const maxDataValue = Math.max(...chartData.map(p => Math.abs(p[selectedKPI1] || 0)));
                       const maxBenchmarkValue = barChartBenchmarkLines.length > 0 ? 
                         Math.max(...barChartBenchmarkLines.map(b => b.value)) : 0;
-                      const maxValue = Math.max(maxDataValue, maxBenchmarkValue, 800);
-                      return [0, Math.max(maxValue * 1.1, 800)];
+                      const minYAxis = selectedKPI1 === 'upfrontCarbon' ? 1000 : 800;
+                      const maxValue = Math.max(maxDataValue, maxBenchmarkValue, minYAxis);
+                      return [0, Math.max(maxValue * 1.1, minYAxis)];
                     })()
                   }
                   ticks={selectedKPI1 === 'totalEmbodiedCarbon' ? 
@@ -918,8 +919,9 @@ export const ChartSection = ({
                       const maxDataValue = Math.max(...chartData.map(p => Math.abs(p[selectedKPI1] || 0)));
                       const maxBenchmarkValue = barChartBenchmarkLines.length > 0 ? 
                         Math.max(...barChartBenchmarkLines.map(b => b.value)) : 0;
-                      const maxValue = Math.max(maxDataValue, maxBenchmarkValue, 800);
-                      return generateNiceTicks(Math.max(maxValue * 1.1, 800));
+                      const minYAxis = selectedKPI1 === 'upfrontCarbon' ? 1000 : 800;
+                      const maxValue = Math.max(maxDataValue, maxBenchmarkValue, minYAxis);
+                      return generateNiceTicks(Math.max(maxValue * 1.1, minYAxis));
                     })()
                   }
                 />
