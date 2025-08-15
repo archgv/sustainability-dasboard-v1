@@ -1282,10 +1282,16 @@ export const ChartSection = ({
                     const year = parseInt(label as string);
                     
                     // Find benchmark values for this year
-                    const newBuildBenchmark = shouldShowUpfrontBenchmark ? 
-                      upfrontBenchmarkData.newBuildData.find(d => d.completionYear === year)?.benchmarkValue : null;
-                    const retrofitBenchmark = shouldShowUpfrontBenchmark ? 
-                      upfrontBenchmarkData.retrofitData.find(d => d.completionYear === year)?.benchmarkValue : null;
+                    let newBuildBenchmark = null;
+                    let retrofitBenchmark = null;
+                    
+                    if (shouldShowUpfrontBenchmark) {
+                      newBuildBenchmark = upfrontBenchmarkData.newBuildData.find(d => d.completionYear === year)?.benchmarkValue;
+                      retrofitBenchmark = upfrontBenchmarkData.retrofitData.find(d => d.completionYear === year)?.benchmarkValue;
+                    } else if (shouldShowOperationalEnergyBenchmark) {
+                      newBuildBenchmark = operationalEnergyBenchmarkData.newBuildData.find(d => d.completionYear === year)?.benchmarkValue;
+                      retrofitBenchmark = operationalEnergyBenchmarkData.retrofitData.find(d => d.completionYear === year)?.benchmarkValue;
+                    }
                     
                     return (
                         <div className="bg-white p-3 border rounded-lg shadow-lg" style={{ backgroundColor: 'white', borderColor: chartColors.primary }}>
