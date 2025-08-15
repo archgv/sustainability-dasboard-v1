@@ -1212,25 +1212,18 @@ export const ChartSection = ({
           
           const newBuildData = years.map(year => {
             const newBuildValues = subSectorData['New building'];
-            const retrofitValues = subSectorData['Retrofit'];
             
             // Use available data or interpolate/extrapolate
             let newBuildValue = newBuildValues?.[year as keyof typeof newBuildValues];
-            let retrofitValue = retrofitValues?.[year as keyof typeof retrofitValues];
             
             // If no data for this year, use 2025 value as fallback
             if (newBuildValue === undefined) {
               newBuildValue = newBuildValues?.[2025] || 0;
             }
-            if (retrofitValue === undefined) {
-              retrofitValue = retrofitValues?.[2025] || 0;
-            }
             
             return {
-              year,
-              date: new Date(year, 0, 1).getTime(),
-              'New building': newBuildValue,
-              'Retrofit': retrofitValue
+              completionYear: year,
+              benchmarkValue: newBuildValue
             };
           });
 
@@ -1243,9 +1236,8 @@ export const ChartSection = ({
             }
             
             return {
-              year,
-              date: new Date(year, 0, 1).getTime(),
-              'Retrofit': retrofitValue
+              completionYear: year,
+              benchmarkValue: retrofitValue
             };
           });
 
@@ -1286,7 +1278,9 @@ export const ChartSection = ({
                   const maxValue = Math.max(
                     ...timelineData.map(p => Math.abs(p[selectedKPI1] || 0)),
                     ...(shouldShowUpfrontBenchmark && upfrontBenchmarkData.newBuildData ? upfrontBenchmarkData.newBuildData.map(b => b.benchmarkValue) : []),
-                    ...(shouldShowUpfrontBenchmark && upfrontBenchmarkData.retrofitData ? upfrontBenchmarkData.retrofitData.map(b => b.benchmarkValue) : [])
+                    ...(shouldShowUpfrontBenchmark && upfrontBenchmarkData.retrofitData ? upfrontBenchmarkData.retrofitData.map(b => b.benchmarkValue) : []),
+                    ...(shouldShowOperationalEnergyBenchmark && operationalEnergyBenchmarkData.newBuildData ? operationalEnergyBenchmarkData.newBuildData.map(b => b.benchmarkValue || 0) : []),
+                    ...(shouldShowOperationalEnergyBenchmark && operationalEnergyBenchmarkData.retrofitData ? operationalEnergyBenchmarkData.retrofitData.map(b => b.benchmarkValue || 0) : [])
                   );
                   return generateNiceTicks(maxValue * 1.1);
                 })()}
@@ -1397,7 +1391,7 @@ export const ChartSection = ({
               {shouldShowOperationalEnergyBenchmark && operationalEnergyBenchmarkData.newBuildData.length > 0 && (
                 <Line
                   type="monotone"
-                  dataKey="New building"
+                  dataKey="benchmarkValue"
                   data={operationalEnergyBenchmarkData.newBuildData}
                   stroke={benchmarkColor}
                   strokeWidth={2}
@@ -1411,7 +1405,7 @@ export const ChartSection = ({
               {shouldShowOperationalEnergyBenchmark && operationalEnergyBenchmarkData.retrofitData.length > 0 && (
                 <Line
                   type="monotone"
-                  dataKey="Retrofit"
+                  dataKey="benchmarkValue"
                   data={operationalEnergyBenchmarkData.retrofitData}
                   stroke={benchmarkColor}
                   strokeWidth={2}
