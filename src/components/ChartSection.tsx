@@ -654,19 +654,19 @@ export const ChartSection = ({
           biogenic: selectedKPI1 === 'totalEmbodiedCarbon' ? -Math.abs(project.biogenicCarbon || 0) * (valueType === 'total' ? getProjectArea(project.id.split('-')[0]) : 1) : 0
         }));
 
-        // Get UKNZCBS benchmark data for the bar chart
+        // Get UKNZCBS benchmark data for the bar chart - always based on PRIMARY project only
         const getBarChartBenchmarkLines = () => {
-          if (!selectedBarChartBenchmark || selectedKPI1 !== 'upfrontCarbon' || valueType !== 'per-sqm' || transformedProjects.length === 0) {
+          if (!selectedBarChartBenchmark || selectedKPI1 !== 'upfrontCarbon' || valueType !== 'per-sqm' || projects.length === 0) {
             return [];
           }
           
-          // Get the sector of the first project (primary project)
-          const primaryProject = transformedProjects[0];
+          // ALWAYS use the first project in the original array as the primary project
+          const primaryProject = projects[0];
           const primarySector = getSector(primaryProject.typology);
           const benchmarkColor = getSectorBenchmarkColor(primaryProject.typology);
           
           // Get the PC date from the primary project to determine benchmark year
-          const pcYear = primaryProject.additionalData?.find(data => data.label === 'PC Date (year)')?.value;
+          const pcYear = (primaryProject as any).additionalData?.find((data: any) => data.label === 'PC Date (year)')?.value;
           let benchmarkYear = parseInt(pcYear) || 2025;
           if (benchmarkYear < 2025) benchmarkYear = 2025; // Use 2025 for years before 2025
           
@@ -703,12 +703,12 @@ export const ChartSection = ({
 
         // Get benchmark data for the primary project's sector (only for Total Embodied Carbon with per-sqm)
         const getBenchmarkLines = () => {
-          if (!showBenchmarks || selectedKPI1 !== 'totalEmbodiedCarbon' || valueType !== 'per-sqm' || transformedProjects.length === 0) {
+          if (!showBenchmarks || selectedKPI1 !== 'totalEmbodiedCarbon' || valueType !== 'per-sqm' || projects.length === 0) {
             return [];
           }
           
-          // Get the sector of the first project (primary project)
-          const primaryProject = transformedProjects[0];
+          // ALWAYS use the first project in the original array as the primary project
+          const primaryProject = projects[0];
           const primarySector = getSector(primaryProject.typology);
           const benchmarkColor = getSectorBenchmarkColor(primaryProject.typology);
           
