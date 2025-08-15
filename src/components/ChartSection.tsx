@@ -881,6 +881,29 @@ export const ChartSection = ({
 
         return (
           <div>
+            {/* Benchmark Legend - positioned after title, before chart */}
+            {barChartBenchmarkLines.length > 0 && (
+              <div className="flex justify-center items-center gap-6 mb-4">
+                {barChartBenchmarkLines.map((item, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <svg width="24" height="2" className="inline-block">
+                      <line
+                        x1="0"
+                        y1="1"
+                        x2="24"
+                        y2="1"
+                        stroke={item.color}
+                        strokeWidth="2"
+                        strokeDasharray={item.name.includes('New building') ? "5 5" : "10 5"}
+                      />
+                    </svg>
+                    <span className="text-sm" style={{ color: chartColors.dark }}>
+                      {item.name}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 80 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} horizontal={true} verticalPoints={[]} />
@@ -904,24 +927,24 @@ export const ChartSection = ({
                   tickFormatter={(value) => formatNumber(value)}
                   domain={selectedKPI1 === 'totalEmbodiedCarbon' ? 
                     [0, 1600] : 
+                    selectedKPI1 === 'upfrontCarbon' ? [0, 1000] :
                     (() => {
                       const maxDataValue = Math.max(...chartData.map(p => Math.abs(p[selectedKPI1] || 0)));
                       const maxBenchmarkValue = barChartBenchmarkLines.length > 0 ? 
                         Math.max(...barChartBenchmarkLines.map(b => b.value)) : 0;
-                      const minYAxis = selectedKPI1 === 'upfrontCarbon' ? 1000 : 800;
-                      const maxValue = Math.max(maxDataValue, maxBenchmarkValue, minYAxis);
-                      return [0, Math.max(maxValue * 1.1, minYAxis)];
+                      const maxValue = Math.max(maxDataValue, maxBenchmarkValue, 800);
+                      return [0, Math.max(maxValue * 1.1, 800)];
                     })()
                   }
                   ticks={selectedKPI1 === 'totalEmbodiedCarbon' ? 
                     [0, 400, 800, 1200, 1600] : 
+                    selectedKPI1 === 'upfrontCarbon' ? [0, 200, 400, 600, 800, 1000] :
                     (() => {
                       const maxDataValue = Math.max(...chartData.map(p => Math.abs(p[selectedKPI1] || 0)));
                       const maxBenchmarkValue = barChartBenchmarkLines.length > 0 ? 
                         Math.max(...barChartBenchmarkLines.map(b => b.value)) : 0;
-                      const minYAxis = selectedKPI1 === 'upfrontCarbon' ? 1000 : 800;
-                      const maxValue = Math.max(maxDataValue, maxBenchmarkValue, minYAxis);
-                      return generateNiceTicks(Math.max(maxValue * 1.1, minYAxis));
+                      const maxValue = Math.max(maxDataValue, maxBenchmarkValue, 800);
+                      return generateNiceTicks(Math.max(maxValue * 1.1, 800));
                     })()
                   }
                 />
@@ -1023,7 +1046,6 @@ export const ChartSection = ({
                   ))}
               </BarChart>
             </ResponsiveContainer>
-            <BarChartLegend />
           </div>
         );
 
@@ -1398,7 +1420,7 @@ export const ChartSection = ({
         </div>
       )}
       
-      <div className="h-96" data-chart="chart-container">
+      <div className="h-[480px]" data-chart="chart-container">
         {renderChart()}
       </div>
     </Card>
