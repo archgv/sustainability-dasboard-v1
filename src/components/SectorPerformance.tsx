@@ -431,23 +431,20 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                     tickLine={false}
                     interval={0}
                   />
-                  <YAxis
-                    label={{
-                      value: `${currentKPI?.label} (${getDisplayUnit()})`,
-                      angle: -90,
-                      position: 'insideLeft',
-                      style: { textAnchor: 'middle' }
-                    }}
-                    tick={{ fill: chartColors.dark }}
-                    tickFormatter={(value) => formatNumber(value)}
-                    domain={selectedKPI === 'totalEmbodiedCarbon' ? 
-                      [-200, 800] : 
-                      ['dataMin', 'dataMax']
-                    }
-                    ticks={selectedKPI === 'totalEmbodiedCarbon' ? 
-                      [-200, 0, 200, 400, 600, 800] : 
-                      undefined
-                    }
+                   <YAxis
+                     label={{
+                       value: `${currentKPI?.label} (${getDisplayUnit()})`,
+                       angle: -90,
+                       position: 'insideLeft',
+                       style: { textAnchor: 'middle' }
+                     }}
+                     tick={{ fill: chartColors.dark }}
+                     tickFormatter={(value) => formatNumber(value)}
+                     domain={selectedKPI === 'totalEmbodiedCarbon' ? 
+                       [dataMin => Math.min(dataMin, -200), dataMax => Math.max(dataMax, 800)] : 
+                       [0, 'dataMax']
+                     }
+                     tickCount={6}
                   />
                   <Tooltip
                     formatter={(value, name, props) => {
