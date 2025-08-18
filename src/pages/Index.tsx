@@ -10,6 +10,7 @@ import { ProjectComparison } from '@/components/ProjectComparison';
 import { SectorPerformance } from '@/components/SectorPerformance';
 import { CertificationAnalysis } from '@/components/CertificationAnalysis';
 import { sampleProjects } from '@/data/sampleData';
+import { Project } from '@/types/project';
 
 const Index = () => {
   const [filteredProjects, setFilteredProjects] = useState(sampleProjects);
@@ -108,7 +109,10 @@ const Index = () => {
     // Handle comparison mode with multiple projects
     if (comparisonProjects.length > 0) {
       const projectsToShow = [primaryProject, ...comparisonProjects];
-      return filteredProjects.filter(p => projectsToShow.includes(p.id));
+      // Preserve the selection order by mapping through projectsToShow instead of filtering
+      return projectsToShow
+        .map(id => filteredProjects.find(p => p.id === id))
+        .filter(project => project !== undefined) as Project[];
     }
     
     // Default: show only the primary project when no comparisons are selected
