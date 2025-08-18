@@ -572,9 +572,24 @@ export const ChartSection = ({
 
     const transformedProjects = transformDataForValueType(projects);
 
-    // Ensure primary project appears first (leftmost) in bar charts
+    // Ensure primary project appears first (leftmost) and comparison projects are added to the right
     const sortedProjects = [...transformedProjects].sort((a, b) => {
-      // For comparison charts, ensure the primary project (first in original array) appears first
+      // For self-comparison, maintain original order
+      if (isComparingToSelf) {
+        const aIndex = projects.findIndex(p => p.id === a.id);
+        const bIndex = projects.findIndex(p => p.id === b.id);
+        return aIndex - bIndex;
+      }
+      
+      // For project comparison, ensure primary project is leftmost and others follow selection order
+      const primaryProjectId = projects[0]?.id;
+      
+      if (a.id === primaryProjectId && b.id !== primaryProjectId) return -1;
+      if (b.id === primaryProjectId && a.id !== primaryProjectId) return 1;
+      
+      // For comparison projects, maintain the order they appear in the projects array
+      // Since projects array is constructed as [primaryProject, ...comparisonProjects],
+      // this preserves the order in which comparison projects were added
       const aIndex = projects.findIndex(p => p.id === a.id);
       const bIndex = projects.findIndex(p => p.id === b.id);
       return aIndex - bIndex;
