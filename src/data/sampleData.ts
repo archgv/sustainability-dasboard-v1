@@ -76,16 +76,16 @@ export const sampleProjects: Project[] = [
     ribaStage: 'stage-7',
     
     // Embodied Carbon
-    upfrontCarbon: 520,
-    totalEmbodiedCarbon: 720,
+    upfrontCarbon: 780,
+    totalEmbodiedCarbon: 1080,
     biogenicCarbon: -60,
     refrigerants: 18,
     
     // Operational Energy
-    operationalEnergyTotal: 90,
+    operationalEnergyTotal: 135,
     operationalEnergyPartL: 80,
     operationalEnergyGas: 35,
-    operationalEnergy: 90,
+    operationalEnergy: 135,
     gasUsage: 35,
     spaceHeatingDemand: 40,
     renewableEnergyGeneration: 15,
@@ -202,13 +202,13 @@ export const sampleProjects: Project[] = [
     ribaStage: 'stage-7',
     
     // Embodied Carbon
-    upfrontCarbon: 600,
-    totalEmbodiedCarbon: 800,
+    upfrontCarbon: 900,
+    totalEmbodiedCarbon: 1200,
     biogenicCarbon: 70,
     refrigerants: 25,
     
     // Operational Energy
-    operationalEnergyTotal: 110,
+    operationalEnergyTotal: 165,
     operationalEnergyPartL: 100,
     operationalEnergyGas: 45,
     operationalEnergy: 110,
@@ -379,5 +379,131 @@ export const sampleProjects: Project[] = [
     wlc: 600,
     
     certifications: ['UKNZCBS - Net Zero']
+  },
+  {
+    id: '7',
+    name: '230157 Concert Hall & Theater',
+    typology: 'CCC',
+    location: 'Cardiff, UK',
+    completionDate: '2023-04-15',
+    gia: 12000,
+    projectType: 'new-build',
+    ribaStage: 'stage-7',
+    
+    // Embodied Carbon
+    upfrontCarbon: 750,
+    totalEmbodiedCarbon: 950,
+    biogenicCarbon: 30,
+    refrigerants: 22,
+    
+    // Operational Energy
+    operationalEnergyTotal: 125,
+    operationalEnergyPartL: 110,
+    operationalEnergyGas: 40,
+    operationalEnergy: 125,
+    gasUsage: 40,
+    spaceHeatingDemand: 45,
+    renewableEnergyGeneration: 12,
+    existingBuildingEnergy: 0,
+    
+    // Water Use
+    operationalWaterUse: 55,
+    
+    // Accreditations
+    breeam: 'Very Good',
+    leed: 'Gold',
+    well: 'Silver',
+    nabers: '4 Star',
+    passivhaus: false,
+    
+    // Social Value
+    socialValue: 1.5,
+    
+    // Wellbeing
+    pmv: 0.2,
+    ppd: 9,
+    daylightFactor: 2.1,
+    
+    // Biodiversity
+    biodiversityNetGain: 8,
+    habitatUnits: 6,
+    urbanGreeningFactor: 7,
+    
+    // Embodied Impacts
+    ozoneDepletion: 0.0013,
+    
+    // Circular Economy
+    reusedRecycledMaterial: 18,
+    
+    // Legacy fields
+    carbonIntensity: 140,
+    eui: 125,
+    shd: 45,
+    wlc: 950,
+    
+    certifications: []
+  },
+  {
+    id: '8',
+    name: '230158 Transport Hub & Bridge',
+    typology: 'infrastructure',
+    location: 'Glasgow, UK',
+    completionDate: '2022-12-20',
+    gia: 5500,
+    projectType: 'new-build',
+    ribaStage: 'stage-7',
+    
+    // Embodied Carbon
+    upfrontCarbon: 850,
+    totalEmbodiedCarbon: 1100,
+    biogenicCarbon: 15,
+    refrigerants: 8,
+    
+    // Operational Energy
+    operationalEnergyTotal: 180,
+    operationalEnergyPartL: 160,
+    operationalEnergyGas: 60,
+    operationalEnergy: 180,
+    gasUsage: 60,
+    spaceHeatingDemand: 70,
+    renewableEnergyGeneration: 25,
+    existingBuildingEnergy: 0,
+    
+    // Water Use
+    operationalWaterUse: 35,
+    
+    // Accreditations
+    breeam: 'Good',
+    leed: 'Silver',
+    well: 'N/A',
+    nabers: '3 Star',
+    passivhaus: false,
+    
+    // Social Value
+    socialValue: 2.1,
+    
+    // Wellbeing
+    pmv: 0.3,
+    ppd: 12,
+    daylightFactor: 1.5,
+    
+    // Biodiversity
+    biodiversityNetGain: 25,
+    habitatUnits: 20,
+    urbanGreeningFactor: 18,
+    
+    // Embodied Impacts
+    ozoneDepletion: 0.0018,
+    
+    // Circular Economy
+    reusedRecycledMaterial: 35,
+    
+    // Legacy fields
+    carbonIntensity: 200,
+    eui: 180,
+    shd: 70,
+    wlc: 1100,
+    
+    certifications: ['CEEQUAL']
   }
 ];

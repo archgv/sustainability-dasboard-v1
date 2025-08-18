@@ -1,7 +1,7 @@
 export interface Project {
   id: string;
   name: string;
-  typology: 'office' | 'residential' | 'educational' | 'healthcare' | 'retail' | 'mixed-use';
+  typology: 'office' | 'residential' | 'educational' | 'healthcare' | 'retail' | 'mixed-use' | 'CCC' | 'infrastructure';
   location: string;
   completionDate: string;
   projectType: 'new-build' | 'retrofit';
