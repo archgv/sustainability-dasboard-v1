@@ -52,6 +52,8 @@ export const getSector = (typology: string): string => {
     'community': 'CCC',
     'Cultural': 'CCC',
     'cultural': 'CCC',
+    'CCC': 'CCC',
+    'ccc': 'CCC',
   };
   
   return sectorMap[typology] || 'Workplace';
