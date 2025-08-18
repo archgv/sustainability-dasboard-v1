@@ -24,6 +24,7 @@ export const ProjectGrid = ({
       'educational': 'Education',
       'healthcare': 'Healthcare',
       'infrastructure': 'Infrastructure',
+      'CCC': 'CCC',
       'ccc': 'CCC',
       'office': 'Workplace',
       'retail': 'Workplace',

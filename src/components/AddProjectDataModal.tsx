@@ -67,6 +67,7 @@ export const AddProjectDataModal = ({ isOpen, onClose, onSave, projects }: AddPr
           'educational': 'education',
           'healthcare': 'healthcare',
           'infrastructure': 'infrastructure',
+          'CCC': 'ccc',
           'ccc': 'ccc',
           'office': 'workplace',
           'retail': 'workplace',

@@ -48,6 +48,7 @@ export const ProjectComparison = ({
       'educational': 'Education',
       'healthcare': 'Healthcare',
       'infrastructure': 'Infrastructure',
+      'CCC': 'CCC',
       'ccc': 'CCC',
       'office': 'Workplace',
       'retail': 'Workplace',
