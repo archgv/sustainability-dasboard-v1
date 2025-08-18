@@ -440,12 +440,64 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
                      }}
                      tick={{ fill: chartColors.dark }}
                      tickFormatter={(value) => formatNumber(value)}
-                     domain={selectedKPI === 'totalEmbodiedCarbon' ? 
-                       [dataMin => Math.min(dataMin, -200), dataMax => Math.max(dataMax, 800)] : 
-                       [0, 'dataMax']
-                     }
-                     tickCount={6}
-                  />
+                     domain={(() => {
+                       // Get the data range
+                       const values = chartData.flatMap(d => [d.value, d.biogenicValue || 0]);
+                       if (values.length === 0) return [0, 100];
+                       
+                       const dataMin = Math.min(0, ...values);
+                       const dataMax = Math.max(0, ...values);
+                       const range = dataMax - dataMin;
+                       
+                       // Calculate nice interval based on range
+                       let interval;
+                       if (range <= 75) interval = 15;
+                       else if (range <= 100) interval = 20;
+                       else if (range <= 200) interval = 25;
+                       else if (range <= 500) interval = 50;
+                       else if (range <= 1000) interval = 100;
+                       else if (range <= 1500) interval = 200;
+                       else if (range <= 5000) interval = 500;
+                       else interval = 1000;
+                       
+                       // Round min down and max up to nearest interval, always including 0
+                       const adjustedMin = Math.floor(dataMin / interval) * interval;
+                       const adjustedMax = Math.ceil(dataMax / interval) * interval;
+                       
+                       return [adjustedMin, adjustedMax];
+                     })()}
+                     ticks={(() => {
+                       // Get the data range
+                       const values = chartData.flatMap(d => [d.value, d.biogenicValue || 0]);
+                       if (values.length === 0) return [0];
+                       
+                       const dataMin = Math.min(0, ...values);
+                       const dataMax = Math.max(0, ...values);
+                       const range = dataMax - dataMin;
+                       
+                       // Calculate nice interval
+                       let interval;
+                       if (range <= 75) interval = 15;
+                       else if (range <= 100) interval = 20;
+                       else if (range <= 200) interval = 25;
+                       else if (range <= 500) interval = 50;
+                       else if (range <= 1000) interval = 100;
+                       else if (range <= 1500) interval = 200;
+                       else if (range <= 5000) interval = 500;
+                       else interval = 1000;
+                       
+                       // Generate evenly spaced ticks that always include 0
+                       const adjustedMin = Math.floor(dataMin / interval) * interval;
+                       const adjustedMax = Math.ceil(dataMax / interval) * interval;
+                       
+                       const ticks = [];
+                       for (let tick = adjustedMin; tick <= adjustedMax; tick += interval) {
+                         ticks.push(tick);
+                       }
+                       
+                       return ticks;
+                     })()}
+                   />
                   <Tooltip
                     formatter={(value, name, props) => {
                       if (selectedKPI === 'totalEmbodiedCarbon') {
