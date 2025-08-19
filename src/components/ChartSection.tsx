@@ -605,7 +605,7 @@ export const ChartSection = ({
                 type="number" 
                 dataKey={selectedKPI2}
                 name={kpi2Config?.label || selectedKPI2}
-                label={{ value: `${kpi2Config?.label || selectedKPI2} (${getUnitLabel(kpi2Config?.unit || '', valueType)})`, angle: -90, position: 'insideLeft' }}
+                label={{ value: `${kpi2Config?.label || selectedKPI2} (${getUnitLabel(kpi2Config?.unit || '', valueType)})`, angle: -90, position: 'outside', textAnchor: 'middle', offset: 10 }}
                 tick={{ fill: chartColors.dark }}
                 tickFormatter={(value) => formatNumber(value)}
                 ticks={(() => {
