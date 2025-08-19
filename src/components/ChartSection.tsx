@@ -663,7 +663,7 @@ export const ChartSection = ({
                       cy={cy}
                       fill={sectorColor}
                       shape={shape}
-                      size={Math.max(8, Math.min(20, bubbleSize))}
+                      size={Math.max(16, Math.min(40, bubbleSize * 2))}
                     />
                   );
                 }}
