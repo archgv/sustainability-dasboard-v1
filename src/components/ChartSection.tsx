@@ -518,7 +518,7 @@ export const ChartSection = ({
       
       return (
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={stackedData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
+          <BarChart data={stackedData} margin={{ top: 50, right: 30, left: 20, bottom: 60 }}>
             <CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} horizontal={true} verticalPoints={[]} />
             <XAxis 
               dataKey="name" 
@@ -587,7 +587,7 @@ export const ChartSection = ({
       case 'compare-bubble':
         return (
           <ResponsiveContainer width="100%" height="100%">
-            <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+            <ScatterChart margin={{ top: 50, right: 20, bottom: 20, left: 20 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} horizontal={true} verticalPoints={[]} />
               <XAxis 
                 type="number" 
@@ -791,7 +791,7 @@ export const ChartSection = ({
 
         return (
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 80 }}>
+            <BarChart data={chartData} margin={{ top: 50, right: 30, left: 20, bottom: 80 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} horizontal={true} verticalPoints={[]} />
               <XAxis 
                 dataKey={(item) => {
@@ -967,7 +967,7 @@ export const ChartSection = ({
               </div>
             )}
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 80 }}>
+              <BarChart data={chartData} margin={{ top: 50, right: 30, left: 20, bottom: 80 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} horizontal={true} verticalPoints={[]} />
                 <XAxis 
                   dataKey={(item) => {
