@@ -587,7 +587,7 @@ export const ChartSection = ({
       case 'compare-bubble':
         return (
           <ResponsiveContainer width="100%" height="100%">
-            <ScatterChart margin={{ top: 50, right: 20, bottom: 20, left: 20 }}>
+            <ScatterChart margin={{ top: 50, right: 20, bottom: 20, left: 80 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} horizontal={true} verticalPoints={[]} />
               <XAxis 
                 type="number" 
