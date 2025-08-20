@@ -379,10 +379,10 @@ export const ChartSection = ({
       return;
     }
 
-    // Set canvas dimensions with extra height for logo and title
+    // Set canvas dimensions with extra height for logo, title, and bottom margin
     const svgRect = svgElement.getBoundingClientRect();
     canvas.width = svgRect.width * 2; // Higher resolution
-    canvas.height = (svgRect.height + 120) * 2; // Extra space for logo and title
+    canvas.height = (svgRect.height + 180) * 2; // Extra space for logo, title, and bottom margin
     ctx.scale(2, 2);
 
     let yPosition = 30;
