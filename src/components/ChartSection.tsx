@@ -371,7 +371,7 @@ export const ChartSection = ({
       return;
     }
 
-    // Create a canvas element
+    // Create a canvas element with extra space for logo and title
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     if (!ctx) {
@@ -379,43 +379,77 @@ export const ChartSection = ({
       return;
     }
 
-    // Set canvas dimensions
+    // Set canvas dimensions with extra height for logo and title
     const svgRect = svgElement.getBoundingClientRect();
     canvas.width = svgRect.width * 2; // Higher resolution
-    canvas.height = svgRect.height * 2;
+    canvas.height = (svgRect.height + 120) * 2; // Extra space for logo and title
     ctx.scale(2, 2);
 
-    // Convert SVG to data URL
-    const svgData = new XMLSerializer().serializeToString(svgElement);
-    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
-    const svgUrl = URL.createObjectURL(svgBlob);
+    let yPosition = 30;
 
-    // Create image and draw to canvas
-    const img = new Image();
-    img.onload = () => {
+    // Load and draw logo
+    const logo = new Image();
+    logo.crossOrigin = 'anonymous';
+    logo.onload = () => {
       // Fill white background
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, canvas.width / 2, canvas.height / 2);
+
+      // Draw logo at top left
+      const logoWidth = 80;
+      const logoHeight = (logo.height / logo.width) * logoWidth;
+      ctx.drawImage(logo, 20, yPosition, logoWidth, logoHeight);
+
+      // Set font and color for title (Arial font family)
+      ctx.font = 'bold 18px Arial, sans-serif';
+      ctx.fillStyle = '#272727';
+      ctx.textAlign = 'center';
+
+      yPosition = Math.max(yPosition + logoHeight + 20, 80);
+
+      // Get chart title and value type information
+      const chartTitle = getChartTitle();
+      const valueTypeText = valueType === 'per-sqm' ? '(per sqm GIA)' : '(Total values)';
       
-      // Draw the SVG image
-      ctx.drawImage(img, 0, 0, svgRect.width, svgRect.height);
+      // Draw title
+      ctx.fillText(chartTitle, canvas.width / 4, yPosition);
       
-      // Convert canvas to PNG and download
-      canvas.toBlob((blob) => {
-        if (blob) {
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `chart-${selectedKPI1}-${valueType}-${Date.now()}.png`;
-          a.click();
-          URL.revokeObjectURL(url);
-        }
-      }, 'image/png');
+      // Draw value type subtitle
+      ctx.font = '14px Arial, sans-serif';
+      ctx.fillText(valueTypeText, canvas.width / 4, yPosition + 25);
+
+      yPosition += 50;
+
+      // Convert SVG to data URL
+      const svgData = new XMLSerializer().serializeToString(svgElement);
+      const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+      const svgUrl = URL.createObjectURL(svgBlob);
+
+      // Create image and draw to canvas
+      const img = new Image();
+      img.onload = () => {
+        // Draw the SVG image below the title
+        ctx.drawImage(img, 0, yPosition, svgRect.width, svgRect.height);
+        
+        // Convert canvas to PNG and download
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `chart-${selectedKPI1}-${valueType}-${Date.now()}.png`;
+            a.click();
+            URL.revokeObjectURL(url);
+          }
+        }, 'image/png');
+        
+        URL.revokeObjectURL(svgUrl);
+      };
       
-      URL.revokeObjectURL(svgUrl);
+      img.src = svgUrl;
     };
     
-    img.src = svgUrl;
+    logo.src = '/lovable-uploads/4ce0bfd4-e09c-45a3-bb7c-0a84df6eca91.png';
   };
 
   const getUnitLabel = (baseUnit: string, valueType: ValueType, forCSV: boolean = false): string => {
