@@ -463,7 +463,7 @@ export const ChartSection = ({
           
           return {
             lines: benchmarkLines,
-            title: `UKNZCBS: ${primarySector} (${selectedBarChartBenchmark})`
+            title: `UKNZCBS: ${selectedBarChartBenchmark}`
           };
         }
         
