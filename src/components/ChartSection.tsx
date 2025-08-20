@@ -347,6 +347,81 @@ export const ChartSection = ({
       });
     }
     
+    // Add benchmark data to CSV if available
+    const getBenchmarkDataForCSV = () => {
+      // Get UKNZCBS benchmark data for upfront carbon
+      if (selectedKPI1 === 'upfrontCarbon' && selectedBarChartBenchmark && valueType === 'per-sqm' && projects.length > 0) {
+        const primaryProject = projects[0];
+        const primarySector = getSector(primaryProject.typology);
+        
+        // Get the PC date from the primary project to determine benchmark year
+        const pcYear = (primaryProject as any).additionalData?.find((data: any) => data.label === 'PC Date (year)')?.value;
+        let benchmarkYear = parseInt(pcYear) || 2025;
+        if (benchmarkYear < 2025) benchmarkYear = 2025;
+        
+        // Get benchmark values for this sector and sub-sector
+        const sectorData = uknzcbsBenchmarks[primarySector as keyof typeof uknzcbsBenchmarks];
+        if (!sectorData) return { lines: [], title: '' };
+        
+        const subSectorData = sectorData[selectedBarChartBenchmark as keyof typeof sectorData];
+        if (!subSectorData) return { lines: [], title: '' };
+        
+        const newBuildValue = subSectorData['New building']?.[benchmarkYear as keyof typeof subSectorData['New building']];
+        const retrofitValue = subSectorData['Retrofit']?.[benchmarkYear as keyof typeof subSectorData['Retrofit']];
+        
+        const benchmarkLines = [];
+        if (newBuildValue !== undefined) {
+          benchmarkLines.push({
+            name: `New building (PC ${benchmarkYear})`,
+            value: newBuildValue
+          });
+        }
+        if (retrofitValue !== undefined) {
+          benchmarkLines.push({
+            name: `Retrofit (PC ${benchmarkYear})`,
+            value: retrofitValue
+          });
+        }
+        
+        return {
+          lines: benchmarkLines,
+          title: `UKNZCBS: ${selectedBarChartBenchmark}`
+        };
+      }
+      
+      // Get benchmark data for total embodied carbon
+      if (showBenchmarks && selectedKPI1 === 'totalEmbodiedCarbon' && valueType === 'per-sqm' && projects.length > 0) {
+        const primaryProject = projects[0];
+        const primarySector = getSector(primaryProject.typology);
+        
+        // Get benchmark values for this sector
+        const sectorBenchmarks = totalEmbodiedCarbonBenchmarks[primarySector as keyof typeof totalEmbodiedCarbonBenchmarks];
+        
+        if (!sectorBenchmarks) return { lines: [], title: '' };
+        
+        const benchmarkLines = Object.entries(sectorBenchmarks).map(([name, value]) => ({
+          name,
+          value
+        }));
+        
+        return {
+          lines: benchmarkLines,
+          title: `Benchmarks: ${primarySector}`
+        };
+      }
+      
+      return { lines: [], title: '' };
+    };
+
+    const benchmarkData = getBenchmarkDataForCSV();
+    if (benchmarkData.lines.length > 0) {
+      csvContent += `\n${benchmarkData.title}\n`;
+      csvContent += 'Benchmark Name,Value\n';
+      benchmarkData.lines.forEach(benchmark => {
+        csvContent += `"${benchmark.name}",${benchmark.value}\n`;
+      });
+    }
+    
     // Download CSV
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
