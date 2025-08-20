@@ -420,6 +420,122 @@ export const ChartSection = ({
 
       yPosition += 50;
 
+      // Get benchmark data for PNG export
+      const getBenchmarkDataForPNG = () => {
+        // Get UKNZCBS benchmark data for upfront carbon
+        if (selectedKPI1 === 'upfrontCarbon' && selectedBarChartBenchmark && valueType === 'per-sqm' && projects.length > 0) {
+          const primaryProject = projects[0];
+          const primarySector = getSector(primaryProject.typology);
+          const benchmarkColor = getSectorBenchmarkColor(primaryProject.typology);
+          
+          // Get the PC date from the primary project to determine benchmark year
+          const pcYear = (primaryProject as any).additionalData?.find((data: any) => data.label === 'PC Date (year)')?.value;
+          let benchmarkYear = parseInt(pcYear) || 2025;
+          if (benchmarkYear < 2025) benchmarkYear = 2025;
+          
+          // Get benchmark values for this sector and sub-sector
+          const sectorData = uknzcbsBenchmarks[primarySector as keyof typeof uknzcbsBenchmarks];
+          if (!sectorData) return { lines: [], title: '' };
+          
+          const subSectorData = sectorData[selectedBarChartBenchmark as keyof typeof sectorData];
+          if (!subSectorData) return { lines: [], title: '' };
+          
+          const newBuildValue = subSectorData['New building']?.[benchmarkYear as keyof typeof subSectorData['New building']];
+          const retrofitValue = subSectorData['Retrofit']?.[benchmarkYear as keyof typeof subSectorData['Retrofit']];
+          
+          const benchmarkLines = [];
+          if (newBuildValue !== undefined) {
+            benchmarkLines.push({
+              name: `New building (PC ${benchmarkYear})`,
+              value: newBuildValue,
+              color: benchmarkColor,
+              year: benchmarkYear
+            });
+          }
+          if (retrofitValue !== undefined) {
+            benchmarkLines.push({
+              name: `Retrofit (PC ${benchmarkYear})`,
+              value: retrofitValue,
+              color: benchmarkColor,
+              year: benchmarkYear
+            });
+          }
+          
+          return {
+            lines: benchmarkLines,
+            title: `UKNZCBS: ${primarySector} (${selectedBarChartBenchmark})`
+          };
+        }
+        
+        // Get benchmark data for total embodied carbon
+        if (showBenchmarks && selectedKPI1 === 'totalEmbodiedCarbon' && valueType === 'per-sqm' && projects.length > 0) {
+          const primaryProject = projects[0];
+          const primarySector = getSector(primaryProject.typology);
+          const benchmarkColor = getSectorBenchmarkColor(primaryProject.typology);
+          
+          // Get benchmark values for this sector
+          const sectorBenchmarks = totalEmbodiedCarbonBenchmarks[primarySector as keyof typeof totalEmbodiedCarbonBenchmarks];
+          
+          if (!sectorBenchmarks) return { lines: [], title: '' };
+          
+          const benchmarkLines = Object.entries(sectorBenchmarks).map(([name, value]) => ({
+            name,
+            value,
+            color: benchmarkColor
+          }));
+          
+          return {
+            lines: benchmarkLines,
+            title: `Benchmarks: ${primarySector}`
+          };
+        }
+        
+        return { lines: [], title: '' };
+      };
+
+      // Add benchmark information if available
+      const benchmarkData = getBenchmarkDataForPNG();
+      if (benchmarkData.lines.length > 0) {
+        // Draw benchmark title
+        ctx.font = 'bold 14px Arial, sans-serif';
+        ctx.fillStyle = '#666666';
+        ctx.textAlign = 'left';
+        
+        ctx.fillText(benchmarkData.title, 20, yPosition);
+        yPosition += 30;
+
+        // Draw benchmark legend
+        ctx.font = '12px Arial, sans-serif';
+        let xPos = 20;
+        
+        benchmarkData.lines.forEach((benchmark, index) => {
+          // Draw line indicator
+          ctx.strokeStyle = benchmark.color;
+          ctx.lineWidth = 2;
+          ctx.setLineDash(benchmark.name.includes('New building') ? [5, 5] : [10, 5]);
+          ctx.beginPath();
+          ctx.moveTo(xPos, yPosition - 5);
+          ctx.lineTo(xPos + 24, yPosition - 5);
+          ctx.stroke();
+          ctx.setLineDash([]); // Reset dash pattern
+          
+          // Draw text
+          ctx.fillStyle = '#272727';
+          ctx.fillText(benchmark.name, xPos + 30, yPosition);
+          
+          xPos += 200; // Space for next legend item
+          if (xPos > canvas.width / 2 - 200) {
+            xPos = 20;
+            yPosition += 20;
+          }
+        });
+        
+        yPosition += 30;
+      }
+
+      ctx.fillStyle = '#272727'; // Reset color
+      ctx.textAlign = 'center'; // Reset alignment
+
       // Convert SVG to data URL
       const svgData = new XMLSerializer().serializeToString(svgElement);
       const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
