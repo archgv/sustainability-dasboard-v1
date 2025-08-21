@@ -90,42 +90,41 @@ export const ProjectDataScreen = ({
             Project Information
           </h3>
           
-          <div className="space-y-4 bg-muted/30 p-4 rounded-lg">
+          <div className="grid grid-cols-2 gap-x-8 gap-y-4 bg-muted/30 p-4 rounded-lg">
             <div>
               <Label className="text-sm font-medium">Project Name & Number</Label>
               <Input value={`${selectedProject.id} - ${selectedProject.name}`} disabled className="mt-2" />
             </div>
+            <div></div>
             
             <div>
               <Label className="text-sm font-medium">Location</Label>
               <Input value={selectedProject.location || 'N/A'} disabled className="mt-2" />
             </div>
-            
-            <div>
-              <Label className="text-sm font-medium">Primary Sector</Label>
-              <Input value={selectedProject.typology || 'N/A'} disabled className="mt-2" />
-            </div>
-            
-            <div>
-              <Label className="text-sm font-medium">Sub Sector</Label>
-              <Input value="N/A" disabled className="mt-2" />
-            </div>
-            
             <div>
               <Label className="text-sm font-medium">Project Type</Label>
               <Input value="N/A" disabled className="mt-2" />
             </div>
             
             <div>
+              <Label className="text-sm font-medium">Primary Sector</Label>
+              <Input value={selectedProject.typology || 'N/A'} disabled className="mt-2" />
+            </div>
+            <div>
               <Label className="text-sm font-medium">Heritage Project</Label>
               <Input value="N/A" disabled className="mt-2" />
             </div>
             
             <div>
+              <Label className="text-sm font-medium">Sub Sector</Label>
+              <Input value="N/A" disabled className="mt-2" />
+            </div>
+            <div>
               <Label className="text-sm font-medium">Studio Discipline</Label>
               <Input value="N/A" disabled className="mt-2" />
             </div>
             
+            <div></div>
             <div>
               <Label className="text-sm font-medium">Neighbourhood</Label>
               <Input value="N/A" disabled className="mt-2" />
@@ -139,9 +138,92 @@ export const ProjectDataScreen = ({
             Project Overview
           </h3>
           
-          <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-x-8 gap-y-4">
             <TooltipField
-              label="PC Year"
+              label="Operational energy of existing building"
+              tooltip="Enter the annual operational energy of the existing building (if retained)"
+            >
+              <Input
+                placeholder="Enter kWh/m²/yr (e.g. 130)"
+                value={projectData.operationalEnergyExisting}
+                onChange={(e) => handleInputChange('operationalEnergyExisting', e.target.value)}
+                type="number"
+                min="0"
+                max="500"
+              />
+            </TooltipField>
+
+            <TooltipField
+              label="EI team: Paid scope"
+              tooltip="Indicate whether the Environmental Intelligence team has a paid scope"
+              required
+            >
+              <Select
+                value={projectData.paidScope}
+                onValueChange={(value) => handleInputChange('paidScope', value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select scope" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="yes">Yes</SelectItem>
+                  <SelectItem value="no">No</SelectItem>
+                  <SelectItem value="tbc">TBC</SelectItem>
+                </SelectContent>
+              </Select>
+            </TooltipField>
+
+            <TooltipField
+              label="GIA of proposed development"
+              tooltip="Enter the Gross Internal Area (GIA) of the proposed development"
+              required
+            >
+              <Input
+                placeholder="Enter m² (e.g. 9,800)"
+                value={projectData.gia}
+                onChange={(e) => handleInputChange('gia', e.target.value)}
+                type="number"
+                min="1"
+              />
+            </TooltipField>
+
+            <TooltipField
+              label="External Sustainability consultant"
+              tooltip="Enter the company name of the appointed external sustainability consultant (if applicable)"
+            >
+              <Input
+                placeholder="Enter company name"
+                value={projectData.sustainabilityConsultant}
+                onChange={(e) => handleInputChange('sustainabilityConsultant', e.target.value)}
+              />
+            </TooltipField>
+
+            <TooltipField
+              label="Building lifespan"
+              required
+            >
+              <Input
+                placeholder="Enter years (e.g. 60)"
+                value={projectData.buildingLifespan}
+                onChange={(e) => handleInputChange('buildingLifespan', e.target.value)}
+                type="number"
+                min="1"
+              />
+            </TooltipField>
+
+            <TooltipField
+              label="H\B Sustainability champion"
+              tooltip="Enter the name of the internal sustainability champion on the project team (not a member of the EI team)"
+            >
+              <Input
+                placeholder="Select name"
+                value={projectData.sustainabilityChampion}
+                onChange={(e) => handleInputChange('sustainabilityChampion', e.target.value)}
+              />
+            </TooltipField>
+
+            <TooltipField
+              label="PC date"
               tooltip="Enter the expected or actual Practical Completion year. Please be as accurate as possible, as UKNZCBS benchmarks are year-specific"
               required
             >
@@ -162,100 +244,21 @@ export const ProjectDataScreen = ({
               </Select>
             </TooltipField>
 
-            <TooltipField
-              label="Operational energy of existing building"
-              tooltip="Enter the annual operational energy of the existing building (if retained)"
-            >
-              <Input
-                placeholder="Enter kWh/m²/yr (e.g. 130)"
-                value={projectData.operationalEnergyExisting}
-                onChange={(e) => handleInputChange('operationalEnergyExisting', e.target.value)}
-                type="number"
-                min="0"
-                max="500"
-              />
-            </TooltipField>
+            <div></div>
 
-            <TooltipField
-              label="GIA of proposed development"
-              tooltip="Enter the Gross Internal Area (GIA) of the proposed development"
-              required
-            >
-              <Input
-                placeholder="Enter m² (e.g. 9,800)"
-                value={projectData.gia}
-                onChange={(e) => handleInputChange('gia', e.target.value)}
-                type="number"
-                min="1"
-              />
-            </TooltipField>
-
-            <TooltipField
-              label="Building lifespan"
-              required
-            >
-              <Input
-                placeholder="Enter years (e.g. 60)"
-                value={projectData.buildingLifespan}
-                onChange={(e) => handleInputChange('buildingLifespan', e.target.value)}
-                type="number"
-                min="1"
-              />
-            </TooltipField>
-
-            <TooltipField
-              label="EI team: paid scope"
-              tooltip="Indicate whether the Environmental Intelligence team has a paid scope"
-              required
-            >
-              <Select
-                value={projectData.paidScope}
-                onValueChange={(value) => handleInputChange('paidScope', value)}
+            <div className="col-span-2">
+              <TooltipField
+                label="Mission statement"
               >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select scope" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="yes">Yes</SelectItem>
-                  <SelectItem value="no">No</SelectItem>
-                  <SelectItem value="tbc">TBC</SelectItem>
-                </SelectContent>
-              </Select>
-            </TooltipField>
-
-            <TooltipField
-              label="External sustainability consultant"
-              tooltip="Enter the company name of the appointed external sustainability consultant (if applicable)"
-            >
-              <Input
-                placeholder="Enter company name"
-                value={projectData.sustainabilityConsultant}
-                onChange={(e) => handleInputChange('sustainabilityConsultant', e.target.value)}
-              />
-            </TooltipField>
-
-            <TooltipField
-              label="H\B Sustainability champion"
-              tooltip="Enter the name of the internal sustainability champion on the project team (not a member of the EI team)"
-            >
-              <Input
-                placeholder="Select name"
-                value={projectData.sustainabilityChampion}
-                onChange={(e) => handleInputChange('sustainabilityChampion', e.target.value)}
-              />
-            </TooltipField>
-
-            <TooltipField
-              label="Mission statement"
-            >
-              <Textarea
-                placeholder="Enter text (max 250 characters)"
-                value={projectData.missionStatement}
-                onChange={(e) => handleInputChange('missionStatement', e.target.value)}
-                maxLength={250}
-                className="resize-none"
-              />
-            </TooltipField>
+                <Textarea
+                  placeholder="Enter text (max 250 characters)"
+                  value={projectData.missionStatement}
+                  onChange={(e) => handleInputChange('missionStatement', e.target.value)}
+                  maxLength={250}
+                  className="resize-none"
+                />
+              </TooltipField>
+            </div>
           </div>
         </div>
       </div>
