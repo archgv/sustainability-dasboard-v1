@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
-import { AddProjectDataModal } from './AddProjectDataModal';
+import { AddProjectDataWizard } from './AddProjectDataWizard';
 import { Project } from '@/types/project';
 
 interface AddProjectDataProps {
@@ -33,7 +33,7 @@ export const AddProjectData = ({ projects }: AddProjectDataProps) => {
         </Button>
       </Card>
 
-      <AddProjectDataModal
+      <AddProjectDataWizard
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSave={handleSaveProjectData}
