@@ -73,7 +73,7 @@ export const ProjectDataScreen = ({
   }
 
   return (
-    <div className="space-y-4 max-h-[85vh] overflow-y-auto">
+    <div className="space-y-6">
       <DialogHeader>
         <DialogTitle className="text-2xl font-semibold">Project Data</DialogTitle>
       </DialogHeader>
@@ -83,12 +83,11 @@ export const ProjectDataScreen = ({
         completedSteps={['project-selection']}
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Section A - Project Information (External Data) */}
+      <div className="space-y-6">
+        {/* Project Information */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold text-foreground border-b pb-2">
-            Section A: Project Information
-            <span className="text-sm font-normal text-muted-foreground ml-2">(From external database)</span>
+            Project Information
           </h3>
           
           <div className="space-y-4 bg-muted/30 p-4 rounded-lg">
@@ -134,10 +133,10 @@ export const ProjectDataScreen = ({
           </div>
         </div>
 
-        {/* Section B - Project Overview (User Input) */}
+        {/* Project Overview */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold text-foreground border-b pb-2">
-            Section B: Project Overview
+            Project Overview
           </h3>
           
           <div className="space-y-4">
@@ -261,10 +260,10 @@ export const ProjectDataScreen = ({
         </div>
       </div>
 
-      {/* Section C - Certifications */}
-      <div className="space-y-4 mt-8">
+      {/* Certifications */}
+      <div className="space-y-4">
         <h3 className="text-lg font-semibold text-foreground border-b pb-2">
-          Section C: Certifications
+          Certifications
         </h3>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
