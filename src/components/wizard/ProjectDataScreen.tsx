@@ -9,6 +9,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { HelpCircle, AlertTriangle } from 'lucide-react';
 import { Project } from '@/types/project';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { WizardProgressIndicator } from './WizardProgressIndicator';
 
 interface ProjectDataScreenProps {
   selectedProject?: Project;
@@ -72,34 +73,15 @@ export const ProjectDataScreen = ({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 max-h-[85vh] overflow-y-auto">
       <DialogHeader>
         <DialogTitle className="text-2xl font-semibold">Project Data</DialogTitle>
       </DialogHeader>
 
-      {/* Progress indicator */}
-      <div className="flex items-center space-x-2 mb-6">
-        <div className="flex items-center">
-          <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-medium">
-            ✓
-          </div>
-          <span className="ml-2 text-sm font-medium">Project</span>
-        </div>
-        <div className="flex-1 h-px bg-primary mx-4"></div>
-        <div className="flex items-center">
-          <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-medium">
-            2
-          </div>
-          <span className="ml-2 text-sm font-medium">Project Data</span>
-        </div>
-        <div className="flex-1 h-px bg-muted mx-4"></div>
-        <div className="flex items-center">
-          <div className="w-8 h-8 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-sm">
-            3-9
-          </div>
-          <span className="ml-2 text-sm text-muted-foreground">RIBA Stages</span>
-        </div>
-      </div>
+      <WizardProgressIndicator 
+        currentStep="project-data"
+        completedSteps={['project-selection']}
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Section A - Project Information (External Data) */}

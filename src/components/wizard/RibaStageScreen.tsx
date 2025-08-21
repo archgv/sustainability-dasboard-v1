@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { HelpCircle, AlertTriangle } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { WizardProgressIndicator } from './WizardProgressIndicator';
 
 interface RibaStageScreenProps {
   stageNumber: string;
@@ -18,6 +19,9 @@ interface RibaStageScreenProps {
   onBack: () => void;
   onSaveAndExit: () => void;
   isLastStep: boolean;
+  currentStep: string;
+  completedSteps: string[];
+  stageCompletionData?: { [key: string]: { completed: boolean; date?: string } };
 }
 
 const TooltipField = ({ label, tooltip, required = false, children }: {
@@ -56,7 +60,10 @@ export const RibaStageScreen = ({
   onNext,
   onBack,
   onSaveAndExit,
-  isLastStep
+  isLastStep,
+  currentStep,
+  completedSteps,
+  stageCompletionData
 }: RibaStageScreenProps) => {
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [showBackDialog, setShowBackDialog] = useState(false);
@@ -98,40 +105,22 @@ export const RibaStageScreen = ({
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 max-h-[85vh] overflow-y-auto">
       <DialogHeader>
         <DialogTitle className="text-2xl font-semibold">RIBA Stage {stageNumber} Data</DialogTitle>
       </DialogHeader>
 
-      {/* Progress indicator */}
-      <div className="flex items-center space-x-2 mb-6">
-        <div className="flex items-center">
-          <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-medium">
-            ✓
-          </div>
-          <span className="ml-2 text-sm font-medium">Project</span>
-        </div>
-        <div className="flex-1 h-px bg-primary mx-4"></div>
-        <div className="flex items-center">
-          <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-medium">
-            ✓
-          </div>
-          <span className="ml-2 text-sm font-medium">Project Data</span>
-        </div>
-        <div className="flex-1 h-px bg-primary mx-4"></div>
-        <div className="flex items-center">
-          <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-medium">
-            {stageNumber}
-          </div>
-          <span className="ml-2 text-sm font-medium">RIBA Stage {stageNumber}</span>
-        </div>
-      </div>
+      <WizardProgressIndicator 
+        currentStep={currentStep}
+        completedSteps={completedSteps}
+        stageCompletionData={stageCompletionData}
+      />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Energy & Operational Data */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Operational Energy */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold text-foreground border-b pb-2">
-            Energy & Operational Data
+            Operational Energy
           </h3>
           
           <TooltipField
@@ -254,10 +243,10 @@ export const RibaStageScreen = ({
           </TooltipField>
         </div>
 
-        {/* Carbon & Environmental Data */}
+        {/* Embodied Carbon */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold text-foreground border-b pb-2">
-            Carbon & Environmental Data
+            Embodied Carbon
           </h3>
 
           <TooltipField
@@ -333,6 +322,13 @@ export const RibaStageScreen = ({
               className="resize-none"
             />
           </TooltipField>
+        </div>
+
+        {/* Ecology & Biodiversity */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-foreground border-b pb-2">
+            Ecology & Biodiversity
+          </h3>
 
           <TooltipField
             label="Biodiversity net gain"

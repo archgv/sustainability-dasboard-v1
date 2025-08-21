@@ -7,6 +7,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Check, ChevronDown, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Project } from '@/types/project';
+import { WizardProgressIndicator } from './WizardProgressIndicator';
 
 interface ProjectSelectionScreenProps {
   projects: Project[];
@@ -45,34 +46,15 @@ export const ProjectSelectionScreen = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 max-h-[85vh] overflow-y-auto">
       <DialogHeader>
         <DialogTitle className="text-2xl font-semibold">Add Project Data</DialogTitle>
       </DialogHeader>
 
-      {/* Progress indicator */}
-      <div className="flex items-center space-x-2 mb-6">
-        <div className="flex items-center">
-          <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-medium">
-            1
-          </div>
-          <span className="ml-2 text-sm font-medium">Project</span>
-        </div>
-        <div className="flex-1 h-px bg-muted mx-4"></div>
-        <div className="flex items-center">
-          <div className="w-8 h-8 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-sm">
-            2
-          </div>
-          <span className="ml-2 text-sm text-muted-foreground">Project Data</span>
-        </div>
-        <div className="flex-1 h-px bg-muted mx-4"></div>
-        <div className="flex items-center">
-          <div className="w-8 h-8 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-sm">
-            3-9
-          </div>
-          <span className="ml-2 text-sm text-muted-foreground">RIBA Stages</span>
-        </div>
-      </div>
+      <WizardProgressIndicator 
+        currentStep="project-selection"
+        completedSteps={[]}
+      />
 
       <div className="space-y-4">
         <div>

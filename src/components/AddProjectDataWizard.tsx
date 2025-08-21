@@ -183,6 +183,12 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
               onBack={goToPreviousStep}
               onSaveAndExit={handleSave}
               isLastStep={isLastStep()}
+              currentStep={currentStep}
+              completedSteps={[]}
+              stageCompletionData={{
+                'riba-1': { completed: true, date: '10.01.2025' },
+                'riba-2': { completed: true, date: '12.06.2025' }
+              }}
             />
           );
         }
