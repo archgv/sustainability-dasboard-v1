@@ -95,21 +95,8 @@ export const ProjectSelectionScreen = ({
                             selectedProjectId === project.id ? "opacity-100" : "opacity-0"
                           )}
                         />
-                        <div className="w-full">
+                        <div>
                           <div className="font-medium">{project.name}</div>
-                          <div className="text-sm text-muted-foreground mt-1 space-y-1">
-                            <div className="flex flex-wrap gap-2">
-                              {project.breeam && <span className="bg-green-100 text-green-800 px-2 py-0.5 rounded text-xs">BREEAM: {project.breeam}</span>}
-                              {project.leed && <span className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-xs">LEED: {project.leed}</span>}
-                              {project.well && <span className="bg-purple-100 text-purple-800 px-2 py-0.5 rounded text-xs">WELL: {project.well}</span>}
-                              {project.passivhaus && <span className="bg-orange-100 text-orange-800 px-2 py-0.5 rounded text-xs">Passivhaus</span>}
-                            </div>
-                            <div className="flex gap-4 text-xs">
-                              {project.operationalEnergy && <span>Energy: {project.operationalEnergy} kWh/m²/yr</span>}
-                              {project.totalEmbodiedCarbon && <span>Carbon: {project.totalEmbodiedCarbon} kgCO2e/m²</span>}
-                              {project.operationalWaterUse && <span>Water: {project.operationalWaterUse} L/m²/yr</span>}
-                            </div>
-                          </div>
                         </div>
                       </CommandItem>
                     ))}
