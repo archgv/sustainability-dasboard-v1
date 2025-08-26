@@ -96,8 +96,7 @@ export const ProjectSelectionScreen = ({
                           )}
                         />
                         <div>
-                          <div className="font-medium">{project.id}</div>
-                          <div className="text-sm text-muted-foreground">{project.name}</div>
+                          <div className="font-medium">{project.id} {project.name}</div>
                         </div>
                       </CommandItem>
                     ))}
