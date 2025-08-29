@@ -113,7 +113,7 @@ export const ProjectGrid = ({
                   </span>
                 </div>
                 <div className="text-sm text-gray-600">
-                  <span className="font-medium">Project Type:</span> {project.projectType === 'new-build' ? 'New Build' : 'Retrofit'}
+                  <span className="font-medium">Project Type:</span> {project.projectType || 'Unknown'}
                 </div>
                 
                 <div className="text-sm text-gray-600">
@@ -142,7 +142,7 @@ export const ProjectGrid = ({
                   </span>
                 </div>
                 
-                {project.projectType === 'retrofit' && project.existingBuildingEnergy && (
+                {(project.projectType === 'Retrofit' || project.projectType === 'Retrofit + extension') && project.existingBuildingEnergy && (
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
                       <Zap className="h-4 w-4 mr-2 text-orange-600" />
