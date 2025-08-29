@@ -11,13 +11,8 @@ export const addProjectNumberToName = (name: string, index: number): string => {
   return `${projectNumber} ${name}`;
 };
 
-// Map primary sector to display name
-export const getSector = (primarySector: string): string => {
-  return primarySector || 'Workplace';
-};
-
-// Legacy function for backward compatibility - maps old typology to new primarySector
-export const getSectorFromTypology = (typology: string): string => {
+// Map project typology to sector
+export const getSector = (typology: string): string => {
   const sectorMap: Record<string, string> = {
     'Office': 'Workplace',
     'office': 'Workplace',
@@ -104,20 +99,20 @@ export const sectorConfig = {
   }
 };
 
-// Get sector color from primarySector
-export const getSectorColor = (primarySector: string): string => {
-  const sector = getSector(primarySector);
+// Get sector color
+export const getSectorColor = (typology: string): string => {
+  const sector = getSector(typology);
   return sectorConfig[sector as keyof typeof sectorConfig]?.color || sectorConfig.Workplace.color;
 };
 
-// Get sector shape from primarySector
-export const getSectorShape = (primarySector: string): string => {
-  const sector = getSector(primarySector);
+// Get sector shape
+export const getSectorShape = (typology: string): string => {
+  const sector = getSector(typology);
   return sectorConfig[sector as keyof typeof sectorConfig]?.shape || sectorConfig.Workplace.shape;
 };
 
-// Get sector benchmark color from primarySector
-export const getSectorBenchmarkColor = (primarySector: string): string => {
-  const sector = getSector(primarySector);
+// Get sector benchmark color
+export const getSectorBenchmarkColor = (typology: string): string => {
+  const sector = getSector(typology);
   return sectorConfig[sector as keyof typeof sectorConfig]?.benchmarkColor || sectorConfig.Workplace.benchmarkColor;
 };

@@ -1,420 +1,509 @@
+
 import { Project } from '@/types/project';
 
 export const sampleProjects: Project[] = [
   {
-    id: '230151',
-    projectName: '230151 Green Office Tower',
-    projectLocation: 'London, UK',
-    primarySector: 'Workplace',
-    subSector: 'Office',
-    projectType: 'New build',
-    heritageProject: false,
-    studioDiscipline: 'Studio 1',
-    neighbourhood: 'A',
-    operationalEnergyEB: 0,
+    id: '1',
+    name: '230151 Green Office Tower',
+    typology: 'office',
+    location: 'London, UK',
+    completionDate: '2023-06-15',
     gia: 9800,
-    buildingLifespan: 60,
-    pcDate: '2023-06-15',
-    eiTeamScope: 'Yes',
-    exSustConsultant: 'Green Consultants Ltd',
-    sustChampionName: 'John Smith',
-    missionStatement: 'To create a high-performance, sustainable office building that sets new standards for workplace environments.',
+    projectType: 'new-build',
+    ribaStage: 'stage-7',
     
-    // Certifications
+    // Embodied Carbon
+    upfrontCarbon: 450,
+    totalEmbodiedCarbon: 650,
+    biogenicCarbon: 50,
+    refrigerants: 15,
+    
+    // Operational Energy
+    operationalEnergyTotal: 75,
+    operationalEnergyPartL: 65,
+    operationalEnergyGas: 25,
+    operationalEnergy: 75,
+    gasUsage: 25,
+    spaceHeatingDemand: 30,
+    renewableEnergyGeneration: 20,
+    existingBuildingEnergy: 0,
+    
+    // Water Use
+    operationalWaterUse: 45,
+    
+    // Accreditations
     breeam: 'Excellent',
     leed: 'Gold',
     well: 'Silver',
-    fitwel: '2 stars',
-    passivhausOrEnePHit: 'Not targeted',
-    uknzcbs: 'Yes - 2025',
     nabers: '5 Star',
-    otherCertification: '',
+    passivhaus: true,
     
-    // RIBA Stage Data
-    ribaStageData: [
-      {
-        ribaStage: 'stage-7',
-        methodEnergyMeasurement: 'IES - CIBSE TM54',
-        operationalEnergyTotal: 75,
-        operationalEnergyPartL: 65,
-        operationalEnergyGas: 25,
-        spaceHeatingDemand: 30,
-        renewableEnergyType: 'Solar',
-        totalRenewableEnergyGeneration: 196000, // 20 kWh/m²/year * 9800 m²
-        structuralFrameMaterials: 'Reinforced Concrete (in-situ)',
-        upfrontCarbon: 450,
-        totalEmbodiedCarbon: 650,
-        biogenicCarbon: 50,
-        embodiedCarbonScopeClarifications: 'A1-A5 only',
-        biodiversityNetGain: 15,
-        habitatsUnitsGained: 12,
-        urbanGreeningFactor: 0.3,
-        generalClarificationNotes: 'High-performance building with advanced sustainability features.'
-      }
-    ]
+    // Social Value
+    socialValue: 1.2,
+    
+    // Wellbeing
+    pmv: 0.2,
+    ppd: 8,
+    daylightFactor: 2.5,
+    
+    // Biodiversity
+    biodiversityNetGain: 15,
+    habitatUnits: 12,
+    urbanGreeningFactor: 12,
+    
+    // Embodied Impacts
+    ozoneDepletion: 0.001,
+    
+    // Circular Economy
+    reusedRecycledMaterial: 25,
+    
+    // Legacy fields
+    carbonIntensity: 110,
+    eui: 75,
+    shd: 30,
+    wlc: 650,
+    
+    certifications: ['UKNZCBS - Net Zero']
   },
   {
-    id: '230152',
-    projectName: '230152 Eco Housing Development',
-    projectLocation: 'Manchester, UK',
-    primarySector: 'Residential',
-    subSector: 'Apartments',
-    projectType: 'New build',
-    heritageProject: false,
-    studioDiscipline: 'Studio 2',
-    neighbourhood: 'B',
-    operationalEnergyEB: 0,
+    id: '2', 
+    name: '230152 Eco Housing Development',
+    typology: 'residential',
+    location: 'Manchester, UK',
+    completionDate: '2022-11-30',
     gia: 12500,
-    buildingLifespan: 60,
-    pcDate: '2022-11-30',
-    eiTeamScope: 'No',
-    exSustConsultant: 'Sustainable Design Partners',
-    sustChampionName: 'Sarah Johnson',
-    missionStatement: 'Creating affordable, sustainable homes for the local community with minimal environmental impact.',
+    projectType: 'new-build',
+    ribaStage: 'stage-7',
     
-    // Certifications
+    // Embodied Carbon
+    upfrontCarbon: 780,
+    totalEmbodiedCarbon: 1080,
+    biogenicCarbon: -60,
+    refrigerants: 18,
+    
+    // Operational Energy
+    operationalEnergyTotal: 135,
+    operationalEnergyPartL: 80,
+    operationalEnergyGas: 35,
+    operationalEnergy: 135,
+    gasUsage: 35,
+    spaceHeatingDemand: 40,
+    renewableEnergyGeneration: 15,
+    existingBuildingEnergy: 0,
+    
+    // Water Use
+    operationalWaterUse: 50,
+    
+    // Accreditations
     breeam: 'Very Good',
     leed: 'Silver',
     well: 'Bronze',
-    fitwel: '1 star',
-    passivhausOrEnePHit: 'EnePHit',
-    uknzcbs: 'To be determined',
     nabers: '4 Star',
-    otherCertification: '',
+    passivhaus: false,
     
-    // RIBA Stage Data
-    ribaStageData: [
-      {
-        ribaStage: 'stage-7',
-        methodEnergyMeasurement: 'PHPP',
-        operationalEnergyTotal: 135,
-        operationalEnergyPartL: 80,
-        operationalEnergyGas: 35,
-        spaceHeatingDemand: 40,
-        renewableEnergyType: 'Wind',
-        totalRenewableEnergyGeneration: 187500, // 15 kWh/m²/year * 12500 m²
-        structuralFrameMaterials: 'Cross Laminated Timber (CLT)',
-        upfrontCarbon: 780,
-        totalEmbodiedCarbon: 1080,
-        biogenicCarbon: -60,
-        embodiedCarbonScopeClarifications: 'A1-C4',
-        biodiversityNetGain: 10,
-        habitatsUnitsGained: 8,
-        urbanGreeningFactor: 0.25,
-        generalClarificationNotes: 'Timber construction with renewable energy generation.'
-      }
-    ]
+    // Social Value
+    socialValue: 1.1,
+    
+    // Wellbeing
+    pmv: 0.3,
+    ppd: 12,
+    daylightFactor: 2.2,
+    
+    // Biodiversity
+    biodiversityNetGain: 10,
+    habitatUnits: 8,
+    urbanGreeningFactor: 8,
+    
+    // Embodied Impacts
+    ozoneDepletion: 0.0012,
+    
+    // Circular Economy
+    reusedRecycledMaterial: 20,
+    
+    // Legacy fields
+    carbonIntensity: 130,
+    eui: 90,
+    shd: 40,
+    wlc: 720,
+    
+    certifications: ['EnerPHit']
   },
   {
-    id: '230153',
-    projectName: '230153 Sustainable School Campus',
-    projectLocation: 'Birmingham, UK',
-    primarySector: 'Education',
-    subSector: 'Primary School',
-    projectType: 'New build',
-    heritageProject: false,
-    studioDiscipline: 'Studio 3',
-    neighbourhood: 'C',
-    operationalEnergyEB: 0,
+    id: '3',
+    name: '230153 Sustainable School Campus',
+    typology: 'educational', 
+    location: 'Birmingham, UK',
+    completionDate: '2023-01-20',
     gia: 15200,
-    buildingLifespan: 60,
-    pcDate: '2023-01-20',
-    eiTeamScope: 'TBC',
-    exSustConsultant: 'Educational Sustainability Ltd',
-    sustChampionName: 'Michael Brown',
-    missionStatement: 'Inspiring the next generation through a world-class sustainable learning environment.',
+    projectType: 'new-build',
+    ribaStage: 'stage-7',
     
-    // Certifications
+    // Embodied Carbon
+    upfrontCarbon: 380,
+    totalEmbodiedCarbon: 580,
+    biogenicCarbon: 40,
+    refrigerants: 12,
+    
+    // Operational Energy
+    operationalEnergyTotal: 65,
+    operationalEnergyPartL: 55,
+    operationalEnergyGas: 20,
+    operationalEnergy: 65,
+    gasUsage: 20,
+    spaceHeatingDemand: 25,
+    renewableEnergyGeneration: 25,
+    existingBuildingEnergy: 0,
+    
+    // Water Use
+    operationalWaterUse: 40,
+    
+    // Accreditations
     breeam: 'Outstanding',
     leed: 'Platinum',
     well: 'Gold',
-    fitwel: '3 stars',
-    passivhausOrEnePHit: 'Passivhaus',
-    uknzcbs: 'Yes - 2026',
     nabers: '6 Star',
-    otherCertification: '',
+    passivhaus: true,
     
-    // RIBA Stage Data
-    ribaStageData: [
-      {
-        ribaStage: 'stage-7',
-        methodEnergyMeasurement: 'Other',
-        operationalEnergyTotal: 65,
-        operationalEnergyPartL: 55,
-        operationalEnergyGas: 20,
-        spaceHeatingDemand: 25,
-        renewableEnergyType: 'Geothermal',
-        totalRenewableEnergyGeneration: 380000, // 25 kWh/m²/year * 15200 m²
-        structuralFrameMaterials: 'Glulam Timber Frame',
-        upfrontCarbon: 380,
-        totalEmbodiedCarbon: 580,
-        biogenicCarbon: 40,
-        embodiedCarbonScopeClarifications: 'A1-A5 only',
-        biodiversityNetGain: 20,
-        habitatsUnitsGained: 15,
-        urbanGreeningFactor: 0.4,
-        generalClarificationNotes: 'Outstanding sustainability credentials with passive house standards.'
-      }
-    ]
+    // Social Value
+    socialValue: 1.4,
+    
+    // Wellbeing
+    pmv: 0.1,
+    ppd: 6,
+    daylightFactor: 3.0,
+    
+    // Biodiversity
+    biodiversityNetGain: 20,
+    habitatUnits: 15,
+    urbanGreeningFactor: 15,
+    
+    // Embodied Impacts
+    ozoneDepletion: 0.0008,
+    
+    // Circular Economy
+    reusedRecycledMaterial: 30,
+    
+    // Legacy fields
+    carbonIntensity: 100,
+    eui: 65,
+    shd: 25,
+    wlc: 580,
+    
+    certifications: ['UKNZCBS - Net Zero']  // Updated to Net Zero only
   },
   {
-    id: '230154',
-    projectName: '230154 Modern Hospital Wing',
-    projectLocation: 'Leeds, UK',
-    primarySector: 'Healthcare',
-    subSector: 'Hospital',
-    projectType: 'Retrofit',
-    heritageProject: true,
-    studioDiscipline: 'Studio 4',
-    neighbourhood: 'D',
-    operationalEnergyEB: 180,
+    id: '4',
+    name: '230154 Modern Hospital Wing',
+    typology: 'healthcare',
+    location: 'Leeds, UK', 
+    completionDate: '2021-08-10',
     gia: 18900,
-    buildingLifespan: 60,
-    pcDate: '2021-08-10',
-    eiTeamScope: 'Yes',
-    exSustConsultant: 'Healthcare Sustainability Solutions',
-    sustChampionName: 'Emma Wilson',
-    missionStatement: 'Retrofitting healthcare facilities to provide world-class patient care while minimizing environmental impact.',
+    projectType: 'retrofit',
+    ribaStage: 'stage-7',
     
-    // Certifications
+    // Embodied Carbon
+    upfrontCarbon: 900,
+    totalEmbodiedCarbon: 1200,
+    biogenicCarbon: 70,
+    refrigerants: 25,
+    
+    // Operational Energy
+    operationalEnergyTotal: 165,
+    operationalEnergyPartL: 100,
+    operationalEnergyGas: 45,
+    operationalEnergy: 110,
+    gasUsage: 45,
+    spaceHeatingDemand: 50,
+    renewableEnergyGeneration: 10,
+    existingBuildingEnergy: 180,
+    
+    // Water Use
+    operationalWaterUse: 60,
+    
+    // Accreditations
     breeam: 'Good',
     leed: 'Certified',
     well: 'N/A',
-    fitwel: 'Not certified',
-    passivhausOrEnePHit: 'Not targeted',
-    uknzcbs: 'To be determined',
     nabers: '3 Star',
-    otherCertification: '',
+    passivhaus: false,
     
-    // RIBA Stage Data
-    ribaStageData: [
-      {
-        ribaStage: 'stage-7',
-        methodEnergyMeasurement: 'IES - CIBSE TM54',
-        operationalEnergyTotal: 165,
-        operationalEnergyPartL: 100,
-        operationalEnergyGas: 45,
-        spaceHeatingDemand: 50,
-        renewableEnergyType: 'Biomass',
-        totalRenewableEnergyGeneration: 189000, // 10 kWh/m²/year * 18900 m²
-        structuralFrameMaterials: 'Concrete + Steel Hybrid',
-        upfrontCarbon: 900,
-        totalEmbodiedCarbon: 1200,
-        biogenicCarbon: 70,
-        embodiedCarbonScopeClarifications: 'A1-C4 retrofit scope',
-        biodiversityNetGain: 5,
-        habitatsUnitsGained: 4,
-        urbanGreeningFactor: 0.15,
-        generalClarificationNotes: 'Heritage retrofit with modern performance standards.'
-      }
-    ]
+    // Social Value
+    socialValue: 0.9,
+    
+    // Wellbeing
+    pmv: 0.4,
+    ppd: 15,
+    daylightFactor: 1.8,
+    
+    // Biodiversity
+    biodiversityNetGain: 5,
+    habitatUnits: 4,
+    urbanGreeningFactor: 5,
+    
+    // Embodied Impacts
+    ozoneDepletion: 0.0015,
+    
+    // Circular Economy
+    reusedRecycledMaterial: 15,
+    
+    // Legacy fields
+    carbonIntensity: 150,
+    eui: 110,
+    shd: 50,
+    wlc: 800,
+    
+    certifications: []
   },
   {
-    id: '230155',
-    projectName: '230155 Retail Innovation Hub',
-    projectLocation: 'Bristol, UK',
-    primarySector: 'Workplace',
-    subSector: 'Mixed Office/Retail',
-    projectType: 'New build',
-    heritageProject: false,
-    studioDiscipline: 'Studio 5',
-    neighbourhood: 'E',
-    operationalEnergyEB: 0,
+    id: '5',
+    name: '230155 Retail Innovation Hub',
+    typology: 'office',
+    location: 'Bristol, UK',
+    completionDate: '2022-03-25',
     gia: 8500,
-    buildingLifespan: 60,
-    pcDate: '2022-03-25',
-    eiTeamScope: 'Yes',
-    exSustConsultant: 'Innovation Sustainability Group',
-    sustChampionName: 'David Lee',
-    missionStatement: 'Creating innovative retail and workspace solutions that drive sustainability forward.',
+    projectType: 'new-build',
+    ribaStage: 'stage-7',
     
-    // Certifications
+    // Embodied Carbon
+    upfrontCarbon: 480,
+    totalEmbodiedCarbon: 700,
+    biogenicCarbon: 55,
+    refrigerants: 20,
+    
+    // Operational Energy
+    operationalEnergyTotal: 80,
+    operationalEnergyPartL: 70,
+    operationalEnergyGas: 30,
+    operationalEnergy: 80,
+    gasUsage: 30,
+    spaceHeatingDemand: 35,
+    renewableEnergyGeneration: 18,
+    existingBuildingEnergy: 0,
+    
+    // Water Use
+    operationalWaterUse: 48,
+    
+    // Accreditations
     breeam: 'Very Good',
     leed: 'Gold',
     well: 'Silver',
-    fitwel: '2 stars',
-    passivhausOrEnePHit: 'Not targeted',
-    uknzcbs: 'Yes - 2027',
     nabers: '5 Star',
-    otherCertification: '',
+    passivhaus: false,
     
-    // RIBA Stage Data
-    ribaStageData: [
-      {
-        ribaStage: 'stage-7',
-        methodEnergyMeasurement: 'Other',
-        operationalEnergyTotal: 80,
-        operationalEnergyPartL: 70,
-        operationalEnergyGas: 30,
-        spaceHeatingDemand: 35,
-        renewableEnergyType: 'Hydro',
-        totalRenewableEnergyGeneration: 153000, // 18 kWh/m²/year * 8500 m²
-        structuralFrameMaterials: 'Light Gauge Steel Frame',
-        upfrontCarbon: 480,
-        totalEmbodiedCarbon: 700,
-        biogenicCarbon: 55,
-        embodiedCarbonScopeClarifications: 'A1-A5 only',
-        biodiversityNetGain: 12,
-        habitatsUnitsGained: 9,
-        urbanGreeningFactor: 0.28,
-        generalClarificationNotes: 'Mixed-use development with innovative sustainability features.'
-      }
-    ]
+    // Social Value
+    socialValue: 1.0,
+    
+    // Wellbeing
+    pmv: 0.25,
+    ppd: 10,
+    daylightFactor: 2.3,
+    
+    // Biodiversity
+    biodiversityNetGain: 12,
+    habitatUnits: 9,
+    urbanGreeningFactor: 10,
+    
+    // Embodied Impacts
+    ozoneDepletion: 0.0011,
+    
+    // Circular Economy
+    reusedRecycledMaterial: 22,
+    
+    // Legacy fields
+    carbonIntensity: 120,
+    eui: 80,
+    shd: 35,
+    wlc: 700,
+    
+    certifications: ['EnerPHit']
   },
   {
-    id: '230156',
-    projectName: '230156 Mixed Use Development',
-    projectLocation: 'Edinburgh, UK',
-    primarySector: 'Residential',
-    subSector: 'Mixed Use',
-    projectType: 'New build',
-    heritageProject: false,
-    studioDiscipline: 'Studio 6',
-    neighbourhood: 'F',
-    operationalEnergyEB: 0,
+    id: '6',
+    name: '230156 Mixed Use Development',
+    typology: 'residential',
+    location: 'Edinburgh, UK',
+    completionDate: '2023-09-05',
     gia: 22000,
-    buildingLifespan: 60,
-    pcDate: '2023-09-05',
-    eiTeamScope: 'TBC',
-    exSustConsultant: 'Mixed Use Sustainability Ltd',
-    sustChampionName: 'Rachel Green',
-    missionStatement: 'Creating vibrant mixed-use communities that balance residential, commercial, and environmental needs.',
+    projectType: 'new-build',
+    ribaStage: 'stage-7',
     
-    // Certifications
+    // Embodied Carbon
+    upfrontCarbon: 400,
+    totalEmbodiedCarbon: 600,
+    biogenicCarbon: 45,
+    refrigerants: 14,
+    
+    // Operational Energy
+    operationalEnergyTotal: 70,
+    operationalEnergyPartL: 60,
+    operationalEnergyGas: 22,
+    operationalEnergy: 70,
+    gasUsage: 22,
+    spaceHeatingDemand: 28,
+    renewableEnergyGeneration: 22,
+    existingBuildingEnergy: 0,
+    
+    // Water Use
+    operationalWaterUse: 42,
+    
+    // Accreditations
     breeam: 'Excellent',
     leed: 'Platinum',
     well: 'Gold',
-    fitwel: '3 stars',
-    passivhausOrEnePHit: 'Passivhaus',
-    uknzcbs: 'Yes - 2028',
     nabers: '6 Star',
-    otherCertification: '',
+    passivhaus: true,
     
-    // RIBA Stage Data
-    ribaStageData: [
-      {
-        ribaStage: 'stage-7',
-        methodEnergyMeasurement: 'PHPP',
-        operationalEnergyTotal: 70,
-        operationalEnergyPartL: 60,
-        operationalEnergyGas: 22,
-        spaceHeatingDemand: 28,
-        renewableEnergyType: 'Solar',
-        totalRenewableEnergyGeneration: 484000, // 22 kWh/m²/year * 22000 m²
-        structuralFrameMaterials: 'Timber + Steel Hybrid',
-        upfrontCarbon: 400,
-        totalEmbodiedCarbon: 600,
-        biogenicCarbon: 45,
-        embodiedCarbonScopeClarifications: 'A1-A5 only',
-        biodiversityNetGain: 18,
-        habitatsUnitsGained: 14,
-        urbanGreeningFactor: 0.35,
-        generalClarificationNotes: 'Large mixed-use development with exceptional sustainability performance.'
-      }
-    ]
+    // Social Value
+    socialValue: 1.3,
+    
+    // Wellbeing
+    pmv: 0.15,
+    ppd: 7,
+    daylightFactor: 2.8,
+    
+    // Biodiversity
+    biodiversityNetGain: 18,
+    habitatUnits: 14,
+    urbanGreeningFactor: 13,
+    
+    // Embodied Impacts
+    ozoneDepletion: 0.0009,
+    
+    // Circular Economy
+    reusedRecycledMaterial: 28,
+    
+    // Legacy fields
+    carbonIntensity: 105,
+    eui: 70,
+    shd: 28,
+    wlc: 600,
+    
+    certifications: ['UKNZCBS - Net Zero']
   },
   {
-    id: '230157',
-    projectName: '230157 Concert Hall & Theater',
-    projectLocation: 'Cardiff, UK',
-    primarySector: 'CCC',
-    subSector: 'Cultural Venue',
-    projectType: 'New build',
-    heritageProject: false,
-    studioDiscipline: 'Studio 7',
-    neighbourhood: 'G',
-    operationalEnergyEB: 0,
+    id: '7',
+    name: '230157 Concert Hall & Theater',
+    typology: 'CCC',
+    location: 'Cardiff, UK',
+    completionDate: '2026-04-15',
     gia: 12000,
-    buildingLifespan: 60,
-    pcDate: '2026-04-15',
-    eiTeamScope: 'Yes',
-    exSustConsultant: 'Cultural Sustainability Partners',
-    sustChampionName: 'James Thompson',
-    missionStatement: 'Creating a world-class cultural venue that inspires audiences while demonstrating environmental leadership.',
+    projectType: 'new-build',
+    ribaStage: 'stage-7',
     
-    // Certifications
+    // Embodied Carbon
+    upfrontCarbon: 750,
+    totalEmbodiedCarbon: 950,
+    biogenicCarbon: 30,
+    refrigerants: 22,
+    
+    // Operational Energy
+    operationalEnergyTotal: 125,
+    operationalEnergyPartL: 110,
+    operationalEnergyGas: 40,
+    operationalEnergy: 125,
+    gasUsage: 40,
+    spaceHeatingDemand: 45,
+    renewableEnergyGeneration: 12,
+    existingBuildingEnergy: 0,
+    
+    // Water Use
+    operationalWaterUse: 55,
+    
+    // Accreditations
     breeam: 'Very Good',
     leed: 'Gold',
     well: 'Silver',
-    fitwel: '2 stars',
-    passivhausOrEnePHit: 'Not targeted',
-    uknzcbs: 'Yes - 2029',
     nabers: '4 Star',
-    otherCertification: '',
+    passivhaus: false,
     
-    // RIBA Stage Data
-    ribaStageData: [
-      {
-        ribaStage: 'stage-7',
-        methodEnergyMeasurement: 'IES - CIBSE TM54',
-        operationalEnergyTotal: 125,
-        operationalEnergyPartL: 110,
-        operationalEnergyGas: 40,
-        spaceHeatingDemand: 45,
-        renewableEnergyType: 'Solar',
-        totalRenewableEnergyGeneration: 144000, // 12 kWh/m²/year * 12000 m²
-        structuralFrameMaterials: 'Steel + Masonry Hybrid',
-        upfrontCarbon: 750,
-        totalEmbodiedCarbon: 950,
-        biogenicCarbon: 30,
-        embodiedCarbonScopeClarifications: 'A1-A5 only',
-        biodiversityNetGain: 8,
-        habitatsUnitsGained: 6,
-        urbanGreeningFactor: 0.2,
-        generalClarificationNotes: 'Cultural building with specialized acoustic and performance requirements.'
-      }
-    ]
+    // Social Value
+    socialValue: 1.5,
+    
+    // Wellbeing
+    pmv: 0.2,
+    ppd: 9,
+    daylightFactor: 2.1,
+    
+    // Biodiversity
+    biodiversityNetGain: 8,
+    habitatUnits: 6,
+    urbanGreeningFactor: 7,
+    
+    // Embodied Impacts
+    ozoneDepletion: 0.0013,
+    
+    // Circular Economy
+    reusedRecycledMaterial: 18,
+    
+    // Legacy fields
+    carbonIntensity: 140,
+    eui: 125,
+    shd: 45,
+    wlc: 950,
+    
+    certifications: []
   },
   {
-    id: '230158',
-    projectName: '230158 Transport Hub & Bridge',
-    projectLocation: 'Glasgow, UK',
-    primarySector: 'Infrastructure',
-    subSector: 'Transport',
-    projectType: 'New build',
-    heritageProject: false,
-    studioDiscipline: 'Studio 8',
-    neighbourhood: 'H',
-    operationalEnergyEB: 0,
+    id: '8',
+    name: '230158 Transport Hub & Bridge',
+    typology: 'infrastructure',
+    location: 'Glasgow, UK',
+    completionDate: '2028-12-20',
     gia: 5500,
-    buildingLifespan: 100,
-    pcDate: '2028-12-20',
-    eiTeamScope: 'Yes',
-    exSustConsultant: 'Infrastructure Sustainability Group',
-    sustChampionName: 'Sophie Anderson',
-    missionStatement: 'Connecting communities through sustainable infrastructure that enhances mobility and environmental performance.',
+    projectType: 'new-build',
+    ribaStage: 'stage-7',
     
-    // Certifications
+    // Embodied Carbon
+    upfrontCarbon: 850,
+    totalEmbodiedCarbon: 1100,
+    biogenicCarbon: 15,
+    refrigerants: 8,
+    
+    // Operational Energy
+    operationalEnergyTotal: 180,
+    operationalEnergyPartL: 160,
+    operationalEnergyGas: 60,
+    operationalEnergy: 180,
+    gasUsage: 60,
+    spaceHeatingDemand: 70,
+    renewableEnergyGeneration: 25,
+    existingBuildingEnergy: 0,
+    
+    // Water Use
+    operationalWaterUse: 35,
+    
+    // Accreditations
     breeam: 'Good',
     leed: 'Silver',
     well: 'N/A',
-    fitwel: 'Not certified',
-    passivhausOrEnePHit: 'Not targeted',
-    uknzcbs: 'Yes - 2030',
     nabers: '3 Star',
-    otherCertification: 'CEEQUAL',
+    passivhaus: false,
     
-    // RIBA Stage Data
-    ribaStageData: [
-      {
-        ribaStage: 'stage-7',
-        methodEnergyMeasurement: 'Other',
-        operationalEnergyTotal: 180,
-        operationalEnergyPartL: 160,
-        operationalEnergyGas: 60,
-        spaceHeatingDemand: 70,
-        renewableEnergyType: 'Wind',
-        totalRenewableEnergyGeneration: 137500, // 25 kWh/m²/year * 5500 m²
-        structuralFrameMaterials: 'Other (please specify)',
-        upfrontCarbon: 850,
-        totalEmbodiedCarbon: 1100,
-        biogenicCarbon: 15,
-        embodiedCarbonScopeClarifications: 'A1-C4 infrastructure scope',
-        biodiversityNetGain: 25,
-        habitatsUnitsGained: 20,
-        urbanGreeningFactor: 0.45,
-        generalClarificationNotes: 'Major infrastructure project with significant biodiversity enhancement.'
-      }
-    ]
+    // Social Value
+    socialValue: 2.1,
+    
+    // Wellbeing
+    pmv: 0.3,
+    ppd: 12,
+    daylightFactor: 1.5,
+    
+    // Biodiversity
+    biodiversityNetGain: 25,
+    habitatUnits: 20,
+    urbanGreeningFactor: 18,
+    
+    // Embodied Impacts
+    ozoneDepletion: 0.0018,
+    
+    // Circular Economy
+    reusedRecycledMaterial: 35,
+    
+    // Legacy fields
+    carbonIntensity: 200,
+    eui: 180,
+    shd: 70,
+    wlc: 1100,
+    
+    certifications: ['CEEQUAL']
   }
 ];

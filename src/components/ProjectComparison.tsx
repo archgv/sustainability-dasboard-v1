@@ -41,9 +41,20 @@ export const ProjectComparison = ({
     { id: 'stage-7', label: 'RIBA 7' }
   ];
 
-  // Get sector display name from primarySector
-  const getSectorDisplay = (primarySector: string) => {
-    return primarySector || 'Workplace';
+  // Map typologies to the correct sectors
+  const getSectorDisplay = (typology: string) => {
+    const sectorMap: { [key: string]: string } = {
+      'residential': 'Residential',
+      'educational': 'Education',
+      'healthcare': 'Healthcare',
+      'infrastructure': 'Infrastructure',
+      'CCC': 'CCC',
+      'ccc': 'CCC',
+      'office': 'Workplace',
+      'retail': 'Workplace',
+      'mixed-use': 'Workplace'
+    };
+    return sectorMap[typology] || 'Workplace';
   };
 
   const handleComparisonToggle = (projectId: string) => {
@@ -103,7 +114,7 @@ export const ProjectComparison = ({
                 className="w-full justify-between"
               >
                 {primaryProject
-                  ? projects.find(p => p.id === primaryProject)?.projectName || ''
+                  ? projects.find(p => p.id === primaryProject)?.name || ''
                   : "Select primary project..."}
                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
@@ -117,7 +128,7 @@ export const ProjectComparison = ({
                     {projects.map((project) => (
                       <CommandItem
                         key={project.id}
-                        value={project.projectName}
+                        value={project.name}
                         onSelect={() => {
                           onPrimaryProjectChange(project.id);
                           setOpen(false);
@@ -129,7 +140,7 @@ export const ProjectComparison = ({
                             primaryProject === project.id ? "opacity-100" : "opacity-0"
                           )}
                         />
-                        {project.projectName}
+                        {project.name}
                       </CommandItem>
                     ))}
                   </CommandGroup>
@@ -143,16 +154,16 @@ export const ProjectComparison = ({
               <div className="flex items-center gap-2 mb-2">
                 <Building2 className="h-4 w-4 text-blue-600" />
                 <span className="font-medium text-blue-900">
-                  {primaryProjectData.projectName}
+                  {primaryProjectData.name}
                 </span>
               </div>
               <div className="flex items-center gap-4 text-sm text-blue-700">
                 <div className="flex items-center gap-1">
                   <MapPin className="h-3 w-3" />
-                  {primaryProjectData.projectLocation}
+                  {primaryProjectData.location}
                 </div>
                 <Badge variant="outline" className="capitalize">
-                  {getSectorDisplay(primaryProjectData.primarySector)}
+                  {getSectorDisplay(primaryProjectData.typology)}
                 </Badge>
                 <Badge variant="outline" className="capitalize">
                   {primaryProjectData.projectType}
@@ -229,17 +240,17 @@ export const ProjectComparison = ({
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="font-medium text-gray-900">
-                          {project.projectName}
+                          {project.name}
                         </p>
                         <div className="flex items-center gap-2 mt-1">
                           <Badge variant="outline" className="text-xs capitalize">
-                            {getSectorDisplay(project.primarySector)}
+                            {getSectorDisplay(project.typology)}
                           </Badge>
                           <Badge variant="outline" className="text-xs capitalize">
                             {project.projectType}
                           </Badge>
                           <span className="text-xs text-gray-500">
-                            RIBA {project.ribaStageData[project.ribaStageData.length - 1]?.ribaStage?.replace('stage-', '') || '?'}
+                            RIBA {project.ribaStage.replace('stage-', '')}
                           </span>
                         </div>
                       </div>
