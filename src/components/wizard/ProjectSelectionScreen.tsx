@@ -1,12 +1,10 @@
 import { useState } from 'react';
-import { DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Project } from '@/types/project';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Check, ChevronDown, Search } from 'lucide-react';
+import { Check, ChevronsUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Project } from '@/types/project';
 import { WizardProgressIndicator } from './WizardProgressIndicator';
 
 interface ProjectSelectionScreenProps {
@@ -27,11 +25,8 @@ export const ProjectSelectionScreen = ({
   const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
 
-  const selectedProject = projects.find(p => p.id === selectedProjectId);
-  
   const filteredProjects = projects.filter(project =>
-    project.name.toLowerCase().includes(searchValue.toLowerCase()) ||
-    project.id.toLowerCase().includes(searchValue.toLowerCase())
+    project.projectName.toLowerCase().includes(searchValue.toLowerCase())
   );
 
   const handleProjectSelect = (projectId: string) => {
@@ -46,20 +41,26 @@ export const ProjectSelectionScreen = ({
   };
 
   return (
-    <div className="space-y-4 max-h-[85vh] overflow-y-auto">
-      <DialogHeader>
-        <DialogTitle className="text-2xl font-semibold">Add Project Data</DialogTitle>
-      </DialogHeader>
-
+    <div className="space-y-6">
       <WizardProgressIndicator 
         currentStep="project-selection"
         completedSteps={[]}
+        stageCompletionData={{}}
       />
+      
+      <div className="text-center">
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          Select Project
+        </h2>
+        <p className="text-gray-600">
+          Choose a project to add or edit data
+        </p>
+      </div>
 
-      <div className="space-y-4">
+      <div className="max-w-md mx-auto space-y-4">
         <div>
-          <label className="text-sm font-medium mb-2 block">
-            Project <span className="text-destructive">*</span>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Project
           </label>
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
@@ -69,11 +70,13 @@ export const ProjectSelectionScreen = ({
                 aria-expanded={open}
                 className="w-full justify-between"
               >
-                {selectedProject ? `${selectedProject.id} - ${selectedProject.name}` : "Select or search project..."}
-                <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                {selectedProjectId
+                  ? projects.find(p => p.id === selectedProjectId)?.projectName || ''
+                  : "Select a project to edit..."}
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-full p-0" align="start">
+            <PopoverContent className="w-full p-0">
               <Command>
                 <CommandInput 
                   placeholder="Search projects..." 
@@ -81,12 +84,12 @@ export const ProjectSelectionScreen = ({
                   onValueChange={setSearchValue}
                 />
                 <CommandList>
-                  <CommandEmpty>No projects found.</CommandEmpty>
+                  <CommandEmpty>No project found.</CommandEmpty>
                   <CommandGroup>
                     {filteredProjects.map((project) => (
                       <CommandItem
                         key={project.id}
-                        value={`${project.id} ${project.name}`}
+                        value={project.projectName}
                         onSelect={() => handleProjectSelect(project.id)}
                       >
                         <Check
@@ -95,9 +98,7 @@ export const ProjectSelectionScreen = ({
                             selectedProjectId === project.id ? "opacity-100" : "opacity-0"
                           )}
                         />
-                        <div>
-                          <div className="font-medium">{project.name}</div>
-                        </div>
+                        {project.projectName}
                       </CommandItem>
                     ))}
                   </CommandGroup>
@@ -106,18 +107,23 @@ export const ProjectSelectionScreen = ({
             </PopoverContent>
           </Popover>
         </div>
-      </div>
 
-      <div className="flex justify-between pt-6">
-        <Button variant="outline" onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button 
-          onClick={handleNext}
-          disabled={!selectedProjectId}
-        >
-          Next
-        </Button>
+        <div className="flex gap-3 pt-4">
+          <Button 
+            variant="outline" 
+            onClick={onCancel}
+            className="flex-1"
+          >
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleNext}
+            disabled={!selectedProjectId}
+            className="flex-1"
+          >
+            Next
+          </Button>
+        </div>
       </div>
     </div>
   );
