@@ -111,7 +111,7 @@ export const ChartTypeSelector = ({
               {filteredKPIs
                 .filter(kpi => {
                   // Remove biogenic from single-bar and single-timeline charts
-                  if ((chartType === 'single-bar' || chartType === 'single-timeline') && kpi.key === 'biogenicCarbon') {
+                  if ((chartType === 'single-bar' || chartType === 'single-timeline')) {
                     return false;
                   }
                   return true;

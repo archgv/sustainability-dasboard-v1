@@ -3,16 +3,28 @@ import { WizardProgressIndicator } from './WizardProgressIndicator';
 
 interface ProjectDataScreenProps {
   selectedProject: Project | null;
+  projectData?: any;
   currentStep: string;
   completedSteps: string[];
   stageCompletionData?: { [key: string]: { completed: boolean; date?: string } };
+  onDataUpdate?: (data: any) => void;
+  onNext?: () => void;
+  onBack?: () => void;
+  onSaveAndExit?: () => void;
+  isLastStep?: boolean;
 }
 
 export const ProjectDataScreen = ({
   selectedProject,
+  projectData,
   currentStep,
   completedSteps,
-  stageCompletionData = {}
+  stageCompletionData = {},
+  onDataUpdate,
+  onNext,
+  onBack,
+  onSaveAndExit,
+  isLastStep
 }: ProjectDataScreenProps) => {
 
   return (

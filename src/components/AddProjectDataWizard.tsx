@@ -154,10 +154,14 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
           <ProjectDataScreen
             selectedProject={selectedProject}
             projectData={wizardData.projectData}
+            currentStep={currentStep}
+            completedSteps={[]}
+            stageCompletionData={{}}
             onDataUpdate={(data) => updateWizardData({ projectData: data })}
             onNext={goToNextStep}
             onBack={goToPreviousStep}
             onSaveAndExit={handleSave}
+            isLastStep={isLastStep()}
           />
         );
       

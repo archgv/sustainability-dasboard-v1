@@ -175,8 +175,8 @@ const Index = () => {
               onValueTypeChange={setValueType}
             />
             
-            {/* Charts Section */}
-            <ChartSection 
+            {/* Charts Section - Temporarily disabled during refactoring */}
+            {/* <ChartSection 
               projects={displayProjects}
               chartType={chartType}
               selectedKPI1={selectedKPI1}
@@ -185,7 +185,7 @@ const Index = () => {
               valueType={valueType}
               isComparingToSelf={compareToSelf}
               selectedRibaStages={selectedRibaStages}
-            />
+            /> */}
             
             {/* Projects Grid */}
             <ProjectGrid 
