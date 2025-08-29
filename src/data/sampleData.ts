@@ -51,26 +51,7 @@ export const sampleProjects: Project[] = [
         urbanGreeningFactor: 0.3,
         generalClarificationNotes: 'High-performance building with advanced sustainability features.'
       }
-    ],
-    
-    // Legacy fields for backward compatibility
-    name: '230151 Green Office Tower',
-    typology: 'office',
-    location: 'London, UK',
-    completionDate: '2023-06-15',
-    ribaStage: 'stage-7',
-    operationalEnergyTotal: 75,
-    operationalEnergyPartL: 65,
-    operationalEnergyGas: 25,
-    spaceHeatingDemand: 30,
-    upfrontCarbon: 450,
-    totalEmbodiedCarbon: 650,
-    biogenicCarbon: 50,
-    biodiversityNetGain: 15,
-    habitatUnits: 12,
-    urbanGreeningFactor: 12,
-    passivhaus: true,
-    certifications: ['UKNZCBS - Net Zero']
+    ]
   },
   {
     id: '230152',
@@ -122,26 +103,7 @@ export const sampleProjects: Project[] = [
         urbanGreeningFactor: 0.25,
         generalClarificationNotes: 'Timber construction with renewable energy generation.'
       }
-    ],
-    
-    // Legacy fields for backward compatibility
-    name: '230152 Eco Housing Development',
-    typology: 'residential',
-    location: 'Manchester, UK',
-    completionDate: '2022-11-30',
-    ribaStage: 'stage-7',
-    operationalEnergyTotal: 135,
-    operationalEnergyPartL: 80,
-    operationalEnergyGas: 35,
-    spaceHeatingDemand: 40,
-    upfrontCarbon: 780,
-    totalEmbodiedCarbon: 1080,
-    biogenicCarbon: -60,
-    biodiversityNetGain: 10,
-    habitatUnits: 8,
-    urbanGreeningFactor: 8,
-    passivhaus: false,
-    certifications: ['EnerPHit']
+    ]
   },
   {
     id: '230153',
@@ -193,26 +155,7 @@ export const sampleProjects: Project[] = [
         urbanGreeningFactor: 0.4,
         generalClarificationNotes: 'Outstanding sustainability credentials with passive house standards.'
       }
-    ],
-    
-    // Legacy fields for backward compatibility
-    name: '230153 Sustainable School Campus',
-    typology: 'educational',
-    location: 'Birmingham, UK',
-    completionDate: '2023-01-20',
-    ribaStage: 'stage-7',
-    operationalEnergyTotal: 65,
-    operationalEnergyPartL: 55,
-    operationalEnergyGas: 20,
-    spaceHeatingDemand: 25,
-    upfrontCarbon: 380,
-    totalEmbodiedCarbon: 580,
-    biogenicCarbon: 40,
-    biodiversityNetGain: 20,
-    habitatUnits: 15,
-    urbanGreeningFactor: 15,
-    passivhaus: true,
-    certifications: ['UKNZCBS - Net Zero']
+    ]
   },
   {
     id: '230154',
@@ -264,26 +207,7 @@ export const sampleProjects: Project[] = [
         urbanGreeningFactor: 0.15,
         generalClarificationNotes: 'Heritage retrofit with modern performance standards.'
       }
-    ],
-    
-    // Legacy fields for backward compatibility
-    name: '230154 Modern Hospital Wing',
-    typology: 'healthcare',
-    location: 'Leeds, UK',
-    completionDate: '2021-08-10',
-    ribaStage: 'stage-7',
-    operationalEnergyTotal: 165,
-    operationalEnergyPartL: 100,
-    operationalEnergyGas: 45,
-    spaceHeatingDemand: 50,
-    upfrontCarbon: 900,
-    totalEmbodiedCarbon: 1200,
-    biogenicCarbon: 70,
-    biodiversityNetGain: 5,
-    habitatUnits: 4,
-    urbanGreeningFactor: 5,
-    passivhaus: false,
-    certifications: []
+    ]
   },
   {
     id: '230155',
@@ -335,26 +259,7 @@ export const sampleProjects: Project[] = [
         urbanGreeningFactor: 0.28,
         generalClarificationNotes: 'Mixed-use development with innovative sustainability features.'
       }
-    ],
-    
-    // Legacy fields for backward compatibility
-    name: '230155 Retail Innovation Hub',
-    typology: 'office',
-    location: 'Bristol, UK',
-    completionDate: '2022-03-25',
-    ribaStage: 'stage-7',
-    operationalEnergyTotal: 80,
-    operationalEnergyPartL: 70,
-    operationalEnergyGas: 30,
-    spaceHeatingDemand: 35,
-    upfrontCarbon: 480,
-    totalEmbodiedCarbon: 700,
-    biogenicCarbon: 55,
-    biodiversityNetGain: 12,
-    habitatUnits: 9,
-    urbanGreeningFactor: 10,
-    passivhaus: false,
-    certifications: ['EnerPHit']
+    ]
   },
   {
     id: '230156',
@@ -406,26 +311,7 @@ export const sampleProjects: Project[] = [
         urbanGreeningFactor: 0.35,
         generalClarificationNotes: 'Large mixed-use development with exceptional sustainability performance.'
       }
-    ],
-    
-    // Legacy fields for backward compatibility
-    name: '230156 Mixed Use Development',
-    typology: 'residential',
-    location: 'Edinburgh, UK',
-    completionDate: '2023-09-05',
-    ribaStage: 'stage-7',
-    operationalEnergyTotal: 70,
-    operationalEnergyPartL: 60,
-    operationalEnergyGas: 22,
-    spaceHeatingDemand: 28,
-    upfrontCarbon: 400,
-    totalEmbodiedCarbon: 600,
-    biogenicCarbon: 45,
-    biodiversityNetGain: 18,
-    habitatUnits: 14,
-    urbanGreeningFactor: 13,
-    passivhaus: true,
-    certifications: ['UKNZCBS - Net Zero']
+    ]
   },
   {
     id: '230157',
@@ -477,26 +363,7 @@ export const sampleProjects: Project[] = [
         urbanGreeningFactor: 0.2,
         generalClarificationNotes: 'Cultural building with specialized acoustic and performance requirements.'
       }
-    ],
-    
-    // Legacy fields for backward compatibility
-    name: '230157 Concert Hall & Theater',
-    typology: 'CCC',
-    location: 'Cardiff, UK',
-    completionDate: '2026-04-15',
-    ribaStage: 'stage-7',
-    operationalEnergyTotal: 125,
-    operationalEnergyPartL: 110,
-    operationalEnergyGas: 40,
-    spaceHeatingDemand: 45,
-    upfrontCarbon: 750,
-    totalEmbodiedCarbon: 950,
-    biogenicCarbon: 30,
-    biodiversityNetGain: 8,
-    habitatUnits: 6,
-    urbanGreeningFactor: 7,
-    passivhaus: false,
-    certifications: []
+    ]
   },
   {
     id: '230158',
@@ -548,25 +415,6 @@ export const sampleProjects: Project[] = [
         urbanGreeningFactor: 0.45,
         generalClarificationNotes: 'Major infrastructure project with significant biodiversity enhancement.'
       }
-    ],
-    
-    // Legacy fields for backward compatibility
-    name: '230158 Transport Hub & Bridge',
-    typology: 'infrastructure',
-    location: 'Glasgow, UK',
-    completionDate: '2028-12-20',
-    ribaStage: 'stage-7',
-    operationalEnergyTotal: 180,
-    operationalEnergyPartL: 160,
-    operationalEnergyGas: 60,
-    spaceHeatingDemand: 70,
-    upfrontCarbon: 850,
-    totalEmbodiedCarbon: 1100,
-    biogenicCarbon: 15,
-    biodiversityNetGain: 25,
-    habitatUnits: 20,
-    urbanGreeningFactor: 18,
-    passivhaus: false,
-    certifications: ['CEEQUAL']
+    ]
   }
 ];

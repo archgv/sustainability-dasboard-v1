@@ -102,36 +102,37 @@ export const AddProjectDataModal = ({ isOpen, onClose, onSave, projects }: AddPr
         return rating && rating !== 'N/A' ? 'yes' : 'not-targetted';
       };
 
+      const lastStageData = project.ribaStageData[project.ribaStageData.length - 1];
       setFormData({
-        projectNameNumber: project.name,
-        projectLocation: project.location || '',
-        hbDiscipline: '',
-        sector: getSectorFromTypology(project.typology),
-        eiScope: '',
-        sustainabilityConsultant: '',
-        sustainabilityChampion: '',
+        projectNameNumber: project.projectName,
+        projectLocation: project.projectLocation || '',
+        hbDiscipline: project.studioDiscipline || '',
+        sector: project.primarySector || '',
+        eiScope: project.eiTeamScope || '',
+        sustainabilityConsultant: project.exSustConsultant || '',
+        sustainabilityChampion: project.sustChampionName || '',
         projectType: project.projectType || '',
-        existingOperationalEnergy: project.existingBuildingEnergy?.toString() || '',
+        existingOperationalEnergy: project.operationalEnergyEB?.toString() || '',
         gia: project.gia?.toString() || '',
-        pcDate: project.completionDate ? new Date(project.completionDate).getFullYear().toString() : '',
-        ribaStage: project.ribaStage || '',
-        upfrontCarbon: project.upfrontCarbon?.toString() || '',
-        totalEmbodiedCarbon: project.totalEmbodiedCarbon?.toString() || '',
+        pcDate: project.pcDate ? new Date(project.pcDate).getFullYear().toString() : '',
+        ribaStage: lastStageData?.ribaStage || '',
+        upfrontCarbon: lastStageData?.upfrontCarbon?.toString() || '',
+        totalEmbodiedCarbon: lastStageData?.totalEmbodiedCarbon?.toString() || '',
         refrigerantType: '',
-        operationalEnergyTotal: project.operationalEnergy?.toString() || '',
-        operationalEnergyGas: project.gasUsage?.toString() || '',
-        spaceHeatingDemand: project.spaceHeatingDemand?.toString() || '',
-        renewableEnergyGeneration: project.renewableEnergyGeneration?.toString() || '',
-        waterUse: project.operationalWaterUse?.toString() || '',
+        operationalEnergyTotal: lastStageData?.operationalEnergyTotal?.toString() || '',
+        operationalEnergyGas: lastStageData?.operationalEnergyGas?.toString() || '',
+        spaceHeatingDemand: lastStageData?.spaceHeatingDemand?.toString() || '',
+        renewableEnergyGeneration: lastStageData?.totalRenewableEnergyGeneration?.toString() || '',
+        waterUse: '',
         breeam: getBreeamRating(project.breeam || ''),
         leed: getLeedRating(project.leed || ''),
         well: getWellRating(project.well || ''),
         nabers: project.nabers && project.nabers !== 'N/A' ? 'yes' : 'not-targetted',
-        passivhausOrEnephit: project.passivhaus ? 'yes' : 'not-targetted',
-        uknzcbs: project.certifications?.some(cert => cert.includes('UKNZCBS')) ? 'yes' : 'not-targetted',
-        biodiversityNetGain: project.biodiversityNetGain?.toString() || '',
-        habitatUnitsGained: project.habitatUnits?.toString() || '',
-        urbanGreeningFactor: project.urbanGreeningFactor?.toString() || ''
+        passivhausOrEnephit: project.passivhausOrEnePHit === 'Passivhaus' || project.passivhausOrEnePHit === 'EnePHit' ? 'yes' : 'not-targetted',
+        uknzcbs: project.uknzcbs?.includes('Yes') ? 'yes' : 'not-targetted',
+        biodiversityNetGain: lastStageData?.biodiversityNetGain?.toString() || '',
+        habitatUnitsGained: lastStageData?.habitatsUnitsGained?.toString() || '',
+        urbanGreeningFactor: lastStageData?.urbanGreeningFactor?.toString() || ''
       });
     }
     setOpen(false);
@@ -189,7 +190,7 @@ export const AddProjectDataModal = ({ isOpen, onClose, onSave, projects }: AddPr
                     className="w-full justify-between"
                   >
                     {selectedProjectId
-                      ? projects.find(p => p.id === selectedProjectId)?.name || ''
+                      ? projects.find(p => p.id === selectedProjectId)?.projectName || ''
                       : "Select or search project..."}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
@@ -203,7 +204,7 @@ export const AddProjectDataModal = ({ isOpen, onClose, onSave, projects }: AddPr
                         {projects.map((project) => (
                           <CommandItem
                             key={project.id}
-                            value={project.name}
+                            value={project.projectName}
                             onSelect={() => handleProjectSelect(project.id)}
                           >
                             <Check
@@ -212,7 +213,7 @@ export const AddProjectDataModal = ({ isOpen, onClose, onSave, projects }: AddPr
                                 selectedProjectId === project.id ? "opacity-100" : "opacity-0"
                               )}
                             />
-                            {project.name}
+                            {project.projectName}
                           </CommandItem>
                         ))}
                       </CommandGroup>

@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Filter, X } from 'lucide-react';
 interface FilterPanelProps {
   filters: {
-    typology: string;
+    primarySector: string;
     dateRange: string;
     carbonRange: number[];
     energyRange: number[];
@@ -21,10 +21,10 @@ export const FilterPanel = ({
   onFilterChange,
   onClearFilters
 }: FilterPanelProps) => {
-  const handleTypologyChange = (value: string) => {
+  const handlePrimarySectorChange = (value: string) => {
     onFilterChange({
       ...filters,
-      typology: value
+      primarySector: value
     });
   };
   const handleDateRangeChange = (value: string) => {
@@ -62,21 +62,21 @@ export const FilterPanel = ({
       </p>
       
       <div className="space-y-6">
-        {/* Typology Filter */}
+        {/* Primary Sector Filter */}
         <div>
-          <Label htmlFor="typology" className="text-sm font-medium text-gray-700 mb-2 block">Sector</Label>
-          <Select value={filters.typology} onValueChange={handleTypologyChange}>
+          <Label htmlFor="primarySector" className="text-sm font-medium text-gray-700 mb-2 block">Sector</Label>
+          <Select value={filters.primarySector} onValueChange={handlePrimarySectorChange}>
             <SelectTrigger>
               <SelectValue placeholder="Select sector" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Sectors</SelectItem>
-              <SelectItem value="residential">Residential</SelectItem>
-              <SelectItem value="educational">Education</SelectItem>
-              <SelectItem value="healthcare">Healthcare</SelectItem>
-              <SelectItem value="infrastructure">Infrastructure</SelectItem>
-              <SelectItem value="ccc">CCC</SelectItem>
-              <SelectItem value="office">Workplace</SelectItem>
+              <SelectItem value="Residential">Residential</SelectItem>
+              <SelectItem value="Education">Education</SelectItem>
+              <SelectItem value="Healthcare">Healthcare</SelectItem>
+              <SelectItem value="Infrastructure">Infrastructure</SelectItem>
+              <SelectItem value="CCC">CCC</SelectItem>
+              <SelectItem value="Workplace">Workplace</SelectItem>
             </SelectContent>
           </Select>
         </div>

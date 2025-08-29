@@ -15,8 +15,8 @@ import { Project } from '@/types/project';
 const Index = () => {
   const [filteredProjects, setFilteredProjects] = useState(sampleProjects);
   const [chartType, setChartType] = useState<ChartType>('compare-bubble');
-  const [selectedKPI1, setSelectedKPI1] = useState('totalEmbodiedCarbon');
-  const [selectedKPI2, setSelectedKPI2] = useState('operationalEnergyTotal');
+  const [selectedKPI1, setSelectedKPI1] = useState('gia');
+  const [selectedKPI2, setSelectedKPI2] = useState('operationalEnergyEB');
   const [embodiedCarbonBreakdown, setEmbodiedCarbonBreakdown] = useState<EmbodiedCarbonBreakdown>('none');
   const [valueType, setValueType] = useState<ValueType>('per-sqm');
   const [primaryProject, setPrimaryProject] = useState(sampleProjects[0]?.id || '');
@@ -25,7 +25,7 @@ const Index = () => {
   const [selectedRibaStages, setSelectedRibaStages] = useState<string[]>([]);
   
   const [filters, setFilters] = useState({
-    typology: 'all',
+    primarySector: 'all',
     projectType: 'all',
     ribaStage: 'all',
     dateRange: 'all',
@@ -37,17 +37,14 @@ const Index = () => {
     setFilters(newFilters);
     
     const filtered = sampleProjects.filter(project => {
-      const typologyMatch = newFilters.typology === 'all' || project.typology === newFilters.typology;
+      const sectorMatch = newFilters.primarySector === 'all' || project.primarySector === newFilters.primarySector;
       const projectTypeMatch = newFilters.projectType === 'all' || project.projectType === newFilters.projectType;
-      const ribaStageMatch = newFilters.ribaStage === 'all' || project.ribaStage === newFilters.ribaStage;
-      const carbonMatch = project.carbonIntensity >= newFilters.carbonRange[0] && 
-                         project.carbonIntensity <= newFilters.carbonRange[1];
-      const energyMatch = project.operationalEnergy >= newFilters.energyRange[0] && 
-                         project.operationalEnergy <= newFilters.energyRange[1];
+      const lastStage = project.ribaStageData[project.ribaStageData.length - 1];
+      const ribaStageMatch = newFilters.ribaStage === 'all' || lastStage?.ribaStage === newFilters.ribaStage;
       
       let dateMatch = true;
       if (newFilters.dateRange !== 'all') {
-        const projectYear = new Date(project.completionDate).getFullYear();
+        const projectYear = new Date(project.pcDate).getFullYear();
         const currentYear = new Date().getFullYear();
         
         switch (newFilters.dateRange) {
@@ -60,7 +57,7 @@ const Index = () => {
         }
       }
       
-      return typologyMatch && projectTypeMatch && ribaStageMatch && carbonMatch && energyMatch && dateMatch;
+      return sectorMatch && projectTypeMatch && ribaStageMatch && dateMatch;
     });
     
     setFilteredProjects(filtered);
@@ -68,7 +65,7 @@ const Index = () => {
 
   const handleClearFilters = () => {
     const defaultFilters = {
-      typology: 'all',
+      primarySector: 'all',
       projectType: 'all',
       ribaStage: 'all',
       dateRange: 'all',
@@ -101,8 +98,7 @@ const Index = () => {
       return selectedRibaStages.map(stageId => ({
         ...primaryProjectData,
         id: `${primaryProjectData.id}-${stageId}`,
-        ribaStage: stageId as any,
-        name: primaryProjectData.name
+        projectName: `${primaryProjectData.projectName} (RIBA ${stageId.replace('stage-', '')})`
       }));
     }
     
@@ -175,7 +171,7 @@ const Index = () => {
               onChartTypeChange={setChartType}
               onKPI1Change={setSelectedKPI1}
               onKPI2Change={setSelectedKPI2}
-              onEmbodiedCarbonBreakdownChange={setEmbodiedCarbonBreakdown}
+              onEmbodiedCarbonBreakdownChange={() => {}}
               onValueTypeChange={setValueType}
             />
             
