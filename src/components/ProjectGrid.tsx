@@ -17,8 +17,12 @@ export const ProjectGrid = ({
   selectedRibaStages = [],
   primaryProject = ''
 }: ProjectGridProps) => {
-  // Map typologies to the correct sectors
-  const getSectorDisplay = (typology: string) => {
+  // Get sector display from primarySector or legacy typology
+  const getSectorDisplay = (project: Project) => {
+    if (project.primarySector) {
+      return project.primarySector;
+    }
+    // Fallback to legacy typology mapping
     const sectorMap: { [key: string]: string } = {
       'residential': 'Residential',
       'educational': 'Education',
@@ -30,11 +34,12 @@ export const ProjectGrid = ({
       'retail': 'Workplace',
       'mixed-use': 'Workplace'
     };
-    return sectorMap[typology] || 'Workplace';
+    return sectorMap[project.typology || ''] || 'Workplace';
   };
 
-  // Format numbers with commas
-  const formatNumber = (num: number) => {
+  // Format numbers with commas - handle undefined values
+  const formatNumber = (num: number | undefined) => {
+    if (num === undefined || num === null) return '0';
     return num.toLocaleString();
   };
 
@@ -62,9 +67,10 @@ export const ProjectGrid = ({
   };
 
   const getDisplayName = (project: Project, index: number) => {
+    const name = project.projectName || project.name || 'Unknown Project';
     return isComparingToSelf && project.ribaStage 
-      ? `${project.name} (${getRibaStageDisplay(project.ribaStage)})`
-      : project.name;
+      ? `${name} (${getRibaStageDisplay(project.ribaStage)})`
+      : name;
   };
 
   return (
@@ -81,7 +87,30 @@ export const ProjectGrid = ({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {projects.map((project, index) => {
           const displayName = getDisplayName(project, index);
-          const sectorDisplay = getSectorDisplay(project.typology);
+          const sectorDisplay = getSectorDisplay(project);
+          const location = project.projectLocation || project.location || 'Unknown Location';
+          const completionDate = project.pcDate || project.completionDate || new Date().toISOString();
+          
+          // Get operational energy from RIBA stage data or legacy fields
+          const getOperationalEnergy = () => {
+            if (project.ribaStageData && project.ribaStageData.length > 0) {
+              return project.ribaStageData[0].operationalEnergyTotal;
+            }
+            return project.operationalEnergyTotal || project.operationalEnergy;
+          };
+          
+          // Get embodied carbon from RIBA stage data or legacy fields
+          const getEmbodiedCarbon = () => {
+            if (project.ribaStageData && project.ribaStageData.length > 0) {
+              return project.ribaStageData[0].totalEmbodiedCarbon;
+            }
+            return project.totalEmbodiedCarbon;
+          };
+          
+          // Get existing building energy
+          const getExistingBuildingEnergy = () => {
+            return project.operationalEnergyEB || project.existingBuildingEnergy;
+          };
           
           return (
             <Card key={project.id} className="p-6 hover:shadow-lg transition-shadow duration-200">
@@ -97,19 +126,19 @@ export const ProjectGrid = ({
               <div className="space-y-3 mb-4">
                 <div className="flex items-center text-sm text-gray-600">
                   <MapPin className="h-4 w-4 mr-2" />
-                  {project.location}
+                  {location}
                 </div>
                 <div className="flex items-center text-sm text-gray-600">
                   <Calendar className="h-4 w-4 mr-2" />
                   {project.ribaStage === 'stage-7' ? 
-                    `PC date ${new Date(project.completionDate).getFullYear()}` :
-                    `PC date ${new Date(project.completionDate).getFullYear()}`
+                    `PC date ${new Date(completionDate).getFullYear()}` :
+                    `PC date ${new Date(completionDate).getFullYear()}`
                   }
                 </div>
                 <div className="flex items-center text-sm text-gray-600">
                   <FileText className="h-4 w-4 mr-2" />
                   <span className="text-sm text-gray-600">
-                    {getRibaStageDisplay(project.ribaStage)}
+                    {getRibaStageDisplay(project.ribaStage || 'stage-7')}
                   </span>
                 </div>
                 <div className="text-sm text-gray-600">
@@ -117,7 +146,7 @@ export const ProjectGrid = ({
                 </div>
                 
                 <div className="text-sm text-gray-600">
-                  <span className="font-medium">GIA:</span> {formatNumber(project.gia || 0)} m²
+                  <span className="font-medium">GIA:</span> {formatNumber(project.gia)} m²
                 </div>
               </div>
               
@@ -128,7 +157,7 @@ export const ProjectGrid = ({
                     <span className="text-sm text-gray-600">Embodied Carbon</span>
                   </div>
                   <span className="text-sm text-gray-600">
-                    {formatNumber(project.totalEmbodiedCarbon)} kgCO2e/m²
+                    {formatNumber(getEmbodiedCarbon())} kgCO2e/m²
                   </span>
                 </div>
                 
@@ -138,18 +167,18 @@ export const ProjectGrid = ({
                     <span className="text-sm text-gray-600">Operational Energy</span>
                   </div>
                   <span className="text-sm text-gray-600">
-                    {formatNumber(project.operationalEnergy)} kWh/m²/yr
+                    {formatNumber(getOperationalEnergy())} kWh/m²/yr
                   </span>
                 </div>
                 
-                {(project.projectType === 'Retrofit' || project.projectType === 'Retrofit + extension') && project.existingBuildingEnergy && (
+                {(project.projectType === 'Retrofit' || project.projectType === 'Retrofit + extension') && getExistingBuildingEnergy() && (
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
                       <Zap className="h-4 w-4 mr-2 text-orange-600" />
                       <span className="text-sm text-gray-600">Existing Building Energy</span>
                     </div>
                     <span className="text-sm text-gray-600">
-                      {formatNumber(project.existingBuildingEnergy)} kWh/m²/yr
+                      {formatNumber(getExistingBuildingEnergy())} kWh/m²/yr
                     </span>
                   </div>
                 )}
