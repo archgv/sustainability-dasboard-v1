@@ -95,6 +95,64 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
     ribaStages: {}
   });
 
+  // Helper function to populate wizard data with existing project data
+  const populateWizardDataFromProject = (projectId: string) => {
+    const project = projects.find(p => p.id === projectId);
+    if (!project) return;
+
+    // Extract completion year from completionDate
+    const pcYear = project.completionDate ? new Date(project.completionDate).getFullYear().toString() : '';
+    
+    // Map certification values to wizard format
+    const mapCertificationValue = (value: string) => {
+      if (!value || value === 'N/A') return '';
+      return value.toLowerCase().replace(' ', '-');
+    };
+
+    const updatedProjectData = {
+      ...wizardData.projectData,
+      pcYear,
+      gia: project.gia?.toString() || '',
+      breeam: mapCertificationValue(project.breeam || ''),
+      leed: mapCertificationValue(project.leed || ''),
+      well: mapCertificationValue(project.well || ''),
+      nabers: project.nabers?.includes('Star') ? 'yes' : '',
+      passivhaus: project.passivhaus ? 'passivhaus' : '',
+      operationalEnergyExisting: project.existingBuildingEnergy?.toString() || '',
+    };
+
+    // Create RIBA stage 7 data from existing project data
+    const ribaStage7Data = {
+      giaUpdate: project.gia?.toString() || '',
+      energyMeasurementMethod: '',
+      operationalEnergyTotal: project.operationalEnergyTotal?.toString() || '',
+      operationalEnergyPartL: project.operationalEnergyPartL?.toString() || '',
+      operationalEnergyGas: project.operationalEnergyGas?.toString() || '',
+      spaceHeatingDemand: project.spaceHeatingDemand?.toString() || '',
+      renewableEnergyType: '',
+      renewableEnergyGeneration: project.renewableEnergyGeneration?.toString() || '',
+      structuralFrameMaterial: '',
+      upfrontCarbon: project.upfrontCarbon?.toString() || '',
+      totalEmbodiedCarbon: project.totalEmbodiedCarbon?.toString() || '',
+      biogenicCarbon: project.biogenicCarbon?.toString() || '',
+      embodiedCarbonScope: '',
+      biodiversityNetGain: project.biodiversityNetGain?.toString() || '',
+      habitatUnits: project.habitatUnits?.toString() || '',
+      urbanGreeningFactor: project.urbanGreeningFactor?.toString() || '',
+      additionalNotes: '',
+    };
+
+    setWizardData(prev => ({
+      ...prev,
+      selectedProjectId: projectId,
+      projectData: updatedProjectData,
+      ribaStages: {
+        ...prev.ribaStages,
+        'riba-7': ribaStage7Data
+      }
+    }));
+  };
+
   const stepOrder: WizardStep[] = [
     'project-selection',
     'project-data',
@@ -129,6 +187,10 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
     setWizardData(prev => ({ ...prev, ...updates }));
   };
 
+  const handleProjectSelect = (projectId: string) => {
+    populateWizardDataFromProject(projectId);
+  };
+
   const handleSave = () => {
     onSave(wizardData);
     onClose();
@@ -143,7 +205,7 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
           <ProjectSelectionScreen
             projects={projects}
             selectedProjectId={wizardData.selectedProjectId}
-            onProjectSelect={(projectId) => updateWizardData({ selectedProjectId: projectId })}
+            onProjectSelect={handleProjectSelect}
             onNext={goToNextStep}
             onCancel={onClose}
           />

@@ -103,7 +103,7 @@ export const ProjectDataScreen = ({
             </div>
             <div>
               <Label className="text-sm font-medium">Project Type</Label>
-              <Input value="N/A" disabled className="mt-2" />
+              <Input value={selectedProject.projectType || 'N/A'} disabled className="mt-2" />
             </div>
             
             <div>
