@@ -291,7 +291,7 @@ export const ProjectDataScreen = ({
                   <SelectValue placeholder="Select certification" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">None</SelectItem>
+                  <SelectItem value="none">None</SelectItem>
                   <SelectItem value="pass">Pass</SelectItem>
                   <SelectItem value="good">Good</SelectItem>
                   <SelectItem value="very-good">Very Good</SelectItem>
@@ -313,7 +313,7 @@ export const ProjectDataScreen = ({
                   <SelectValue placeholder="Select certification" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">None</SelectItem>
+                  <SelectItem value="none">None</SelectItem>
                   <SelectItem value="certified">Certified</SelectItem>
                   <SelectItem value="silver">Silver</SelectItem>
                   <SelectItem value="gold">Gold</SelectItem>
@@ -334,7 +334,7 @@ export const ProjectDataScreen = ({
                   <SelectValue placeholder="Select certification" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">None</SelectItem>
+                  <SelectItem value="none">None</SelectItem>
                   <SelectItem value="silver">Silver</SelectItem>
                   <SelectItem value="gold">Gold</SelectItem>
                   <SelectItem value="platinum">Platinum</SelectItem>
@@ -354,7 +354,7 @@ export const ProjectDataScreen = ({
                   <SelectValue placeholder="Select certification" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">None</SelectItem>
+                  <SelectItem value="none">None</SelectItem>
                   <SelectItem value="1-star">1 Star</SelectItem>
                   <SelectItem value="2-star">2 Star</SelectItem>
                   <SelectItem value="3-star">3 Star</SelectItem>
@@ -374,7 +374,7 @@ export const ProjectDataScreen = ({
                   <SelectValue placeholder="Select certification" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">None</SelectItem>
+                  <SelectItem value="none">None</SelectItem>
                   <SelectItem value="passivhaus">Passivhaus</SelectItem>
                   <SelectItem value="enerphit">EnerPHit</SelectItem>
                   <SelectItem value="plus">Plus</SelectItem>
@@ -395,7 +395,7 @@ export const ProjectDataScreen = ({
                   <SelectValue placeholder="Select certification" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">None</SelectItem>
+                  <SelectItem value="none">None</SelectItem>
                   <SelectItem value="net-zero-carbon">Net Zero Carbon</SelectItem>
                   <SelectItem value="net-zero-carbon-ready">Net Zero Carbon Ready</SelectItem>
                 </SelectContent>
@@ -414,7 +414,7 @@ export const ProjectDataScreen = ({
                   <SelectValue placeholder="Select rating" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">None</SelectItem>
+                  <SelectItem value="none">None</SelectItem>
                   <SelectItem value="yes">Yes</SelectItem>
                 </SelectContent>
               </Select>
