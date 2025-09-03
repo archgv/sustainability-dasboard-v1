@@ -68,8 +68,6 @@ export const WizardProgressIndicator = ({
               <div className={getStepClasses(getStepStatus(step.id), step.stage)}>
                 {getStepStatus(step.id) === 'completed' ? (
                   '✓'
-                ) : step.stage ? (
-                  step.id.split('-')[1]
                 ) : (
                   index + 1
                 )}
