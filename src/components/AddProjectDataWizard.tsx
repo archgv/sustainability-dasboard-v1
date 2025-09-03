@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import * as React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Project } from '@/types/project';
@@ -99,6 +100,41 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
     ribaStages: {}
   });
 
+  // Reset wizard to initial state when dialog opens
+  const resetWizard = () => {
+    setCurrentStep('project-selection');
+    setActiveTab('project-overview');
+    setWizardData({
+      selectedProjectId: '',
+      projectData: {
+        pcYear: '',
+        operationalEnergyExisting: '',
+        gia: '',
+        buildingLifespan: '',
+        paidScope: '',
+        sustainabilityConsultant: '',
+        sustainabilityChampion: '',
+        missionStatement: '',
+        breeam: '',
+        leed: '',
+        well: '',
+        fitwel: '',
+        passivhaus: '',
+        uknzcbs: '',
+        nabers: '',
+        otherCertification: '',
+      },
+      ribaStages: {}
+    });
+  };
+
+  // Reset when dialog opens
+  React.useEffect(() => {
+    if (isOpen) {
+      resetWizard();
+    }
+  }, [isOpen]);
+
   // Helper function to populate wizard data with existing project data
   const populateWizardDataFromProject = (projectId: string) => {
     const project = projects.find(p => p.id === projectId);
@@ -175,10 +211,12 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
 
   const handleSaveAndExit = () => {
     onSave(wizardData);
+    resetWizard();
     onClose();
   };
 
   const handleCancel = () => {
+    resetWizard();
     onClose();
   };
 
