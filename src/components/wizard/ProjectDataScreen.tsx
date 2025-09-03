@@ -73,16 +73,22 @@ export const ProjectDataScreen = ({
   }
 
   return (
-    <div className="space-y-6">
-      <DialogHeader>
-        <DialogTitle className="text-2xl font-semibold">Project Data</DialogTitle>
-      </DialogHeader>
+    <div className="max-h-[85vh] overflow-y-auto space-y-6">
+      {/* Sticky header */}
+      <div className="sticky top-0 bg-background z-10 pb-4 border-b">
+        <DialogHeader>
+          <DialogTitle className="text-2xl font-semibold">Project Data</DialogTitle>
+        </DialogHeader>
 
-      <WizardProgressIndicator 
-        currentStep="project-data"
-        completedSteps={['project-selection']}
-      />
+        <div className="mt-4">
+          <WizardProgressIndicator 
+            currentStep="project-data"
+            completedSteps={['project-selection']}
+          />
+        </div>
+      </div>
 
+      {/* Content area */}
       <div className="space-y-6">
         {/* Project Information */}
         <div className="space-y-4">
@@ -93,142 +99,45 @@ export const ProjectDataScreen = ({
           <div className="grid grid-cols-2 gap-x-8 gap-y-4 bg-muted/30 p-4 rounded-lg">
             <div>
               <Label className="text-sm font-medium">Project Name & Number</Label>
-              <Input value={`${selectedProject.id} - ${selectedProject.name}`} disabled className="mt-2" />
+              <p className="text-sm text-muted-foreground mt-1">{selectedProject.name}</p>
             </div>
-            <div></div>
             
             <div>
-              <Label className="text-sm font-medium">Location</Label>
-              <Input value={selectedProject.location || 'N/A'} disabled className="mt-2" />
+              <Label className="text-sm font-medium">Project Location</Label>
+              <p className="text-sm text-muted-foreground mt-1">{selectedProject.location}</p>
             </div>
+            
+            <div>
+              <Label className="text-sm font-medium">Typology</Label>
+              <p className="text-sm text-muted-foreground mt-1">{selectedProject.typology}</p>
+            </div>
+            
             <div>
               <Label className="text-sm font-medium">Project Type</Label>
-              <Input value={selectedProject.projectType || 'N/A'} disabled className="mt-2" />
+              <p className="text-sm text-muted-foreground mt-1">{selectedProject.projectType}</p>
             </div>
             
             <div>
-              <Label className="text-sm font-medium">Primary Sector</Label>
-              <Input value={selectedProject.typology || 'N/A'} disabled className="mt-2" />
-            </div>
-            <div>
-              <Label className="text-sm font-medium">Heritage Project</Label>
-              <Input value="N/A" disabled className="mt-2" />
-            </div>
-            
-            <div>
-              <Label className="text-sm font-medium">Sub Sector</Label>
-              <Input value="N/A" disabled className="mt-2" />
-            </div>
-            <div>
-              <Label className="text-sm font-medium">Studio Discipline</Label>
-              <Input value="N/A" disabled className="mt-2" />
-            </div>
-            
-            <div></div>
-            <div>
-              <Label className="text-sm font-medium">Neighbourhood</Label>
-              <Input value="N/A" disabled className="mt-2" />
+              <Label className="text-sm font-medium">Current RIBA Stage</Label>
+              <p className="text-sm text-muted-foreground mt-1">{selectedProject.ribaStage}</p>
             </div>
           </div>
         </div>
 
-        {/* Project Overview */}
+        {/* Section B - Project Overview */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold text-foreground border-b pb-2">
-            Project Overview
+            Section B - Project Overview
           </h3>
           
-          <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <TooltipField
-              label="Operational energy of existing building"
-              tooltip="Enter the annual operational energy of the existing building (if retained)"
-            >
-              <Input
-                placeholder="Enter kWh/m²/yr (e.g. 130)"
-                value={projectData.operationalEnergyExisting}
-                onChange={(e) => handleInputChange('operationalEnergyExisting', e.target.value)}
-                type="number"
-                min="0"
-                max="500"
-              />
-            </TooltipField>
-
-            <TooltipField
-              label="EI team: Paid scope"
-              tooltip="Indicate whether the Environmental Intelligence team has a paid scope"
-              required
+              label="Year project commenced or will be completed"
+              tooltip="When did or will the project commence/complete?"
+              required={true}
             >
               <Select
-                value={projectData.paidScope}
-                onValueChange={(value) => handleInputChange('paidScope', value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select scope" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="yes">Yes</SelectItem>
-                  <SelectItem value="no">No</SelectItem>
-                  <SelectItem value="tbc">TBC</SelectItem>
-                </SelectContent>
-              </Select>
-            </TooltipField>
-
-            <TooltipField
-              label="GIA of proposed development"
-              tooltip="Enter the Gross Internal Area (GIA) of the proposed development"
-              required
-            >
-              <Input
-                placeholder="Enter m² (e.g. 9,800)"
-                value={projectData.gia}
-                onChange={(e) => handleInputChange('gia', e.target.value)}
-                type="number"
-                min="1"
-              />
-            </TooltipField>
-
-            <TooltipField
-              label="External Sustainability consultant"
-              tooltip="Enter the company name of the appointed external sustainability consultant (if applicable)"
-            >
-              <Input
-                placeholder="Enter company name"
-                value={projectData.sustainabilityConsultant}
-                onChange={(e) => handleInputChange('sustainabilityConsultant', e.target.value)}
-              />
-            </TooltipField>
-
-            <TooltipField
-              label="Building lifespan"
-              required
-            >
-              <Input
-                placeholder="Enter years (e.g. 60)"
-                value={projectData.buildingLifespan}
-                onChange={(e) => handleInputChange('buildingLifespan', e.target.value)}
-                type="number"
-                min="1"
-              />
-            </TooltipField>
-
-            <TooltipField
-              label="H\B Sustainability champion"
-              tooltip="Enter the name of the internal sustainability champion on the project team (not a member of the EI team)"
-            >
-              <Input
-                placeholder="Select name"
-                value={projectData.sustainabilityChampion}
-                onChange={(e) => handleInputChange('sustainabilityChampion', e.target.value)}
-              />
-            </TooltipField>
-
-            <TooltipField
-              label="PC date"
-              tooltip="Enter the expected or actual Practical Completion year. Please be as accurate as possible, as UKNZCBS benchmarks are year-specific"
-              required
-            >
-              <Select
-                value={projectData.pcYear}
+                value={projectData.pcYear || ''}
                 onValueChange={(value) => handleInputChange('pcYear', value)}
               >
                 <SelectTrigger>
@@ -236,276 +145,329 @@ export const ProjectDataScreen = ({
                 </SelectTrigger>
                 <SelectContent>
                   {years.map(year => (
-                    <SelectItem key={year} value={year.toString()}>
-                      {year}
-                    </SelectItem>
+                    <SelectItem key={year} value={year.toString()}>{year}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </TooltipField>
 
-            <div></div>
+            <TooltipField
+              label="Operational energy of existing building"
+              tooltip="If there is an existing building, what is the operational energy use?"
+            >
+              <Input
+                placeholder="Enter kWh/m²/yr (e.g. 75)"
+                value={projectData.operationalEnergyExisting || ''}
+                onChange={(e) => handleInputChange('operationalEnergyExisting', e.target.value)}
+                type="number"
+                min="0"
+                max="300"
+              />
+            </TooltipField>
 
-            <div className="col-span-2">
-              <TooltipField
-                label="Mission statement"
+            <TooltipField
+              label="GIA (Gross Internal Area)"
+              tooltip="Enter the total gross internal floor area in square metres"
+              required={true}
+            >
+              <Input
+                placeholder="Enter m² (e.g. 6,500)"
+                value={projectData.gia || ''}
+                onChange={(e) => handleInputChange('gia', e.target.value)}
+                type="number"
+                min="1"
+              />
+            </TooltipField>
+
+            <TooltipField
+              label="Building lifespan"
+              tooltip="Enter the anticipated building lifespan"
+              required={true}
+            >
+              <Select
+                value={projectData.buildingLifespan || ''}
+                onValueChange={(value) => handleInputChange('buildingLifespan', value)}
               >
-                <Textarea
-                  placeholder="Enter text (max 250 characters)"
-                  value={projectData.missionStatement}
-                  onChange={(e) => handleInputChange('missionStatement', e.target.value)}
-                  maxLength={250}
-                  className="resize-none"
-                />
-              </TooltipField>
-            </div>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select lifespan" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="60">60 years</SelectItem>
+                  <SelectItem value="100">100 years</SelectItem>
+                  <SelectItem value="120">120 years</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </TooltipField>
+
+            <TooltipField
+              label="Project paid scope"
+              tooltip="What is the project paid scope?"
+              required={true}
+            >
+              <Select
+                value={projectData.paidScope || ''}
+                onValueChange={(value) => handleInputChange('paidScope', value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select scope" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="architecture-only">Architecture only</SelectItem>
+                  <SelectItem value="full-design-team">Full design team</SelectItem>
+                  <SelectItem value="partial-services">Partial services</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </TooltipField>
+
+            <TooltipField
+              label="External sustainability consultant"
+              tooltip="Is there an external sustainability consultant on the project?"
+            >
+              <Select
+                value={projectData.sustainabilityConsultant || ''}
+                onValueChange={(value) => handleInputChange('sustainabilityConsultant', value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select option" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="yes">Yes</SelectItem>
+                  <SelectItem value="no">No</SelectItem>
+                </SelectContent>
+              </Select>
+            </TooltipField>
+
+            <TooltipField
+              label="Sustainability champion"
+              tooltip="Is there a sustainability champion on the project?"
+            >
+              <Select
+                value={projectData.sustainabilityChampion || ''}
+                onValueChange={(value) => handleInputChange('sustainabilityChampion', value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select option" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="yes">Yes</SelectItem>
+                  <SelectItem value="no">No</SelectItem>
+                </SelectContent>
+              </Select>
+            </TooltipField>
           </div>
+
+          <TooltipField
+            label="Mission statement"
+            tooltip="Add a brief project mission statement relating to sustainability"
+          >
+            <Textarea
+              placeholder="Enter mission statement"
+              value={projectData.missionStatement || ''}
+              onChange={(e) => handleInputChange('missionStatement', e.target.value)}
+              maxLength={300}
+              className="resize-none"
+            />
+          </TooltipField>
         </div>
-      </div>
 
-      {/* Certifications */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-foreground border-b pb-2">
-          Certifications
-        </h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <TooltipField
-            label="BREEAM"
-            tooltip="Select status or the targeted BREEAM rating"
-            required
-          >
-            <Select
-              value={projectData.breeam}
-              onValueChange={(value) => handleInputChange('breeam', value)}
+        {/* Section C - Certifications */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-foreground border-b pb-2">
+            Section C - Certifications
+          </h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <TooltipField
+              label="BREEAM"
+              tooltip="Select BREEAM certification level if applicable"
             >
-              <SelectTrigger>
-                <SelectValue placeholder="Select rating" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="not-targeted">Not targeted</SelectItem>
-                <SelectItem value="to-be-determined">To be determined</SelectItem>
-                <SelectItem value="outstanding">Outstanding</SelectItem>
-                <SelectItem value="excellent">Excellent</SelectItem>
-                <SelectItem value="very-good">Very Good</SelectItem>
-                <SelectItem value="good">Good</SelectItem>
-                <SelectItem value="pass">Pass</SelectItem>
-                <SelectItem value="unclassified">Unclassified</SelectItem>
-              </SelectContent>
-            </Select>
-          </TooltipField>
+              <Select
+                value={projectData.breeam || ''}
+                onValueChange={(value) => handleInputChange('breeam', value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select certification" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">None</SelectItem>
+                  <SelectItem value="pass">Pass</SelectItem>
+                  <SelectItem value="good">Good</SelectItem>
+                  <SelectItem value="very-good">Very Good</SelectItem>
+                  <SelectItem value="excellent">Excellent</SelectItem>
+                  <SelectItem value="outstanding">Outstanding</SelectItem>
+                </SelectContent>
+              </Select>
+            </TooltipField>
 
-          <TooltipField
-            label="LEED"
-            tooltip="Select status or the targeted LEED rating"
-            required
-          >
-            <Select
-              value={projectData.leed}
-              onValueChange={(value) => handleInputChange('leed', value)}
+            <TooltipField
+              label="LEED"
+              tooltip="Select LEED certification level if applicable"
             >
-              <SelectTrigger>
-                <SelectValue placeholder="Select rating" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="not-targeted">Not targeted</SelectItem>
-                <SelectItem value="to-be-determined">To be determined</SelectItem>
-                <SelectItem value="platinum">Platinum</SelectItem>
-                <SelectItem value="gold">Gold</SelectItem>
-                <SelectItem value="silver">Silver</SelectItem>
-                <SelectItem value="certified">Certified</SelectItem>
-              </SelectContent>
-            </Select>
-          </TooltipField>
+              <Select
+                value={projectData.leed || ''}
+                onValueChange={(value) => handleInputChange('leed', value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select certification" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">None</SelectItem>
+                  <SelectItem value="certified">Certified</SelectItem>
+                  <SelectItem value="silver">Silver</SelectItem>
+                  <SelectItem value="gold">Gold</SelectItem>
+                  <SelectItem value="platinum">Platinum</SelectItem>
+                </SelectContent>
+              </Select>
+            </TooltipField>
 
-          <TooltipField
-            label="WELL"
-            tooltip="Select status or the targeted WELL rating"
-            required
-          >
-            <Select
-              value={projectData.well}
-              onValueChange={(value) => handleInputChange('well', value)}
+            <TooltipField
+              label="WELL"
+              tooltip="Select WELL certification level if applicable"
             >
-              <SelectTrigger>
-                <SelectValue placeholder="Select rating" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="not-targeted">Not targeted</SelectItem>
-                <SelectItem value="to-be-determined">To be determined</SelectItem>
-                <SelectItem value="platinum">Platinum</SelectItem>
-                <SelectItem value="gold">Gold</SelectItem>
-                <SelectItem value="silver">Silver</SelectItem>
-                <SelectItem value="bronze">Bronze</SelectItem>
-              </SelectContent>
-            </Select>
-          </TooltipField>
+              <Select
+                value={projectData.well || ''}
+                onValueChange={(value) => handleInputChange('well', value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select certification" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">None</SelectItem>
+                  <SelectItem value="silver">Silver</SelectItem>
+                  <SelectItem value="gold">Gold</SelectItem>
+                  <SelectItem value="platinum">Platinum</SelectItem>
+                </SelectContent>
+              </Select>
+            </TooltipField>
 
-          <TooltipField
-            label="Fitwel"
-            tooltip="Select status or the targeted Fitwel rating"
-            required
-          >
-            <Select
-              value={projectData.fitwel}
-              onValueChange={(value) => handleInputChange('fitwel', value)}
+            <TooltipField
+              label="Fitwel"
+              tooltip="Select Fitwel certification level if applicable"
             >
-              <SelectTrigger>
-                <SelectValue placeholder="Select rating" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="not-certified">Not certified</SelectItem>
-                <SelectItem value="1-star">1 star</SelectItem>
-                <SelectItem value="2-stars">2 stars</SelectItem>
-                <SelectItem value="3-stars">3 stars</SelectItem>
-              </SelectContent>
-            </Select>
-          </TooltipField>
+              <Select
+                value={projectData.fitwel || ''}
+                onValueChange={(value) => handleInputChange('fitwel', value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select certification" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">None</SelectItem>
+                  <SelectItem value="1-star">1 Star</SelectItem>
+                  <SelectItem value="2-star">2 Star</SelectItem>
+                  <SelectItem value="3-star">3 Star</SelectItem>
+                </SelectContent>
+              </Select>
+            </TooltipField>
 
-          <TooltipField
-            label="Passivhaus or EnePHit"
-            tooltip="Indicate if targeting Passivhaus or EnePHit"
-            required
-          >
-            <Select
-              value={projectData.passivhaus}
-              onValueChange={(value) => handleInputChange('passivhaus', value)}
+            <TooltipField
+              label="Passivhaus"
+              tooltip="Select Passivhaus certification if applicable"
             >
-              <SelectTrigger>
-                <SelectValue placeholder="Indicate if targeting" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="not-targeted">Not targeted</SelectItem>
-                <SelectItem value="passivhaus">Passivhaus</SelectItem>
-                <SelectItem value="enephis">EnePHit</SelectItem>
-              </SelectContent>
-            </Select>
-          </TooltipField>
+              <Select
+                value={projectData.passivhaus || ''}
+                onValueChange={(value) => handleInputChange('passivhaus', value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select certification" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">None</SelectItem>
+                  <SelectItem value="passivhaus">Passivhaus</SelectItem>
+                  <SelectItem value="enerphit">EnerPHit</SelectItem>
+                  <SelectItem value="plus">Plus</SelectItem>
+                  <SelectItem value="premium">Premium</SelectItem>
+                </SelectContent>
+              </Select>
+            </TooltipField>
 
-          <TooltipField
-            label="UKNZCBS"
-            tooltip="Indicate if targeting UKNZCBS. Ensure the PC year above is correct"
-            required
-          >
-            <Select
-              value={projectData.uknzcbs}
-              onValueChange={(value) => handleInputChange('uknzcbs', value)}
+            <TooltipField
+              label="UK Net Zero Carbon Buildings Standard"
+              tooltip="Select UK NZCBS certification if applicable"
             >
-              <SelectTrigger>
-                <SelectValue placeholder="Indicate if targeting" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="not-targeted">Not targeted</SelectItem>
-                {years.map(year => (
-                  <SelectItem key={year} value={`yes-${year}`}>
-                    Yes - {year}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </TooltipField>
+              <Select
+                value={projectData.uknzcbs || ''}
+                onValueChange={(value) => handleInputChange('uknzcbs', value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select certification" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">None</SelectItem>
+                  <SelectItem value="net-zero-carbon">Net Zero Carbon</SelectItem>
+                  <SelectItem value="net-zero-carbon-ready">Net Zero Carbon Ready</SelectItem>
+                </SelectContent>
+              </Select>
+            </TooltipField>
 
-          <TooltipField
-            label="NABERS"
-            tooltip="Select status or the targeted NABERS rating"
-            required
-          >
-            <Select
-              value={projectData.nabers}
-              onValueChange={(value) => handleInputChange('nabers', value)}
+            <TooltipField
+              label="NABERS"
+              tooltip="Select NABERS rating if applicable"
             >
-              <SelectTrigger>
-                <SelectValue placeholder="Select rating" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="not-targeted">Not targeted</SelectItem>
-                <SelectItem value="yes">Yes</SelectItem>
-              </SelectContent>
-            </Select>
-          </TooltipField>
+              <Select
+                value={projectData.nabers || ''}
+                onValueChange={(value) => handleInputChange('nabers', value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select rating" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">None</SelectItem>
+                  <SelectItem value="yes">Yes</SelectItem>
+                </SelectContent>
+              </Select>
+            </TooltipField>
+          </div>
 
           <TooltipField
             label="Other certification"
-            tooltip="Insert name of other certification and target"
+            tooltip="Enter any other relevant certifications"
           >
             <Input
-              placeholder="Add details"
-              value={projectData.otherCertification}
+              placeholder="Enter other certifications"
+              value={projectData.otherCertification || ''}
               onChange={(e) => handleInputChange('otherCertification', e.target.value)}
             />
           </TooltipField>
         </div>
-      </div>
 
-      <div className="flex justify-between pt-6">
-        <Button variant="outline" onClick={onBack}>
-          Back
-        </Button>
-        
-        <div className="flex gap-2">
-          <AlertDialog open={showExitDialog} onOpenChange={setShowExitDialog}>
-            <AlertDialogTrigger asChild>
-              <Button variant="outline">
-                Save & Exit
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle className="flex items-center gap-2">
-                  <AlertTriangle className="h-5 w-5 text-amber-500" />
-                  Save Progress and Exit?
-                </AlertDialogTitle>
-                <AlertDialogDescription>
-                  You are about to save your progress and exit. All information will be lost.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>No, go back</AlertDialogCancel>
-                <AlertDialogAction onClick={onSaveAndExit}>Yes, Save & Exit</AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-          
-          <Button onClick={onNext}>
-            Next
-          </Button>
-        </div>
-      </div>
-
-      {/* Fixed footer */}
-      <div className="flex-shrink-0 pt-4 border-t mt-4">
-        <div className="flex justify-between">
-          <Button variant="outline" onClick={onBack}>
-            Back
-          </Button>
-          
-          <div className="flex gap-2">
-            <AlertDialog open={showExitDialog} onOpenChange={setShowExitDialog}>
-              <AlertDialogTrigger asChild>
-                <Button variant="outline">
-                  Save & Exit
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle className="flex items-center gap-2">
-                    <AlertTriangle className="h-5 w-5 text-amber-500" />
-                    Save Progress and Exit?
-                  </AlertDialogTitle>
-                  <AlertDialogDescription>
-                    You are about to save your progress and exit. All information will be lost.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>No, go back</AlertDialogCancel>
-                  <AlertDialogAction onClick={onSaveAndExit}>Yes, Save & Exit</AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-            
-            <Button onClick={onNext}>
-              Next
+        {/* Footer buttons within scrollable area */}
+        <div className="pt-6 border-t">
+          <div className="flex justify-between">
+            <Button variant="outline" onClick={onBack}>
+              Back
             </Button>
+            
+            <div className="flex gap-2">
+              <AlertDialog open={showExitDialog} onOpenChange={setShowExitDialog}>
+                <AlertDialogTrigger asChild>
+                  <Button variant="outline">
+                    Save & Exit
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className="flex items-center gap-2">
+                      <AlertTriangle className="h-5 w-5 text-amber-500" />
+                      Save Progress and Exit?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      You are about to save your progress and exit. All information will be lost.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>No, go back</AlertDialogCancel>
+                    <AlertDialogAction onClick={onSaveAndExit}>Yes, Save & Exit</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+              
+              <Button onClick={onNext}>
+                Next
+              </Button>
+            </div>
           </div>
         </div>
       </div>
