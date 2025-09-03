@@ -78,6 +78,31 @@ export const ProjectOverviewScreen = ({
       {/* Content area */}
       <div className="space-y-6">
 
+        {/* Project Information */}
+        <div className="space-y-4">          
+          <div className="grid grid-cols-2 gap-x-8 gap-y-4 bg-muted/30 p-4 rounded-lg">
+            <div>
+              <Label className="text-sm font-medium">Project Location</Label>
+              <p className="text-sm text-muted-foreground mt-1">{selectedProject.location}</p>
+            </div>
+            
+            <div>
+              <Label className="text-sm font-medium">Typology</Label>
+              <p className="text-sm text-muted-foreground mt-1">{selectedProject.typology}</p>
+            </div>
+            
+            <div>
+              <Label className="text-sm font-medium">Project Type</Label>
+              <p className="text-sm text-muted-foreground mt-1">{selectedProject.projectType}</p>
+            </div>
+            
+            <div>
+              <Label className="text-sm font-medium">Current RIBA Stage</Label>
+              <p className="text-sm text-muted-foreground mt-1">{selectedProject.ribaStage}</p>
+            </div>
+          </div>
+        </div>
+
         {/* Project Overview */}
         <div className="space-y-4">          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
