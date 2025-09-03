@@ -260,7 +260,7 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent hideCloseButton className="max-w-4xl max-h-[90vh]">
         {renderCurrentStep()}
       </DialogContent>
     </Dialog>
