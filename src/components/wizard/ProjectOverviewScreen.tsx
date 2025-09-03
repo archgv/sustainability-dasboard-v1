@@ -78,11 +78,7 @@ export const ProjectOverviewScreen = ({
       {/* Content area */}
       <div className="space-y-6">
         {/* Project Information */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-foreground border-b pb-2">
-            Project Information
-          </h3>
-          
+        <div className="space-y-4">          
           <div className="grid grid-cols-2 gap-x-8 gap-y-4 bg-muted/30 p-4 rounded-lg">
             <div>
               <Label className="text-sm font-medium">Project Name & Number</Label>
@@ -111,12 +107,8 @@ export const ProjectOverviewScreen = ({
           </div>
         </div>
 
-        {/* Section B - Project Overview */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-foreground border-b pb-2">
-            Section B - Project Overview
-          </h3>
-          
+        {/* Project Overview */}
+        <div className="space-y-4">          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <TooltipField
               label="Year project commenced or will be completed"

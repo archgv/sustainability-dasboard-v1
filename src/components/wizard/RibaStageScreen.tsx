@@ -107,17 +107,6 @@ export const RibaStageScreen = ({
     <div className="flex flex-col max-h-[85vh]">
       {/* Fixed header */}
       <div className="flex-shrink-0 pb-4 border-b mb-4">
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-semibold">RIBA Stage {stageNumber} Data</DialogTitle>
-        </DialogHeader>
-
-        <div className="mt-4">
-          <WizardProgressIndicator 
-            currentStep={currentStep}
-            completedSteps={completedSteps}
-            stageCompletionData={stageCompletionData}
-          />
-        </div>
       </div>
 
       {/* Scrollable content */}

@@ -65,12 +65,8 @@ export const CertificationsScreen = ({
     <div className="max-h-[75vh] overflow-y-auto space-y-6">
       {/* Content area */}
       <div className="space-y-6">
-        {/* Section C - Certifications */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-foreground border-b pb-2">
-            Section C - Certifications
-          </h3>
-          
+        {/* Certifications */}
+        <div className="space-y-4">          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <TooltipField
               label="BREEAM"
