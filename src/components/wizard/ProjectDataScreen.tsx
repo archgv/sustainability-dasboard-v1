@@ -473,6 +473,4 @@ export const ProjectDataScreen = ({
       </div>
     </div>
   );
-    </div>
-  );
 };
