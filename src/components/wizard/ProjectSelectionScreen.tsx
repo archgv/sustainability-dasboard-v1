@@ -119,6 +119,26 @@ export const ProjectSelectionScreen = ({
             </PopoverContent>
           </Popover>
         </div>
+
+        {selectedProject && (
+          <div className="bg-muted/30 p-4 rounded-lg space-y-2">
+            <h4 className="font-medium">Selected Project Details:</h4>
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <span className="font-medium">Project Type:</span> {selectedProject.projectType}
+              </div>
+              <div>
+                <span className="font-medium">RIBA Stage:</span> {selectedProject.ribaStage}
+              </div>
+              <div>
+                <span className="font-medium">Location:</span> {selectedProject.location}
+              </div>
+              <div>
+                <span className="font-medium">GIA:</span> {selectedProject.gia ? `${selectedProject.gia} m²` : 'Not specified'}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="flex justify-between pt-6">
