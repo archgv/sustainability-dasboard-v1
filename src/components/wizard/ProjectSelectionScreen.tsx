@@ -121,16 +121,19 @@ export const ProjectSelectionScreen = ({
         </div>
       </div>
 
-      <div className="flex justify-between pt-6">
-        <Button variant="outline" onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button 
-          onClick={handleNext}
-          disabled={!selectedProjectId}
-        >
-          Next
-        </Button>
+      {/* Fixed footer */}
+      <div className="flex-shrink-0 pt-4 border-t mt-4">
+        <div className="flex justify-between">
+          <Button variant="outline" onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleNext}
+            disabled={!selectedProjectId}
+          >
+            Next
+          </Button>
+        </div>
       </div>
     </div>
   );

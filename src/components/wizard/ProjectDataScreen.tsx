@@ -471,6 +471,44 @@ export const ProjectDataScreen = ({
           </Button>
         </div>
       </div>
+
+      {/* Fixed footer */}
+      <div className="flex-shrink-0 pt-4 border-t mt-4">
+        <div className="flex justify-between">
+          <Button variant="outline" onClick={onBack}>
+            Back
+          </Button>
+          
+          <div className="flex gap-2">
+            <AlertDialog open={showExitDialog} onOpenChange={setShowExitDialog}>
+              <AlertDialogTrigger asChild>
+                <Button variant="outline">
+                  Save & Exit
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle className="flex items-center gap-2">
+                    <AlertTriangle className="h-5 w-5 text-amber-500" />
+                    Save Progress and Exit?
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    You are about to save your progress and exit. All information will be lost.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>No, go back</AlertDialogCancel>
+                  <AlertDialogAction onClick={onSaveAndExit}>Yes, Save & Exit</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+            
+            <Button onClick={onNext}>
+              Next
+            </Button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
