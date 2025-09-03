@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Project } from '@/types/project';
 import { ProjectSelectionScreen } from './wizard/ProjectSelectionScreen';
-import { ProjectDataScreen } from './wizard/ProjectDataScreen';
+import { ProjectOverviewScreen } from './wizard/ProjectOverviewScreen';
+import { CertificationsScreen } from './wizard/CertificationsScreen';
 import { RibaStageScreen } from './wizard/RibaStageScreen';
 
 interface AddProjectDataWizardProps {
@@ -14,7 +16,8 @@ interface AddProjectDataWizardProps {
 
 export type WizardStep = 
   | 'project-selection'
-  | 'project-data'
+  | 'project-overview'
+  | 'certifications'
   | 'riba-1'
   | 'riba-2'
   | 'riba-3'
@@ -72,6 +75,7 @@ export interface WizardData {
 
 export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddProjectDataWizardProps) => {
   const [currentStep, setCurrentStep] = useState<WizardStep>('project-selection');
+  const [activeTab, setActiveTab] = useState<string>('project-overview');
   const [wizardData, setWizardData] = useState<WizardData>({
     selectedProjectId: '',
     projectData: {
@@ -151,36 +155,9 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
         'riba-7': ribaStage7Data
       }
     }));
-  };
 
-  const stepOrder: WizardStep[] = [
-    'project-selection',
-    'project-data',
-    'riba-1',
-    'riba-2',
-    'riba-3',
-    'riba-4',
-    'riba-5',
-    'riba-6',
-    'riba-7'
-  ];
-
-  const getCurrentStepIndex = () => stepOrder.indexOf(currentStep);
-  const isFirstStep = () => getCurrentStepIndex() === 0;
-  const isLastStep = () => getCurrentStepIndex() === stepOrder.length - 1;
-
-  const goToNextStep = () => {
-    const currentIndex = getCurrentStepIndex();
-    if (currentIndex < stepOrder.length - 1) {
-      setCurrentStep(stepOrder[currentIndex + 1]);
-    }
-  };
-
-  const goToPreviousStep = () => {
-    const currentIndex = getCurrentStepIndex();
-    if (currentIndex > 0) {
-      setCurrentStep(stepOrder[currentIndex - 1]);
-    }
+    // Move to tabbed interface after project selection
+    setCurrentStep('project-overview');
   };
 
   const updateWizardData = (updates: Partial<WizardData>) => {
@@ -192,70 +169,103 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
   };
 
   const handleSave = () => {
+    console.log('Saving data for current tab:', activeTab);
+    // Individual save without closing
+  };
+
+  const handleSaveAndExit = () => {
     onSave(wizardData);
+    onClose();
+  };
+
+  const handleCancel = () => {
     onClose();
   };
 
   const selectedProject = projects.find(p => p.id === wizardData.selectedProjectId);
 
   const renderCurrentStep = () => {
-    switch (currentStep) {
-      case 'project-selection':
-        return (
-          <ProjectSelectionScreen
-            projects={projects}
-            selectedProjectId={wizardData.selectedProjectId}
-            onProjectSelect={handleProjectSelect}
-            onNext={goToNextStep}
-            onCancel={onClose}
-          />
-        );
-      
-      case 'project-data':
-        return (
-          <ProjectDataScreen
-            selectedProject={selectedProject}
-            projectData={wizardData.projectData}
-            onDataUpdate={(data) => updateWizardData({ projectData: data })}
-            onNext={goToNextStep}
-            onBack={goToPreviousStep}
-            onSaveAndExit={handleSave}
-          />
-        );
-      
-      default:
-        // RIBA stage screens
-        if (currentStep.startsWith('riba-')) {
-          const stageNumber = currentStep.split('-')[1];
-          const stageData = wizardData.ribaStages[currentStep] || {};
-          
-          return (
-            <RibaStageScreen
-              stageNumber={stageNumber}
-              stageData={stageData}
-              projectGia={wizardData.projectData.gia}
-              onDataUpdate={(data) => {
-                const updatedRibaStages = {
-                  ...wizardData.ribaStages,
-                  [currentStep]: data
-                };
-                updateWizardData({ ribaStages: updatedRibaStages });
-              }}
-              onNext={goToNextStep}
-              onBack={goToPreviousStep}
-              onSaveAndExit={handleSave}
-              isLastStep={isLastStep()}
-              currentStep={currentStep}
-              completedSteps={[]}
-              stageCompletionData={{
-                'riba-1': { completed: true, date: '10.01.2025' },
-                'riba-2': { completed: true, date: '12.06.2025' }
-              }}
-            />
-          );
-        }
-        return null;
+    if (currentStep === 'project-selection') {
+      return (
+        <ProjectSelectionScreen
+          projects={projects}
+          selectedProjectId={wizardData.selectedProjectId}
+          onProjectSelect={handleProjectSelect}
+          onNext={() => setCurrentStep('project-overview')}
+          onCancel={onClose}
+        />
+      );
     }
+
+    // Tabbed interface for all other steps
+    return (
+      <div className="space-y-4">
+        <DialogHeader>
+          <DialogTitle className="text-2xl font-semibold">Project Data - {selectedProject?.name}</DialogTitle>
+        </DialogHeader>
+
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-9">
+            <TabsTrigger value="project-overview">Project Overview</TabsTrigger>
+            <TabsTrigger value="certifications">Certifications</TabsTrigger>
+            <TabsTrigger value="riba-1">RIBA Stage 1</TabsTrigger>
+            <TabsTrigger value="riba-2">RIBA Stage 2</TabsTrigger>
+            <TabsTrigger value="riba-3">RIBA Stage 3</TabsTrigger>
+            <TabsTrigger value="riba-4">RIBA Stage 4</TabsTrigger>
+            <TabsTrigger value="riba-5">RIBA Stage 5</TabsTrigger>
+            <TabsTrigger value="riba-6">RIBA Stage 6</TabsTrigger>
+            <TabsTrigger value="riba-7">RIBA Stage 7</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="project-overview">
+            <ProjectOverviewScreen
+              selectedProject={selectedProject}
+              projectData={wizardData.projectData}
+              onDataUpdate={(data) => updateWizardData({ projectData: data })}
+              onSave={handleSave}
+              onSaveAndExit={handleSaveAndExit}
+              onCancel={handleCancel}
+            />
+          </TabsContent>
+
+          <TabsContent value="certifications">
+            <CertificationsScreen
+              projectData={wizardData.projectData}
+              onDataUpdate={(data) => updateWizardData({ projectData: data })}
+              onSave={handleSave}
+              onSaveAndExit={handleSaveAndExit}
+              onCancel={handleCancel}
+            />
+          </TabsContent>
+
+          {['riba-1', 'riba-2', 'riba-3', 'riba-4', 'riba-5', 'riba-6', 'riba-7'].map((stage) => (
+            <TabsContent key={stage} value={stage}>
+              <RibaStageScreen
+                stageNumber={stage.split('-')[1]}
+                stageData={wizardData.ribaStages[stage] || {}}
+                projectGia={wizardData.projectData.gia}
+                onDataUpdate={(data) => {
+                  const updatedRibaStages = {
+                    ...wizardData.ribaStages,
+                    [stage]: data
+                  };
+                  updateWizardData({ ribaStages: updatedRibaStages });
+                }}
+                onSave={handleSave}
+                onSaveAndExit={handleSaveAndExit}
+                onCancel={handleCancel}
+                currentStep={stage as WizardStep}
+                completedSteps={[]}
+                stageCompletionData={{
+                  'riba-1': { completed: true, date: '10.01.2025' },
+                  'riba-2': { completed: true, date: '12.06.2025' }
+                }}
+              />
+            </TabsContent>
+          ))}
+        </Tabs>
+      </div>
+    );
   };
 
   return (

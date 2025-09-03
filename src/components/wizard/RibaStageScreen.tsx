@@ -15,10 +15,9 @@ interface RibaStageScreenProps {
   stageData: any;
   projectGia: string;
   onDataUpdate: (data: any) => void;
-  onNext: () => void;
-  onBack: () => void;
+  onSave: () => void;
   onSaveAndExit: () => void;
-  isLastStep: boolean;
+  onCancel: () => void;
   currentStep: string;
   completedSteps: string[];
   stageCompletionData?: { [key: string]: { completed: boolean; date?: string } };
@@ -57,16 +56,16 @@ export const RibaStageScreen = ({
   stageData,
   projectGia,
   onDataUpdate,
-  onNext,
-  onBack,
+  onSave,
   onSaveAndExit,
-  isLastStep,
+  onCancel,
   currentStep,
   completedSteps,
   stageCompletionData
 }: RibaStageScreenProps) => {
   const [showExitDialog, setShowExitDialog] = useState(false);
-  const [showBackDialog, setShowBackDialog] = useState(false);
+  const [showCancelDialog, setShowCancelDialog] = useState(false);
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
 
   const handleInputChange = (field: string, value: string) => {
     onDataUpdate({
@@ -399,10 +398,10 @@ export const RibaStageScreen = ({
       {/* Fixed footer */}
       <div className="flex-shrink-0 pt-4 border-t mt-4">
         <div className="flex justify-between">
-          <AlertDialog open={showBackDialog} onOpenChange={setShowBackDialog}>
+          <AlertDialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
             <AlertDialogTrigger asChild>
               <Button variant="outline">
-                Back
+                Cancel
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -412,20 +411,36 @@ export const RibaStageScreen = ({
                   Are you sure you want to cancel?
                 </AlertDialogTitle>
                 <AlertDialogDescription>
-                  All unsaved data will be lost.
+                  All unsaved work will be lost.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>No, go back</AlertDialogCancel>
-                <AlertDialogAction onClick={onBack}>Yes, cancel</AlertDialogAction>
+                <AlertDialogCancel>Keep editing</AlertDialogCancel>
+                <AlertDialogAction onClick={onCancel}>Discard changes and exit</AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
           
           <div className="flex gap-2">
-            <AlertDialog open={showExitDialog} onOpenChange={setShowExitDialog}>
+            <AlertDialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
               <AlertDialogTrigger asChild>
                 <Button variant="outline">
+                  Save
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Project data saved successfully</AlertDialogTitle>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogAction onClick={() => { onSave(); setShowSaveDialog(false); }}>OK</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+
+            <AlertDialog open={showExitDialog} onOpenChange={setShowExitDialog}>
+              <AlertDialogTrigger asChild>
+                <Button>
                   Save & Exit
                 </Button>
               </AlertDialogTrigger>
@@ -433,28 +448,15 @@ export const RibaStageScreen = ({
                 <AlertDialogHeader>
                   <AlertDialogTitle className="flex items-center gap-2">
                     <AlertTriangle className="h-5 w-5 text-amber-500" />
-                    Save Progress and Exit?
+                    Save progress and exit?
                   </AlertDialogTitle>
-                  <AlertDialogDescription>
-                    You are about to save your progress and exit. All information will be lost.
-                  </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>No, go back</AlertDialogCancel>
+                  <AlertDialogCancel>Keep editing</AlertDialogCancel>
                   <AlertDialogAction onClick={onSaveAndExit}>Yes, Save & Exit</AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
-            
-            {isLastStep ? (
-              <Button onClick={onSaveAndExit}>
-                Save Project Data
-              </Button>
-            ) : (
-              <Button onClick={onNext}>
-                Next
-              </Button>
-            )}
           </div>
         </div>
       </div>
