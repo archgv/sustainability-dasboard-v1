@@ -244,15 +244,59 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-9">
-            <TabsTrigger value="project-overview">Project Overview</TabsTrigger>
-            <TabsTrigger value="certifications">Certifications</TabsTrigger>
-            <TabsTrigger value="riba-1">RIBA Stage 1</TabsTrigger>
-            <TabsTrigger value="riba-2">RIBA Stage 2</TabsTrigger>
-            <TabsTrigger value="riba-3">RIBA Stage 3</TabsTrigger>
-            <TabsTrigger value="riba-4">RIBA Stage 4</TabsTrigger>
-            <TabsTrigger value="riba-5">RIBA Stage 5</TabsTrigger>
-            <TabsTrigger value="riba-6">RIBA Stage 6</TabsTrigger>
-            <TabsTrigger value="riba-7">RIBA Stage 7</TabsTrigger>
+            <TabsTrigger value="project-overview" className="text-center">
+              <div className="flex flex-col">
+                <span>Project</span>
+                <span>Overview</span>
+              </div>
+            </TabsTrigger>
+            <TabsTrigger value="certifications" className="text-center">
+              <div className="flex flex-col">
+                <span>Certifications</span>
+              </div>
+            </TabsTrigger>
+            <TabsTrigger value="riba-1" className="text-center">
+              <div className="flex flex-col">
+                <span>RIBA</span>
+                <span>Stage 1</span>
+              </div>
+            </TabsTrigger>
+            <TabsTrigger value="riba-2" className="text-center">
+              <div className="flex flex-col">
+                <span>RIBA</span>
+                <span>Stage 2</span>
+              </div>
+            </TabsTrigger>
+            <TabsTrigger value="riba-3" className="text-center">
+              <div className="flex flex-col">
+                <span>RIBA</span>
+                <span>Stage 3</span>
+              </div>
+            </TabsTrigger>
+            <TabsTrigger value="riba-4" className="text-center">
+              <div className="flex flex-col">
+                <span>RIBA</span>
+                <span>Stage 4</span>
+              </div>
+            </TabsTrigger>
+            <TabsTrigger value="riba-5" className="text-center">
+              <div className="flex flex-col">
+                <span>RIBA</span>
+                <span>Stage 5</span>
+              </div>
+            </TabsTrigger>
+            <TabsTrigger value="riba-6" className="text-center">
+              <div className="flex flex-col">
+                <span>RIBA</span>
+                <span>Stage 6</span>
+              </div>
+            </TabsTrigger>
+            <TabsTrigger value="riba-7" className="text-center">
+              <div className="flex flex-col">
+                <span>RIBA</span>
+                <span>Stage 7</span>
+              </div>
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="project-overview">
