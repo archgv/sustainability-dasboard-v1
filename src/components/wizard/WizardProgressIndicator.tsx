@@ -64,7 +64,7 @@ export const WizardProgressIndicator = ({
       <div className="flex items-center justify-between mb-2">
         {steps.map((step, index) => (
           <div key={step.id} className="flex items-center flex-1">
-            <div className="flex flex-col items-center justify-center min-h-[4rem]">
+            <div className="flex flex-col items-center">
               <div className={getStepClasses(getStepStatus(step.id), step.stage)}>
                 {getStepStatus(step.id) === 'completed' ? (
                   '✓'
