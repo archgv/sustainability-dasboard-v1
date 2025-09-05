@@ -74,10 +74,9 @@ export const ProjectOverviewScreen = ({
   }
 
   return (
-    <div className="max-h-[75vh] overflow-y-auto space-y-6">
-      {/* Content area */}
-      <div className="space-y-6">
-
+    <div className="flex flex-col h-[75vh]">
+      {/* Scrollable content area */}
+      <div className="flex-1 overflow-y-auto space-y-6 pr-2">
         {/* Project Information */}
         <div className="space-y-4">          
           <div className="grid grid-cols-2 gap-x-8 gap-y-4 bg-muted/30 p-4 rounded-lg">
@@ -246,70 +245,70 @@ export const ProjectOverviewScreen = ({
             />
           </TooltipField>
         </div>
+      </div>
 
-        {/* Footer buttons within scrollable area */}
-        <div className="pt-6 border-t">
-          <div className="flex justify-between">
-            <AlertDialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
+      {/* Fixed footer buttons */}
+      <div className="pt-4 border-t bg-background">
+        <div className="flex justify-between">
+          <AlertDialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
+            <AlertDialogTrigger asChild>
+              <Button variant="outline">
+                Cancel
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle className="flex items-center gap-2">
+                  <AlertTriangle className="h-5 w-5 text-amber-500" />
+                  Are you sure you want to cancel?
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  All unsaved work will be lost.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Keep editing</AlertDialogCancel>
+                <AlertDialogAction onClick={onCancel}>Discard changes and exit</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+          
+          <div className="flex gap-2">
+            <AlertDialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
               <AlertDialogTrigger asChild>
                 <Button variant="outline">
-                  Cancel
+                  Save
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Project data saved successfully</AlertDialogTitle>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogAction onClick={() => { onSave(); setShowSaveDialog(false); }}>OK</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+
+            <AlertDialog open={showExitDialog} onOpenChange={setShowExitDialog}>
+              <AlertDialogTrigger asChild>
+                <Button>
+                  Save & Exit
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle className="flex items-center gap-2">
                     <AlertTriangle className="h-5 w-5 text-amber-500" />
-                    Are you sure you want to cancel?
+                    Save progress and exit?
                   </AlertDialogTitle>
-                  <AlertDialogDescription>
-                    All unsaved work will be lost.
-                  </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>Keep editing</AlertDialogCancel>
-                  <AlertDialogAction onClick={onCancel}>Discard changes and exit</AlertDialogAction>
+                  <AlertDialogAction onClick={onSaveAndExit}>Yes, Save & Exit</AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
-            
-            <div className="flex gap-2">
-              <AlertDialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
-                <AlertDialogTrigger asChild>
-                  <Button variant="outline">
-                    Save
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Project data saved successfully</AlertDialogTitle>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogAction onClick={() => { onSave(); setShowSaveDialog(false); }}>OK</AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-
-              <AlertDialog open={showExitDialog} onOpenChange={setShowExitDialog}>
-                <AlertDialogTrigger asChild>
-                  <Button>
-                    Save & Exit
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle className="flex items-center gap-2">
-                      <AlertTriangle className="h-5 w-5 text-amber-500" />
-                      Save progress and exit?
-                    </AlertDialogTitle>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Keep editing</AlertDialogCancel>
-                    <AlertDialogAction onClick={onSaveAndExit}>Yes, Save & Exit</AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </div>
           </div>
         </div>
       </div>
