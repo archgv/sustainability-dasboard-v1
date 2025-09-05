@@ -106,7 +106,7 @@ export const ProjectSelectionScreen = ({
                             </div>
                             <div className="flex gap-4 text-xs">
                               {project.operationalEnergy && <span>Energy: {project.operationalEnergy} kWh/m²/yr</span>}
-                              {project.totalEmbodiedCarbon && <span>Carbon: {project.totalEmbodiedCarbon} kgCO2e/m²</span>}
+                              {project.totalEmbodiedCarbon && <span>Total Embodied Carbon: {project.totalEmbodiedCarbon} kgCO2e/m²</span>}
                             </div>
                           </div>
                         </div>
