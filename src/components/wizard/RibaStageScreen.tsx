@@ -104,13 +104,9 @@ export const RibaStageScreen = ({
   ];
 
   return (
-    <div className="flex flex-col max-h-[85vh]">
-      {/* Fixed header */}
-      <div className="flex-shrink-0 pb-4 border-b mb-4">
-      </div>
-
-      {/* Scrollable content */}
-      <div className="flex-1 overflow-y-auto space-y-6">
+    <div className="flex flex-col h-[75vh]">
+      {/* Scrollable content area */}
+      <div className="flex-1 overflow-y-auto space-y-6 pr-2">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Operational Energy */}
           <div className="space-y-4">
@@ -384,8 +380,8 @@ export const RibaStageScreen = ({
         </div>
       </div>
 
-      {/* Fixed footer */}
-      <div className="flex-shrink-0 pt-4 border-t mt-4">
+      {/* Fixed footer buttons */}
+      <div className="pt-4 border-t bg-background">
         <div className="flex justify-between">
           <AlertDialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
             <AlertDialogTrigger asChild>
