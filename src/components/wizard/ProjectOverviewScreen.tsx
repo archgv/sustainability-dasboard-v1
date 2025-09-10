@@ -149,14 +149,20 @@ export const ProjectOverviewScreen = ({
               label="Operational energy of existing building"
               tooltip="Enter the annual operational energy of the existing building (if retained)"
             >
-              <Input
-                placeholder="Enter kWh/m²/yr (e.g. 130 kWh/m²/yr)"
-                value={projectData.operationalEnergyExisting || ''}
-                onChange={(e) => handleInputChange('operationalEnergyExisting', e.target.value)}
-                type="number"
-                min="0"
-                max="500"
-              />
+              <div className="relative">
+                <Input
+                  placeholder="Enter kWh/m²/yr (e.g. 130 kWh/m²/yr)"
+                  value={projectData.operationalEnergyExisting || ''}
+                  onChange={(e) => handleInputChange('operationalEnergyExisting', e.target.value)}
+                  type="number"
+                  min="0"
+                  max="500"
+                  className="pr-20"
+                />
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">
+                  kWh/m²/yr
+                </div>
+              </div>
             </TooltipField>
 
             <TooltipField
@@ -164,13 +170,19 @@ export const ProjectOverviewScreen = ({
               tooltip="Enter the Gross Internal Area (GIA) of the proposed development"
               required={true}
             >
-              <Input
-                placeholder="Enter m² (e.g. 9,800 m²)"
-                value={projectData.gia || ''}
-                onChange={(e) => handleInputChange('gia', e.target.value)}
-                type="number"
-                min="1"
-              />
+              <div className="relative">
+                <Input
+                  placeholder="Enter m² (e.g. 9,800 m²)"
+                  value={projectData.gia || ''}
+                  onChange={(e) => handleInputChange('gia', e.target.value)}
+                  type="number"
+                  min="1"
+                  className="pr-12"
+                />
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">
+                  m²
+                </div>
+              </div>
             </TooltipField>
 
             <TooltipField
