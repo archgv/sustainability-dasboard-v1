@@ -5,8 +5,12 @@ export const sampleProjects: Project[] = [
   {
     id: '1',
     name: '230151 Green Office Tower',
-    typology: 'office',
+    typology: 'workplace',
+    subSector: 'Commercial office',
     location: 'London, UK',
+    heritageProject: 'Yes',
+    studioDiscipline: 'Studio 1',
+    neighbourhood: 'A',
     completionDate: '2023-06-15',
     gia: 9800,
     projectType: 'new-build',
@@ -257,7 +261,7 @@ export const sampleProjects: Project[] = [
   {
     id: '5',
     name: '230155 Retail Innovation Hub',
-    typology: 'office',
+    typology: 'workplace',
     location: 'Bristol, UK',
     completionDate: '2022-03-25',
     gia: 8500,

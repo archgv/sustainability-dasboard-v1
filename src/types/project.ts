@@ -1,7 +1,7 @@
 export interface Project {
   id: string;
   name: string;
-  typology: 'office' | 'residential' | 'educational' | 'healthcare' | 'retail' | 'mixed-use' | 'CCC' | 'infrastructure';
+  typology: 'workplace' | 'residential' | 'educational' | 'healthcare' | 'retail' | 'mixed-use' | 'CCC' | 'infrastructure';
   subSector?: string;
   location: string;
   completionDate: string;

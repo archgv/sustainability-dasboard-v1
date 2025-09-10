@@ -150,7 +150,7 @@ export const ProjectOverviewScreen = ({
               tooltip="Enter the annual operational energy of the existing building (if retained)"
             >
               <Input
-                placeholder="Enter kWh/m²/yr (e.g. 130)"
+                placeholder="Enter kWh/m²/yr (e.g. 130 kWh/m²/yr)"
                 value={projectData.operationalEnergyExisting || ''}
                 onChange={(e) => handleInputChange('operationalEnergyExisting', e.target.value)}
                 type="number"
@@ -165,7 +165,7 @@ export const ProjectOverviewScreen = ({
               required={true}
             >
               <Input
-                placeholder="Enter m² (e.g. 9,800)"
+                placeholder="Enter m² (e.g. 9,800 m²)"
                 value={projectData.gia || ''}
                 onChange={(e) => handleInputChange('gia', e.target.value)}
                 type="number"
