@@ -118,13 +118,19 @@ export const RibaStageScreen = ({
               label="Update GIA (only if different)"
               tooltip="Enter a stage-specific GIA below only if it differs from the project GIA"
             >
-              <Input
-                placeholder={`Enter GIA (e.g. 6,500) - Project GIA: ${projectGia || 'N/A'} m²`}
-                value={stageData.giaUpdate || ''}
-                onChange={(e) => handleInputChange('giaUpdate', e.target.value)}
-                type="number"
-                min="1"
-              />
+              <div className="relative">
+                <Input
+                  placeholder={`Enter value (e.g. 6,500) - Project GIA: ${projectGia || 'N/A'} m²`}
+                  value={stageData.giaUpdate || ''}
+                  onChange={(e) => handleInputChange('giaUpdate', e.target.value)}
+                  type="number"
+                  min="1"
+                  className="pr-8"
+                />
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">
+                  m²
+                </div>
+              </div>
             </TooltipField>
 
             <TooltipField
@@ -150,55 +156,79 @@ export const RibaStageScreen = ({
               label="Operational energy: Total"
               tooltip="Enter both regulated and unregulated energy (do not use Part L figures here)"
             >
-              <Input
-                placeholder="Enter kWh/m²/yr (e.g. 65)"
-                value={stageData.operationalEnergyTotal || ''}
-                onChange={(e) => handleInputChange('operationalEnergyTotal', e.target.value)}
-                type="number"
-                min="0"
-                max="150"
-              />
+              <div className="relative">
+                <Input
+                  placeholder="Enter value (e.g. 65)"
+                  value={stageData.operationalEnergyTotal || ''}
+                  onChange={(e) => handleInputChange('operationalEnergyTotal', e.target.value)}
+                  type="number"
+                  min="0"
+                  max="150"
+                  className="pr-20"
+                />
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">
+                  kWh/m²/yr
+                </div>
+              </div>
             </TooltipField>
 
             <TooltipField
               label="Operational energy: Part L"
               tooltip="Enter regulated operational energy use (Part L)"
             >
-              <Input
-                placeholder="Enter kWh/m²/yr (e.g. 45)"
-                value={stageData.operationalEnergyPartL || ''}
-                onChange={(e) => handleInputChange('operationalEnergyPartL', e.target.value)}
-                type="number"
-                min="0"
-                max="150"
-              />
+              <div className="relative">
+                <Input
+                  placeholder="Enter value (e.g. 45)"
+                  value={stageData.operationalEnergyPartL || ''}
+                  onChange={(e) => handleInputChange('operationalEnergyPartL', e.target.value)}
+                  type="number"
+                  min="0"
+                  max="150"
+                  className="pr-20"
+                />
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">
+                  kWh/m²/yr
+                </div>
+              </div>
             </TooltipField>
 
             <TooltipField
               label="Operational energy: Gas"
               tooltip="Enter gas energy use; enter 0 if no gas is used on site"
             >
-              <Input
-                placeholder="Enter kWh/m²/yr (e.g. 35)"
-                value={stageData.operationalEnergyGas || ''}
-                onChange={(e) => handleInputChange('operationalEnergyGas', e.target.value)}
-                type="number"
-                min="0"
-                max="150"
-              />
+              <div className="relative">
+                <Input
+                  placeholder="Enter value (e.g. 35)"
+                  value={stageData.operationalEnergyGas || ''}
+                  onChange={(e) => handleInputChange('operationalEnergyGas', e.target.value)}
+                  type="number"
+                  min="0"
+                  max="150"
+                  className="pr-20"
+                />
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">
+                  kWh/m²/yr
+                </div>
+              </div>
             </TooltipField>
 
             <TooltipField
               label="Space heating demand"
               tooltip="Enter the building's total space heating demand"
             >
-              <Input
-                placeholder="Enter kWh/m²/yr (e.g. 35)"
-                value={stageData.spaceHeatingDemand || ''}
-                onChange={(e) => handleInputChange('spaceHeatingDemand', e.target.value)}
-                type="number"
-                min="0"
-              />
+              <div className="relative">
+                <Input
+                  placeholder="Enter value (e.g. 35)"
+                  value={stageData.spaceHeatingDemand || ''}
+                  onChange={(e) => handleInputChange('spaceHeatingDemand', e.target.value)}
+                  type="number"
+                  min="0"
+                  className="pr-20"
+                />
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">
+                  kWh/m²/yr
+                </div>
+              </div>
             </TooltipField>
 
             <TooltipField
@@ -224,13 +254,19 @@ export const RibaStageScreen = ({
               label="Renewable energy generation"
               tooltip="Enter the total annual renewable energy generated for the whole building (not per m² GIA)"
             >
-              <Input
-                placeholder="Enter kWh/yr (e.g. 5,000)"
-                value={stageData.renewableEnergyGeneration || ''}
-                onChange={(e) => handleInputChange('renewableEnergyGeneration', e.target.value)}
-                type="number"
-                min="0"
-              />
+              <div className="relative">
+                <Input
+                  placeholder="Enter value (e.g. 5,000)"
+                  value={stageData.renewableEnergyGeneration || ''}
+                  onChange={(e) => handleInputChange('renewableEnergyGeneration', e.target.value)}
+                  type="number"
+                  min="0"
+                  className="pr-16"
+                />
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">
+                  kWh/yr
+                </div>
+              </div>
             </TooltipField>
           </div>
 
@@ -263,42 +299,60 @@ export const RibaStageScreen = ({
               label="Upfront carbon"
               tooltip="Enter embodied carbon for stages A1–A5"
             >
-              <Input
-                placeholder="Enter kgCO2e/m² (e.g. 600)"
-                value={stageData.upfrontCarbon || ''}
-                onChange={(e) => handleInputChange('upfrontCarbon', e.target.value)}
-                type="number"
-                min="0"
-                max="1500"
-              />
+              <div className="relative">
+                <Input
+                  placeholder="Enter value (e.g. 600)"
+                  value={stageData.upfrontCarbon || ''}
+                  onChange={(e) => handleInputChange('upfrontCarbon', e.target.value)}
+                  type="number"
+                  min="0"
+                  max="1500"
+                  className="pr-24"
+                />
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">
+                  kgCO2e/m²
+                </div>
+              </div>
             </TooltipField>
 
             <TooltipField
               label="Total embodied carbon"
               tooltip="Enter total embodied carbon for life cycle stages A1–C4"
             >
-              <Input
-                placeholder="Enter kgCO2e/m² (e.g. 900)"
-                value={stageData.totalEmbodiedCarbon || ''}
-                onChange={(e) => handleInputChange('totalEmbodiedCarbon', e.target.value)}
-                type="number"
-                min="0"
-                max="1500"
-              />
+              <div className="relative">
+                <Input
+                  placeholder="Enter value (e.g. 900)"
+                  value={stageData.totalEmbodiedCarbon || ''}
+                  onChange={(e) => handleInputChange('totalEmbodiedCarbon', e.target.value)}
+                  type="number"
+                  min="0"
+                  max="1500"
+                  className="pr-24"
+                />
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">
+                  kgCO2e/m²
+                </div>
+              </div>
             </TooltipField>
 
             <TooltipField
               label="Biogenic carbon"
               tooltip="Enter total biogenic carbon (use a negative number)"
             >
-              <Input
-                placeholder="Enter kgCO2e/m² (e.g. -150)"
-                value={stageData.biogenicCarbon || ''}
-                onChange={(e) => handleInputChange('biogenicCarbon', e.target.value)}
-                type="number"
-                min="-600"
-                max="0"
-              />
+              <div className="relative">
+                <Input
+                  placeholder="Enter value (e.g. -150)"
+                  value={stageData.biogenicCarbon || ''}
+                  onChange={(e) => handleInputChange('biogenicCarbon', e.target.value)}
+                  type="number"
+                  min="-600"
+                  max="0"
+                  className="pr-24"
+                />
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">
+                  kgCO2e/m²
+                </div>
+              </div>
             </TooltipField>
 
             <TooltipField
@@ -325,14 +379,20 @@ export const RibaStageScreen = ({
               label="Biodiversity net gain"
               tooltip="Enter the predicted Biodiversity Net Gain percentage"
             >
-              <Input
-                placeholder="Enter % value (e.g. 10%)"
-                value={stageData.biodiversityNetGain || ''}
-                onChange={(e) => handleInputChange('biodiversityNetGain', e.target.value)}
-                type="number"
-                min="0"
-                max="200"
-              />
+              <div className="relative">
+                <Input
+                  placeholder="Enter value (e.g. 10)"
+                  value={stageData.biodiversityNetGain || ''}
+                  onChange={(e) => handleInputChange('biodiversityNetGain', e.target.value)}
+                  type="number"
+                  min="0"
+                  max="200"
+                  className="pr-8"
+                />
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">
+                  %
+                </div>
+              </div>
             </TooltipField>
 
             <TooltipField
