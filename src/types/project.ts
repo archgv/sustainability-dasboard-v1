@@ -2,9 +2,13 @@ export interface Project {
   id: string;
   name: string;
   typology: 'office' | 'residential' | 'educational' | 'healthcare' | 'retail' | 'mixed-use' | 'CCC' | 'infrastructure';
+  subSector?: string;
   location: string;
   completionDate: string;
   projectType: 'new-build' | 'retrofit';
+  heritageProject?: string;
+  studioDiscipline?: string;
+  neighbourhood?: string;
   ribaStage: 'stage-1' | 'stage-2' | 'stage-3' | 'stage-4' | 'stage-5' | 'stage-6' | 'stage-7';
   gia?: number; // Gross Internal Area in m²
   

@@ -86,13 +86,33 @@ export const ProjectOverviewScreen = ({
             </div>
             
             <div>
-              <Label className="text-sm font-medium">Typology</Label>
+              <Label className="text-sm font-medium">Primary sector</Label>
               <p className="text-sm text-muted-foreground mt-1">{selectedProject.typology}</p>
+            </div>
+
+            <div>
+              <Label className="text-sm font-medium">Sub sector</Label>
+              <p className="text-sm text-muted-foreground mt-1">{selectedProject.subSector}</p>
             </div>
             
             <div>
               <Label className="text-sm font-medium">Project Type</Label>
               <p className="text-sm text-muted-foreground mt-1">{selectedProject.projectType}</p>
+            </div>
+
+            <div>
+              <Label className="text-sm font-medium">Heritage project</Label>
+              <p className="text-sm text-muted-foreground mt-1">{selectedProject.heritageProject}</p>
+            </div>
+
+            <div>
+              <Label className="text-sm font-medium">Studio discipline</Label>
+              <p className="text-sm text-muted-foreground mt-1">{selectedProject.studioDiscipline}</p>
+            </div>
+
+            <div>
+              <Label className="text-sm font-medium">Neighbourhood</Label>
+              <p className="text-sm text-muted-foreground mt-1">{selectedProject.neighbourhood}</p>
             </div>
             
             <div>
