@@ -12,7 +12,7 @@ const certificationRatings = {
   breeam: ['Outstanding', 'Excellent', 'Very Good', 'Good', 'Pass'],
   leed: ['Platinum', 'Gold', 'Silver', 'Certified'],
   well: ['Platinum', 'Gold', 'Silver', 'Bronze'],
-  nabers: ['6 Star', '5.5 Star', '5 Star', '4.5 Star', '4 Star', '3.5 Star', '3 Star'],
+  nabers: ['6 Star', '5 Star', '4 Star', '3 Star', '2 Star', '1 Star'],
   passivhaus: ['Certified'],
   enerphit: ['Certified'],
   uknzcbs: ['Net Zero']
@@ -87,12 +87,11 @@ export const CertificationAnalysis = ({
       'Certified': selectedCertification === 'leed' ? '#E9E8D3' : '#253E2C',
       'Net Zero': '#253E2C',
       '6 Star': '#253E2C',
-      '5.5 Star': '#2D9B4D',
       '5 Star': '#2D9B4D',
-      '4.5 Star': '#39FF8D',
       '4 Star': '#39FF8D',
-      '3.5 Star': '#C2FF39',
-      '3 Star': '#C2FF39'
+      '3 Star': '#C2FF39',
+      '2 Star': '#E9E8D3',
+      '1 Star': '#F5F5F5'
     };
     return colors[rating as keyof typeof colors] || '#E9E8D3';
   };
