@@ -106,8 +106,8 @@ export const ProjectOverviewScreen = ({
         <div className="space-y-4">          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <TooltipField
-              label="Year project commenced or will be completed"
-              tooltip="When did or will the project commence/complete?"
+              label="PC year"
+              tooltip="Enter the expected or actual Practical Completion year. Please be as accurate as possible, as UKNZCBS benchmarks are year-specific"
               required={true}
             >
               <Select
@@ -127,25 +127,25 @@ export const ProjectOverviewScreen = ({
 
             <TooltipField
               label="Operational energy of existing building"
-              tooltip="If there is an existing building, what is the operational energy use?"
+              tooltip="Enter the annual operational energy of the existing building (if retained)"
             >
               <Input
-                placeholder="Enter kWh/m²/yr (e.g. 75)"
+                placeholder="Enter kWh/m²/yr (e.g. 130)"
                 value={projectData.operationalEnergyExisting || ''}
                 onChange={(e) => handleInputChange('operationalEnergyExisting', e.target.value)}
                 type="number"
                 min="0"
-                max="300"
+                max="500"
               />
             </TooltipField>
 
             <TooltipField
-              label="GIA (Gross Internal Area)"
-              tooltip="Enter the total gross internal floor area in square metres"
+              label="GIA of proposed development"
+              tooltip="Enter the Gross Internal Area (GIA) of the proposed development"
               required={true}
             >
               <Input
-                placeholder="Enter m² (e.g. 6,500)"
+                placeholder="Enter m² (e.g. 9,800)"
                 value={projectData.gia || ''}
                 onChange={(e) => handleInputChange('gia', e.target.value)}
                 type="number"
@@ -163,7 +163,7 @@ export const ProjectOverviewScreen = ({
                 onValueChange={(value) => handleInputChange('buildingLifespan', value)}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select lifespan" />
+                  <SelectValue placeholder="Enter years (e.g. 60)" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="60">60 years</SelectItem>
@@ -175,8 +175,8 @@ export const ProjectOverviewScreen = ({
             </TooltipField>
 
             <TooltipField
-              label="Project paid scope"
-              tooltip="What is the project paid scope?"
+              label="EI team: paid scope"
+              tooltip="Indicate whether the Environmental Intelligence team has a paid scope"
               required={true}
             >
               <Select
@@ -187,26 +187,6 @@ export const ProjectOverviewScreen = ({
                   <SelectValue placeholder="Select scope" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="architecture-only">Architecture only</SelectItem>
-                  <SelectItem value="full-design-team">Full design team</SelectItem>
-                  <SelectItem value="partial-services">Partial services</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
-                </SelectContent>
-              </Select>
-            </TooltipField>
-
-            <TooltipField
-              label="External sustainability consultant"
-              tooltip="Is there an external sustainability consultant on the project?"
-            >
-              <Select
-                value={projectData.sustainabilityConsultant || ''}
-                onValueChange={(value) => handleInputChange('sustainabilityConsultant', value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select option" />
-                </SelectTrigger>
-                <SelectContent>
                   <SelectItem value="yes">Yes</SelectItem>
                   <SelectItem value="no">No</SelectItem>
                 </SelectContent>
@@ -214,19 +194,31 @@ export const ProjectOverviewScreen = ({
             </TooltipField>
 
             <TooltipField
-              label="Sustainability champion"
-              tooltip="Is there a sustainability champion on the project?"
+              label="Sustainability consultant"
+              tooltip="Enter the company name of the appointed external sustainability consultant (if applicable)"
+            >
+              <Input
+                placeholder="Enter company name"
+                value={projectData.sustainabilityConsultant || ''}
+                onChange={(e) => handleInputChange('sustainabilityConsultant', e.target.value)}
+              />
+            </TooltipField>
+
+            <TooltipField
+              label="H&B Sustainability champion"
+              tooltip="Enter the name of the internal sustainability champion on the project team (not a member of the EI team)"
             >
               <Select
                 value={projectData.sustainabilityChampion || ''}
                 onValueChange={(value) => handleInputChange('sustainabilityChampion', value)}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select option" />
+                  <SelectValue placeholder="Select name" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="yes">Yes</SelectItem>
-                  <SelectItem value="no">No</SelectItem>
+                  <SelectItem value="person1">Person 1</SelectItem>
+                  <SelectItem value="person2">Person 2</SelectItem>
+                  <SelectItem value="person3">Person 3</SelectItem>
                 </SelectContent>
               </Select>
             </TooltipField>
@@ -237,10 +229,10 @@ export const ProjectOverviewScreen = ({
             tooltip="Add a brief project mission statement relating to sustainability"
           >
             <Textarea
-              placeholder="Enter mission statement"
+              placeholder="Enter text (max 250 characters)"
               value={projectData.missionStatement || ''}
               onChange={(e) => handleInputChange('missionStatement', e.target.value)}
-              maxLength={300}
+              maxLength={250}
               className="resize-none"
             />
           </TooltipField>
