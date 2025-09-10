@@ -228,6 +228,12 @@ export const CertificationsScreen = ({
                 <SelectContent>
                   <SelectItem value="not-targeted">Not targeted</SelectItem>
                   <SelectItem value="to-be-determined">To be determined</SelectItem>
+                  <SelectItem value="1-star">1 Star</SelectItem>
+                  <SelectItem value="2-stars">2 Stars</SelectItem>
+                  <SelectItem value="3-stars">3 Stars</SelectItem>
+                  <SelectItem value="4-stars">4 Stars</SelectItem>
+                  <SelectItem value="5-stars">5 Stars</SelectItem>
+                  <SelectItem value="6-stars">6 Stars</SelectItem>
                 </SelectContent>
               </Select>
             </TooltipField>
