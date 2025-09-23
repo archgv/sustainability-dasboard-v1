@@ -72,7 +72,7 @@ export const ProjectOverviewScreen = ({ selectedProject, projectData, onDataUpda
 	}
 
 	return (
-		<div className="flex flex-col h-[75vh]">
+		<div className="flex flex-col h-full max-h-[70vh]">
 			{/* Scrollable content area */}
 			<div className="flex-1 overflow-y-auto space-y-6 pr-2">
 				{/* Project Information */}
