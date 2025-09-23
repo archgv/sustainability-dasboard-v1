@@ -70,12 +70,12 @@ export const FilterPanel = ({ filters, onFilterChange, onClearFilters }: FilterP
 						</SelectTrigger>
 						<SelectContent>
 							<SelectItem value="all">All Sectors</SelectItem>
-							<SelectItem value="residential">Residential</SelectItem>
-							<SelectItem value="educational">Education</SelectItem>
-							<SelectItem value="healthcare">Healthcare</SelectItem>
-							<SelectItem value="infrastructure">Infrastructure</SelectItem>
-							<SelectItem value="ccc">CCC</SelectItem>
-							<SelectItem value="office">Workplace</SelectItem>
+							<SelectItem value="Workplace">Workplace</SelectItem>
+							<SelectItem value="Residential">Residential</SelectItem>
+							<SelectItem value="Education">Education</SelectItem>
+							<SelectItem value="Healthcare">Healthcare</SelectItem>
+							<SelectItem value="Infrastructure">Infrastructure</SelectItem>
+							<SelectItem value="CCC">CCC</SelectItem>
 						</SelectContent>
 					</Select>
 				</div>
@@ -91,8 +91,8 @@ export const FilterPanel = ({ filters, onFilterChange, onClearFilters }: FilterP
 						</SelectTrigger>
 						<SelectContent>
 							<SelectItem value="all">All Projects</SelectItem>
-							<SelectItem value="new-build">New Build</SelectItem>
-							<SelectItem value="retrofit">Retrofit</SelectItem>
+							<SelectItem value="New Build">New Build</SelectItem>
+							<SelectItem value="Retrofit">Retrofit</SelectItem>
 						</SelectContent>
 					</Select>
 				</div>
@@ -108,13 +108,13 @@ export const FilterPanel = ({ filters, onFilterChange, onClearFilters }: FilterP
 						</SelectTrigger>
 						<SelectContent>
 							<SelectItem value="all">All Stages</SelectItem>
-							<SelectItem value="stage-1">Stage 1</SelectItem>
-							<SelectItem value="stage-2">Stage 2</SelectItem>
-							<SelectItem value="stage-3">Stage 3</SelectItem>
-							<SelectItem value="stage-4">Stage 4</SelectItem>
-							<SelectItem value="stage-5">Stage 5</SelectItem>
-							<SelectItem value="stage-6">Stage 6</SelectItem>
-							<SelectItem value="stage-7">Stage 7</SelectItem>
+							<SelectItem value="1">1</SelectItem>
+							<SelectItem value="2">2</SelectItem>
+							<SelectItem value="3">3</SelectItem>
+							<SelectItem value="4">4</SelectItem>
+							<SelectItem value="5">5</SelectItem>
+							<SelectItem value="6">6</SelectItem>
+							<SelectItem value="7">7</SelectItem>
 						</SelectContent>
 					</Select>
 				</div>

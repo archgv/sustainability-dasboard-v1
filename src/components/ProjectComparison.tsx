@@ -207,7 +207,7 @@ export const ProjectComparison = ({ projects, primaryProject, comparisonProjects
 													<Badge variant="outline" className="text-xs capitalize">
 														{project['Project Type']}
 													</Badge>
-													<span className="text-xs text-gray-500">RIBA {project.ribaStage.replace('stage-', '')}</span>
+													<span className="text-xs text-gray-500">RIBA {project['Current RIBA Stage']}</span>
 												</div>
 											</div>
 											<div className={`w-4 h-4 rounded border-2 ${comparisonProjects.includes(project.id) ? 'bg-green-500 border-green-500' : 'border-gray-300'}`}>

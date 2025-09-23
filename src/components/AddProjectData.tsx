@@ -21,14 +21,10 @@ export const AddProjectData = ({ projects }: AddProjectDataProps) => {
 
 	return (
 		<>
-			<Card className="p-6 mb-6">
-				<h3 className="text-lg font-semibold text-gray-900 mb-4">Add project data</h3>
-
-				<Button variant="outline" className="w-full justify-start" onClick={() => setIsModalOpen(true)}>
-					<Plus className="h-4 w-4 mr-2" />
-					Add project data
-				</Button>
-			</Card>
+			<Button variant="outline" className="text-lg font-semibold text-gray-900 p-9 mt-6 mb-6 w-full justify-start" onClick={() => setIsModalOpen(true)}>
+				<Plus className="h-10 w-10 mr-2" />
+				Add Project Data
+			</Button>
 
 			<AddProjectDataWizard isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSave={handleSaveProjectData} projects={projects} />
 		</>

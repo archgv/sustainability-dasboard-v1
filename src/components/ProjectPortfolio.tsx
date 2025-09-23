@@ -1,5 +1,4 @@
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Calendar, MapPin, Zap, Leaf, FileText } from 'lucide-react';
 import { Project } from '@/types/project';
 
@@ -54,6 +53,8 @@ export const ProjectPortfolio = ({ projects, isComparingToSelf = false, selected
 		return isComparingToSelf && project['Current RIBA Stage'] ? `${project['Project Name']} (${getRibaStageDisplay(project['Current RIBA Stage'])})` : project['Project Name'];
 	};
 
+	console.log('Projects passed in:', projects);
+	console.log('Projects passed in:1111', projects.length);
 	return (
 		<div>
 			<div className="flex items-center justify-between mb-6">
