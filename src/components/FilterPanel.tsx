@@ -4,6 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { Filter, X } from 'lucide-react';
+
 interface FilterPanelProps {
 	filters: {
 		'Primary Sector': string;
@@ -13,14 +14,15 @@ interface FilterPanelProps {
 		'Project Type': string;
 		'Current RIBA Stage': string;
 	};
-	onFilterChange: (filters: any) => void;
+	onFilterChange: (filters: FilterPanelProps['filters']) => void;
 	onClearFilters: () => void;
 }
+
 export const FilterPanel = ({ filters, onFilterChange, onClearFilters }: FilterPanelProps) => {
-	const handleTypologyChange = (value: string) => {
+	const handlePrimarySectorChange = (value: string) => {
 		onFilterChange({
 			...filters,
-			typology: value,
+			'Primary Sector': value,
 		});
 	};
 	const handleDateRangeChange = (value: string) => {
@@ -32,13 +34,13 @@ export const FilterPanel = ({ filters, onFilterChange, onClearFilters }: FilterP
 	const handleProjectTypeChange = (value: string) => {
 		onFilterChange({
 			...filters,
-			projectType: value,
+			'Project Type': value,
 		});
 	};
 	const handleRibaStageChange = (value: string) => {
 		onFilterChange({
 			...filters,
-			ribaStage: value,
+			'Current RIBA Stage': value,
 		});
 	};
 	return (
@@ -62,7 +64,7 @@ export const FilterPanel = ({ filters, onFilterChange, onClearFilters }: FilterP
 					<Label htmlFor="typology" className="text-sm font-medium text-gray-700 mb-2 block">
 						Sector
 					</Label>
-					<Select value={filters['Primary Sector']} onValueChange={handleTypologyChange}>
+					<Select value={filters['Primary Sector']} onValueChange={handlePrimarySectorChange}>
 						<SelectTrigger>
 							<SelectValue placeholder="Select sector" />
 						</SelectTrigger>

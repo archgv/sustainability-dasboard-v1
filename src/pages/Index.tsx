@@ -99,7 +99,7 @@ const Index = () => {
 			return selectedRibaStages.map((stageId) => ({
 				...primaryProjectData,
 				id: `${primaryProjectData.id}-${stageId}`,
-				'Current RIBA Stage': stageId as any,
+				'Current RIBA Stage': stageId as Project['Current RIBA Stage'],
 				'Project Name': primaryProjectData['Project Name'],
 			}));
 		}
