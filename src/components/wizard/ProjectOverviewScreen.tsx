@@ -115,7 +115,7 @@ export const ProjectOverviewScreen = ({ selectedProject, projectData, onDataUpda
 
 						<div>
 							<Label className="text-sm font-medium">Current RIBA Stage</Label>
-							<p className="text-sm text-muted-foreground mt-1">{selectedProject.ribaStage}</p>
+							<p className="text-sm text-muted-foreground mt-1">{selectedProject['Current RIBA Stage']}</p>
 						</div>
 					</div>
 				</div>
