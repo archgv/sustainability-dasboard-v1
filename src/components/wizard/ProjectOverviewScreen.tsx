@@ -8,6 +8,17 @@ import { Textarea } from '@/components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { HelpCircle, AlertTriangle } from 'lucide-react';
 import { Project } from '@/types/project';
+
+interface ProjectFormData {
+	pcYear?: string;
+	operationalEnergyExisting?: string;
+	gia?: string;
+	buildingLifespan?: string;
+	paidScope?: string;
+	sustainabilityConsultant?: string;
+	sustainabilityChampion?: string;
+	missionStatement?: string;
+}
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -22,8 +33,8 @@ import {
 
 interface ProjectOverviewScreenProps {
 	selectedProject?: Project;
-	projectData: any;
-	onDataUpdate: (data: any) => void;
+	projectData: ProjectFormData;
+	onDataUpdate: (data: ProjectFormData) => void;
 	onSave: () => void;
 	onSaveAndExit: () => void;
 	onCancel: () => void;
