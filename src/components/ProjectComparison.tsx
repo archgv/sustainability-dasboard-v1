@@ -5,7 +5,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Project } from '@/types/project';
 import { Building2, Calendar, MapPin } from 'lucide-react';
 import { useState } from 'react';
-import { addProjectNumberToName } from '@/utils/projectUtils';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';

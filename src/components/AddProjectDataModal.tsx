@@ -4,14 +4,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { HelpCircle, Check, ChevronsUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Project } from '@/types/project';
-import { addProjectNumberToName } from '@/utils/projectUtils';
 
 interface AddProjectDataModalProps {
 	isOpen: boolean;
@@ -52,11 +50,106 @@ export const AddProjectDataModal = ({ isOpen, onClose, onSave, projects }: AddPr
 				'Operational Energy Total': '',
 				'Operational Energy Part L': '',
 				'Operational Energy Gas': '',
+
+				'Space Heating Demand': '',
+				'Total Renewable Energy Generation': '',
+
+				'Upfront Carbon': '',
+				'Total Embodied Carbon': '',
+
+				'Biodiversity Net Gain': '',
+				'Habitats Units Gained': '',
+				'Urban Greening Factor': '',
 			},
 			'2': {
 				'Operational Energy Total': '',
 				'Operational Energy Part L': '',
 				'Operational Energy Gas': '',
+
+				'Space Heating Demand': '',
+				'Total Renewable Energy Generation': '',
+
+				'Upfront Carbon': '',
+				'Total Embodied Carbon': '',
+
+				'Biodiversity Net Gain': '',
+				'Habitats Units Gained': '',
+				'Urban Greening Factor': '',
+			},
+			'3': {
+				'Operational Energy Total': '',
+				'Operational Energy Part L': '',
+				'Operational Energy Gas': '',
+
+				'Space Heating Demand': '',
+				'Total Renewable Energy Generation': '',
+
+				'Upfront Carbon': '',
+				'Total Embodied Carbon': '',
+
+				'Biodiversity Net Gain': '',
+				'Habitats Units Gained': '',
+				'Urban Greening Factor': '',
+			},
+			'4': {
+				'Operational Energy Total': '',
+				'Operational Energy Part L': '',
+				'Operational Energy Gas': '',
+
+				'Space Heating Demand': '',
+				'Total Renewable Energy Generation': '',
+
+				'Upfront Carbon': '',
+				'Total Embodied Carbon': '',
+
+				'Biodiversity Net Gain': '',
+				'Habitats Units Gained': '',
+				'Urban Greening Factor': '',
+			},
+			'5': {
+				'Operational Energy Total': '',
+				'Operational Energy Part L': '',
+				'Operational Energy Gas': '',
+
+				'Space Heating Demand': '',
+				'Total Renewable Energy Generation': '',
+
+				'Upfront Carbon': '',
+				'Total Embodied Carbon': '',
+
+				'Biodiversity Net Gain': '',
+				'Habitats Units Gained': '',
+				'Urban Greening Factor': '',
+			},
+			'6': {
+				'Operational Energy Total': '',
+				'Operational Energy Part L': '',
+				'Operational Energy Gas': '',
+
+				'Space Heating Demand': '',
+				'Total Renewable Energy Generation': '',
+
+				'Upfront Carbon': '',
+				'Total Embodied Carbon': '',
+
+				'Biodiversity Net Gain': '',
+				'Habitats Units Gained': '',
+				'Urban Greening Factor': '',
+			},
+			'7': {
+				'Operational Energy Total': '',
+				'Operational Energy Part L': '',
+				'Operational Energy Gas': '',
+
+				'Space Heating Demand': '',
+				'Total Renewable Energy Generation': '',
+
+				'Upfront Carbon': '',
+				'Total Embodied Carbon': '',
+
+				'Biodiversity Net Gain': '',
+				'Habitats Units Gained': '',
+				'Urban Greening Factor': '',
 			},
 		},
 
@@ -150,14 +243,109 @@ export const AddProjectDataModal = ({ isOpen, onClose, onSave, projects }: AddPr
 
 				'RIBA Stage': {
 					'1': {
-						'Operational Energy Total': project['Operational Energy Total']?.toString() || '',
-						'Operational Energy Part L': project['Operational Energy Part L']?.toString() || '',
-						'Operational Energy Gas': project['Operational Energy Gas']?.toString() || '',
+						'Operational Energy Total': project['RIBA Stage']['1']['Operational Energy Total']?.toString() || '',
+						'Operational Energy Part L': project['RIBA Stage']['1']['Operational Energy Part L']?.toString() || '',
+						'Operational Energy Gas': project['RIBA Stage']['1']['Operational Energy Gas']?.toString() || '',
+
+						'Space Heating Demand': project['RIBA Stage']['1']['Space Heating Demand']?.toString() || '',
+						'Total Renewable Energy Generation': project['RIBA Stage']['1']['Total Renewable Energy Generation']?.toString() || '',
+
+						'Upfront Carbon': project['RIBA Stage']['1']['Upfront Carbon']?.toString() || '',
+						'Total Embodied Carbon': project['RIBA Stage']['1']['Total Embodied Carbon']?.toString() || '',
+
+						'Biodiversity Net Gain': project['RIBA Stage']['1']['Biodiversity Net Gain']?.toString() || '',
+						'Habitats Units Gained': project['RIBA Stage']['1']['Habitats Units Gained']?.toString() || '',
+						'Urban Greening Factor': project['RIBA Stage']['1']['Urban Greening Factor']?.toString() || '',
 					},
 					'2': {
-						'Operational Energy Total': project['Operational Energy Total']?.toString() || '',
-						'Operational Energy Part L': project['Operational Energy Part L']?.toString() || '',
-						'Operational Energy Gas': project['Operational Energy Gas']?.toString() || '',
+						'Operational Energy Total': project['RIBA Stage']['2']['Operational Energy Total']?.toString() || '',
+						'Operational Energy Part L': project['RIBA Stage']['2']['Operational Energy Part L']?.toString() || '',
+						'Operational Energy Gas': project['RIBA Stage']['2']['Operational Energy Gas']?.toString() || '',
+
+						'Space Heating Demand': project['RIBA Stage']['2']['Space Heating Demand']?.toString() || '',
+						'Total Renewable Energy Generation': project['RIBA Stage']['2']['Total Renewable Energy Generation']?.toString() || '',
+
+						'Upfront Carbon': project['RIBA Stage']['2']['Upfront Carbon']?.toString() || '',
+						'Total Embodied Carbon': project['RIBA Stage']['2']['Total Embodied Carbon']?.toString() || '',
+
+						'Biodiversity Net Gain': project['RIBA Stage']['2']['Biodiversity Net Gain']?.toString() || '',
+						'Habitats Units Gained': project['RIBA Stage']['2']['Habitats Units Gained']?.toString() || '',
+						'Urban Greening Factor': project['RIBA Stage']['2']['Urban Greening Factor']?.toString() || '',
+					},
+					'3': {
+						'Operational Energy Total': project['RIBA Stage']['3']['Operational Energy Total']?.toString() || '',
+						'Operational Energy Part L': project['RIBA Stage']['3']['Operational Energy Part L']?.toString() || '',
+						'Operational Energy Gas': project['RIBA Stage']['3']['Operational Energy Gas']?.toString() || '',
+
+						'Space Heating Demand': project['RIBA Stage']['3']['Space Heating Demand']?.toString() || '',
+						'Total Renewable Energy Generation': project['RIBA Stage']['3']['Total Renewable Energy Generation']?.toString() || '',
+
+						'Upfront Carbon': project['RIBA Stage']['3']['Upfront Carbon']?.toString() || '',
+						'Total Embodied Carbon': project['RIBA Stage']['3']['Total Embodied Carbon']?.toString() || '',
+
+						'Biodiversity Net Gain': project['RIBA Stage']['3']['Biodiversity Net Gain']?.toString() || '',
+						'Habitats Units Gained': project['RIBA Stage']['3']['Habitats Units Gained']?.toString() || '',
+						'Urban Greening Factor': project['RIBA Stage']['3']['Urban Greening Factor']?.toString() || '',
+					},
+					'4': {
+						'Operational Energy Total': project['RIBA Stage']['4']['Operational Energy Total']?.toString() || '',
+						'Operational Energy Part L': project['RIBA Stage']['4']['Operational Energy Part L']?.toString() || '',
+						'Operational Energy Gas': project['RIBA Stage']['4']['Operational Energy Gas']?.toString() || '',
+
+						'Space Heating Demand': project['RIBA Stage']['4']['Space Heating Demand']?.toString() || '',
+						'Total Renewable Energy Generation': project['RIBA Stage']['4']['Total Renewable Energy Generation']?.toString() || '',
+
+						'Upfront Carbon': project['RIBA Stage']['4']['Upfront Carbon']?.toString() || '',
+						'Total Embodied Carbon': project['RIBA Stage']['4']['Total Embodied Carbon']?.toString() || '',
+
+						'Biodiversity Net Gain': project['RIBA Stage']['4']['Biodiversity Net Gain']?.toString() || '',
+						'Habitats Units Gained': project['RIBA Stage']['4']['Habitats Units Gained']?.toString() || '',
+						'Urban Greening Factor': project['RIBA Stage']['4']['Urban Greening Factor']?.toString() || '',
+					},
+					'5': {
+						'Operational Energy Total': project['RIBA Stage']['5']['Operational Energy Total']?.toString() || '',
+						'Operational Energy Part L': project['RIBA Stage']['5']['Operational Energy Part L']?.toString() || '',
+						'Operational Energy Gas': project['RIBA Stage']['5']['Operational Energy Gas']?.toString() || '',
+
+						'Space Heating Demand': project['RIBA Stage']['5']['Space Heating Demand']?.toString() || '',
+						'Total Renewable Energy Generation': project['RIBA Stage']['5']['Total Renewable Energy Generation']?.toString() || '',
+
+						'Upfront Carbon': project['RIBA Stage']['5']['Upfront Carbon']?.toString() || '',
+						'Total Embodied Carbon': project['RIBA Stage']['5']['Total Embodied Carbon']?.toString() || '',
+
+						'Biodiversity Net Gain': project['RIBA Stage']['5']['Biodiversity Net Gain']?.toString() || '',
+						'Habitats Units Gained': project['RIBA Stage']['5']['Habitats Units Gained']?.toString() || '',
+						'Urban Greening Factor': project['RIBA Stage']['5']['Urban Greening Factor']?.toString() || '',
+					},
+					'6': {
+						'Operational Energy Total': project['RIBA Stage']['6']['Operational Energy Total']?.toString() || '',
+						'Operational Energy Part L': project['RIBA Stage']['6']['Operational Energy Part L']?.toString() || '',
+						'Operational Energy Gas': project['RIBA Stage']['6']['Operational Energy Gas']?.toString() || '',
+
+						'Space Heating Demand': project['RIBA Stage']['6']['Space Heating Demand']?.toString() || '',
+						'Total Renewable Energy Generation': project['RIBA Stage']['6']['Total Renewable Energy Generation']?.toString() || '',
+
+						'Upfront Carbon': project['RIBA Stage']['6']['Upfront Carbon']?.toString() || '',
+						'Total Embodied Carbon': project['RIBA Stage']['6']['Total Embodied Carbon']?.toString() || '',
+
+						'Biodiversity Net Gain': project['RIBA Stage']['6']['Biodiversity Net Gain']?.toString() || '',
+						'Habitats Units Gained': project['RIBA Stage']['6']['Habitats Units Gained']?.toString() || '',
+						'Urban Greening Factor': project['RIBA Stage']['6']['Urban Greening Factor']?.toString() || '',
+					},
+					'7': {
+						'Operational Energy Total': project['RIBA Stage']['7']['Operational Energy Total']?.toString() || '',
+						'Operational Energy Part L': project['RIBA Stage']['7']['Operational Energy Part L']?.toString() || '',
+						'Operational Energy Gas': project['RIBA Stage']['7']['Operational Energy Gas']?.toString() || '',
+
+						'Space Heating Demand': project['RIBA Stage']['7']['Space Heating Demand']?.toString() || '',
+						'Total Renewable Energy Generation': project['RIBA Stage']['7']['Total Renewable Energy Generation']?.toString() || '',
+
+						'Upfront Carbon': project['RIBA Stage']['7']['Upfront Carbon']?.toString() || '',
+						'Total Embodied Carbon': project['RIBA Stage']['7']['Total Embodied Carbon']?.toString() || '',
+
+						'Biodiversity Net Gain': project['RIBA Stage']['7']['Biodiversity Net Gain']?.toString() || '',
+						'Habitats Units Gained': project['RIBA Stage']['7']['Habitats Units Gained']?.toString() || '',
+						'Urban Greening Factor': project['RIBA Stage']['7']['Urban Greening Factor']?.toString() || '',
 					},
 				},
 
@@ -207,14 +395,102 @@ export const AddProjectDataModal = ({ isOpen, onClose, onSave, projects }: AddPr
 
 			'RIBA Stage': {
 				'1': {
-					'Operational Energy Total': Number(formData['Operational Energy Total']),
-					'Operational Energy Part L': Number(formData['Operational Energy Gas']),
-					'Operational Energy Gas': Number(formData['Space Heating Demand']),
+					'Operational Energy Total': Number(formData['RIBA Stage']['1']['Operational Energy Total']),
+					'Operational Energy Part L': Number(formData['RIBA Stage']['1']['Operational Energy Gas']),
+					'Operational Energy Gas': Number(formData['RIBA Stage']['1']['Space Heating Demand']),
+
+					'Space Heating Demand': Number(formData['RIBA Stage']['1']['Space Heating Demand']),
+					'Total Renewable Energy Generation': Number(formData['RIBA Stage']['1']['Total Renewable Energy Generation']),
+					'Upfront Carbon': Number(formData['RIBA Stage']['1']['Upfront Carbon']),
+					'Total Embodied Carbon': Number(formData['RIBA Stage']['1']['Total Embodied Carbon']),
+
+					'Biodiversity Net Gain': Number(formData['RIBA Stage']['1']['Biodiversity Net Gain']),
+					'Habitats Units Gained': Number(formData['RIBA Stage']['1']['Habitats Units Gained']),
+					'Urban Greening Factor': Number(formData['RIBA Stage']['1']['Urban Greening Factor']),
 				},
 				'2': {
-					'Operational Energy Total': Number(formData['Operational Energy Total']),
-					'Operational Energy Part L': Number(formData['Operational Energy Gas']),
-					'Operational Energy Gas': Number(formData['Space Heating Demand']),
+					'Operational Energy Total': Number(formData['RIBA Stage']['2']['Operational Energy Total']),
+					'Operational Energy Part L': Number(formData['RIBA Stage']['2']['Operational Energy Gas']),
+					'Operational Energy Gas': Number(formData['RIBA Stage']['2']['Space Heating Demand']),
+
+					'Space Heating Demand': Number(formData['RIBA Stage']['2']['Space Heating Demand']),
+					'Total Renewable Energy Generation': Number(formData['RIBA Stage']['2']['Total Renewable Energy Generation']),
+					'Upfront Carbon': Number(formData['RIBA Stage']['2']['Upfront Carbon']),
+					'Total Embodied Carbon': Number(formData['RIBA Stage']['2']['Total Embodied Carbon']),
+
+					'Biodiversity Net Gain': Number(formData['RIBA Stage']['2']['Biodiversity Net Gain']),
+					'Habitats Units Gained': Number(formData['RIBA Stage']['2']['Habitats Units Gained']),
+					'Urban Greening Factor': Number(formData['RIBA Stage']['2']['Urban Greening Factor']),
+				},
+				'3': {
+					'Operational Energy Total': Number(formData['RIBA Stage']['3']['Operational Energy Total']),
+					'Operational Energy Part L': Number(formData['RIBA Stage']['3']['Operational Energy Gas']),
+					'Operational Energy Gas': Number(formData['RIBA Stage']['3']['Space Heating Demand']),
+
+					'Space Heating Demand': Number(formData['RIBA Stage']['3']['Space Heating Demand']),
+					'Total Renewable Energy Generation': Number(formData['RIBA Stage']['3']['Total Renewable Energy Generation']),
+					'Upfront Carbon': Number(formData['RIBA Stage']['3']['Upfront Carbon']),
+					'Total Embodied Carbon': Number(formData['RIBA Stage']['3']['Total Embodied Carbon']),
+
+					'Biodiversity Net Gain': Number(formData['RIBA Stage']['3']['Biodiversity Net Gain']),
+					'Habitats Units Gained': Number(formData['RIBA Stage']['3']['Habitats Units Gained']),
+					'Urban Greening Factor': Number(formData['RIBA Stage']['3']['Urban Greening Factor']),
+				},
+				'4': {
+					'Operational Energy Total': Number(formData['RIBA Stage']['4']['Operational Energy Total']),
+					'Operational Energy Part L': Number(formData['RIBA Stage']['4']['Operational Energy Gas']),
+					'Operational Energy Gas': Number(formData['RIBA Stage']['4']['Space Heating Demand']),
+
+					'Space Heating Demand': Number(formData['RIBA Stage']['4']['Space Heating Demand']),
+					'Total Renewable Energy Generation': Number(formData['RIBA Stage']['4']['Total Renewable Energy Generation']),
+					'Upfront Carbon': Number(formData['RIBA Stage']['4']['Upfront Carbon']),
+					'Total Embodied Carbon': Number(formData['RIBA Stage']['4']['Total Embodied Carbon']),
+
+					'Biodiversity Net Gain': Number(formData['RIBA Stage']['4']['Biodiversity Net Gain']),
+					'Habitats Units Gained': Number(formData['RIBA Stage']['4']['Habitats Units Gained']),
+					'Urban Greening Factor': Number(formData['RIBA Stage']['4']['Urban Greening Factor']),
+				},
+				'5': {
+					'Operational Energy Total': Number(formData['RIBA Stage']['5']['Operational Energy Total']),
+					'Operational Energy Part L': Number(formData['RIBA Stage']['5']['Operational Energy Gas']),
+					'Operational Energy Gas': Number(formData['RIBA Stage']['5']['Space Heating Demand']),
+
+					'Space Heating Demand': Number(formData['RIBA Stage']['5']['Space Heating Demand']),
+					'Total Renewable Energy Generation': Number(formData['RIBA Stage']['5']['Total Renewable Energy Generation']),
+					'Upfront Carbon': Number(formData['RIBA Stage']['5']['Upfront Carbon']),
+					'Total Embodied Carbon': Number(formData['RIBA Stage']['5']['Total Embodied Carbon']),
+
+					'Biodiversity Net Gain': Number(formData['RIBA Stage']['5']['Biodiversity Net Gain']),
+					'Habitats Units Gained': Number(formData['RIBA Stage']['5']['Habitats Units Gained']),
+					'Urban Greening Factor': Number(formData['RIBA Stage']['5']['Urban Greening Factor']),
+				},
+				'6': {
+					'Operational Energy Total': Number(formData['RIBA Stage']['6']['Operational Energy Total']),
+					'Operational Energy Part L': Number(formData['RIBA Stage']['6']['Operational Energy Gas']),
+					'Operational Energy Gas': Number(formData['RIBA Stage']['6']['Space Heating Demand']),
+
+					'Space Heating Demand': Number(formData['RIBA Stage']['6']['Space Heating Demand']),
+					'Total Renewable Energy Generation': Number(formData['RIBA Stage']['6']['Total Renewable Energy Generation']),
+					'Upfront Carbon': Number(formData['RIBA Stage']['6']['Upfront Carbon']),
+					'Total Embodied Carbon': Number(formData['RIBA Stage']['6']['Total Embodied Carbon']),
+
+					'Biodiversity Net Gain': Number(formData['RIBA Stage']['6']['Biodiversity Net Gain']),
+					'Habitats Units Gained': Number(formData['RIBA Stage']['6']['Habitats Units Gained']),
+					'Urban Greening Factor': Number(formData['RIBA Stage']['6']['Urban Greening Factor']),
+				},
+				'7': {
+					'Operational Energy Total': Number(formData['RIBA Stage']['7']['Operational Energy Total']),
+					'Operational Energy Part L': Number(formData['RIBA Stage']['7']['Operational Energy Gas']),
+					'Operational Energy Gas': Number(formData['RIBA Stage']['7']['Space Heating Demand']),
+
+					'Space Heating Demand': Number(formData['RIBA Stage']['7']['Space Heating Demand']),
+					'Total Renewable Energy Generation': Number(formData['RIBA Stage']['7']['Total Renewable Energy Generation']),
+					'Upfront Carbon': Number(formData['RIBA Stage']['7']['Upfront Carbon']),
+					'Total Embodied Carbon': Number(formData['RIBA Stage']['7']['Total Embodied Carbon']),
+
+					'Biodiversity Net Gain': Number(formData['RIBA Stage']['7']['Biodiversity Net Gain']),
+					'Habitats Units Gained': Number(formData['RIBA Stage']['7']['Habitats Units Gained']),
+					'Urban Greening Factor': Number(formData['RIBA Stage']['7']['Urban Greening Factor']),
 				},
 			},
 

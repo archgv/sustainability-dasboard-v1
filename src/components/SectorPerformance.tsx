@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine } from 'recharts';
 import { formatNumber } from '@/lib/utils';
-import { getSector, getSectorColor, sectorConfig } from '@/utils/projectUtils';
+import { getSectorColor, sectorConfig } from '@/utils/projectUtils';
 import { Project } from '@/types/project';
 
 interface SectorPerformanceProps {
@@ -63,7 +63,7 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
 			  });
 
 	const sectorStats = filteredProjects.reduce((acc: any, project: Project) => {
-		const sector = getSector(project['Primary Sector']);
+		const sector = project['Primary Sector'];
 		if (!acc[sector]) {
 			acc[sector] = {
 				count: 0,
@@ -113,8 +113,7 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
 		if (selectedKPI === 'Total Embodied Carbon' && stats) {
 			const biogenicStats = filteredProjects.reduce(
 				(acc: any, project: Project) => {
-					const projectSector = getSector(project['Primary Sector']);
-					if (projectSector === sector) {
+					if (project['Primary Sector'] === sector) {
 						const value = project['Biogenic Carbon'] || 0;
 						const gia = project['GIA'] || 0;
 						if (effectiveValueType === 'total' && gia > 0) {
