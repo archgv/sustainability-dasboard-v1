@@ -7,7 +7,7 @@ export interface Project {
 	'Project Location': string;
 	'Primary Sector': 'Workplace' | 'Residential' | 'Education' | 'Healthcare' | 'CCC' | 'Infrastructure';
 	'Sub Sector'?: string;
-	'Project Type': 'New-build' | 'Retrofit';
+	'Project Type': 'New Build' | 'Retrofit';
 	'Heritage Project'?: string;
 	'Studio Discipline'?: string;
 	'Neighbourhood'?: string;
@@ -32,7 +32,7 @@ export interface Project {
 	'NABERS': string;
 	'Other Cerification'?: string; //? // TEXT
 
-	ribaStage: 'stage-1' | 'stage-2' | 'stage-3' | 'stage-4' | 'stage-5' | 'stage-6' | 'stage-7';
+	'Current RIBA Stage': StageKey;
 
 	'RIBA Stage': {
 		[K in StageKey]: {

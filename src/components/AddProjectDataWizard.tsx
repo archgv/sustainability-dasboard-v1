@@ -40,6 +40,8 @@ export interface WizardData {
 		'UKNZCBS'?: string;
 		'NABERS': string;
 		'Other Cerification'?: string;
+
+		'Current RIBA Stage': string;
 	};
 	'RIBA Stage': {
 		[key: string]: {
@@ -93,6 +95,8 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
 			'UKNZCBS': '',
 			'NABERS': '',
 			'Other Cerification': '',
+
+			'Current RIBA Stage': '',
 		},
 		'RIBA Stage': {},
 	});
@@ -122,6 +126,8 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
 				'UKNZCBS': '',
 				'NABERS': '',
 				'Other Cerification': '',
+
+				'Current RIBA Stage': '',
 			},
 			'RIBA Stage': {},
 		});
@@ -251,10 +257,9 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
 				</DialogHeader>
 
 				<Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-					<TabsList className="grid w-full grid-cols-9">
+					<TabsList className="grid w-full h-12 grid-cols-9">
 						<TabsTrigger value="project-overview" className="text-center">
 							<div className="flex flex-col">
-								<span>Project</span>
 								<span>Overview</span>
 							</div>
 						</TabsTrigger>
@@ -263,46 +268,39 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
 								<span>Certifications</span>
 							</div>
 						</TabsTrigger>
-						<TabsTrigger value="riba-1" className="text-center">
+						<TabsTrigger value="1" className="text-center">
 							<div className="flex flex-col">
-								<span>RIBA</span>
-								<span>Stage 1</span>
+								<span>1</span>
 							</div>
 						</TabsTrigger>
-						<TabsTrigger value="riba-2" className="text-center">
+						<TabsTrigger value="2" className="text-center">
 							<div className="flex flex-col">
-								<span>RIBA</span>
-								<span>Stage 2</span>
+								<span>2</span>
 							</div>
 						</TabsTrigger>
-						<TabsTrigger value="riba-3" className="text-center">
+						<TabsTrigger value="3" className="text-center">
 							<div className="flex flex-col">
-								<span>RIBA</span>
-								<span>Stage 3</span>
+								<span>3</span>
 							</div>
 						</TabsTrigger>
-						<TabsTrigger value="riba-4" className="text-center">
+						<TabsTrigger value="4" className="text-center">
 							<div className="flex flex-col">
-								<span>RIBA</span>
-								<span>Stage 4</span>
+								<span>4</span>
 							</div>
 						</TabsTrigger>
-						<TabsTrigger value="riba-5" className="text-center">
+						<TabsTrigger value="5" className="text-center">
 							<div className="flex flex-col">
-								<span>RIBA</span>
-								<span>Stage 5</span>
+								<span>5</span>
 							</div>
 						</TabsTrigger>
-						<TabsTrigger value="riba-6" className="text-center">
+						<TabsTrigger value="6" className="text-center">
 							<div className="flex flex-col">
-								<span>RIBA</span>
-								<span>Stage 6</span>
+								<span>6</span>
 							</div>
 						</TabsTrigger>
-						<TabsTrigger value="riba-7" className="text-center">
+						<TabsTrigger value="7" className="text-center">
 							<div className="flex flex-col">
-								<span>RIBA</span>
-								<span>Stage 7</span>
+								<span>7</span>
 							</div>
 						</TabsTrigger>
 					</TabsList>
@@ -328,7 +326,7 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
 						/>
 					</TabsContent>
 
-					{['riba-1', 'riba-2', 'riba-3', 'riba-4', 'riba-5', 'riba-6', 'riba-7'].map((stage) => (
+					{StageKeys.map((stage) => (
 						<TabsContent key={stage} value={stage}>
 							<RibaStageScreen
 								stageNumber={stage.split('-')[1]}

@@ -7,7 +7,7 @@ export const sampleProjects: Project[] = [
 		'Project Location': 'London, UK',
 		'Primary Sector': 'Workplace',
 		'Sub Sector': 'Commercial office',
-		'Project Type': 'New-build',
+		'Project Type': 'New Build',
 		'Heritage Project': 'Yes',
 		'Studio Discipline': 'Studio 1',
 		'Neighbourhood': 'A',
@@ -21,7 +21,7 @@ export const sampleProjects: Project[] = [
 		'NABERS': '5 Star',
 		'Passivhaus or EnePHit': 'Passivhaus',
 
-		ribaStage: 'stage-7',
+		'Current RIBA Stage': '7',
 
 		'RIBA Stage': {
 			'1': {
@@ -150,7 +150,7 @@ export const sampleProjects: Project[] = [
 		'Project Name': '230152 Eco Housing Development',
 		'Project Location': 'Manchester, UK',
 		'Primary Sector': 'Residential',
-		'Project Type': 'New-build',
+		'Project Type': 'New Build',
 		'GIA': 12500,
 		'PC Date': '2022-11-30',
 
@@ -160,7 +160,7 @@ export const sampleProjects: Project[] = [
 		'NABERS': '4 Star',
 		'Passivhaus or EnePHit': 'Not targeted',
 
-		ribaStage: 'stage-7',
+		'Current RIBA Stage': '7',
 
 		'RIBA Stage': {
 			'1': {
@@ -297,7 +297,7 @@ export const sampleProjects: Project[] = [
 		'Project Name': '230153 Sustainable School Campus',
 		'Project Location': 'Birmingham, UK',
 		'Primary Sector': 'Education',
-		'Project Type': 'New-build',
+		'Project Type': 'New Build',
 		'GIA': 15200,
 		'PC Date': '2023-01-20',
 
@@ -307,7 +307,7 @@ export const sampleProjects: Project[] = [
 		'NABERS': '6 Star',
 		'Passivhaus or EnePHit': 'Passivhaus',
 
-		ribaStage: 'stage-7',
+		'Current RIBA Stage': '7',
 
 		'RIBA Stage': {
 			'1': {
