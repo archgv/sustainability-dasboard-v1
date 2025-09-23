@@ -13,17 +13,17 @@ const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#8dd1e1', '#d084d0'
 export const EmbodiedCarbonBreakdown = ({ project }: EmbodiedCarbonBreakdownProps) => {
   if (!project.embodiedCarbonBreakdown) return null;
 
-  const lifeCycleData = Object.entries(project.embodiedCarbonBreakdown.byLifeCycleStage).map(([stage, value]) => ({
-    stage: stage.toUpperCase(),
-    value,
-    name: getLifeCycleStageName(stage)
-  }));
+  // const lifeCycleData = Object.entries(project.embodiedCarbonBreakdown.byLifeCycleStage).map(([stage, value]) => ({
+  //   stage: stage.toUpperCase(),
+  //   value,
+  //   name: getLifeCycleStageName(stage)
+  // }));
 
-  const buildingElementData = Object.entries(project.embodiedCarbonBreakdown.byBuildingElement).map(([element, value]) => ({
-    element: element.charAt(0).toUpperCase() + element.slice(1),
-    value,
-    name: element.charAt(0).toUpperCase() + element.slice(1)
-  }));
+  // const buildingElementData = Object.entries(project.embodiedCarbonBreakdown.byBuildingElement).map(([element, value]) => ({
+  //   element: element.charAt(0).toUpperCase() + element.slice(1),
+  //   value,
+  //   name: element.charAt(0).toUpperCase() + element.slice(1)
+  // }));
 
   function getLifeCycleStageName(stage: string): string {
     const stageNames: Record<string, string> = {
@@ -40,10 +40,10 @@ export const EmbodiedCarbonBreakdown = ({ project }: EmbodiedCarbonBreakdownProp
   return (
     <Card className="p-6">
       <h3 className="text-lg font-semibold text-gray-900 mb-4">
-        Embodied Carbon Breakdown - {project.name}
+        Embodied Carbon Breakdown - {project["Project Name"]}
       </h3>
       <p className="text-sm text-gray-600 mb-6">
-        Total Embodied Carbon: {project.totalEmbodiedCarbon} kgCO2e/m²
+        Total Embodied Carbon: {project["Total Embodied Carbon"]} kgCO2e/m²
       </p>
       
       <Tabs defaultValue="lifecycle" className="w-full">

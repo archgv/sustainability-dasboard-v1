@@ -1,135 +1,163 @@
+export const StageKeys = ['1', '2', '3', '4', '5', '6', '7'] as const;
+export type StageKey = (typeof StageKeys)[number];
+
 export interface Project {
-  id: string;
-  name: string;
-  typology: 'workplace' | 'residential' | 'educational' | 'healthcare' | 'retail' | 'mixed-use' | 'CCC' | 'infrastructure';
-  subSector?: string;
-  location: string;
-  completionDate: string;
-  projectType: 'new-build' | 'retrofit';
-  heritageProject?: string;
-  studioDiscipline?: string;
-  neighbourhood?: string;
-  ribaStage: 'stage-1' | 'stage-2' | 'stage-3' | 'stage-4' | 'stage-5' | 'stage-6' | 'stage-7';
-  gia?: number; // Gross Internal Area in m²
-  
-  // Embodied Carbon
-  upfrontCarbon: number; // kgCO2e/m²
-  totalEmbodiedCarbon: number; // kgCO2e/m²
-  biogenicCarbon: number; // kgCO2e/m²
-  refrigerants: number; // kgCO2e/m²
-  
-  // Operational Energy
-  operationalEnergyTotal: number; // kWh/m²/year
-  operationalEnergyPartL: number; // kWh/m²/year
-  operationalEnergyGas: number; // kWh/m²/year
-  operationalEnergy: number; // kWh/m²/year
-  gasUsage: number; // kWh/m²/year
-  spaceHeatingDemand: number; // kWh/m²/year
-  renewableEnergyGeneration: number; // kWh/m²/year
-  existingBuildingEnergy: number; // kWh/m²/year
-  
-  // Water Use
-  operationalWaterUse: number; // litres/pp/pd
-  
-  // Accreditations
-  breeam: string;
-  leed: string;
-  well: string;
-  nabers: string;
-  passivhaus: boolean;
-  
-  // Social Value
-  socialValue: number; // £ per £ construction cost
-  
-  // Wellbeing
-  pmv: number; // PMV index value
-  ppd: number; // % dissatisfied
-  daylightFactor: number;
-  
-  // Biodiversity
-  biodiversityNetGain: number; // %
-  habitatUnits: number; // Number of habitat units
-  urbanGreeningFactor: number; // Score (e.g. 0.3)
-  
-  // Embodied Impacts
-  ozoneDepletion: number; // kg CFC-11e per m²
-  
-  // Circular Economy
-  reusedRecycledMaterial: number; // % of total mass
-  
-  // Legacy fields for compatibility
-  carbonIntensity: number; // kgCO2e/m²/yr
-  eui: number; // Energy Use Intensity (kWh/m²/yr)
-  shd: number; // Solar Heat Demand (kWh/m²/yr)
-  wlc: number; // Whole Life Carbon (kgCO2e/m²)
-  
-  certifications?: string[];
-  
-  // Embodied carbon breakdown
-  embodiedCarbonBreakdown?: {
-    byLifeCycleStage: {
-      a1a3: number; // Product stage
-      a4: number; // Transport
-      a5: number; // Construction
-      b1b7: number; // Use stage
-      c1c4: number; // End of life
-      d: number; // Benefits beyond system boundary
-    };
-    byBuildingElement: {
-      substructure: number;
-      superstructure: number;
-      finishes: number;
-      fittings: number;
-      services: number;
-      external: number;
-    };
-  };
+	id: string;
+	'Project Name': string;
+	'Project Location': string;
+	'Primary Sector': 'Workplace' | 'Residential' | 'Education' | 'Healthcare' | 'CCC' | 'Infrastructure';
+	'Sub Sector'?: string;
+	'Project Type': 'New-build' | 'Retrofit';
+	'Heritage Project'?: string;
+	'Studio Discipline'?: string;
+	'Neighbourhood'?: string;
+
+	'Operational Energy Existing Building'?: number; //ONLY IN PORTFOLIO
+	'GIA'?: number; // Gross Internal Area in m²   ///NOT OPTIONAL
+	'Building Lifespan'?: number; // NOT USED
+	'PC Date': string; // DROPDOWN
+
+	'EI Team Scope'?: string; // NOT USED
+	'External Consultants'?: string; // NOT USED
+	'Sustianability Champion Name'?: string; // NOT USED
+	'Mission Statement'?: string; // NOT USED
+
+	// Accreditations
+	'BREEAM': string;
+	'LEED': string;
+	'WELL': string;
+	'Fitwell'?: string; //? // WITH DROPDOWN  SIMILAR TO BREEAM
+	'Passivhaus or EnePHit': string; // WITH DROPDOWN  SIMILAR TO BREEAM
+	'UKNZCBS'?: string; //? // WITH DROPDOWN   SIMILAR TO BREEAM
+	'NABERS': string;
+	'Other Cerification'?: string; //? // TEXT
+
+	ribaStage: 'stage-1' | 'stage-2' | 'stage-3' | 'stage-4' | 'stage-5' | 'stage-6' | 'stage-7';
+
+	'RIBA Stage': {
+		[K in StageKey]: {
+			'Updated GIA'?: number;
+			'Method Energy Measurement'?: string;
+
+			'Operational Energy Total': number;
+			'Operational Energy Part L': number;
+			'Operational Energy Gas': number;
+
+			'Space Heating Demand': number;
+			'Renewable Energy Type'?: string;
+			'Total Renewable Energy Generation': number;
+			'Structural Frame Materials'?: string;
+
+			'Upfront Carbon': number;
+			'Total Embodied Carbon': number;
+			'Biogenic Carbon'?: number;
+			'Embodied Carbon Scope Clarifications'?: string;
+
+			'Biodiversity Net Gain': number;
+			'Habitats Units Gained': number;
+			'Urban Greening Factor': number;
+			'General Biodiversity Clarification Notes'?: string;
+		};
+	};
+
+	'Updated GIA'?: number; //? // ADD DATA, SECTOR, COMPARE, PORTFOLIO
+	'Method Energy Measurement'?: string; //? // NOT USED
+
+	'Operational Energy Total': number;
+	'Operational Energy Part L': number;
+	'Operational Energy Gas': number;
+
+	'Space Heating Demand': number;
+	'Renewable Energy Type'?: string; //? NOT OPTIONAL WITH DROPDOWN, ADD DATA, COMPARE (TOOLTIP)
+	'Total Renewable Energy Generation': number;
+	'Structural Frame Materials'?: string; //? NOT OPTIONAL WITH DROPDOWN, ADD DATA, COMPARE (TOOLTIP)
+
+	'Upfront Carbon': number;
+	'Total Embodied Carbon': number;
+	'Biogenic Carbon'?: number;
+	'Embodied Carbon Scope Clarifications'?: string; //? NOT USED
+
+	'Biodiversity Net Gain': number;
+	'Habitats Units Gained': number;
+	'Urban Greening Factor': number;
+	'General Biodiversity Clarification Notes'?: string; //? NOT USED
 }
 
 export interface KPIOption {
-  key: keyof Project;
-  label: string;
-  unit: string;
-  category: 'embodied-carbon' | 'operational-energy' | 'water' | 'accreditation' | 'social' | 'wellbeing' | 'biodiversity' | 'circular' | 'legacy';
-  numericOnly?: boolean;
+	key: keyof Project;
+	label: string;
+	unit: string;
+	numericOnly?: boolean;
 }
 
 export const availableKPIs: KPIOption[] = [
-  // Embodied Carbon
-  { key: 'upfrontCarbon', label: 'Upfront Carbon', unit: 'kgCO2e/m²', category: 'embodied-carbon', numericOnly: true },
-  { key: 'totalEmbodiedCarbon', label: 'Total Embodied Carbon', unit: 'kgCO2e/m²', category: 'embodied-carbon', numericOnly: true },
-  { key: 'biogenicCarbon', label: 'Biogenic carbon', unit: 'kgCO2e/m²', category: 'embodied-carbon', numericOnly: true },
-  { key: 'refrigerants', label: 'Refrigerants', unit: 'kgCO2e/m²', category: 'embodied-carbon', numericOnly: true },
-  
-  // Operational Energy
-  { key: 'operationalEnergyTotal', label: 'Operational energy: Total', unit: 'kWh/m²/year', category: 'operational-energy', numericOnly: true },
-  { key: 'operationalEnergyPartL', label: 'Operational energy Part L', unit: 'kWh/m²/year', category: 'operational-energy', numericOnly: true },
-  { key: 'operationalEnergyGas', label: 'Operational energy: Gas', unit: 'kWh/m²/year', category: 'operational-energy', numericOnly: true },
-  { key: 'operationalEnergy', label: 'Operational Energy', unit: 'kWh/m²/year', category: 'operational-energy', numericOnly: true },
-  { key: 'gasUsage', label: 'Gas Usage', unit: 'kWh/m²/year', category: 'operational-energy', numericOnly: true },
-  { key: 'spaceHeatingDemand', label: 'Space heating demand', unit: 'kWh/m²/year', category: 'operational-energy', numericOnly: true },
-  { key: 'renewableEnergyGeneration', label: 'Renewable energy generation', unit: 'kWh/m²/year', category: 'operational-energy', numericOnly: true },
-  { key: 'existingBuildingEnergy', label: 'Existing Building Energy', unit: 'kWh/m²/year', category: 'operational-energy', numericOnly: true },
-  
-  // Water
-  { key: 'operationalWaterUse', label: 'Operational Water Use', unit: 'litres/pp/pd', category: 'water', numericOnly: true },
-  
-  // Wellbeing
-  { key: 'pmv', label: 'Predicted Mean Vote (PMV)', unit: '', category: 'wellbeing', numericOnly: true },
-  { key: 'ppd', label: 'Percentage People Dissatisfied (PPD)', unit: '%', category: 'wellbeing', numericOnly: true },
-  { key: 'daylightFactor', label: 'Daylight Factor', unit: '%', category: 'wellbeing', numericOnly: true },
-  
-  // Biodiversity
-  { key: 'biodiversityNetGain', label: 'Biodiversity net gain', unit: '%', category: 'biodiversity', numericOnly: true },
-  { key: 'habitatUnits', label: 'Habitat Units Gained', unit: 'units', category: 'biodiversity', numericOnly: true },
-  { key: 'urbanGreeningFactor', label: 'Urban greening factor', unit: '%', category: 'biodiversity', numericOnly: true },
-  
-  // Circular Economy
-  { key: 'reusedRecycledMaterial', label: 'Reused/Recycled Material', unit: '% of total mass', category: 'circular', numericOnly: true },
-  
-  // Legacy KPIs for backward compatibility
-  { key: 'carbonIntensity', label: 'Carbon Intensity', unit: 'kgCO2e/m²/yr', category: 'legacy', numericOnly: true },
-  { key: 'eui', label: 'Energy Use Intensity (EUI)', unit: 'kWh/m²/yr', category: 'legacy', numericOnly: true },
-  { key: 'shd', label: 'Solar Heat Demand (SHD)', unit: 'kWh/m²/yr', category: 'legacy', numericOnly: true },
-  { key: 'wlc', label: 'Whole Life Carbon (WLC)', unit: 'kgCO2e/m²', category: 'legacy', numericOnly: true },
+	{
+		key: 'Operational Energy Total',
+		label: 'Operational energy: Total',
+		unit: 'kWh/m²/year',
+		numericOnly: true,
+	},
+	{
+		key: 'Operational Energy Part L',
+		label: 'Operational energy Part L',
+		unit: 'kWh/m²/year',
+		numericOnly: true,
+	},
+	{
+		key: 'Operational Energy Gas',
+		label: 'Operational energy: Gas',
+		unit: 'kWh/m²/year',
+		numericOnly: true,
+	},
+
+	{
+		key: 'Space Heating Demand',
+		label: 'Space heating demand',
+		unit: 'kWh/m²/year',
+		numericOnly: true,
+	},
+	{
+		key: 'Total Renewable Energy Generation',
+		label: 'Renewable energy generation',
+		unit: 'kWh/m²/year',
+		numericOnly: true,
+	},
+
+	{
+		key: 'Upfront Carbon',
+		label: 'Upfront Carbon',
+		unit: 'kgCO2e/m²',
+		numericOnly: true,
+	},
+	{
+		key: 'Total Embodied Carbon',
+		label: 'Total Embodied Carbon',
+		unit: 'kgCO2e/m²',
+		numericOnly: true,
+	},
+	{
+		key: 'Biogenic Carbon',
+		label: 'Biogenic carbon',
+		unit: 'kgCO2e/m²',
+		numericOnly: true,
+	},
+
+	{
+		key: 'Biodiversity Net Gain',
+		label: 'Biodiversity net gain',
+		unit: '%',
+		numericOnly: true,
+	},
+	{
+		key: 'Habitats Units Gained',
+		label: 'Habitat Units Gained',
+		unit: 'units',
+		numericOnly: true,
+	},
+	{
+		key: 'Urban Greening Factor',
+		label: 'Urban greening factor',
+		unit: '%',
+		numericOnly: true,
+	},
 ];

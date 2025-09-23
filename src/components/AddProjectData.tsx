@@ -6,6 +6,8 @@ import { Plus } from 'lucide-react';
 import { AddProjectDataWizard } from './AddProjectDataWizard';
 import { Project } from '@/types/project';
 
+import { WizardData } from './AddProjectDataWizard';
+
 interface AddProjectDataProps {
   projects: Project[];
 }
@@ -13,7 +15,7 @@ interface AddProjectDataProps {
 export const AddProjectData = ({ projects }: AddProjectDataProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleSaveProjectData = (data: any) => {
+  const handleSaveProjectData = (data: WizardData) => {
     console.log('Saving project data:', data);
     // Implementation would handle saving the data
   };

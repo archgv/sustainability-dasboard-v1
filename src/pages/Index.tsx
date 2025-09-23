@@ -25,8 +25,8 @@ const Index = () => {
   const [selectedRibaStages, setSelectedRibaStages] = useState<string[]>([]);
   
   const [filters, setFilters] = useState({
-    typology: 'all',
-    projectType: 'all',
+    "Primary Sector": 'all',
+    "Project Type": 'all',
     ribaStage: 'all',
     dateRange: 'all',
     carbonRange: [0, 200],
@@ -37,17 +37,15 @@ const Index = () => {
     setFilters(newFilters);
     
     const filtered = sampleProjects.filter(project => {
-      const typologyMatch = newFilters.typology === 'all' || project.typology === newFilters.typology;
-      const projectTypeMatch = newFilters.projectType === 'all' || project.projectType === newFilters.projectType;
+      const primarySectorMatch = newFilters["Primary Sector"] === 'all' || project["Primary Sector"] === newFilters["Primary Sector"];
+      const projectTypeMatch = newFilters["Project Type"] === 'all' || project["Project Type"] === newFilters["Project Type"];
       const ribaStageMatch = newFilters.ribaStage === 'all' || project.ribaStage === newFilters.ribaStage;
-      const carbonMatch = project.carbonIntensity >= newFilters.carbonRange[0] && 
-                         project.carbonIntensity <= newFilters.carbonRange[1];
-      const energyMatch = project.operationalEnergy >= newFilters.energyRange[0] && 
-                         project.operationalEnergy <= newFilters.energyRange[1];
+      //const carbonMatch = project.carbonIntensity >= newFilters.carbonRange[0] && project.carbonIntensity <= newFilters.carbonRange[1];
+      //const energyMatch = project.operationalEnergy >= newFilters.energyRange[0] && project.operationalEnergy <= newFilters.energyRange[1];
       
       let dateMatch = true;
       if (newFilters.dateRange !== 'all') {
-        const projectYear = new Date(project.completionDate).getFullYear();
+        const projectYear = new Date(project["PC Date"]).getFullYear();
         const currentYear = new Date().getFullYear();
         
         switch (newFilters.dateRange) {
@@ -60,7 +58,8 @@ const Index = () => {
         }
       }
       
-      return typologyMatch && projectTypeMatch && ribaStageMatch && carbonMatch && energyMatch && dateMatch;
+      //return typologyMatch && projectTypeMatch && ribaStageMatch && carbonMatch && energyMatch && dateMatch;
+      return primarySectorMatch && projectTypeMatch && ribaStageMatch && dateMatch;
     });
     
     setFilteredProjects(filtered);
@@ -68,8 +67,8 @@ const Index = () => {
 
   const handleClearFilters = () => {
     const defaultFilters = {
-      typology: 'all',
-      projectType: 'all',
+      "Primary Sector": 'all',
+      "Project Type": 'all',
       ribaStage: 'all',
       dateRange: 'all',
       carbonRange: [0, 200],
@@ -102,7 +101,7 @@ const Index = () => {
         ...primaryProjectData,
         id: `${primaryProjectData.id}-${stageId}`,
         ribaStage: stageId as any,
-        name: primaryProjectData.name
+        name: primaryProjectData["Project Name"]
       }));
     }
     

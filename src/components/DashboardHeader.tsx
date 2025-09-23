@@ -1,3 +1,4 @@
+import { sampleProjects } from "@/data/sampleData";
 
 export const DashboardHeader = () => {
   return (
@@ -24,7 +25,9 @@ export const DashboardHeader = () => {
           
           <div className="text-right">
             <div className="text-sm text-gray-500">Total Projects</div>
-            <div className="text-2xl font-bold text-green-600">47</div>
+            <div className="text-2xl font-bold text-green-600">
+              {sampleProjects.length}
+            </div>
           </div>
         </div>
       </div>

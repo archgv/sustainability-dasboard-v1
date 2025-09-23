@@ -255,7 +255,7 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
         
         const colWidths = [120, 100, 140, 80, 80, 120];
         const rowHeight = 25;
-        let startX = 50;
+        const startX = 50;
 
         // Draw table headers
         ctx.font = 'bold 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';

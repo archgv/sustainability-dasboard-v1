@@ -114,7 +114,7 @@ export const ProjectComparison = ({
                 className="w-full justify-between"
               >
                 {primaryProject
-                  ? projects.find(p => p.id === primaryProject)?.name || ''
+                  ? projects.find(p => p.id === primaryProject)?.["Project Name"] || ''
                   : "Select primary project..."}
                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
@@ -128,7 +128,7 @@ export const ProjectComparison = ({
                     {projects.map((project) => (
                       <CommandItem
                         key={project.id}
-                        value={project.name}
+                        value={project["Project Name"]}
                         onSelect={() => {
                           onPrimaryProjectChange(project.id);
                           setOpen(false);
@@ -140,7 +140,7 @@ export const ProjectComparison = ({
                             primaryProject === project.id ? "opacity-100" : "opacity-0"
                           )}
                         />
-                        {project.name}
+                        {project["Project Name"]}
                       </CommandItem>
                     ))}
                   </CommandGroup>
@@ -154,19 +154,19 @@ export const ProjectComparison = ({
               <div className="flex items-center gap-2 mb-2">
                 <Building2 className="h-4 w-4 text-blue-600" />
                 <span className="font-medium text-blue-900">
-                  {primaryProjectData.name}
+                  {primaryProjectData["Project Name"]}
                 </span>
               </div>
               <div className="flex items-center gap-4 text-sm text-blue-700">
                 <div className="flex items-center gap-1">
                   <MapPin className="h-3 w-3" />
-                  {primaryProjectData.location}
+                  {primaryProjectData["Project Location"]}
                 </div>
                 <Badge variant="outline" className="capitalize">
-                  {getSectorDisplay(primaryProjectData.typology)}
+                  {getSectorDisplay(primaryProjectData["Primary Sector"])}
                 </Badge>
                 <Badge variant="outline" className="capitalize">
-                  {primaryProjectData.projectType}
+                  {primaryProjectData["Project Type"]}
                 </Badge>
               </div>
             </div>
@@ -240,14 +240,14 @@ export const ProjectComparison = ({
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="font-medium text-gray-900">
-                          {project.name}
+                          {project["Project Name"]}
                         </p>
                         <div className="flex items-center gap-2 mt-1">
                           <Badge variant="outline" className="text-xs capitalize">
-                            {getSectorDisplay(project.typology)}
+                            {getSectorDisplay(project["Primary Sector"])}
                           </Badge>
                           <Badge variant="outline" className="text-xs capitalize">
-                            {project.projectType}
+                            {project["Project Type"]}
                           </Badge>
                           <span className="text-xs text-gray-500">
                             RIBA {project.ribaStage.replace('stage-', '')}

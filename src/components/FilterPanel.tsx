@@ -6,11 +6,11 @@ import { Button } from '@/components/ui/button';
 import { Filter, X } from 'lucide-react';
 interface FilterPanelProps {
   filters: {
-    typology: string;
+    "Primary Sector": string;
     dateRange: string;
     carbonRange: number[];
     energyRange: number[];
-    projectType: string;
+    "Project Type": string;
     ribaStage: string;
   };
   onFilterChange: (filters: any) => void;
@@ -65,7 +65,7 @@ export const FilterPanel = ({
         {/* Typology Filter */}
         <div>
           <Label htmlFor="typology" className="text-sm font-medium text-gray-700 mb-2 block">Sector</Label>
-          <Select value={filters.typology} onValueChange={handleTypologyChange}>
+          <Select value={filters["Primary Sector"]} onValueChange={handleTypologyChange}>
             <SelectTrigger>
               <SelectValue placeholder="Select sector" />
             </SelectTrigger>
@@ -86,7 +86,7 @@ export const FilterPanel = ({
           <Label htmlFor="projectType" className="text-sm font-medium text-gray-700 mb-2 block">
             Project Type
           </Label>
-          <Select value={filters.projectType || 'all'} onValueChange={handleProjectTypeChange}>
+          <Select value={filters["Project Type"] || 'all'} onValueChange={handleProjectTypeChange}>
             <SelectTrigger>
               <SelectValue placeholder="Select project type" />
             </SelectTrigger>

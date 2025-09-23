@@ -37,29 +37,26 @@ export const CertificationAnalysis = ({
       let projectRating = '';
       switch (certification) {
         case 'breeam':
-          projectRating = project.breeam;
+          projectRating = project["BREEAM"];
           break;
         case 'leed':
-          projectRating = project.leed;
+          projectRating = project["LEED"];
           break;
         case 'well':
-          projectRating = project.well;
+          projectRating = project["WELL"];
           break;
         case 'nabers':
-          projectRating = project.nabers;
+          projectRating = project["NABERS"];
           break;
         case 'passivhaus':
-          if (project.passivhaus) projectRating = 'Certified';
+          if (project["Passivhaus or EnePHit"]) projectRating = 'Certified';
           break;
-        case 'enerphit':
-          if (project.certifications?.includes('EnerPHit')) projectRating = 'Certified';
-          break;
-        case 'uknzcbs':
-          const uknzcbsCert = project.certifications?.find(cert => cert.includes('UKNZCBS'));
-          if (uknzcbsCert) {
-            if (uknzcbsCert.includes('Net Zero')) projectRating = 'Net Zero';
-          }
-          break;
+        // case 'uknzcbs':
+        //   const uknzcbsCert = project["UKNZCBS"];
+        //   if (uknzcbsCert) {
+        //     if (uknzcbsCert.includes('Net Zero')) projectRating = 'Net Zero';
+        //   }
+        //   break;
       }
       if (projectRating && projectRating !== 'N/A' && data[projectRating]) {
         data[projectRating].push(project);
@@ -98,7 +95,7 @@ export const CertificationAnalysis = ({
   const getDisplayName = (project: Project) => {
     const baseId = project.id.split('-')[0];
     const projectNumber = `250${parseInt(baseId) + 116}`;
-    return `${projectNumber}_${project.name}`;
+    return `${projectNumber}_${project["Project Name"]}`;
   };
   return <Card className="p-6">
       <div className="flex items-center justify-between cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>

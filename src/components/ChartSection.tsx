@@ -352,7 +352,7 @@ export const ChartSection = ({
       // Get UKNZCBS benchmark data for upfront carbon
       if (selectedKPI1 === 'upfrontCarbon' && selectedBarChartBenchmark && valueType === 'per-sqm' && projects.length > 0) {
         const primaryProject = projects[0];
-        const primarySector = getSector(primaryProject.typology);
+        const primarySector = getSector(primaryProject["Primary Sector"]);
         
         // Get the PC date from the primary project to determine benchmark year
         const pcYear = (primaryProject as any).additionalData?.find((data: any) => data.label === 'PC Date (year)')?.value;
@@ -392,7 +392,7 @@ export const ChartSection = ({
       // Get benchmark data for total embodied carbon
       if (showBenchmarks && selectedKPI1 === 'totalEmbodiedCarbon' && valueType === 'per-sqm' && projects.length > 0) {
         const primaryProject = projects[0];
-        const primarySector = getSector(primaryProject.typology);
+        const primarySector = getSector(primaryProject["Primary Sector"]);
         
         // Get benchmark values for this sector
         const sectorBenchmarks = totalEmbodiedCarbonBenchmarks[primarySector as keyof typeof totalEmbodiedCarbonBenchmarks];
@@ -500,8 +500,8 @@ export const ChartSection = ({
         // Get UKNZCBS benchmark data for upfront carbon
         if (selectedKPI1 === 'upfrontCarbon' && selectedBarChartBenchmark && valueType === 'per-sqm' && projects.length > 0) {
           const primaryProject = projects[0];
-          const primarySector = getSector(primaryProject.typology);
-          const benchmarkColor = getSectorBenchmarkColor(primaryProject.typology);
+          const primarySector = getSector(primaryProject["Primary Sector"]);
+          const benchmarkColor = getSectorBenchmarkColor(primaryProject["Primary Sector"]);
           
           // Get the PC date from the primary project to determine benchmark year
           const pcYear = (primaryProject as any).additionalData?.find((data: any) => data.label === 'PC Date (year)')?.value;
@@ -545,8 +545,8 @@ export const ChartSection = ({
         // Get benchmark data for total embodied carbon
         if (showBenchmarks && selectedKPI1 === 'totalEmbodiedCarbon' && valueType === 'per-sqm' && projects.length > 0) {
           const primaryProject = projects[0];
-          const primarySector = getSector(primaryProject.typology);
-          const benchmarkColor = getSectorBenchmarkColor(primaryProject.typology);
+          const primarySector = getSector(primaryProject["Primary Sector"]);
+          const benchmarkColor = getSectorBenchmarkColor(primaryProject["Primary Sector"]);
           
           // Get benchmark values for this sector
           const sectorBenchmarks = totalEmbodiedCarbonBenchmarks[primarySector as keyof typeof totalEmbodiedCarbonBenchmarks];
@@ -645,7 +645,7 @@ export const ChartSection = ({
 
   const getUnitLabel = (baseUnit: string, valueType: ValueType, forCSV: boolean = false): string => {
     // For CSV exports, use plain text to avoid encoding issues
-    let unit = forCSV ? baseUnit.replace(/CO2/g, 'CO2').replace(/₂/g, '2') : baseUnit.replace(/CO2/g, 'CO₂');
+    const unit = forCSV ? baseUnit.replace(/CO2/g, 'CO2').replace(/₂/g, '2') : baseUnit.replace(/CO2/g, 'CO₂');
     
     if (valueType === 'total') {
       return unit.replace('/m²', '').replace('/year', '/year total');
@@ -704,15 +704,15 @@ export const ChartSection = ({
     return projects.map(project => {
       const baseId = project.id.split('-')[0];
       const displayName = isComparingToSelf && project.ribaStage 
-        ? `${project.name} (RIBA ${project.ribaStage.replace('stage-', '')})`
-        : project.name;
+        ? `${project["Project Name"]} (RIBA ${project.ribaStage.replace('stage-', '')})`
+        : project["Project Name"];
       
       const projectData: any = { name: displayName };
       
       // Mock breakdown data - in real app this would come from project.embodiedCarbonBreakdown
       categories.forEach((category, index) => {
         // Generate mock values based on total embodied carbon
-        const baseValue = project.totalEmbodiedCarbon || 45;
+        const baseValue = project["Total Embodied Carbon"] || 45;
         const multiplier = embodiedCarbonBreakdown === 'lifecycle' 
           ? [0.4, 0.15, 0.25, 0.1, 0.05, 0.05][index] // Lifecycle distribution
           : [0.15, 0.2, 0.15, 0.1, 0.05, 0.05, 0.15, 0.1, 0.05][index]; // Building element distribution
@@ -897,7 +897,7 @@ export const ChartSection = ({
           </ResponsiveContainer>
         );
 
-      case 'single-bar':
+      case 'single-bar':{
         const MultiLineTickComponent = (props: any) => {
           const { x, y, payload } = props;
           const words = payload.value.split(' ');
@@ -938,7 +938,7 @@ export const ChartSection = ({
         // Add biogenic data as negative values for totalEmbodiedCarbon - use sorted projects
         const chartData = sortedProjects.map(project => ({
           ...project,
-          biogenic: selectedKPI1 === 'totalEmbodiedCarbon' ? -Math.abs(project.biogenicCarbon || 0) * (valueType === 'total' ? getProjectArea(project.id.split('-')[0]) : 1) : 0
+          biogenic: selectedKPI1 === 'totalEmbodiedCarbon' ? -Math.abs(project["Biogenic Carbon"] || 0) * (valueType === 'total' ? getProjectArea(project.id.split('-')[0]) : 1) : 0
         }));
 
         // Get UKNZCBS benchmark data for the bar chart - always based on PRIMARY project only
@@ -949,8 +949,8 @@ export const ChartSection = ({
           
           // ALWAYS use the first project in the original array as the primary project
           const primaryProject = projects[0];
-          const primarySector = getSector(primaryProject.typology);
-          const benchmarkColor = getSectorBenchmarkColor(primaryProject.typology);
+          const primarySector = getSector(primaryProject["Primary Sector"]);
+          const benchmarkColor = getSectorBenchmarkColor(primaryProject["Primary Sector"]);
           
           // Get the PC date from the primary project to determine benchmark year
           const pcYear = (primaryProject as any).additionalData?.find((data: any) => data.label === 'PC Date (year)')?.value;
@@ -996,8 +996,8 @@ export const ChartSection = ({
           
           // ALWAYS use the first project in the original array as the primary project
           const primaryProject = projects[0];
-          const primarySector = getSector(primaryProject.typology);
-          const benchmarkColor = getSectorBenchmarkColor(primaryProject.typology);
+          const primarySector = getSector(primaryProject["Primary Sector"]);
+          const benchmarkColor = getSectorBenchmarkColor(primaryProject["Primary Sector"]);
           
           // Get benchmark values for this sector
           const sectorBenchmarks = totalEmbodiedCarbonBenchmarks[primarySector as keyof typeof totalEmbodiedCarbonBenchmarks];
@@ -1335,14 +1335,15 @@ export const ChartSection = ({
             </ResponsiveContainer>
           </div>
         );
+      }
 
-      case 'single-timeline':
+      case 'single-timeline':{
         const timelineData = transformedProjects
           .map(project => {
             const baseId = project.id.split('-')[0];
             const displayName = isComparingToSelf && project.ribaStage 
-              ? `${project.name} (RIBA ${project.ribaStage.replace('stage-', '')})`
-              : project.name;
+              ? `${project["Project Name"]} (RIBA ${project.ribaStage.replace('stage-', '')})`
+              : project["Project Name"];
             
             // Extract year only from completion date
             const completionYear = new Date(project.completionDate).getFullYear();
@@ -1368,7 +1369,7 @@ export const ChartSection = ({
 
         // Get the primary project's sector and available sub-sectors
         const primaryProject = projects[0];
-        const primarySector = primaryProject ? getSector(primaryProject.typology) : '';
+        const primarySector = primaryProject ? getSector(primaryProject["Primary Sector"]) : '';
         const availableSubSectors = getSubSectorsForSector(primarySector);
         
         // Set default sub-sector if not already selected
@@ -1459,7 +1460,7 @@ export const ChartSection = ({
         };
 
         const operationalEnergyBenchmarkData = createOperationalEnergyBenchmarkData();
-        const benchmarkColor = primaryProject ? getSectorBenchmarkColor(primaryProject.typology) : '#1E9F5A';
+        const benchmarkColor = primaryProject ? getSectorBenchmarkColor(primaryProject["Primary Sector"]) : '#1E9F5A';
 
         // Determine graph range based on project data
         const projectYears = timelineData.map(p => p.completionYear);
@@ -1708,6 +1709,7 @@ export const ChartSection = ({
             </LineChart>
           </ResponsiveContainer>
         );
+      }
 
       default:
         return <div>Select a chart type to view data</div>;
@@ -1718,7 +1720,7 @@ export const ChartSection = ({
   const hasBenchmarks = () => {
     if (projects.length === 0) return false;
     const primaryProject = projects[0];
-    const primarySector = getSector(primaryProject.typology);
+    const primarySector = getSector(primaryProject["Primary Sector"]);
     return !!totalEmbodiedCarbonBenchmarks[primarySector as keyof typeof totalEmbodiedCarbonBenchmarks];
   };
 
@@ -1726,7 +1728,7 @@ export const ChartSection = ({
   const getAvailableSubSectors = (): string[] => {
     if (projects.length === 0) return [];
     const primaryProject = projects[0];
-    const primarySector = getSector(primaryProject.typology);
+    const primarySector = getSector(primaryProject["Primary Sector"]);
     
     // Check both upfront carbon and operational energy benchmarks
     if (selectedKPI1 === 'upfrontCarbon') {

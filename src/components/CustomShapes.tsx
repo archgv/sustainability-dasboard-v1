@@ -24,7 +24,7 @@ export const CustomShape: React.FC<CustomShapeProps> = ({ cx = 0, cy = 0, fill =
           />
         );
       
-      case 'triangle':
+      case 'triangle':{
         const points = [
           [cx, cy - size / 2],
           [cx - size / 2, cy + size / 2],
@@ -38,8 +38,9 @@ export const CustomShape: React.FC<CustomShapeProps> = ({ cx = 0, cy = 0, fill =
             strokeWidth={1}
           />
         );
-      
-      case 'star':
+      }
+
+      case 'star':{
         const outerRadius = size / 2;
         const innerRadius = outerRadius * 0.4;
         const starPoints = [];
@@ -60,7 +61,8 @@ export const CustomShape: React.FC<CustomShapeProps> = ({ cx = 0, cy = 0, fill =
             strokeWidth={1}
           />
         );
-      
+      }
+
       case 'circle':
         return (
           <circle
@@ -73,7 +75,7 @@ export const CustomShape: React.FC<CustomShapeProps> = ({ cx = 0, cy = 0, fill =
           />
         );
       
-      case 'diamond':
+      case 'diamond':{
         const diamondPoints = [
           [cx, cy - size / 2],
           [cx + size / 2, cy],
@@ -88,8 +90,9 @@ export const CustomShape: React.FC<CustomShapeProps> = ({ cx = 0, cy = 0, fill =
             strokeWidth={1}
           />
         );
-      
-      case 'pentagon':
+      }
+
+      case 'pentagon':{
         const pentagonPoints = [];
         for (let i = 0; i < 5; i++) {
           const angle = (i * 2 * Math.PI) / 5 - Math.PI / 2;
@@ -105,6 +108,7 @@ export const CustomShape: React.FC<CustomShapeProps> = ({ cx = 0, cy = 0, fill =
             strokeWidth={1}
           />
         );
+      }
       
       default:
         return (

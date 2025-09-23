@@ -63,8 +63,8 @@ export const ProjectGrid = ({
 
   const getDisplayName = (project: Project, index: number) => {
     return isComparingToSelf && project.ribaStage 
-      ? `${project.name} (${getRibaStageDisplay(project.ribaStage)})`
-      : project.name;
+      ? `${project["Project Name"]} (${getRibaStageDisplay(project.ribaStage)})`
+      : project["Project Name"];
   };
 
   return (
@@ -81,7 +81,7 @@ export const ProjectGrid = ({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {projects.map((project, index) => {
           const displayName = getDisplayName(project, index);
-          const sectorDisplay = getSectorDisplay(project.typology);
+          const sectorDisplay = getSectorDisplay(project["Primary Sector"]);
           
           return (
             <Card key={project.id} className="p-6 hover:shadow-lg transition-shadow duration-200">
@@ -97,13 +97,13 @@ export const ProjectGrid = ({
               <div className="space-y-3 mb-4">
                 <div className="flex items-center text-sm text-gray-600">
                   <MapPin className="h-4 w-4 mr-2" />
-                  {project.location}
+                  {project["Project Location"]}
                 </div>
                 <div className="flex items-center text-sm text-gray-600">
                   <Calendar className="h-4 w-4 mr-2" />
                   {project.ribaStage === 'stage-7' ? 
-                    `PC date ${new Date(project.completionDate).getFullYear()}` :
-                    `PC date ${new Date(project.completionDate).getFullYear()}`
+                    `PC date ${new Date(project["PC Date"]).getFullYear()}` :
+                    `PC date ${new Date(project["PC Date"]).getFullYear()}`
                   }
                 </div>
                 <div className="flex items-center text-sm text-gray-600">
@@ -113,11 +113,11 @@ export const ProjectGrid = ({
                   </span>
                 </div>
                 <div className="text-sm text-gray-600">
-                  <span className="font-medium">Project Type:</span> {project.projectType === 'new-build' ? 'New Build' : 'Retrofit'}
+                  <span className="font-medium">Project Type:</span> {project["Project Type"] === 'new-build' ? 'New Build' : 'Retrofit'}
                 </div>
                 
                 <div className="text-sm text-gray-600">
-                  <span className="font-medium">GIA:</span> {formatNumber(project.gia || 0)} m²
+                  <span className="font-medium">GIA:</span> {formatNumber(project["GIA"] || 0)} m²
                 </div>
               </div>
               
@@ -128,7 +128,7 @@ export const ProjectGrid = ({
                     <span className="text-sm text-gray-600">Embodied Carbon</span>
                   </div>
                   <span className="text-sm text-gray-600">
-                    {formatNumber(project.totalEmbodiedCarbon)} kgCO2e/m²
+                    {formatNumber(project["Total Embodied Carbon"])} kgCO2e/m²
                   </span>
                 </div>
                 
@@ -138,24 +138,24 @@ export const ProjectGrid = ({
                     <span className="text-sm text-gray-600">Operational Energy</span>
                   </div>
                   <span className="text-sm text-gray-600">
-                    {formatNumber(project.operationalEnergy)} kWh/m²/yr
+                    {formatNumber(project["Operational Energy Total"])} kWh/m²/yr
                   </span>
                 </div>
                 
-                {project.projectType === 'retrofit' && project.existingBuildingEnergy && (
+                {project["Project Type"] === 'retrofit' && project["Operational Energy Existing Building"] && (
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
                       <Zap className="h-4 w-4 mr-2 text-orange-600" />
                       <span className="text-sm text-gray-600">Existing Building Energy</span>
                     </div>
                     <span className="text-sm text-gray-600">
-                      {formatNumber(project.existingBuildingEnergy)} kWh/m²/yr
+                      {formatNumber(project["Operational Energy Existing Building"])} kWh/m²/yr
                     </span>
                   </div>
                 )}
               </div>
               
-              {project.certifications && project.certifications.length > 0 && (
+              {/* {project.certifications && project.certifications.length > 0 && (
                 <div className="mt-4 pt-4 border-t">
                   <div className="flex flex-wrap gap-1">
                     {project.certifications.map((cert, index) => (
@@ -165,7 +165,7 @@ export const ProjectGrid = ({
                     ))}
                   </div>
                 </div>
-              )}
+              )} */}
             </Card>
           );
         })}
