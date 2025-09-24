@@ -6,7 +6,7 @@ import { Project, StageKey, StageKeys } from '@/types/project';
 import { AddSelection } from './AddProjectWizard/P00-Selection';
 import { AddOverview } from './AddProjectWizard/P11-Overview';
 import { AddCertifications } from './AddProjectWizard/P12-Certifications';
-import { AddRIBAStage } from './AddProjectWizard/P13-RIBAStage1';
+import { AddRIBAStage } from './AddProjectWizard/P13-RIBAStage';
 
 interface AddProjectDataWizardProps {
 	isOpen: boolean;
