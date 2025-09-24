@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -7,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { HelpCircle, AlertTriangle } from 'lucide-react';
-import { Project } from '@/types/project';
+import { Project, StageKey } from '@/types/project';
 
 import {
 	AlertDialog,
@@ -31,6 +30,14 @@ interface ProjectFormData {
 	'External Consultants'?: string;
 	'Sustianability Champion Name'?: string;
 	'Mission Statement'?: string;
+
+	'BREEAM': string;
+	'LEED': string;
+	'WELL': string;
+	'Passivhaus or EnePHit': string;
+	'NABERS': string;
+
+	'Current RIBA Stage': StageKey;
 }
 
 interface ProjectOverviewScreenProps {
