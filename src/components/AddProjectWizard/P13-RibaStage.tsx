@@ -21,9 +21,9 @@ import {
 } from '@/components/ui/alert-dialog';
 import { StageKey } from '@/types/project';
 
-interface RibaStageScreenProps {
+interface RibaStageProps {
 	stageNumber: string;
-	stageData: WizardData['RIBA Stage'][StageKey];
+	stageData: Partial<WizardData['RIBA Stage'][StageKey]>;
 	projectGia: string;
 	onDataUpdate: (data: WizardData['RIBA Stage'][StageKey]) => void;
 	onSave: () => void;
@@ -57,7 +57,7 @@ const TooltipField = ({ label, tooltip, required = false, children }: { label: s
 	</div>
 );
 
-export const RibaStageScreen = ({ stageNumber, stageData, projectGia, onDataUpdate, onSave, onSaveAndExit, onCancel, currentStep, completedSteps, stageCompletionData }: RibaStageScreenProps) => {
+export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate, onSave, onSaveAndExit, onCancel, currentStep, completedSteps, stageCompletionData }: RibaStageProps) => {
 	const [showExitDialog, setShowExitDialog] = useState(false);
 	const [showCancelDialog, setShowCancelDialog] = useState(false);
 	const [showSaveDialog, setShowSaveDialog] = useState(false);

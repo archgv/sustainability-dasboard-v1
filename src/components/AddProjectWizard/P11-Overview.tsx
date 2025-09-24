@@ -20,7 +20,7 @@ import {
 	AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 
-interface ProjectOverviewScreenProps {
+interface ProjectOverviewProps {
 	selectedProject?: Project;
 	projectData: WizardData['projectData'];
 	onDataUpdate: (data: WizardData['projectData']) => void;
@@ -52,7 +52,7 @@ const TooltipField = ({ label, tooltip, required = false, children }: { label: s
 	</div>
 );
 
-export const ProjectOverviewScreen = ({ selectedProject, projectData, onDataUpdate, onSave, onSaveAndExit, onCancel }: ProjectOverviewScreenProps) => {
+export const AddOverview = ({ selectedProject, projectData, onDataUpdate, onSave, onSaveAndExit, onCancel }: ProjectOverviewProps) => {
 	const [showExitDialog, setShowExitDialog] = useState(false);
 	const [showCancelDialog, setShowCancelDialog] = useState(false);
 	const [showSaveDialog, setShowSaveDialog] = useState(false);

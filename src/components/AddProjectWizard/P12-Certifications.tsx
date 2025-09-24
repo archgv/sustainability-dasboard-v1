@@ -18,7 +18,7 @@ import {
 	AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 
-interface CertificationsScreenProps {
+interface CertificationsProps {
 	projectData: WizardData['projectData'];
 	onDataUpdate: (data: WizardData['projectData']) => void;
 	onSave: () => void;
@@ -49,7 +49,7 @@ const TooltipField = ({ label, tooltip, required = false, children }: { label: s
 	</div>
 );
 
-export const CertificationsScreen = ({ projectData, onDataUpdate, onSave, onSaveAndExit, onCancel }: CertificationsScreenProps) => {
+export const AddCertifications = ({ projectData, onDataUpdate, onSave, onSaveAndExit, onCancel }: CertificationsProps) => {
 	const [showExitDialog, setShowExitDialog] = useState(false);
 	const [showCancelDialog, setShowCancelDialog] = useState(false);
 	const [showSaveDialog, setShowSaveDialog] = useState(false);

@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 import { Project } from '@/types/project';
 import { WizardProgressIndicator } from './P10-Progress';
 
-interface ProjectSelectionScreenProps {
+interface ProjectSelectionProps {
 	projects: Project[];
 	selectedProjectId: string;
 	onProjectSelect: (projectId: string) => void;
@@ -17,7 +17,7 @@ interface ProjectSelectionScreenProps {
 	onCancel: () => void;
 }
 
-export const ProjectSelectionScreen = ({ projects, selectedProjectId, onProjectSelect, onNext, onCancel }: ProjectSelectionScreenProps) => {
+export const AddSelection = ({ projects, selectedProjectId, onProjectSelect, onNext, onCancel }: ProjectSelectionProps) => {
 	const [open, setOpen] = useState(false);
 	const [searchValue, setSearchValue] = useState('');
 

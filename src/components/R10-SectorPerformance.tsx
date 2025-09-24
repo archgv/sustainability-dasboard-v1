@@ -5,11 +5,23 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine } from 'recharts';
 import { formatNumber } from '@/lib/utils';
-import { getSectorColor, sectorConfig } from '@/utils/projectUtils';
+import { sectorConfig } from '@/utils/projectUtils';
 import { Project } from '@/types/project';
 
-interface SectorPerformanceProps {
-	projects: any[];
+interface SectorStats {
+	count: number;
+	totalValue: number;
+	totalGIA: number;
+	minValue: number;
+	maxValue: number;
+	values: number[];
+}
+
+type SectorStatsMap = Record<string, SectorStats>;
+
+interface BiogenicStats {
+	totalValue: number;
+	count: number;
 }
 
 // Custom color palette matching ChartSection
@@ -25,7 +37,7 @@ const chartColors = {
 	muted: '#272727', // Updated to use new dark gray
 };
 
-export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
+export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 	const [isExpanded, setIsExpanded] = useState(false);
 	const [selectedKPI, setSelectedKPI] = useState('Total Embodied Carbon');
 	const [valueType, setValueType] = useState('per-sqm');
@@ -57,12 +69,12 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
 		yearFilter === 'all'
 			? projects
 			: projects.filter((project) => {
-					const projectYear = new Date(project.completionDate).getFullYear();
+					const projectYear = new Date(project['PC Date']).getFullYear();
 					const filterYear = parseInt(yearFilter.replace('from-', ''));
 					return projectYear >= filterYear;
 			  });
 
-	const sectorStats = filteredProjects.reduce((acc: any, project: Project) => {
+	const sectorStats = filteredProjects.reduce<SectorStatsMap>((acc, project: Project) => {
 		const sector = project['Primary Sector'];
 		if (!acc[sector]) {
 			acc[sector] = {
@@ -111,8 +123,8 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
 		// For Total Embodied Carbon, also calculate biogenic data for negative columns
 		let biogenicValue = 0;
 		if (selectedKPI === 'Total Embodied Carbon' && stats) {
-			const biogenicStats = filteredProjects.reduce(
-				(acc: any, project: Project) => {
+			const biogenicStats = filteredProjects.reduce<BiogenicStats>(
+				(acc, project: Project) => {
 					if (project['Primary Sector'] === sector) {
 						const value = project['Biogenic Carbon'] || 0;
 						const gia = project['GIA'] || 0;
@@ -142,7 +154,7 @@ export const SectorPerformance = ({ projects }: SectorPerformanceProps) => {
 	});
 
 	const getYearOptions = () => {
-		const years = projects.map((p) => new Date(p.completionDate).getFullYear());
+		const years = projects.map((p) => new Date(p['PC Date']).getFullYear());
 		const uniqueYears = [...new Set(years)].sort((a, b) => b - a);
 		return uniqueYears;
 	};

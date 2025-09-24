@@ -3,10 +3,10 @@ import * as React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Project, StageKey, StageKeys } from '@/types/project';
-import { ProjectSelectionScreen } from './AddProjectWizard/P00-Selection';
-import { ProjectOverviewScreen } from './AddProjectWizard/P11-Overview';
-import { CertificationsScreen } from './AddProjectWizard/P12-Certifications';
-import { RibaStageScreen } from './AddProjectWizard/P13-RibaStage';
+import { AddSelection } from './AddProjectWizard/P00-Selection';
+import { AddOverview } from './AddProjectWizard/P11-Overview';
+import { AddCertifications } from './AddProjectWizard/P12-Certifications';
+import { AddRIBAStage } from './AddProjectWizard/P13-RIBAStage';
 
 interface AddProjectDataWizardProps {
 	isOpen: boolean;
@@ -15,7 +15,7 @@ interface AddProjectDataWizardProps {
 	projects: Project[];
 }
 
-export type WizardStep = 'project-selection' | 'project-overview' | 'certifications' | 'riba-1' | 'riba-2' | 'riba-3' | 'riba-4' | 'riba-5' | 'riba-6' | 'riba-7';
+export type WizardStep = 'project-selection' | 'project-overview' | 'certifications' | '1' | '2' | '3' | '4' | '5' | '6' | '7';
 
 export interface WizardData {
 	selectedProjectId: string;
@@ -49,23 +49,23 @@ export interface WizardData {
 			'Updated GIA'?: string;
 			'Method Energy Measurement'?: string;
 
-			'Operational Energy Total': string;
-			'Operational Energy Part L': string;
-			'Operational Energy Gas': string;
+			'Operational Energy Total'?: string;
+			'Operational Energy Part L'?: string;
+			'Operational Energy Gas'?: string;
 
-			'Space Heating Demand': string;
+			'Space Heating Demand'?: string;
 			'Renewable Energy Type'?: string;
-			'Total Renewable Energy Generation': string;
+			'Total Renewable Energy Generation'?: string;
 			'Structural Frame Materials'?: string;
 
-			'Upfront Carbon': string;
-			'Total Embodied Carbon': string;
+			'Upfront Carbon'?: string;
+			'Total Embodied Carbon'?: string;
 			'Biogenic Carbon'?: string;
 			'Embodied Carbon Scope Clarifications'?: string;
 
-			'Biodiversity Net Gain': string;
-			'Habitats Units Gained': string;
-			'Urban Greening Factor': string;
+			'Biodiversity Net Gain'?: string;
+			'Habitats Units Gained'?: string;
+			'Urban Greening Factor'?: string;
 			'General Biodiversity Clarification Notes'?: string;
 		};
 	};
@@ -238,7 +238,7 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
 	const renderCurrentStep = () => {
 		if (currentStep === 'project-selection') {
 			return (
-				<ProjectSelectionScreen
+				<AddSelection
 					projects={projects}
 					selectedProjectId={wizardData.selectedProjectId}
 					onProjectSelect={handleProjectSelect}
@@ -305,7 +305,7 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
 					</TabsList>
 
 					<TabsContent value="project-overview">
-						<ProjectOverviewScreen
+						<AddOverview
 							selectedProject={selectedProject}
 							projectData={wizardData.projectData}
 							onDataUpdate={(data) => updateWizardData({ projectData: data })}
@@ -316,7 +316,7 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
 					</TabsContent>
 
 					<TabsContent value="certifications">
-						<CertificationsScreen
+						<AddCertifications
 							projectData={wizardData.projectData}
 							onDataUpdate={(data) => updateWizardData({ projectData: data })}
 							onSave={handleSave}
@@ -327,7 +327,7 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
 
 					{StageKeys.map((stage) => (
 						<TabsContent key={stage} value={stage}>
-							<RibaStageScreen
+							<AddRIBAStage
 								stageNumber={stage.split('-')[1]}
 								stageData={wizardData['RIBA Stage'][stage] || {}}
 								projectGia={wizardData.projectData['GIA']}
