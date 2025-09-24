@@ -14,8 +14,8 @@ import { Project } from '@/types/project';
 const Index = () => {
 	const [filteredProjects, setFilteredProjects] = useState(sampleProjects);
 	const [chartType, setChartType] = useState<ChartType>('compare-bubble');
-	const [selectedKPI1, setSelectedKPI1] = useState('totalEmbodiedCarbon');
-	const [selectedKPI2, setSelectedKPI2] = useState('operationalEnergyTotal');
+	const [selectedKPI1, setSelectedKPI1] = useState('Total Embodied Carbon');
+	const [selectedKPI2, setSelectedKPI2] = useState('Operational Energy Total');
 	const [embodiedCarbonBreakdown, setEmbodiedCarbonBreakdown] = useState<EmbodiedCarbonBreakdown>('none');
 	const [valueType, setValueType] = useState<ValueType>('per-sqm');
 	const [primaryProject, setPrimaryProject] = useState(sampleProjects[0]?.id || '');

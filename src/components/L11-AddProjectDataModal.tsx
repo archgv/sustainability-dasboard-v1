@@ -387,7 +387,9 @@ export const AddProjectDataModal = ({ isOpen, onClose, onSave, projects }: AddPr
 			'BREEAM': formData['BREEAM'],
 			'LEED': formData['LEED'],
 			'WELL': formData['WELL'],
-			'Passivhaus or EnePHit': formData['Passivhaus or EnePHit'],
+			'Fitwell': formData['Fitwell'],
+			'Passivhaus': formData['Passivhaus'],
+			'EnePHit': formData['EnePHit'],
 			'NABERS': formData['NABERS'],
 			'UKNZCBS': formData['UKNZCBS'],
 

@@ -21,16 +21,16 @@ interface ChartOptionProps {
 
 // Define the 10 specific KPIs for charts
 const chartKPIs = [
-	'operationalEnergyTotal',
-	'operationalEnergyPartL',
-	'operationalEnergyGas',
-	'spaceHeatingDemand',
-	'renewableEnergyGeneration',
-	'upfrontCarbon',
-	'totalEmbodiedCarbon',
-	'biogenicCarbon',
-	'biodiversityNetGain',
-	'urbanGreeningFactor',
+	'Operational Energy Total',
+	'Operational Energy Part L',
+	'Operational Energy Gas',
+	'Space Heating Demand',
+	'Total Renewable Energy Generation',
+	'Upfront Carbon',
+	'Total Embodied Carbon',
+	'Biogenic Carbon',
+	'Biodiversity Net Gain',
+	'Urban Greening Factor',
 ];
 
 // Filter availableKPIs to only include the chart KPIs
@@ -38,16 +38,16 @@ const filteredKPIs = availableKPIs.filter((kpi) => chartKPIs.includes(kpi.key));
 
 // KPI compatibility matrix based on the provided matrix
 const kpiCompatibilityMatrix: Record<string, string[]> = {
-	'operationalEnergyTotal': ['operationalEnergyPartL', 'operationalEnergyGas', 'spaceHeatingDemand', 'renewableEnergyGeneration', 'upfrontCarbon', 'totalEmbodiedCarbon', 'biogenicCarbon'],
-	'operationalEnergyPartL': ['operationalEnergyTotal', 'operationalEnergyGas', 'spaceHeatingDemand', 'renewableEnergyGeneration', 'upfrontCarbon', 'totalEmbodiedCarbon', 'biogenicCarbon'],
-	'operationalEnergyGas': ['operationalEnergyTotal', 'operationalEnergyPartL', 'spaceHeatingDemand', 'renewableEnergyGeneration', 'upfrontCarbon', 'totalEmbodiedCarbon', 'biogenicCarbon'],
-	'spaceHeatingDemand': ['operationalEnergyTotal', 'operationalEnergyPartL', 'operationalEnergyGas', 'renewableEnergyGeneration', 'upfrontCarbon', 'totalEmbodiedCarbon', 'biogenicCarbon'],
-	'renewableEnergyGeneration': ['operationalEnergyTotal', 'operationalEnergyPartL', 'operationalEnergyGas', 'spaceHeatingDemand', 'upfrontCarbon', 'totalEmbodiedCarbon', 'biogenicCarbon'],
-	'upfrontCarbon': ['operationalEnergyTotal', 'operationalEnergyPartL', 'operationalEnergyGas', 'spaceHeatingDemand', 'renewableEnergyGeneration', 'totalEmbodiedCarbon', 'biogenicCarbon'],
-	'totalEmbodiedCarbon': ['operationalEnergyTotal', 'operationalEnergyPartL', 'operationalEnergyGas', 'spaceHeatingDemand', 'renewableEnergyGeneration', 'upfrontCarbon', 'biogenicCarbon'],
-	'biogenicCarbon': ['operationalEnergyTotal', 'operationalEnergyPartL', 'operationalEnergyGas', 'spaceHeatingDemand', 'renewableEnergyGeneration', 'upfrontCarbon', 'totalEmbodiedCarbon'],
-	'biodiversityNetGain': ['urbanGreeningFactor'],
-	'urbanGreeningFactor': ['biodiversityNetGain'],
+	'Operational Energy Total': ['Operational Energy Part L', 'Operational Energy Gas', 'Space Heating Demand', 'Total Renewable Energy Generation', 'Upfront Carbon', 'Total Embodied Carbon', 'Biogenic Carbon'],
+	'Operational Energy Part L': ['Operational Energy Total', 'Operational Energy Gas', 'Space Heating Demand', 'Total Renewable Energy Generation', 'Upfront Carbon', 'Total Embodied Carbon', 'Biogenic Carbon'],
+	'Operational Energy Gas': ['Operational Energy Total', 'Operational Energy Part L', 'Space Heating Demand', 'Total Renewable Energy Generation', 'Upfront Carbon', 'Total Embodied Carbon', 'Biogenic Carbon'],
+	'Space Heating Demand': ['Operational Energy Total', 'Operational Energy Part L', 'Operational Energy Gas', 'Total Renewable Energy Generation', 'Upfront Carbon', 'Total Embodied Carbon', 'Biogenic Carbon'],
+	'Total Renewable Energy Generation': ['Operational Energy Total', 'Operational Energy Part L', 'Operational Energy Gas', 'Space Heating Demand', 'Upfront Carbon', 'Total Embodied Carbon', 'Biogenic Carbon'],
+	'Upfront Carbon': ['Operational Energy Total', 'Operational Energy Part L', 'Operational Energy Gas', 'Space Heating Demand', 'Total Renewable Energy Generation', 'Total Embodied Carbon', 'Biogenic Carbon'],
+	'Total Embodied Carbon': ['Operational Energy Total', 'Operational Energy Part L', 'Operational Energy Gas', 'Space Heating Demand', 'Total Renewable Energy Generation', 'Upfront Carbon', 'Biogenic Carbon'],
+	'Biogenic Carbon': ['Operational Energy Total', 'Operational Energy Part L', 'Operational Energy Gas', 'Space Heating Demand', 'Total Renewable Energy Generation', 'Upfront Carbon', 'Total Embodied Carbon'],
+	'Biodiversity Net Gain': ['Urban Greening Factor'],
+	'Urban Greening Factor': ['Biodiversity Net Gain'],
 };
 export const ChartOption = ({
 	chartType,
@@ -62,7 +62,7 @@ export const ChartOption = ({
 	onValueTypeChange,
 }: ChartOptionProps) => {
 	const showKPI2 = chartType === 'compare-bubble';
-	const showEmbodiedCarbonBreakdown = chartType === 'single-bar' && selectedKPI1 === 'totalEmbodiedCarbon';
+	const showEmbodiedCarbonBreakdown = chartType === 'single-bar' && selectedKPI1 === 'Total Embodied Carbon';
 
 	// Get compatible KPI2 options based on selected KPI1
 	const compatibleKPI2Options = showKPI2 ? filteredKPIs.filter((kpi) => kpiCompatibilityMatrix[selectedKPI1]?.includes(kpi.key)) : [];

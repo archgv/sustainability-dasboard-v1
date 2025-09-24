@@ -18,8 +18,10 @@ export const sampleProjects: Project[] = [
 		'BREEAM': 'Outstanding',
 		'LEED': 'Gold',
 		'WELL': 'Silver',
+		'Fitwell': '3 Stars',
 		'NABERS': '1 Star',
-		'Passivhaus or EnePHit': 'Passivhaus',
+		'Passivhaus': 'Certified',
+		'EnePHit': 'Not Targeted',
         'UKNZCBS' : 'Yes - 2026',
 
 		'Current RIBA Stage': '7',
@@ -158,8 +160,11 @@ export const sampleProjects: Project[] = [
 		'BREEAM': 'Very Good',
 		'LEED': 'Silver',
 		'WELL': 'Bronze',
+		'Fitwell': '2 Stars',
 		'NABERS': '4 Star',
-		'Passivhaus or EnePHit': 'Not targeted',
+		'Passivhaus': 'Not Targeted',
+		'EnePHit': 'Certified',
+		'UKNZCBS': 'Yes - 2025',
 
 		'Current RIBA Stage': '7',
 
@@ -305,8 +310,11 @@ export const sampleProjects: Project[] = [
 		'BREEAM': 'Outstanding',
 		'LEED': 'Platinum',
 		'WELL': 'Gold',
+		'Fitwell': '5 Stars',
 		'NABERS': '6 Star',
-		'Passivhaus or EnePHit': 'Passivhaus',
+		'Passivhaus': 'Certified',
+		'EnePHit': 'Not Targeted',
+		'UKNZCBS': 'Yes - 2024',
 
 		'Current RIBA Stage': '7',
 
