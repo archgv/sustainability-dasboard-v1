@@ -20,7 +20,7 @@ export const sampleProjects: Project[] = [
 		'WELL': 'Silver',
 		'NABERS': '1 Star',
 		'Passivhaus or EnePHit': 'Passivhaus',
-      'UKNZCBS' : 'Yes - 2026',
+        'UKNZCBS' : 'Yes - 2026',
 
 		'Current RIBA Stage': '7',
 
