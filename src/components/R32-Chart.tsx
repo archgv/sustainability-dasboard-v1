@@ -12,7 +12,7 @@ import { exportChartToPNG } from '@/components/ChartSub/C12-ExportPNG';
 import { BubbleChart } from './ChartSub/C31-CompareTwo';
 import { SingleProject } from './ChartSub/C32-SingleProject';
 import { TimelineChart } from './ChartSub/C33-SingleTime';
-import { chartColors, seriesColors } from './ChartSub/C01-UtilColor';
+import { chartNamedColors, seriesColors } from './ChartSub/C01-UtilColor';
 import { generateNiceTicks } from './ChartSub/C02-UtilShape';
 
 interface ChartProps {
@@ -119,7 +119,7 @@ export const Chart = ({ projects, chartType, selectedKPI1, selectedKPI2, valueTy
 						selectedKPI2={selectedKPI2}
 						valueType={valueType}
 						isComparingToSelf={isComparingToSelf}
-						chartColors={chartColors}
+						chartColors={chartNamedColors}
 						generateNiceTicks={generateNiceTicks}
 						getUnitLabel={getUnitLabel}
 						getProjectArea={getProjectArea}
@@ -136,7 +136,7 @@ export const Chart = ({ projects, chartType, selectedKPI1, selectedKPI2, valueTy
 						isComparingToSelf={isComparingToSelf}
 						showBenchmarks={showBenchmarks}
 						selectedBarChartBenchmark={selectedBarChartBenchmark}
-						chartColors={chartColors}
+						chartColors={chartNamedColors}
 						generateNiceTicks={generateNiceTicks}
 						getUnitLabel={getUnitLabel}
 						getProjectArea={getProjectArea}
@@ -152,7 +152,7 @@ export const Chart = ({ projects, chartType, selectedKPI1, selectedKPI2, valueTy
 						valueType={valueType}
 						isComparingToSelf={isComparingToSelf}
 						selectedSubSector={selectedSubSector}
-						chartColors={chartColors}
+						chartColors={chartNamedColors}
 						generateNiceTicks={generateNiceTicks}
 						getUnitLabel={getUnitLabel}
 						transformDataForValueType={transformDataForValueType}
@@ -187,14 +187,14 @@ export const Chart = ({ projects, chartType, selectedKPI1, selectedKPI2, valueTy
 	};
 
 	const availableSubSectors = getAvailableSubSectors();
-	const showSubSectorToggle =
+	const showSingleTimeSectorToggle =
 		(selectedKPI1 === 'Upfront Carbon' || selectedKPI1 === 'Operational Energy Total') && valueType === 'per-sqm' && chartType === 'single-timeline' && availableSubSectors.length > 1;
-	const showBarChartSubSectorToggle = selectedKPI1 === 'Upfront Carbon' && valueType === 'per-sqm' && chartType === 'single-bar' && availableSubSectors.length > 0;
+	const showSingleSectorToggle = selectedKPI1 === 'Upfront Carbon' && valueType === 'per-sqm' && chartType === 'single-bar' && availableSubSectors.length > 0;
 
 	return (
 		<Card className="p-6">
 			<div className="flex justify-between items-center mb-6">
-				<h2 className="text-xl font-semibold" style={{ color: chartColors.dark }}>
+				<h2 className="text-xl font-semibold" style={{ color: chartNamedColors.dark }}>
 					{getChartTitle()}
 				</h2>
 				<div className="flex items-center space-x-2">
@@ -223,9 +223,9 @@ export const Chart = ({ projects, chartType, selectedKPI1, selectedKPI2, valueTy
 			</div>
 
 			{/* Sub-sector toggle for upfront carbon timeline */}
-			{showSubSectorToggle && (
+			{showSingleTimeSectorToggle && (
 				<div className="mb-4">
-					<p className="text-sm font-medium mb-2" style={{ color: chartColors.dark }}>
+					<p className="text-sm font-medium mb-2" style={{ color: chartNamedColors.dark }}>
 						UKNZCBS benchmarks
 					</p>
 					<div className="flex flex-wrap gap-2">
@@ -239,9 +239,9 @@ export const Chart = ({ projects, chartType, selectedKPI1, selectedKPI2, valueTy
 			)}
 
 			{/* Sub-sector toggle for upfront carbon bar chart */}
-			{showBarChartSubSectorToggle && (
+			{showSingleSectorToggle && (
 				<div className="mb-4">
-					<p className="text-sm font-medium mb-2" style={{ color: chartColors.dark }}>
+					<p className="text-sm font-medium mb-2" style={{ color: chartNamedColors.dark }}>
 						UKNZCBS benchmarks
 					</p>
 					<div className="flex flex-wrap gap-2">

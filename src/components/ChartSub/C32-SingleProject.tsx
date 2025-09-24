@@ -4,7 +4,7 @@ import { ValueType } from '../R31-ChartOption';
 import { getSectorColor, getSectorBenchmarkColor } from '@/components/Utils/UtilSector';
 import { formatNumber } from '@/lib/utils';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks } from '@/data/benchmarkData';
-import { chartColors } from './C01-UtilColor';
+import { chartNamedColors } from './C01-UtilColor';
 
 interface BarChartProps {
 	projects: Project[];
@@ -13,7 +13,7 @@ interface BarChartProps {
 	isComparingToSelf?: boolean;
 	showBenchmarks: boolean;
 	selectedBarChartBenchmark: string;
-	chartColors: typeof chartColors;
+	chartColors: typeof chartNamedColors;
 	generateNiceTicks: (maxValue: number, tickCount?: number) => number[];
 	getUnitLabel: (baseUnit: string, valueType: ValueType, forCSV?: boolean) => string;
 	getProjectArea: (projectId: string) => number;
@@ -70,7 +70,7 @@ export const SingleProject = ({
 	// Add biogenic data as negative values for totalEmbodiedCarbon - use sorted projects
 	const chartData = sortedProjects.map((project) => ({
 		...project,
-		biogenic: selectedKPI1 === 'Total Embodied Carbon' ? -Math.abs(project['Biogenic Carbon'] || 0) * (valueType === 'total' ? getProjectArea(project.id.split('-')[0]) : 1) : 0,
+		'Biogenic Carbon': selectedKPI1 === 'Total Embodied Carbon' ? -Math.abs(project['Biogenic Carbon'] || 0) * (valueType === 'total' ? getProjectArea(project.id.split('-')[0]) : 1) : 0,
 	}));
 
 	// Get UKNZCBS benchmark data for the bar chart - always based on PRIMARY project only
@@ -142,7 +142,7 @@ export const SingleProject = ({
 	const barChartBenchmarkLines = getBarChartBenchmarkLines();
 
 	return (
-		<div>
+		<div className="w-full h-full">
 			{/* Benchmark Legend - positioned after title, before chart */}
 			{barChartBenchmarkLines.length > 0 && (
 				<div className="flex justify-center items-center gap-6 mb-4">
@@ -181,42 +181,27 @@ export const SingleProject = ({
 						}}
 						tick={{ fill: chartColors.dark }}
 						tickFormatter={(value) => formatNumber(value)}
-						domain={
-							selectedKPI1 === 'Total Embodied Carbon' && valueType === 'per-sqm'
-								? [0, 1600]
-								: selectedKPI1 === 'Upfront Carbon' && valueType === 'per-sqm'
-								? [0, 1000]
-								: (() => {
-										const maxDataValue = Math.max(...chartData.map((p) => Math.abs(p[selectedKPI1] || 0)));
-										const maxBenchmarkValue = barChartBenchmarkLines.length > 0 ? Math.max(...barChartBenchmarkLines.map((b) => b.value)) : 0;
-										const maxValue = Math.max(maxDataValue, maxBenchmarkValue, 1000);
-										return [0, Math.max(maxValue * 1.1, 1000)];
-								  })()
-						}
+						domain={selectedKPI1 === 'Total Embodied Carbon' ? [0, 1600] : [0, 'dataMax']}
 						ticks={
-							selectedKPI1 === 'Total Embodied Carbon' && valueType === 'per-sqm'
+							selectedKPI1 === 'Total Embodied Carbon'
 								? [0, 400, 800, 1200, 1600]
-								: selectedKPI1 === 'Upfront Carbon' && valueType === 'per-sqm'
-								? [0, 200, 400, 600, 800, 1000]
 								: (() => {
-										const maxDataValue = Math.max(...chartData.map((p) => Math.abs(p[selectedKPI1] || 0)));
-										const maxBenchmarkValue = barChartBenchmarkLines.length > 0 ? Math.max(...barChartBenchmarkLines.map((b) => b.value)) : 0;
-										const maxValue = Math.max(maxDataValue, maxBenchmarkValue, 1000);
-										return generateNiceTicks(Math.max(maxValue * 1.1, 1000));
+										const maxValue = Math.max(...chartData.map((p) => Math.abs(p[selectedKPI1] || 0)));
+										return generateNiceTicks(maxValue * 1.1);
 								  })()
 						}
 					/>
 					<Tooltip
 						formatter={(value: number, name: string) => [
 							`${formatNumber(value)} ${getUnitLabel(kpi1Config?.unit || '', valueType)}`,
-							name === 'biogenic' ? 'Biogenic Carbon' : kpi1Config?.label || selectedKPI1,
+							name === 'Biogenic Carbon' ? 'Biogenic Carbon' : kpi1Config?.label || selectedKPI1,
 						]}
 						labelFormatter={(label) => `Project: ${label}`}
 						contentStyle={{ backgroundColor: 'white', border: `1px solid ${chartColors.primary}`, borderRadius: '8px' }}
 						content={({ active, payload, label }) => {
 							if (active && payload && payload.length) {
 								const mainData = payload.find((p) => p.dataKey === selectedKPI1);
-								const biogenicData = payload.find((p) => p.dataKey === 'biogenic');
+								const biogenicData = payload.find((p) => p.dataKey === 'Biogenic Carbon');
 
 								return (
 									<div className="bg-white p-3 border rounded-lg shadow-lg" style={{ backgroundColor: 'white', borderColor: chartColors.primary }}>
@@ -258,7 +243,7 @@ export const SingleProject = ({
 						})}
 					</Bar>
 					{selectedKPI1 === 'Total Embodied Carbon' && (
-						<Bar dataKey="biogenic" fill="white" name="biogenic" radius={[0, 0, 4, 4]}>
+						<Bar dataKey="Biogenic Carbon" fill="white" name="Biogenic Carbon" radius={[0, 0, 4, 4]}>
 							{sortedProjects.map((project, index) => {
 								const sectorColor = getSectorColor(project['Primary Sector']);
 								return <Cell key={index} fill="white" stroke={sectorColor} strokeWidth={2} />;

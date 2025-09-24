@@ -4,7 +4,7 @@ import { ValueType } from '../R31-ChartOption';
 import { getSectorColor, getSectorBenchmarkColor } from '@/components/Utils/UtilSector';
 import { formatNumber } from '@/lib/utils';
 import { uknzcbsBenchmarks, uknzcbsOperationalEnergyBenchmarks } from '@/data/benchmarkData';
-import { chartColors } from './C01-UtilColor';
+import { chartNamedColors } from './C01-UtilColor';
 
 interface TimelineChartProps {
 	projects: Project[];
@@ -12,7 +12,7 @@ interface TimelineChartProps {
 	valueType: ValueType;
 	isComparingToSelf?: boolean;
 	selectedSubSector: string;
-	chartColors: typeof chartColors;
+	chartColors: typeof chartNamedColors;
 	generateNiceTicks: (maxValue: number, tickCount?: number) => number[];
 	getUnitLabel: (baseUnit: string, valueType: ValueType, forCSV?: boolean) => string;
 	transformDataForValueType: (data: Project[]) => Project[];

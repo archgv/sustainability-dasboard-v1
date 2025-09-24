@@ -4,7 +4,7 @@ import { ValueType } from '../R31-ChartOption';
 import { getSectorColor, getSectorShape } from '@/components/Utils/UtilSector';
 import { formatNumber } from '@/lib/utils';
 import { ChartShape } from '../R33-ChartShape';
-import { chartColors } from './C01-UtilColor';
+import { chartNamedColors } from './C01-UtilColor';
 
 interface BubbleChartProps {
 	projects: Project[];
@@ -12,7 +12,7 @@ interface BubbleChartProps {
 	selectedKPI2: string;
 	valueType: ValueType;
 	isComparingToSelf?: boolean;
-	chartColors: typeof chartColors;
+	chartColors: typeof chartNamedColors;
 	generateNiceTicks: (maxValue: number, tickCount?: number) => number[];
 	getUnitLabel: (baseUnit: string, valueType: ValueType, forCSV?: boolean) => string;
 	getProjectArea: (projectId: string) => number;
@@ -40,13 +40,13 @@ export const BubbleChart = ({
 	// Transform biogenic carbon values to negative for bubble chart display - use sorted projects
 	const bubbleChartData = sortedProjects.map((project) => ({
 		...project,
-		[selectedKPI1]: selectedKPI1 === 'biogenicCarbon' ? -Math.abs(project[selectedKPI1] || 0) : project[selectedKPI1],
-		[selectedKPI2]: selectedKPI2 === 'biogenicCarbon' ? -Math.abs(project[selectedKPI2] || 0) : project[selectedKPI2],
+		[selectedKPI1]: selectedKPI1 === 'Biogenic Carbonn' ? -Math.abs(project[selectedKPI1] || 0) : project[selectedKPI1],
+		[selectedKPI2]: selectedKPI2 === 'Biogenic Carbon' ? -Math.abs(project[selectedKPI2] || 0) : project[selectedKPI2],
 	}));
 
 	return (
 		<ResponsiveContainer width="100%" height="100%">
-			<ScatterChart margin={{ top: 80, right: 20, bottom: 20, left: 80 }}>
+			<ScatterChart className="gggg" margin={{ top: 80, right: 20, bottom: 20, left: 80 }}>
 				<CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} horizontal={true} verticalPoints={[]} />
 				<XAxis
 					type="number"
