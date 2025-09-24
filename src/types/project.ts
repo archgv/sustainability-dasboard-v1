@@ -26,35 +26,39 @@ export interface Project {
 	'BREEAM': string;
 	'LEED': string;
 	'WELL': string;
-	'Fitwell'?: string; //? // WITH DROPDOWN  SIMILAR TO BREEAM
-	'Passivhaus or EnePHit': string; // WITH DROPDOWN  SIMILAR TO BREEAM
-	'UKNZCBS'?: string; //? // WITH DROPDOWN   SIMILAR TO BREEAM
-	'NABERS': string;
+	'Fitwell': string; //1-5 stars xxx not on the list
+	'Passivhaus': string; // Unknown, Cetified, Not Targeted xxx doesnt work
+	'EnePHit': string; // Unknown, Cetified, Not Targeted xxx doesnt work
+	'UKNZCBS': string; // Unknown, Cetified + year
+	'NABERS': string; //1-6 stars
 	'Other Cerification'?: string; //? // TEXT
 
 	'Current RIBA Stage': StageKey;
 
 	'RIBA Stage': {
 		[K in StageKey]: {
-			'Updated GIA'?: number;
-			'Method Energy Measurement'?: string;
+			'Updated GIA'?: number; // mess
+			'Method Energy Measurement'?: string; // waiting to be used
 
 			'Operational Energy Total': number;
 			'Operational Energy Part L': number;
 			'Operational Energy Gas': number;
 
 			'Space Heating Demand': number;
-			'Renewable Energy Type'?: string;
+
 			'Total Renewable Energy Generation': number;
-			'Structural Frame Materials'?: string;
+			'Renewable Energy Type'?: string; // tooltip in chart for total renewable energy generation
 
 			'Upfront Carbon': number;
 			'Total Embodied Carbon': number;
+			'Structural Frame Materials'?: string; // tool tip for upfront carbon and total embodied carbon
+
 			'Biogenic Carbon'?: number;
 			'Embodied Carbon Scope Clarifications'?: string;
 
 			'Biodiversity Net Gain': number;
-			'Habitats Units Gained': number;
+			'Habitats Units Gained': number; // tool tip for biodiversity net gain
+
 			'Urban Greening Factor': number;
 			'General Biodiversity Clarification Notes'?: string;
 		};

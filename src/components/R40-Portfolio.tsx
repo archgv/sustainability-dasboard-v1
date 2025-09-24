@@ -2,14 +2,14 @@ import { Card } from '@/components/ui/card';
 import { Calendar, MapPin, Zap, Leaf, FileText } from 'lucide-react';
 import { Project } from '@/types/project';
 
-interface ProjectPortfolioProps {
+interface PortfolioProps {
 	projects: Project[];
 	isComparingToSelf?: boolean;
 	selectedRibaStages?: string[];
 	primaryProject?: string;
 }
 
-export const ProjectPortfolio = ({ projects, isComparingToSelf = false, selectedRibaStages = [], primaryProject = '' }: ProjectPortfolioProps) => {
+export const Portfolio = ({ projects, isComparingToSelf = false, selectedRibaStages = [], primaryProject = '' }: PortfolioProps) => {
 	// Map typologies to the correct sectors
 	const getSectorDisplay = (typology: string) => {
 		const sectorMap: { [key: string]: string } = {

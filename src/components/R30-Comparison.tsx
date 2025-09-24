@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-interface ProjectComparisonProps {
+interface ComparisonProps {
 	projects: Project[];
 	primaryProject: string;
 	comparisonProjects: string[];
@@ -19,7 +19,7 @@ interface ProjectComparisonProps {
 	onComparisonProjectsChange: (projectIds: string[], compareToSelf: boolean, ribaStages: string[]) => void;
 }
 
-export const ProjectComparison = ({ projects, primaryProject, comparisonProjects, onPrimaryProjectChange, onComparisonProjectsChange }: ProjectComparisonProps) => {
+export const Comparison = ({ projects, primaryProject, comparisonProjects, onPrimaryProjectChange, onComparisonProjectsChange }: ComparisonProps) => {
 	const [compareToSelf, setCompareToSelf] = useState(false);
 	const [selectedRibaStages, setSelectedRibaStages] = useState<string[]>([]);
 	const [open, setOpen] = useState(false);

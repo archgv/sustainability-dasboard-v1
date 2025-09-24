@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { FilterPanel } from '@/components/L20-FilterPanel';
-import { ChartSection } from '@/components/R32-ChartSection';
-import { ProjectPortfolio } from '@/components/R40-ProjectPortfolio';
-import { DashboardHeader } from '@/components/T00-DashboardHeader';
+import { Chart } from '@/components/R32-Chart';
+import { Portfolio } from '@/components/R40-Portfolio';
+import { DashboardHeader } from '@/components/T00-Header';
 import { AddProjectData } from '@/components/L10-AddProjectData';
-import { ChartTypeSelector, ChartType, EmbodiedCarbonBreakdown, ValueType } from '@/components/R31-ChartTypeSelector';
-import { ProjectComparison } from '@/components/R30-ProjectComparison';
+import { ChartOption, ChartType, EmbodiedCarbonBreakdown, ValueType } from '@/components/R31-ChartOption';
+import { Comparison } from '@/components/R30-Comparison';
 import { SectorPerformance } from '@/components/R10-SectorPerformance';
-import { CertificationAnalysis } from '@/components/R20-CertificationAnalysis';
+import { Certification } from '@/components/R20-Certification';
 import { sampleProjects } from '@/data/sampleData';
 import { Project } from '@/types/project';
 
@@ -143,10 +143,10 @@ const Index = () => {
 						<SectorPerformance projects={sampleProjects} />
 
 						{/* Certification Analysis */}
-						<CertificationAnalysis projects={sampleProjects} primaryProject={primaryProject} />
+						<Certification projects={sampleProjects} primaryProject={primaryProject} />
 
 						{/* Project Comparison */}
-						<ProjectComparison
+						<Comparison
 							projects={filteredProjects}
 							primaryProject={primaryProject}
 							comparisonProjects={comparisonProjects}
@@ -155,7 +155,7 @@ const Index = () => {
 						/>
 
 						{/* Chart Type Selector */}
-						<ChartTypeSelector
+						<ChartOption
 							chartType={chartType}
 							selectedKPI1={selectedKPI1}
 							selectedKPI2={selectedKPI2}
@@ -169,7 +169,7 @@ const Index = () => {
 						/>
 
 						{/* Charts Section */}
-						<ChartSection
+						<Chart
 							projects={displayProjects}
 							chartType={chartType}
 							selectedKPI1={selectedKPI1}
@@ -181,7 +181,7 @@ const Index = () => {
 						/>
 
 						{/* Projects Portfolio */}
-						<ProjectPortfolio projects={displayProjects} isComparingToSelf={compareToSelf} selectedRibaStages={selectedRibaStages} primaryProject={primaryProject} />
+						<Portfolio projects={displayProjects} isComparingToSelf={compareToSelf} selectedRibaStages={selectedRibaStages} primaryProject={primaryProject} />
 					</div>
 				</div>
 			</div>

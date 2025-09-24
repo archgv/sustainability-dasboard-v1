@@ -6,7 +6,7 @@ import { availableKPIs } from '@/types/project';
 export type ChartType = 'compare-bubble' | 'single-bar' | 'single-timeline';
 export type EmbodiedCarbonBreakdown = 'none' | 'lifecycle' | 'element';
 export type ValueType = 'total' | 'per-sqm';
-interface ChartTypeSelectorProps {
+interface ChartOptionProps {
 	chartType: ChartType;
 	selectedKPI1: string;
 	selectedKPI2: string;
@@ -49,7 +49,7 @@ const kpiCompatibilityMatrix: Record<string, string[]> = {
 	'biodiversityNetGain': ['urbanGreeningFactor'],
 	'urbanGreeningFactor': ['biodiversityNetGain'],
 };
-export const ChartTypeSelector = ({
+export const ChartOption = ({
 	chartType,
 	selectedKPI1,
 	selectedKPI2,
@@ -60,7 +60,7 @@ export const ChartTypeSelector = ({
 	onKPI2Change,
 	onEmbodiedCarbonBreakdownChange,
 	onValueTypeChange,
-}: ChartTypeSelectorProps) => {
+}: ChartOptionProps) => {
 	const showKPI2 = chartType === 'compare-bubble';
 	const showEmbodiedCarbonBreakdown = chartType === 'single-bar' && selectedKPI1 === 'totalEmbodiedCarbon';
 

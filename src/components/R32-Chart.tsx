@@ -3,14 +3,14 @@ import { Button } from '@/components/ui/button';
 import { Download, FileText, Eye, EyeOff } from 'lucide-react';
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, LineChart, Line, Legend, Cell, ReferenceLine, ReferenceDot } from 'recharts';
 import { Project, availableKPIs } from '@/types/project';
-import { ChartType, EmbodiedCarbonBreakdown, ValueType } from './R31-ChartTypeSelector';
+import { ChartType, EmbodiedCarbonBreakdown, ValueType } from './R31-ChartOption';
 import { getSectorColor, getSectorShape, sectorConfig, getSectorBenchmarkColor } from '@/utils/projectUtils';
 import { formatNumber } from '@/lib/utils';
 import { useState } from 'react';
-import { CustomShape } from './R33-CustomShapes';
+import { ChartShape } from './R33-ChartShape';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks, uknzcbsOperationalEnergyBenchmarks } from '@/data/benchmarkData';
 
-interface ChartSectionProps {
+interface ChartProps {
 	projects: Project[];
 	chartType: ChartType;
 	selectedKPI1: string;
@@ -80,7 +80,7 @@ const generateNiceTicks = (maxValue: number, tickCount: number = 5): number[] =>
 	return ticks;
 };
 
-export const ChartSection = ({ projects, chartType, selectedKPI1, selectedKPI2, embodiedCarbonBreakdown, valueType, isComparingToSelf = false, selectedRibaStages = [] }: ChartSectionProps) => {
+export const Chart = ({ projects, chartType, selectedKPI1, selectedKPI2, embodiedCarbonBreakdown, valueType, isComparingToSelf = false, selectedRibaStages = [] }: ChartProps) => {
 	const [showBenchmarks, setShowBenchmarks] = useState(false);
 	const [selectedSubSector, setSelectedSubSector] = useState<string>('');
 	const [selectedBarChartBenchmark, setSelectedBarChartBenchmark] = useState<string>('');
@@ -699,7 +699,7 @@ export const ChartSection = ({ projects, chartType, selectedKPI1, selectedKPI2, 
 									const sectorColor = getSectorColor(payload['Primary Sector']);
 									const shape = getSectorShape(payload['Primary Sector']);
 
-									return <CustomShape cx={cx} cy={cy} fill={sectorColor} shape={shape} size={Math.max(16, Math.min(40, bubbleSize * 2))} />;
+									return <ChartShape cx={cx} cy={cy} fill={sectorColor} shape={shape} size={Math.max(16, Math.min(40, bubbleSize * 2))} />;
 								}}
 							/>
 						</ScatterChart>
