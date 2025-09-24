@@ -7,11 +7,11 @@ import { getSectorBenchmarkColor } from '@/utils/projectUtils';
 import { formatNumber } from '@/lib/utils';
 import { useState } from 'react';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks, uknzcbsOperationalEnergyBenchmarks } from '@/data/benchmarkData';
-import { exportChartToCSV } from '@/components/ChartSub/chartExportCSV';
-import { exportChartToPNG } from '@/components/ChartSub/chartExportPNG';
-import { BubbleChart } from './ChartSub/BubbleChart';
-import { BarChart } from './ChartSub/BarChart';
-import { TimelineChart } from './ChartSub/TimelineChart';
+import { exportChartToCSV } from '@/components/ChartSub/C11-ExportCSV';
+import { exportChartToPNG } from '@/components/ChartSub/C12-ExportPNG';
+import { BubbleChart } from './ChartSub/C31-CompareTwo';
+import { BarChart } from './ChartSub/C32-SingleProject';
+import { TimelineChart } from './ChartSub/C33-SingleTime';
 
 interface ChartProps {
 	projects: Project[];
