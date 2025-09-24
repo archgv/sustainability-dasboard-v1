@@ -259,8 +259,7 @@ export const BarChart = ({
 					<CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} horizontal={true} verticalPoints={[]} />
 					<XAxis
 						dataKey={(item) => {
-							const baseId = item.id.split('-')[0];
-							const displayName = isComparingToSelf && item.ribaStage ? `${item.name} (RIBA ${item.ribaStage.replace('stage-', '')})` : item.name;
+							const displayName = isComparingToSelf && item['Current RIBA Stage'] ? `${item['Project Name']} (RIBA ${item['Current RIBA Stage']})` : item['Project Name'];
 							return displayName;
 						}}
 						height={80}
@@ -279,9 +278,9 @@ export const BarChart = ({
 						tick={{ fill: chartColors.dark }}
 						tickFormatter={(value) => formatNumber(value)}
 						domain={
-							selectedKPI1 === 'Total Embodied Carbon'
+							selectedKPI1 === 'Total Embodied Carbon' && valueType === 'per-sqm'
 								? [0, 1600]
-								: selectedKPI1 === 'Upfront Carbon'
+								: selectedKPI1 === 'Upfront Carbon' && valueType === 'per-sqm'
 								? [0, 1000]
 								: (() => {
 										const maxDataValue = Math.max(...chartData.map((p) => Math.abs(p[selectedKPI1] || 0)));
@@ -291,9 +290,9 @@ export const BarChart = ({
 								  })()
 						}
 						ticks={
-							selectedKPI1 === 'Total Embodied Carbon'
+							selectedKPI1 === 'Total Embodied Carbon' && valueType === 'per-sqm'
 								? [0, 400, 800, 1200, 1600]
-								: selectedKPI1 === 'Upfront Carbon'
+								: selectedKPI1 === 'Upfront Carbon' && valueType === 'per-sqm'
 								? [0, 200, 400, 600, 800, 1000]
 								: (() => {
 										const maxDataValue = Math.max(...chartData.map((p) => Math.abs(p[selectedKPI1] || 0)));
