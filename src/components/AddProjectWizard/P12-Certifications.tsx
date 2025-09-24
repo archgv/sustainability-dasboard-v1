@@ -197,10 +197,10 @@ export const AddCertifications = ({ projectData, onDataUpdate, onSave, onSaveAnd
 
 				{/* Footer buttons within scrollable area */}
 				<div className="pt-6 border-t">
-					<div className="flex justify-between">
+					<div className="flex flex-col sm:flex-row justify-between gap-3">
 						<AlertDialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
 							<AlertDialogTrigger asChild>
-								<Button variant="outline">Cancel</Button>
+								<Button variant="outline" className="w-full sm:w-auto">Cancel</Button>
 							</AlertDialogTrigger>
 							<AlertDialogContent>
 								<AlertDialogHeader>
@@ -217,10 +217,10 @@ export const AddCertifications = ({ projectData, onDataUpdate, onSave, onSaveAnd
 							</AlertDialogContent>
 						</AlertDialog>
 
-						<div className="flex gap-2">
+						<div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
 							<AlertDialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
 								<AlertDialogTrigger asChild>
-									<Button variant="outline">Save</Button>
+									<Button variant="outline" className="w-full sm:w-auto">Save</Button>
 								</AlertDialogTrigger>
 								<AlertDialogContent>
 									<AlertDialogHeader>
@@ -241,7 +241,7 @@ export const AddCertifications = ({ projectData, onDataUpdate, onSave, onSaveAnd
 
 							<AlertDialog open={showExitDialog} onOpenChange={setShowExitDialog}>
 								<AlertDialogTrigger asChild>
-									<Button>Save & Exit</Button>
+									<Button className="w-full sm:w-auto">Save & Exit</Button>
 								</AlertDialogTrigger>
 								<AlertDialogContent>
 									<AlertDialogHeader>
