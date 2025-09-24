@@ -195,6 +195,11 @@ export const AddCertifications = ({ projectData, onDataUpdate, onSave, onSaveAnd
 					</TooltipField>
 				</div>
 
+				{/* RIBA Stage Section */}
+				<div className="space-y-4">
+					<h3 className="text-lg font-medium">RIBA Stage</h3>
+				</div>
+
 				{/* Footer buttons within scrollable area */}
 				<div className="pt-6 border-t">
 					<div className="flex flex-col sm:flex-row justify-between gap-3">
