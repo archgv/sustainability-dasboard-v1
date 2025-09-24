@@ -43,13 +43,7 @@ const getUnitLabel = (baseUnit: string, valueType: ValueType, forCSV: boolean = 
 	return unit;
 };
 
-const getChartTitle = (
-	chartType: ChartType,
-	selectedKPI1: string,
-	selectedKPI2: string,
-	embodiedCarbonBreakdown: EmbodiedCarbonBreakdown,
-	valueType: ValueType
-) => {
+const getChartTitle = (chartType: ChartType, selectedKPI1: string, selectedKPI2: string, embodiedCarbonBreakdown: EmbodiedCarbonBreakdown, valueType: ValueType) => {
 	const valueTypeLabel = valueType === 'per-sqm' ? 'per sqm' : 'total';
 	const kpi1Config = availableKPIs.find((kpi) => kpi.key === selectedKPI1);
 	const kpi2Config = availableKPIs.find((kpi) => kpi.key === selectedKPI2);
@@ -92,12 +86,7 @@ const getBuildingElementCategories = (): ChartCategory[] => [
 	{ key: 'contingency', label: 'Contingency', color: '#272727' },
 ];
 
-const getEmbodiedCarbonStackedData = (
-	projects: Project[],
-	embodiedCarbonBreakdown: EmbodiedCarbonBreakdown,
-	valueType: ValueType,
-	isComparingToSelf: boolean
-) => {
+const getEmbodiedCarbonStackedData = (projects: Project[], embodiedCarbonBreakdown: EmbodiedCarbonBreakdown, valueType: ValueType, isComparingToSelf: boolean) => {
 	if (embodiedCarbonBreakdown === 'none' || projects.length === 0) return [];
 
 	const categories = embodiedCarbonBreakdown === 'lifecycle' ? getLifecycleStageCategories() : getBuildingElementCategories();
@@ -106,7 +95,7 @@ const getEmbodiedCarbonStackedData = (
 		const baseId = project.id.split('-')[0];
 		const displayName = isComparingToSelf && project['Current RIBA Stage'] ? `${project['Project Name']} (RIBA ${project['Current RIBA Stage']})` : project['Project Name'];
 
-		const projectData: any = { name: displayName };
+		const projectData = { name: displayName };
 
 		// Mock breakdown data - in real app this would come from project.embodiedCarbonBreakdown
 		categories.forEach((category, index) => {
