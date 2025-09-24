@@ -255,51 +255,44 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
 				</DialogHeader>
 
 				<Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-					<TabsList className="grid w-full h-12 grid-cols-9">
-						<TabsTrigger value="project-overview" className="text-center">
-							<div className="flex flex-col">
-								<span>Overview</span>
-							</div>
+					<TabsList className="flex h-12 gap-2 rounded-full bg-gray-100 p-1">
+						<TabsTrigger
+							value="project-overview"
+							className="rounded-full px-4 py-2 text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-gray-900"
+						>
+							<span>Overview</span>
 						</TabsTrigger>
-						<TabsTrigger value="certifications" className="text-center">
-							<div className="flex flex-col">
-								<span>Certifications</span>
-							</div>
+						<TabsTrigger
+							value="certifications"
+							className="rounded-full px-4 py-2 text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-gray-900"
+						>
+							<span>Certifications</span>
 						</TabsTrigger>
-						<TabsTrigger value="1" className="text-center">
-							<div className="flex flex-col">
-								<span>1</span>
-							</div>
+
+						<div className="flex-[2] flex gap-4 justify-end items-center text-sm">
+							<span>RIBA Stage</span>
+						</div>
+
+						<TabsTrigger value="1" className="rounded-full px-4 py-2 text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-gray-900">
+							<span>1</span>
 						</TabsTrigger>
-						<TabsTrigger value="2" className="text-center">
-							<div className="flex flex-col">
-								<span>2</span>
-							</div>
+						<TabsTrigger value="2" className="rounded-full px-4 py-2 text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-gray-900">
+							<span>2</span>
 						</TabsTrigger>
-						<TabsTrigger value="3" className="text-center">
-							<div className="flex flex-col">
-								<span>3</span>
-							</div>
+						<TabsTrigger value="3" className="rounded-full px-4 py-2 text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-gray-900">
+							<span>3</span>
 						</TabsTrigger>
-						<TabsTrigger value="4" className="text-center">
-							<div className="flex flex-col">
-								<span>4</span>
-							</div>
+						<TabsTrigger value="4" className="rounded-full px-4 py-2 text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-gray-900">
+							<span>4</span>
 						</TabsTrigger>
-						<TabsTrigger value="5" className="text-center">
-							<div className="flex flex-col">
-								<span>5</span>
-							</div>
+						<TabsTrigger value="5" className="rounded-full px-4 py-2 text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-gray-900">
+							<span>5</span>
 						</TabsTrigger>
-						<TabsTrigger value="6" className="text-center">
-							<div className="flex flex-col">
-								<span>6</span>
-							</div>
+						<TabsTrigger value="6" className="rounded-full px-4 py-2 text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-gray-900">
+							<span>6</span>
 						</TabsTrigger>
-						<TabsTrigger value="7" className="text-center">
-							<div className="flex flex-col">
-								<span>7</span>
-							</div>
+						<TabsTrigger value="7" className="rounded-full px-4 py-2 text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-gray-900">
+							<span>7</span>
 						</TabsTrigger>
 					</TabsList>
 
