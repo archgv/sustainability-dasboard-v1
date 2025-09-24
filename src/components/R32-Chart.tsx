@@ -100,7 +100,7 @@ export const Chart = ({ projects, chartType, selectedKPI1, selectedKPI2, embodie
 	const getChartTitle = () => {
 		const valueTypeLabel = valueType === 'per-sqm' ? 'per sqm' : 'total';
 
-		if (chartType === 'single-bar' && selectedKPI1 === 'totalEmbodiedCarbon' && embodiedCarbonBreakdown !== 'none') {
+		if (chartType === 'single-bar' && selectedKPI1 === 'Total Embodied Carbon' && embodiedCarbonBreakdown !== 'none') {
 			const breakdownType = embodiedCarbonBreakdown === 'lifecycle' ? 'Lifecycle Stage' : 'Building Element';
 			return `Embodied Carbon by ${breakdownType} (${valueTypeLabel}) - Stacked Column Chart`;
 		}
@@ -236,10 +236,10 @@ export const Chart = ({ projects, chartType, selectedKPI1, selectedKPI2, embodie
 		if (projects.length === 0) return [];
 
 		// Check both upfront carbon and operational energy benchmarks
-		if (selectedKPI1 === 'upfrontCarbon') {
+		if (selectedKPI1 === 'Upfront Carbon') {
 			const sectorData = uknzcbsBenchmarks[projects[0]['Primary Sector'] as keyof typeof uknzcbsBenchmarks];
 			return sectorData ? Object.keys(sectorData) : [];
-		} else if (selectedKPI1 === 'operationalEnergyTotal') {
+		} else if (selectedKPI1 === 'Operational Energy Total') {
 			const sectorData = uknzcbsOperationalEnergyBenchmarks[projects[0]['Primary Sector'] as keyof typeof uknzcbsOperationalEnergyBenchmarks];
 			return sectorData ? Object.keys(sectorData) : [];
 		}
@@ -249,8 +249,8 @@ export const Chart = ({ projects, chartType, selectedKPI1, selectedKPI2, embodie
 
 	const availableSubSectors = getAvailableSubSectors();
 	const showSubSectorToggle =
-		(selectedKPI1 === 'upfrontCarbon' || selectedKPI1 === 'operationalEnergyTotal') && valueType === 'per-sqm' && chartType === 'single-timeline' && availableSubSectors.length > 1;
-	const showBarChartSubSectorToggle = selectedKPI1 === 'upfrontCarbon' && valueType === 'per-sqm' && chartType === 'single-bar' && availableSubSectors.length > 0;
+		(selectedKPI1 === 'Upfront Carbon' || selectedKPI1 === 'Operational Energy Total') && valueType === 'per-sqm' && chartType === 'single-timeline' && availableSubSectors.length > 1;
+	const showBarChartSubSectorToggle = selectedKPI1 === 'Upfront Carbon' && valueType === 'per-sqm' && chartType === 'single-bar' && availableSubSectors.length > 0;
 
 	return (
 		<Card className="p-6">
@@ -260,7 +260,7 @@ export const Chart = ({ projects, chartType, selectedKPI1, selectedKPI2, embodie
 				</h2>
 				<div className="flex items-center space-x-2">
 					{/* Show benchmark toggle only for Total Embodied Carbon with per-sqm values */}
-					{selectedKPI1 === 'totalEmbodiedCarbon' && valueType === 'per-sqm' && chartType === 'single-bar' && (
+					{selectedKPI1 === 'Total Embodied Carbon' && valueType === 'per-sqm' && chartType === 'single-bar' && (
 						<Button
 							variant={showBenchmarks ? 'default' : 'outline'}
 							size="sm"

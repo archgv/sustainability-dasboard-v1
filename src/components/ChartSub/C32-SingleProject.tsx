@@ -89,7 +89,7 @@ export const BarChart = ({
 	};
 
 	// Handle embodied carbon breakdown with stacked columns
-	if (selectedKPI1 === 'totalEmbodiedCarbon' && embodiedCarbonBreakdown !== 'none') {
+	if (selectedKPI1 === 'Total Embodied Carbon' && embodiedCarbonBreakdown !== 'none') {
 		const stackedData = getEmbodiedCarbonStackedData();
 
 		if (stackedData.length === 0) {
@@ -165,12 +165,12 @@ export const BarChart = ({
 	// Add biogenic data as negative values for totalEmbodiedCarbon - use sorted projects
 	const chartData = sortedProjects.map((project) => ({
 		...project,
-		biogenic: selectedKPI1 === 'totalEmbodiedCarbon' ? -Math.abs(project['Biogenic Carbon'] || 0) * (valueType === 'total' ? getProjectArea(project.id.split('-')[0]) : 1) : 0,
+		biogenic: selectedKPI1 === 'Total Embodied Carbon' ? -Math.abs(project['Biogenic Carbon'] || 0) * (valueType === 'total' ? getProjectArea(project.id.split('-')[0]) : 1) : 0,
 	}));
 
 	// Get UKNZCBS benchmark data for the bar chart - always based on PRIMARY project only
 	const getBarChartBenchmarkLines = () => {
-		if (!selectedBarChartBenchmark || selectedKPI1 !== 'upfrontCarbon' || valueType !== 'per-sqm' || projects.length === 0) {
+		if (!selectedBarChartBenchmark || selectedKPI1 !== 'Upfront Carbon' || valueType !== 'per-sqm' || projects.length === 0) {
 			return [];
 		}
 
@@ -214,7 +214,7 @@ export const BarChart = ({
 
 	// Get benchmark data for the primary project's sector (only for Total Embodied Carbon with per-sqm)
 	const getBenchmarkLines = () => {
-		if (!showBenchmarks || selectedKPI1 !== 'totalEmbodiedCarbon' || valueType !== 'per-sqm' || projects.length === 0) {
+		if (!showBenchmarks || selectedKPI1 !== 'Total Embodied Carbon' || valueType !== 'per-sqm' || projects.length === 0) {
 			return [];
 		}
 
@@ -278,9 +278,9 @@ export const BarChart = ({
 						tick={{ fill: chartColors.dark }}
 						tickFormatter={(value) => formatNumber(value)}
 						domain={
-							selectedKPI1 === 'totalEmbodiedCarbon'
+							selectedKPI1 === 'Total Embodied Carbon'
 								? [0, 1600]
-								: selectedKPI1 === 'upfrontCarbon'
+								: selectedKPI1 === 'Upfront Carbon'
 								? [0, 1000]
 								: (() => {
 										const maxDataValue = Math.max(...chartData.map((p) => Math.abs(p[selectedKPI1] || 0)));
@@ -290,9 +290,9 @@ export const BarChart = ({
 								  })()
 						}
 						ticks={
-							selectedKPI1 === 'totalEmbodiedCarbon'
+							selectedKPI1 === 'Total Embodied Carbon'
 								? [0, 400, 800, 1200, 1600]
-								: selectedKPI1 === 'upfrontCarbon'
+								: selectedKPI1 === 'Upfront Carbon'
 								? [0, 200, 400, 600, 800, 1000]
 								: (() => {
 										const maxDataValue = Math.max(...chartData.map((p) => Math.abs(p[selectedKPI1] || 0)));
@@ -353,7 +353,7 @@ export const BarChart = ({
 							return <Cell key={index} fill={sectorColor} />;
 						})}
 					</Bar>
-					{selectedKPI1 === 'totalEmbodiedCarbon' && (
+					{selectedKPI1 === 'Total Embodied Carbon' && (
 						<Bar dataKey="biogenic" fill="white" name="biogenic" radius={[0, 0, 4, 4]}>
 							{sortedProjects.map((project, index) => {
 								const sectorColor = getSectorColor(project['Primary Sector']);
@@ -361,7 +361,7 @@ export const BarChart = ({
 							})}
 						</Bar>
 					)}
-					{selectedKPI1 === 'totalEmbodiedCarbon' && <ReferenceLine y={0} stroke="#A8A8A3" strokeWidth={2} />}
+					{selectedKPI1 === 'Total Embodied Carbon' && <ReferenceLine y={0} stroke="#A8A8A3" strokeWidth={2} />}
 
 					{/* Benchmark lines for Total Embodied Carbon */}
 					{benchmarkLines.map((benchmark, index) => (
