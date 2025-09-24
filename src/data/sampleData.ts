@@ -15,10 +15,10 @@ export const sampleProjects: Project[] = [
 		'GIA': 9800,
 		'PC Date': '2023-06-15',
 
-		'BREEAM': 'Excellent',
+		'BREEAM': 'Outstanding',
 		'LEED': 'Gold',
 		'WELL': 'Silver',
-		'NABERS': '5 Star',
+		'NABERS': '1 Star',
 		'Passivhaus or EnePHit': 'Passivhaus',
 
 		'Current RIBA Stage': '7',
