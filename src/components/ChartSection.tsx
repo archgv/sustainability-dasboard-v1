@@ -708,17 +708,8 @@ export const ChartSection = ({ projects, chartType, selectedKPI1, selectedKPI2, 
 				);
 
 			case 'single-bar': {
-				interface MultiLineTickProps {
-					x?: number;
-					y?: number;
-					payload?: {
-						value: string;
-					};
-				}
-
-				const MultiLineTickComponent = (props: MultiLineTickProps) => {
+				const MultiLineTickComponent = (props: any) => {
 					const { x, y, payload } = props;
-					if (!payload?.value || x === undefined || y === undefined) return null;
 					const words = payload.value.split(' ');
 					const lines = [];
 					let currentLine = '';
