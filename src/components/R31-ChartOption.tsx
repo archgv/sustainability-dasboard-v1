@@ -4,18 +4,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { availableKPIs } from '@/types/project';
 export type ChartType = 'compare-bubble' | 'single-bar' | 'single-timeline';
-export type EmbodiedCarbonBreakdown = 'none' | 'lifecycle' | 'element';
 export type ValueType = 'total' | 'per-sqm';
 interface ChartOptionProps {
 	chartType: ChartType;
 	selectedKPI1: string;
 	selectedKPI2: string;
-	embodiedCarbonBreakdown: EmbodiedCarbonBreakdown;
 	valueType: ValueType;
 	onChartTypeChange: (value: ChartType) => void;
 	onKPI1Change: (value: string) => void;
 	onKPI2Change: (value: string) => void;
-	onEmbodiedCarbonBreakdownChange: (value: EmbodiedCarbonBreakdown) => void;
 	onValueTypeChange: (value: ValueType) => void;
 }
 
@@ -24,11 +21,14 @@ const chartKPIs = [
 	'Operational Energy Total',
 	'Operational Energy Part L',
 	'Operational Energy Gas',
+
 	'Space Heating Demand',
 	'Total Renewable Energy Generation',
+
 	'Upfront Carbon',
 	'Total Embodied Carbon',
 	'Biogenic Carbon',
+
 	'Biodiversity Net Gain',
 	'Urban Greening Factor',
 ];
@@ -38,31 +38,92 @@ const filteredKPIs = availableKPIs.filter((kpi) => chartKPIs.includes(kpi.key));
 
 // KPI compatibility matrix based on the provided matrix
 const kpiCompatibilityMatrix: Record<string, string[]> = {
-	'Operational Energy Total': ['Operational Energy Part L', 'Operational Energy Gas', 'Space Heating Demand', 'Total Renewable Energy Generation', 'Upfront Carbon', 'Total Embodied Carbon', 'Biogenic Carbon'],
-	'Operational Energy Part L': ['Operational Energy Total', 'Operational Energy Gas', 'Space Heating Demand', 'Total Renewable Energy Generation', 'Upfront Carbon', 'Total Embodied Carbon', 'Biogenic Carbon'],
-	'Operational Energy Gas': ['Operational Energy Total', 'Operational Energy Part L', 'Space Heating Demand', 'Total Renewable Energy Generation', 'Upfront Carbon', 'Total Embodied Carbon', 'Biogenic Carbon'],
-	'Space Heating Demand': ['Operational Energy Total', 'Operational Energy Part L', 'Operational Energy Gas', 'Total Renewable Energy Generation', 'Upfront Carbon', 'Total Embodied Carbon', 'Biogenic Carbon'],
-	'Total Renewable Energy Generation': ['Operational Energy Total', 'Operational Energy Part L', 'Operational Energy Gas', 'Space Heating Demand', 'Upfront Carbon', 'Total Embodied Carbon', 'Biogenic Carbon'],
-	'Upfront Carbon': ['Operational Energy Total', 'Operational Energy Part L', 'Operational Energy Gas', 'Space Heating Demand', 'Total Renewable Energy Generation', 'Total Embodied Carbon', 'Biogenic Carbon'],
-	'Total Embodied Carbon': ['Operational Energy Total', 'Operational Energy Part L', 'Operational Energy Gas', 'Space Heating Demand', 'Total Renewable Energy Generation', 'Upfront Carbon', 'Biogenic Carbon'],
-	'Biogenic Carbon': ['Operational Energy Total', 'Operational Energy Part L', 'Operational Energy Gas', 'Space Heating Demand', 'Total Renewable Energy Generation', 'Upfront Carbon', 'Total Embodied Carbon'],
+	'Operational Energy Total': [
+		'Operational Energy Part L',
+		'Operational Energy Gas',
+		'Space Heating Demand',
+		'Total Renewable Energy Generation',
+		'Upfront Carbon',
+		'Total Embodied Carbon',
+		'Biogenic Carbon',
+	],
+
+	'Operational Energy Part L': [
+		'Operational Energy Total',
+		'Operational Energy Gas',
+		'Space Heating Demand',
+		'Total Renewable Energy Generation',
+		'Upfront Carbon',
+		'Total Embodied Carbon',
+		'Biogenic Carbon',
+	],
+
+	'Operational Energy Gas': [
+		'Operational Energy Total',
+		'Operational Energy Part L',
+		'Space Heating Demand',
+		'Total Renewable Energy Generation',
+		'Upfront Carbon',
+		'Total Embodied Carbon',
+		'Biogenic Carbon',
+	],
+
+	'Space Heating Demand': [
+		'Operational Energy Total',
+		'Operational Energy Part L',
+		'Operational Energy Gas',
+		'Total Renewable Energy Generation',
+		'Upfront Carbon',
+		'Total Embodied Carbon',
+		'Biogenic Carbon',
+	],
+
+	'Total Renewable Energy Generation': [
+		'Operational Energy Total',
+		'Operational Energy Part L',
+		'Operational Energy Gas',
+		'Space Heating Demand',
+		'Upfront Carbon',
+		'Total Embodied Carbon',
+		'Biogenic Carbon',
+	],
+
+	'Upfront Carbon': [
+		'Operational Energy Total',
+		'Operational Energy Part L',
+		'Operational Energy Gas',
+		'Space Heating Demand',
+		'Total Renewable Energy Generation',
+		'Total Embodied Carbon',
+		'Biogenic Carbon',
+	],
+
+	'Total Embodied Carbon': [
+		'Operational Energy Total',
+		'Operational Energy Part L',
+		'Operational Energy Gas',
+		'Space Heating Demand',
+		'Total Renewable Energy Generation',
+		'Upfront Carbon',
+		'Biogenic Carbon',
+	],
+
+	'Biogenic Carbon': [
+		'Operational Energy Total',
+		'Operational Energy Part L',
+		'Operational Energy Gas',
+		'Space Heating Demand',
+		'Total Renewable Energy Generation',
+		'Upfront Carbon',
+		'Total Embodied Carbon',
+	],
+
 	'Biodiversity Net Gain': ['Urban Greening Factor'],
+
 	'Urban Greening Factor': ['Biodiversity Net Gain'],
 };
-export const ChartOption = ({
-	chartType,
-	selectedKPI1,
-	selectedKPI2,
-	embodiedCarbonBreakdown,
-	valueType,
-	onChartTypeChange,
-	onKPI1Change,
-	onKPI2Change,
-	onEmbodiedCarbonBreakdownChange,
-	onValueTypeChange,
-}: ChartOptionProps) => {
+export const ChartOption = ({ chartType, selectedKPI1, selectedKPI2, valueType, onChartTypeChange, onKPI1Change, onKPI2Change, onValueTypeChange }: ChartOptionProps) => {
 	const showKPI2 = chartType === 'compare-bubble';
-	const showEmbodiedCarbonBreakdown = chartType === 'single-bar' && selectedKPI1 === 'Total Embodied Carbon';
 
 	// Get compatible KPI2 options based on selected KPI1
 	const compatibleKPI2Options = showKPI2 ? filteredKPIs.filter((kpi) => kpiCompatibilityMatrix[selectedKPI1]?.includes(kpi.key)) : [];
@@ -146,8 +207,6 @@ export const ChartOption = ({
 					</div>
 				)}
 			</div>
-
-			{showEmbodiedCarbonBreakdown}
 		</Card>
 	);
 };

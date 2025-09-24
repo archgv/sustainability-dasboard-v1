@@ -1,6 +1,6 @@
-import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine } from 'recharts';
 import { Project, availableKPIs } from '@/types/project';
-import { EmbodiedCarbonBreakdown, ValueType } from '../R31-ChartOption';
+import { ValueType } from '../R31-ChartOption';
 import { getSectorColor, getSectorBenchmarkColor } from '@/components/Utils/UtilSector';
 import { formatNumber } from '@/lib/utils';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks } from '@/data/benchmarkData';
@@ -9,7 +9,6 @@ import { chartColors } from './C01-UtilColor';
 interface BarChartProps {
 	projects: Project[];
 	selectedKPI1: string;
-	embodiedCarbonBreakdown: EmbodiedCarbonBreakdown;
 	valueType: ValueType;
 	isComparingToSelf?: boolean;
 	showBenchmarks: boolean;
@@ -21,10 +20,9 @@ interface BarChartProps {
 	transformDataForValueType: (data: Project[]) => Project[];
 }
 
-export const BarChart = ({
+export const SingleProject = ({
 	projects,
 	selectedKPI1,
-	embodiedCarbonBreakdown,
 	valueType,
 	isComparingToSelf = false,
 	showBenchmarks,
@@ -36,100 +34,6 @@ export const BarChart = ({
 	transformDataForValueType,
 }: BarChartProps) => {
 	const kpi1Config = availableKPIs.find((kpi) => kpi.key === selectedKPI1);
-
-	const getLifecycleStageCategories = () => [
-		{ key: 'biogenicCarbon', label: 'Biogenic carbon (A1-A3)', color: chartColors.tertiary },
-		{ key: 'upfrontEmbodied', label: 'Upfront embodied carbon (A1-A5)', color: chartColors.primary },
-		{ key: 'inUseEmbodied', label: 'In-use embodied carbon (B1-B5)', color: chartColors.secondary },
-		{ key: 'endOfLife', label: 'End of life (C1-C4)', color: chartColors.warning },
-		{ key: 'benefitsLoads', label: 'Benefits and loads (D1)', color: chartColors.quaternary },
-		{ key: 'facilitatingWorks', label: 'Facilitating works', color: chartColors.accent2 },
-	];
-
-	const getBuildingElementCategories = () => [
-		{ key: 'substructure', label: 'Substructure', color: chartColors.primary },
-		{ key: 'superstructureFrame', label: 'Superstructure - Frame', color: chartColors.secondary },
-		{ key: 'superstructureExternal', label: 'Superstructure - External envelope', color: chartColors.tertiary },
-		{ key: 'superstructureInternal', label: 'Superstructure - Internal assemblies', color: chartColors.quaternary },
-		{ key: 'finishes', label: 'Finishes', color: chartColors.warning },
-		{ key: 'ffe', label: 'FF&E', color: chartColors.info },
-		{ key: 'mep', label: 'MEP', color: chartColors.success },
-		{ key: 'externalWorks', label: 'External works', color: chartColors.darkGreen },
-		{ key: 'contingency', label: 'Contingency', color: chartColors.muted },
-	];
-
-	const getEmbodiedCarbonStackedData = () => {
-		if (embodiedCarbonBreakdown === 'none' || projects.length === 0) return [];
-
-		const categories = embodiedCarbonBreakdown === 'lifecycle' ? getLifecycleStageCategories() : getBuildingElementCategories();
-
-		return projects.map((project) => {
-			const baseId = project.id.split('-')[0];
-			const displayName = isComparingToSelf && project['Current RIBA Stage'] ? `${project['Project Name']} (RIBA ${project['Current RIBA Stage']})` : project['Project Name'];
-
-			const projectData = { name: displayName };
-
-			// Mock breakdown data - in real app this would come from project.embodiedCarbonBreakdown
-			categories.forEach((category, index) => {
-				// Generate mock values based on total embodied carbon
-				const baseValue = project['Total Embodied Carbon'] || 45;
-				const multiplier =
-					embodiedCarbonBreakdown === 'lifecycle'
-						? [0.4, 0.15, 0.25, 0.1, 0.05, 0.05][index] // Lifecycle distribution
-						: [0.15, 0.2, 0.15, 0.1, 0.05, 0.05, 0.15, 0.1, 0.05][index]; // Building element distribution
-
-				const categoryValue = baseValue * (multiplier || 0.1);
-				const finalValue = valueType === 'total' ? categoryValue * getProjectArea(baseId) : categoryValue;
-				// Make biogenic carbon negative in the data
-				const adjustedValue = category.key === 'biogenicCarbon' ? -Math.abs(finalValue) : finalValue;
-				projectData[category.key] = Math.round(adjustedValue * 100) / 100;
-			});
-
-			return projectData;
-		});
-	};
-
-	// Handle embodied carbon breakdown with stacked columns
-	if (selectedKPI1 === 'Total Embodied Carbon' && embodiedCarbonBreakdown !== 'none') {
-		const stackedData = getEmbodiedCarbonStackedData();
-
-		if (stackedData.length === 0) {
-			return <div className="flex items-center justify-center h-full text-gray-500">No breakdown data available for selected projects</div>;
-		}
-
-		const categories = embodiedCarbonBreakdown === 'lifecycle' ? getLifecycleStageCategories() : getBuildingElementCategories();
-
-		return (
-			<ResponsiveContainer width="100%" height="100%">
-				<RechartsBarChart data={stackedData} margin={{ top: 50, right: 30, left: 20, bottom: 60 }}>
-					<CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} horizontal={true} verticalPoints={[]} />
-					<XAxis dataKey="name" angle={-45} textAnchor="end" height={80} interval={0} tick={{ fill: chartColors.dark }} />
-					<YAxis
-						label={{ value: valueType === 'per-sqm' ? 'kgCO₂e/m²' : 'kgCO₂e total', angle: -90, position: 'insideLeft' }}
-						tick={{ fill: chartColors.dark }}
-						tickFormatter={(value) => formatNumber(value)}
-						ticks={(() => {
-							const maxValue = Math.max(...stackedData.flatMap((item) => categories.map((cat) => Math.abs(item[cat.key] || 0))));
-							return generateNiceTicks(maxValue * 1.1);
-						})()}
-					/>
-					<Tooltip
-						formatter={(value: number, name: string) => {
-							const category = categories.find((cat) => cat.key === name);
-							// Make biogenic carbon negative in tooltip
-							const displayValue = name === 'biogenicCarbon' ? -Math.abs(value) : value;
-							return [`${formatNumber(displayValue)} ${valueType === 'per-sqm' ? 'kgCO₂e/m²' : 'kgCO₂e total'}`, category?.label || name];
-						}}
-						labelFormatter={(label) => `Project: ${label}`}
-						contentStyle={{ backgroundColor: 'white', border: `1px solid ${chartColors.primary}`, borderRadius: '8px' }}
-					/>
-					{categories.map((category) => (
-						<Bar key={category.key} dataKey={category.key} stackId="embodiedCarbon" fill={category.color} name={category.label} />
-					))}
-				</RechartsBarChart>
-			</ResponsiveContainer>
-		);
-	}
 
 	const transformedProjects = transformDataForValueType(projects);
 	const sortedProjects = transformedProjects;
@@ -255,7 +159,7 @@ export const BarChart = ({
 				</div>
 			)}
 			<ResponsiveContainer width="100%" height="100%">
-				<RechartsBarChart data={chartData} margin={{ top: 50, right: 30, left: 20, bottom: 80 }}>
+				<BarChart data={chartData} margin={{ top: 50, right: 30, left: 20, bottom: 80 }}>
 					<CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} horizontal={true} verticalPoints={[]} />
 					<XAxis
 						dataKey={(item) => {
@@ -385,7 +289,7 @@ export const BarChart = ({
 					{barChartBenchmarkLines.map((benchmark, index) => (
 						<ReferenceLine key={benchmark.name} y={benchmark.value} stroke={benchmark.color} strokeWidth={2} strokeDasharray={benchmark.name.includes('New building') ? '5 5' : '10 5'} />
 					))}
-				</RechartsBarChart>
+				</BarChart>
 			</ResponsiveContainer>
 		</div>
 	);

@@ -1,5 +1,5 @@
 import { Project, availableKPIs } from '@/types/project';
-import { ChartType, EmbodiedCarbonBreakdown, ValueType } from '@/components/R31-ChartOption';
+import { ChartType, ValueType } from '@/components/R31-ChartOption';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks } from '@/data/benchmarkData';
 import { getSectorBenchmarkColor } from '@/components/Utils/UtilSector';
 
@@ -8,7 +8,6 @@ interface ExportPNGOptions {
 	chartType: ChartType;
 	selectedKPI1: string;
 	selectedKPI2: string;
-	embodiedCarbonBreakdown: EmbodiedCarbonBreakdown;
 	valueType: ValueType;
 	showBenchmarks: boolean;
 	selectedBarChartBenchmark: string;
@@ -24,15 +23,10 @@ const getUnitLabel = (baseUnit: string, valueType: ValueType, forCSV: boolean = 
 	return unit;
 };
 
-const getChartTitle = (chartType: ChartType, selectedKPI1: string, selectedKPI2: string, embodiedCarbonBreakdown: EmbodiedCarbonBreakdown, valueType: ValueType) => {
+const getChartTitle = (chartType: ChartType, selectedKPI1: string, selectedKPI2: string, valueType: ValueType) => {
 	const valueTypeLabel = valueType === 'per-sqm' ? 'per sqm' : 'total';
 	const kpi1Config = availableKPIs.find((kpi) => kpi.key === selectedKPI1);
 	const kpi2Config = availableKPIs.find((kpi) => kpi.key === selectedKPI2);
-
-	if (chartType === 'single-bar' && selectedKPI1 === 'Total Embodied Carbon' && embodiedCarbonBreakdown !== 'none') {
-		const breakdownType = embodiedCarbonBreakdown === 'lifecycle' ? 'Lifecycle Stage' : 'Building Element';
-		return `Embodied Carbon by ${breakdownType} (${valueTypeLabel}) - Stacked Column Chart`;
-	}
 
 	switch (chartType) {
 		case 'compare-bubble':
@@ -47,7 +41,7 @@ const getChartTitle = (chartType: ChartType, selectedKPI1: string, selectedKPI2:
 };
 
 export const exportChartToPNG = (options: ExportPNGOptions) => {
-	const { projects, chartType, selectedKPI1, selectedKPI2, embodiedCarbonBreakdown, valueType, showBenchmarks, selectedBarChartBenchmark } = options;
+	const { projects, chartType, selectedKPI1, selectedKPI2, valueType, showBenchmarks, selectedBarChartBenchmark } = options;
 
 	// Find the chart SVG element - use specific selector to avoid conflicts
 	const chartContainer = document.querySelector('[data-chart="chart-container"]');
@@ -99,7 +93,7 @@ export const exportChartToPNG = (options: ExportPNGOptions) => {
 		yPosition = Math.max(yPosition + logoHeight + 20, 80);
 
 		// Get chart title and value type information
-		const chartTitle = getChartTitle(chartType, selectedKPI1, selectedKPI2, embodiedCarbonBreakdown, valueType);
+		const chartTitle = getChartTitle(chartType, selectedKPI1, selectedKPI2, valueType);
 		const valueTypeText = valueType === 'per-sqm' ? '(per sqm GIA)' : '(Total values)';
 
 		// Draw title

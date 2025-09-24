@@ -1,5 +1,5 @@
 import { Project, availableKPIs } from '@/types/project';
-import { ChartType, EmbodiedCarbonBreakdown, ValueType } from '@/components/R31-ChartOption';
+import { ChartType, ValueType } from '@/components/R31-ChartOption';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks } from '@/data/benchmarkData';
 
 interface ExportCSVOptions {
@@ -7,7 +7,6 @@ interface ExportCSVOptions {
 	chartType: ChartType;
 	selectedKPI1: string;
 	selectedKPI2: string;
-	embodiedCarbonBreakdown: EmbodiedCarbonBreakdown;
 	valueType: ValueType;
 	isComparingToSelf?: boolean;
 	selectedRibaStages?: string[];
@@ -43,15 +42,10 @@ const getUnitLabel = (baseUnit: string, valueType: ValueType, forCSV: boolean = 
 	return unit;
 };
 
-const getChartTitle = (chartType: ChartType, selectedKPI1: string, selectedKPI2: string, embodiedCarbonBreakdown: EmbodiedCarbonBreakdown, valueType: ValueType) => {
+const getChartTitle = (chartType: ChartType, selectedKPI1: string, selectedKPI2: string, valueType: ValueType) => {
 	const valueTypeLabel = valueType === 'per-sqm' ? 'per sqm' : 'total';
 	const kpi1Config = availableKPIs.find((kpi) => kpi.key === selectedKPI1);
 	const kpi2Config = availableKPIs.find((kpi) => kpi.key === selectedKPI2);
-
-	if (chartType === 'single-bar' && selectedKPI1 === 'Total Embodied Carbon' && embodiedCarbonBreakdown !== 'none') {
-		const breakdownType = embodiedCarbonBreakdown === 'lifecycle' ? 'Lifecycle Stage' : 'Building Element';
-		return `Embodied Carbon by ${breakdownType} (${valueTypeLabel}) - Stacked Column Chart`;
-	}
 
 	switch (chartType) {
 		case 'compare-bubble':
@@ -86,37 +80,6 @@ const getBuildingElementCategories = (): ChartCategory[] => [
 	{ key: 'contingency', label: 'Contingency', color: '#272727' },
 ];
 
-const getEmbodiedCarbonStackedData = (projects: Project[], embodiedCarbonBreakdown: EmbodiedCarbonBreakdown, valueType: ValueType, isComparingToSelf: boolean) => {
-	if (embodiedCarbonBreakdown === 'none' || projects.length === 0) return [];
-
-	const categories = embodiedCarbonBreakdown === 'lifecycle' ? getLifecycleStageCategories() : getBuildingElementCategories();
-
-	return projects.map((project) => {
-		const baseId = project.id.split('-')[0];
-		const displayName = isComparingToSelf && project['Current RIBA Stage'] ? `${project['Project Name']} (RIBA ${project['Current RIBA Stage']})` : project['Project Name'];
-
-		const projectData = { name: displayName };
-
-		// Mock breakdown data - in real app this would come from project.embodiedCarbonBreakdown
-		categories.forEach((category, index) => {
-			// Generate mock values based on total embodied carbon
-			const baseValue = project['Total Embodied Carbon'] || 45;
-			const multiplier =
-				embodiedCarbonBreakdown === 'lifecycle'
-					? [0.4, 0.15, 0.25, 0.1, 0.05, 0.05][index] // Lifecycle distribution
-					: [0.15, 0.2, 0.15, 0.1, 0.05, 0.05, 0.15, 0.1, 0.05][index]; // Building element distribution
-
-			const categoryValue = baseValue * (multiplier || 0.1);
-			const finalValue = valueType === 'total' ? categoryValue * getProjectArea(baseId) : categoryValue;
-			// Make biogenic carbon negative in the data
-			const adjustedValue = category.key === 'biogenicCarbon' ? -Math.abs(finalValue) : finalValue;
-			projectData[category.key] = Math.round(adjustedValue * 100) / 100;
-		});
-
-		return projectData;
-	});
-};
-
 const transformDataForValueType = (data: Project[], valueType: ValueType, selectedKPI1: string, selectedKPI2: string): Project[] => {
 	if (valueType === 'per-sqm') {
 		return data; // Data is already per sqm in our KPIs
@@ -131,90 +94,57 @@ const transformDataForValueType = (data: Project[], valueType: ValueType, select
 };
 
 export const exportChartToCSV = (options: ExportCSVOptions) => {
-	const {
-		projects,
-		chartType,
-		selectedKPI1,
-		selectedKPI2,
-		embodiedCarbonBreakdown,
-		valueType,
-		isComparingToSelf = false,
-		selectedRibaStages = [],
-		showBenchmarks,
-		selectedBarChartBenchmark,
-	} = options;
+	const { projects, chartType, selectedKPI1, selectedKPI2, valueType, isComparingToSelf = false, selectedRibaStages = [], showBenchmarks, selectedBarChartBenchmark } = options;
 
 	const kpi1Config = availableKPIs.find((kpi) => kpi.key === selectedKPI1);
 	const kpi2Config = availableKPIs.find((kpi) => kpi.key === selectedKPI2);
 
-	const chartTitle = getChartTitle(chartType, selectedKPI1, selectedKPI2, embodiedCarbonBreakdown, valueType);
+	const chartTitle = getChartTitle(chartType, selectedKPI1, selectedKPI2, valueType);
 	let csvContent = `${chartTitle}\n\n`;
 
-	if (chartType === 'single-bar' && selectedKPI1 === 'Total Embodied Carbon' && embodiedCarbonBreakdown !== 'none') {
-		const breakdownData = getEmbodiedCarbonStackedData(projects, embodiedCarbonBreakdown, valueType, isComparingToSelf);
+	const transformedProjects = transformDataForValueType(projects, valueType, selectedKPI1, selectedKPI2);
 
-		// CSV headers
-		const headers = ['Project Name'];
-		const categories = embodiedCarbonBreakdown === 'lifecycle' ? getLifecycleStageCategories() : getBuildingElementCategories();
-		categories.forEach((cat) => headers.push(`${cat.label} (${getUnitLabel(kpi1Config?.unit || '', valueType, true)})`));
+	// CSV headers
+	const headers = ['Project Name', `${kpi1Config?.label || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType, true)})`];
 
-		csvContent += headers.join(',') + '\n';
+	// For Total Embodied Carbon charts, include biogenic carbon column
+	if (chartType === 'single-bar' && selectedKPI1 === 'Total Embodied Carbon') {
+		headers.push(`Biogenic (${getUnitLabel(kpi1Config?.unit || '', valueType, true)})`);
+	}
 
-		// CSV data rows
-		breakdownData.forEach((item) => {
-			const row = [item.name];
-			categories.forEach((cat) => {
-				// Make biogenic carbon negative in CSV export
-				const value = cat.key === 'biogenicCarbon' ? -Math.abs(item[cat.key] || 0) : item[cat.key] || 0;
-				row.push(value.toString());
-			});
-			csvContent += row.join(',') + '\n';
-		});
-	} else {
-		const transformedProjects = transformDataForValueType(projects, valueType, selectedKPI1, selectedKPI2);
+	if (chartType === 'compare-bubble') {
+		headers.push(`${kpi2Config?.label || selectedKPI2} (${getUnitLabel(kpi2Config?.unit || '', valueType, true)})`);
+		headers.push('Building Area (m²)');
+	}
+	if (chartType === 'single-timeline') {
+		headers.push('Completion Year');
+	}
+	csvContent += headers.join(',') + '\n';
 
-		// CSV headers
-		const headers = ['Project Name', `${kpi1Config?.label || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType, true)})`];
+	// CSV data rows
+	transformedProjects.forEach((project) => {
+		const baseId = project.id.split('-')[0];
+		const displayName = isComparingToSelf && project['Current RIBA Stage'] ? `${project['Project Name']} (RIBA ${project['Current RIBA Stage']})` : project['Project Name'];
 
-		// For Total Embodied Carbon charts, include biogenic carbon column
+		const row = [`"${displayName}"`, (project[selectedKPI1 as keyof Project] as number)?.toString() || '0'];
+
+		// For Total Embodied Carbon charts, add biogenic carbon as negative value
 		if (chartType === 'single-bar' && selectedKPI1 === 'Total Embodied Carbon') {
-			headers.push(`Biogenic (${getUnitLabel(kpi1Config?.unit || '', valueType, true)})`);
+			const biogenicValue = project['Biogenic Carbon'] || 0;
+			const finalBiogenicValue = valueType === 'total' ? -Math.abs(biogenicValue * getProjectArea(baseId)) : -Math.abs(biogenicValue);
+			row.push(finalBiogenicValue.toString());
 		}
 
 		if (chartType === 'compare-bubble') {
-			headers.push(`${kpi2Config?.label || selectedKPI2} (${getUnitLabel(kpi2Config?.unit || '', valueType, true)})`);
-			headers.push('Building Area (m²)');
+			row.push((project[selectedKPI2 as keyof Project] as number)?.toString() || '0');
+			row.push(getProjectArea(baseId).toString());
 		}
 		if (chartType === 'single-timeline') {
-			headers.push('Completion Year');
+			row.push(new Date(project['PC Date']).getFullYear().toString());
 		}
-		csvContent += headers.join(',') + '\n';
 
-		// CSV data rows
-		transformedProjects.forEach((project) => {
-			const baseId = project.id.split('-')[0];
-			const displayName = isComparingToSelf && project['Current RIBA Stage'] ? `${project['Project Name']} (RIBA ${project['Current RIBA Stage']})` : project['Project Name'];
-
-			const row = [`"${displayName}"`, (project[selectedKPI1 as keyof Project] as number)?.toString() || '0'];
-
-			// For Total Embodied Carbon charts, add biogenic carbon as negative value
-			if (chartType === 'single-bar' && selectedKPI1 === 'Total Embodied Carbon') {
-				const biogenicValue = project['Biogenic Carbon'] || 0;
-				const finalBiogenicValue = valueType === 'total' ? -Math.abs(biogenicValue * getProjectArea(baseId)) : -Math.abs(biogenicValue);
-				row.push(finalBiogenicValue.toString());
-			}
-
-			if (chartType === 'compare-bubble') {
-				row.push((project[selectedKPI2 as keyof Project] as number)?.toString() || '0');
-				row.push(getProjectArea(baseId).toString());
-			}
-			if (chartType === 'single-timeline') {
-				row.push(new Date(project['PC Date']).getFullYear().toString());
-			}
-
-			csvContent += row.join(',') + '\n';
-		});
-	}
+		csvContent += row.join(',') + '\n';
+	});
 
 	// Add benchmark data to CSV if available
 	const getBenchmarkDataForCSV = () => {

@@ -2,7 +2,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Download, FileText, Eye, EyeOff } from 'lucide-react';
 import { Project, availableKPIs } from '@/types/project';
-import { ChartType, EmbodiedCarbonBreakdown, ValueType } from './R31-ChartOption';
+import { ChartType, ValueType } from './R31-ChartOption';
 import { getSectorBenchmarkColor } from '@/components/Utils/UtilSector';
 import { formatNumber } from '@/lib/utils';
 import { useState } from 'react';
@@ -10,7 +10,7 @@ import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks, uknzcbsOperationalEne
 import { exportChartToCSV } from '@/components/ChartSub/C11-ExportCSV';
 import { exportChartToPNG } from '@/components/ChartSub/C12-ExportPNG';
 import { BubbleChart } from './ChartSub/C31-CompareTwo';
-import { BarChart } from './ChartSub/C32-SingleProject';
+import { SingleProject } from './ChartSub/C32-SingleProject';
 import { TimelineChart } from './ChartSub/C33-SingleTime';
 import { chartColors, seriesColors } from './ChartSub/C01-UtilColor';
 import { generateNiceTicks } from './ChartSub/C02-UtilShape';
@@ -20,13 +20,12 @@ interface ChartProps {
 	chartType: ChartType;
 	selectedKPI1: string;
 	selectedKPI2: string;
-	embodiedCarbonBreakdown: EmbodiedCarbonBreakdown;
 	valueType: ValueType;
 	isComparingToSelf?: boolean;
 	selectedRibaStages?: string[];
 }
 
-export const Chart = ({ projects, chartType, selectedKPI1, selectedKPI2, embodiedCarbonBreakdown, valueType, isComparingToSelf = false, selectedRibaStages = [] }: ChartProps) => {
+export const Chart = ({ projects, chartType, selectedKPI1, selectedKPI2, valueType, isComparingToSelf = false, selectedRibaStages = [] }: ChartProps) => {
 	const [showBenchmarks, setShowBenchmarks] = useState(false);
 	const [selectedSubSector, setSelectedSubSector] = useState<string>('');
 	const [selectedBarChartBenchmark, setSelectedBarChartBenchmark] = useState<string>('');
@@ -65,7 +64,6 @@ export const Chart = ({ projects, chartType, selectedKPI1, selectedKPI2, embodie
 			chartType,
 			selectedKPI1,
 			selectedKPI2,
-			embodiedCarbonBreakdown,
 			valueType,
 			isComparingToSelf,
 			selectedRibaStages,
@@ -80,7 +78,6 @@ export const Chart = ({ projects, chartType, selectedKPI1, selectedKPI2, embodie
 			chartType,
 			selectedKPI1,
 			selectedKPI2,
-			embodiedCarbonBreakdown,
 			valueType,
 			showBenchmarks,
 			selectedBarChartBenchmark,
@@ -100,11 +97,6 @@ export const Chart = ({ projects, chartType, selectedKPI1, selectedKPI2, embodie
 	const getChartTitle = () => {
 		const valueTypeLabel = valueType === 'per-sqm' ? 'per sqm' : 'total';
 
-		if (chartType === 'single-bar' && selectedKPI1 === 'Total Embodied Carbon' && embodiedCarbonBreakdown !== 'none') {
-			const breakdownType = embodiedCarbonBreakdown === 'lifecycle' ? 'Lifecycle Stage' : 'Building Element';
-			return `Embodied Carbon by ${breakdownType} (${valueTypeLabel}) - Stacked Column Chart`;
-		}
-
 		switch (chartType) {
 			case 'compare-bubble':
 				return `${kpi1Config?.label} vs ${kpi2Config?.label} (${valueTypeLabel}) - Bubble Chart`;
@@ -115,58 +107,6 @@ export const Chart = ({ projects, chartType, selectedKPI1, selectedKPI2, embodie
 			default:
 				return 'Chart';
 		}
-	};
-
-	const getLifecycleStageCategories = () => [
-		{ key: 'biogenicCarbon', label: 'Biogenic carbon (A1-A3)', color: chartColors.tertiary },
-		{ key: 'upfrontEmbodied', label: 'Upfront embodied carbon (A1-A5)', color: chartColors.primary },
-		{ key: 'inUseEmbodied', label: 'In-use embodied carbon (B1-B5)', color: chartColors.secondary },
-		{ key: 'endOfLife', label: 'End of life (C1-C4)', color: chartColors.warning },
-		{ key: 'benefitsLoads', label: 'Benefits and loads (D1)', color: chartColors.quaternary },
-		{ key: 'facilitatingWorks', label: 'Facilitating works', color: chartColors.accent2 },
-	];
-
-	const getBuildingElementCategories = () => [
-		{ key: 'substructure', label: 'Substructure', color: chartColors.primary },
-		{ key: 'superstructureFrame', label: 'Superstructure - Frame', color: chartColors.secondary },
-		{ key: 'superstructureExternal', label: 'Superstructure - External envelope', color: chartColors.tertiary },
-		{ key: 'superstructureInternal', label: 'Superstructure - Internal assemblies', color: chartColors.quaternary },
-		{ key: 'finishes', label: 'Finishes', color: chartColors.warning },
-		{ key: 'ffe', label: 'FF&E', color: chartColors.info },
-		{ key: 'mep', label: 'MEP', color: chartColors.success },
-		{ key: 'externalWorks', label: 'External works', color: chartColors.darkGreen },
-		{ key: 'contingency', label: 'Contingency', color: chartColors.muted },
-	];
-
-	const getEmbodiedCarbonStackedData = () => {
-		if (embodiedCarbonBreakdown === 'none' || projects.length === 0) return [];
-
-		const categories = embodiedCarbonBreakdown === 'lifecycle' ? getLifecycleStageCategories() : getBuildingElementCategories();
-
-		return projects.map((project) => {
-			const baseId = project.id.split('-')[0];
-			const displayName = isComparingToSelf && project['Current RIBA Stage'] ? `${project['Project Name']} (RIBA ${project['Current RIBA Stage']})` : project['Project Name'];
-
-			const projectData = { name: displayName };
-
-			// Mock breakdown data - in real app this would come from project.embodiedCarbonBreakdown
-			categories.forEach((category, index) => {
-				// Generate mock values based on total embodied carbon
-				const baseValue = project['Total Embodied Carbon'] || 45;
-				const multiplier =
-					embodiedCarbonBreakdown === 'lifecycle'
-						? [0.4, 0.15, 0.25, 0.1, 0.05, 0.05][index] // Lifecycle distribution
-						: [0.15, 0.2, 0.15, 0.1, 0.05, 0.05, 0.15, 0.1, 0.05][index]; // Building element distribution
-
-				const categoryValue = baseValue * (multiplier || 0.1);
-				const finalValue = valueType === 'total' ? categoryValue * getProjectArea(baseId) : categoryValue;
-				// Make biogenic carbon negative in the data
-				const adjustedValue = category.key === 'biogenicCarbon' ? -Math.abs(finalValue) : finalValue;
-				projectData[category.key] = Math.round(adjustedValue * 100) / 100;
-			});
-
-			return projectData;
-		});
 	};
 
 	const renderChart = () => {
@@ -189,10 +129,9 @@ export const Chart = ({ projects, chartType, selectedKPI1, selectedKPI2, embodie
 
 			case 'single-bar':
 				return (
-					<BarChart
+					<SingleProject
 						projects={projects}
 						selectedKPI1={selectedKPI1}
-						embodiedCarbonBreakdown={embodiedCarbonBreakdown}
 						valueType={valueType}
 						isComparingToSelf={isComparingToSelf}
 						showBenchmarks={showBenchmarks}

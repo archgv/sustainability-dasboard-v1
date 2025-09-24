@@ -4,7 +4,7 @@ import { Chart } from '@/components/R32-Chart';
 import { Portfolio } from '@/components/R40-Portfolio';
 import { DashboardHeader } from '@/components/T00-Header';
 import { AddProjectData } from '@/components/L10-AddProjectData';
-import { ChartOption, ChartType, EmbodiedCarbonBreakdown, ValueType } from '@/components/R31-ChartOption';
+import { ChartOption, ChartType, ValueType } from '@/components/R31-ChartOption';
 import { Comparison } from '@/components/R30-Comparison';
 import { SectorPerformance } from '@/components/R10-SectorPerformance';
 import { Certification } from '@/components/R20-Certification';
@@ -16,7 +16,6 @@ const Index = () => {
 	const [chartType, setChartType] = useState<ChartType>('compare-bubble');
 	const [selectedKPI1, setSelectedKPI1] = useState('Total Embodied Carbon');
 	const [selectedKPI2, setSelectedKPI2] = useState('Operational Energy Total');
-	const [embodiedCarbonBreakdown, setEmbodiedCarbonBreakdown] = useState<EmbodiedCarbonBreakdown>('none');
 	const [valueType, setValueType] = useState<ValueType>('per-sqm');
 	const [primaryProject, setPrimaryProject] = useState(sampleProjects[0]?.id || '');
 	const [comparisonProjects, setComparisonProjects] = useState<string[]>([]);
@@ -159,12 +158,10 @@ const Index = () => {
 							chartType={chartType}
 							selectedKPI1={selectedKPI1}
 							selectedKPI2={selectedKPI2}
-							embodiedCarbonBreakdown={embodiedCarbonBreakdown}
 							valueType={valueType}
 							onChartTypeChange={setChartType}
 							onKPI1Change={setSelectedKPI1}
 							onKPI2Change={setSelectedKPI2}
-							onEmbodiedCarbonBreakdownChange={setEmbodiedCarbonBreakdown}
 							onValueTypeChange={setValueType}
 						/>
 
@@ -174,7 +171,6 @@ const Index = () => {
 							chartType={chartType}
 							selectedKPI1={selectedKPI1}
 							selectedKPI2={selectedKPI2}
-							embodiedCarbonBreakdown={embodiedCarbonBreakdown}
 							valueType={valueType}
 							isComparingToSelf={compareToSelf}
 							selectedRibaStages={selectedRibaStages}
