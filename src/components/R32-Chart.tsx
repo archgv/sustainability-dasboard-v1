@@ -9,8 +9,8 @@ import { formatNumber } from '@/lib/utils';
 import { useState } from 'react';
 import { ChartShape } from './R33-ChartShape';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks, uknzcbsOperationalEnergyBenchmarks } from '@/data/benchmarkData';
-import { exportChartToCSV } from '@/utils/chartExportCSV';
-import { exportChartToPNG } from '@/utils/chartExportPNG';
+import { exportChartToCSV } from '@/components/chartExport/chartExportCSV';
+import { exportChartToPNG } from '@/components/chartExport/chartExportPNG';
 
 interface ChartProps {
 	projects: Project[];
