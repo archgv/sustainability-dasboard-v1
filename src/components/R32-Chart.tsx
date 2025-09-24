@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Download, FileText, Eye, EyeOff } from 'lucide-react';
 import { Project, availableKPIs } from '@/types/project';
 import { ChartType, EmbodiedCarbonBreakdown, ValueType } from './R31-ChartOption';
-import { getSectorBenchmarkColor } from '@/components/Utils/projectUtils';
+import { getSectorBenchmarkColor } from '@/components/Utils/UtilSector';
 import { formatNumber } from '@/lib/utils';
 import { useState } from 'react';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks, uknzcbsOperationalEnergyBenchmarks } from '@/data/benchmarkData';
@@ -12,8 +12,8 @@ import { exportChartToPNG } from '@/components/ChartSub/C12-ExportPNG';
 import { BubbleChart } from './ChartSub/C31-CompareTwo';
 import { BarChart } from './ChartSub/C32-SingleProject';
 import { TimelineChart } from './ChartSub/C33-SingleTime';
-import { chartColors, seriesColors } from './ChartSub/UtilColor';
-import { generateNiceTicks } from './ChartSub/UtilsShape';
+import { chartColors, seriesColors } from './ChartSub/C01-UtilColor';
+import { generateNiceTicks } from './ChartSub/C02-UtilShape';
 
 interface ChartProps {
 	projects: Project[];
@@ -25,8 +25,6 @@ interface ChartProps {
 	isComparingToSelf?: boolean;
 	selectedRibaStages?: string[];
 }
-
-
 
 export const Chart = ({ projects, chartType, selectedKPI1, selectedKPI2, embodiedCarbonBreakdown, valueType, isComparingToSelf = false, selectedRibaStages = [] }: ChartProps) => {
 	const [showBenchmarks, setShowBenchmarks] = useState(false);

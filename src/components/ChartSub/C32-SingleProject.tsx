@@ -1,7 +1,7 @@
 import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine } from 'recharts';
 import { Project, availableKPIs } from '@/types/project';
 import { EmbodiedCarbonBreakdown, ValueType } from '../R31-ChartOption';
-import { getSectorColor, getSectorBenchmarkColor } from '@/components/Utils/projectUtils';
+import { getSectorColor, getSectorBenchmarkColor } from '@/components/Utils/UtilSector';
 import { formatNumber } from '@/lib/utils';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks } from '@/data/benchmarkData';
 
@@ -382,13 +382,7 @@ export const BarChart = ({
 
 					{/* UKNZCBS Benchmark lines for Upfront Carbon */}
 					{barChartBenchmarkLines.map((benchmark, index) => (
-						<ReferenceLine
-							key={benchmark.name}
-							y={benchmark.value}
-							stroke={benchmark.color}
-							strokeWidth={2}
-							strokeDasharray={benchmark.name.includes('New building') ? '5 5' : '10 5'}
-						/>
+						<ReferenceLine key={benchmark.name} y={benchmark.value} stroke={benchmark.color} strokeWidth={2} strokeDasharray={benchmark.name.includes('New building') ? '5 5' : '10 5'} />
 					))}
 				</RechartsBarChart>
 			</ResponsiveContainer>

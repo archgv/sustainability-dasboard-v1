@@ -1,7 +1,7 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { Project, availableKPIs } from '@/types/project';
 import { ValueType } from '../R31-ChartOption';
-import { getSectorColor, getSectorBenchmarkColor } from '@/components/Utils/projectUtils';
+import { getSectorColor, getSectorBenchmarkColor } from '@/components/Utils/UtilSector';
 import { formatNumber } from '@/lib/utils';
 import { uknzcbsBenchmarks, uknzcbsOperationalEnergyBenchmarks } from '@/data/benchmarkData';
 

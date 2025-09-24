@@ -1,7 +1,7 @@
 import { Project, availableKPIs } from '@/types/project';
 import { ChartType, EmbodiedCarbonBreakdown, ValueType } from '@/components/R31-ChartOption';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks } from '@/data/benchmarkData';
-import { getSectorBenchmarkColor } from '@/components/Utils/projectUtils';
+import { getSectorBenchmarkColor } from '@/components/Utils/UtilSector';
 
 interface ExportPNGOptions {
 	projects: Project[];
@@ -24,13 +24,7 @@ const getUnitLabel = (baseUnit: string, valueType: ValueType, forCSV: boolean = 
 	return unit;
 };
 
-const getChartTitle = (
-	chartType: ChartType,
-	selectedKPI1: string,
-	selectedKPI2: string,
-	embodiedCarbonBreakdown: EmbodiedCarbonBreakdown,
-	valueType: ValueType
-) => {
+const getChartTitle = (chartType: ChartType, selectedKPI1: string, selectedKPI2: string, embodiedCarbonBreakdown: EmbodiedCarbonBreakdown, valueType: ValueType) => {
 	const valueTypeLabel = valueType === 'per-sqm' ? 'per sqm' : 'total';
 	const kpi1Config = availableKPIs.find((kpi) => kpi.key === selectedKPI1);
 	const kpi2Config = availableKPIs.find((kpi) => kpi.key === selectedKPI2);
