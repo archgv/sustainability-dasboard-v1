@@ -150,7 +150,7 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 		return {
 			sector: sector,
 			value: baseValue,
-			biogenicValue: Math.abs(biogenicValue), // Keep positive for stacking
+			biogenicValue: -Math.abs(biogenicValue), // Make it negative for below zero
 			count: stats ? stats.count : 0,
 		};
 	});
@@ -405,14 +405,14 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 											return null;
 										}}
 									/>
-									<Bar dataKey="value" stackId="carbon">
+									<Bar dataKey="value">
 										{chartData.map((entry, index) => (
 											<Cell key={`cell-${index}`} fill={sectorConfig[entry.sector as keyof typeof sectorConfig]?.color || chartColors.primary} />
 										))}
 									</Bar>
-									{/* Show biogenic data stacked below for Total Embodied Carbon */}
+									{/* Show biogenic data as negative bars below zero for Total Embodied Carbon */}
 									{selectedKPI === 'Total Embodied Carbon' && (
-										<Bar dataKey="biogenicValue" stackId="carbon">
+										<Bar dataKey="biogenicValue">
 											{chartData.map((entry, index) => (
 												<Cell
 													key={`biogenic-cell-${index}`}
