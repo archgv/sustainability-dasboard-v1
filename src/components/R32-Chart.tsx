@@ -9,6 +9,8 @@ import { formatNumber } from '@/lib/utils';
 import { useState } from 'react';
 import { ChartShape } from './R33-ChartShape';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks, uknzcbsOperationalEnergyBenchmarks } from '@/data/benchmarkData';
+import { exportChartToCSV } from '@/utils/chartExportCSV';
+import { exportChartToPNG } from '@/utils/chartExportPNG';
 
 interface ChartProps {
 	projects: Project[];
@@ -114,360 +116,31 @@ export const Chart = ({ projects, chartType, selectedKPI1, selectedKPI2, embodie
 	};
 
 	const handleExportCSV = () => {
-		const chartTitle = getChartTitle();
-		let csvContent = `${chartTitle}\n\n`;
-
-		if (chartType === 'single-bar' && selectedKPI1 === 'totalEmbodiedCarbon' && embodiedCarbonBreakdown !== 'none') {
-			const breakdownData = getEmbodiedCarbonStackedData();
-
-			// CSV headers
-			const headers = ['Project Name'];
-			const categories = embodiedCarbonBreakdown === 'lifecycle' ? getLifecycleStageCategories() : getBuildingElementCategories();
-			categories.forEach((cat) => headers.push(`${cat.label} (${getUnitLabel(kpi1Config?.unit || '', valueType, true)})`));
-
-			csvContent += headers.join(',') + '\n';
-
-			// CSV data rows
-			breakdownData.forEach((item) => {
-				const row = [item.name];
-				categories.forEach((cat) => {
-					// Make biogenic carbon negative in CSV export
-					const value = cat.key === 'biogenicCarbon' ? -Math.abs(item[cat.key] || 0) : item[cat.key] || 0;
-					row.push(value.toString());
-				});
-				csvContent += row.join(',') + '\n';
-			});
-		} else {
-			const transformedProjects = transformDataForValueType(projects);
-
-			// CSV headers
-			const headers = ['Project Name', `${kpi1Config?.label || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType, true)})`];
-
-			// For Total Embodied Carbon charts, include biogenic carbon column
-			if (chartType === 'single-bar' && selectedKPI1 === 'totalEmbodiedCarbon') {
-				headers.push(`Biogenic (${getUnitLabel(kpi1Config?.unit || '', valueType, true)})`);
-			}
-
-			if (chartType === 'compare-bubble') {
-				headers.push(`${kpi2Config?.label || selectedKPI2} (${getUnitLabel(kpi2Config?.unit || '', valueType, true)})`);
-				headers.push('Building Area (m²)');
-			}
-			if (chartType === 'single-timeline') {
-				headers.push('Completion Year');
-			}
-			csvContent += headers.join(',') + '\n';
-
-			// CSV data rows
-			transformedProjects.forEach((project) => {
-				const baseId = project.id.split('-')[0];
-				const displayName = isComparingToSelf && project['Current RIBA Stage'] ? `${project['Project Name']} (RIBA ${project['Current RIBA Stage']})` : project['Project Name'];
-
-				const row = [`"${displayName}"`, project[selectedKPI1 as keyof Project]?.toString() || '0'];
-
-				// For Total Embodied Carbon charts, add biogenic carbon as negative value
-				if (chartType === 'single-bar' && selectedKPI1 === 'totalEmbodiedCarbon') {
-					const biogenicValue = project['Biogenic Carbon'] || 0;
-					const finalBiogenicValue = valueType === 'total' ? -Math.abs(biogenicValue * getProjectArea(baseId)) : -Math.abs(biogenicValue);
-					row.push(finalBiogenicValue.toString());
-				}
-
-				if (chartType === 'compare-bubble') {
-					row.push(project[selectedKPI2 as keyof Project]?.toString() || '0');
-					row.push(getProjectArea(baseId).toString());
-				}
-				if (chartType === 'single-timeline') {
-					row.push(new Date(project['PC Date']).getFullYear().toString());
-				}
-
-				csvContent += row.join(',') + '\n';
-			});
-		}
-
-		// Add benchmark data to CSV if available
-		const getBenchmarkDataForCSV = () => {
-			// Get UKNZCBS benchmark data for upfront carbon
-			if (selectedKPI1 === 'upfrontCarbon' && selectedBarChartBenchmark && valueType === 'per-sqm' && projects.length > 0) {
-				const primaryProject = projects[0];
-				const primarySector = primaryProject['Primary Sector'];
-
-				// Get the PC date from the primary project to determine benchmark year
-				let benchmarkYear = parseInt(primaryProject['PC Date']) || 2025;
-				if (benchmarkYear < 2025) benchmarkYear = 2025;
-
-				// Get benchmark values for this sector and sub-sector
-				const sectorData = uknzcbsBenchmarks[primarySector as keyof typeof uknzcbsBenchmarks];
-				if (!sectorData) return { lines: [], title: '' };
-
-				const subSectorData = sectorData[selectedBarChartBenchmark as keyof typeof sectorData];
-				if (!subSectorData) return { lines: [], title: '' };
-
-				const newBuildValue = subSectorData['New building']?.[benchmarkYear as keyof (typeof subSectorData)['New building']];
-				const retrofitValue = subSectorData['Retrofit']?.[benchmarkYear as keyof (typeof subSectorData)['Retrofit']];
-
-				const benchmarkLines = [];
-				if (newBuildValue !== undefined) {
-					benchmarkLines.push({
-						name: `New building (PC ${benchmarkYear})`,
-						value: newBuildValue,
-					});
-				}
-				if (retrofitValue !== undefined) {
-					benchmarkLines.push({
-						name: `Retrofit (PC ${benchmarkYear})`,
-						value: retrofitValue,
-					});
-				}
-
-				return {
-					lines: benchmarkLines,
-					title: `UKNZCBS: ${selectedBarChartBenchmark}`,
-				};
-			}
-
-			// Get benchmark data for total embodied carbon
-			if (showBenchmarks && selectedKPI1 === 'totalEmbodiedCarbon' && valueType === 'per-sqm' && projects.length > 0) {
-				// Get benchmark values for this sector
-				const sectorBenchmarks = totalEmbodiedCarbonBenchmarks[projects[0]['Primary Sector'] as keyof typeof totalEmbodiedCarbonBenchmarks];
-
-				if (!sectorBenchmarks) return { lines: [], title: '' };
-
-				const benchmarkLines = Object.entries(sectorBenchmarks).map(([name, value]) => ({
-					name,
-					value,
-				}));
-
-				return {
-					lines: benchmarkLines,
-					title: `Benchmarks: ${projects[0]['Primary Sector']}`,
-				};
-			}
-
-			return { lines: [], title: '' };
-		};
-
-		const benchmarkData = getBenchmarkDataForCSV();
-		if (benchmarkData.lines.length > 0) {
-			csvContent += `\n${benchmarkData.title}\n`;
-			csvContent += 'Benchmark Name,Value\n';
-			benchmarkData.lines.forEach((benchmark) => {
-				csvContent += `"${benchmark.name}",${benchmark.value}\n`;
-			});
-		}
-
-		// Download CSV
-		const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-		const url = URL.createObjectURL(blob);
-		const a = document.createElement('a');
-		a.href = url;
-		a.download = `chart-data-${selectedKPI1}-${valueType}-${Date.now()}.csv`;
-		a.click();
-		URL.revokeObjectURL(url);
+		exportChartToCSV({
+			projects,
+			chartType,
+			selectedKPI1,
+			selectedKPI2,
+			embodiedCarbonBreakdown,
+			valueType,
+			isComparingToSelf,
+			selectedRibaStages,
+			showBenchmarks,
+			selectedBarChartBenchmark,
+		});
 	};
 
 	const handleExportPNG = () => {
-		// Find the chart SVG element - use specific selector to avoid conflicts
-		const chartContainer = document.querySelector('[data-chart="chart-container"]');
-		if (!chartContainer) {
-			console.error('Chart container not found');
-			return;
-		}
-
-		const svgElement = chartContainer.querySelector('svg');
-		if (!svgElement) {
-			console.error('SVG element not found');
-			return;
-		}
-
-		// Create a canvas element with extra space for logo and title
-		const canvas = document.createElement('canvas');
-		const ctx = canvas.getContext('2d');
-		if (!ctx) {
-			console.error('Canvas context not available');
-			return;
-		}
-
-		// Set canvas dimensions with extra height for logo, title, and bottom margin
-		const svgRect = svgElement.getBoundingClientRect();
-		canvas.width = svgRect.width * 2; // Higher resolution
-		canvas.height = (svgRect.height + 180) * 2; // Extra space for logo, title, and bottom margin
-		ctx.scale(2, 2);
-
-		let yPosition = 30;
-
-		// Load and draw logo
-		const logo = new Image();
-		logo.crossOrigin = 'anonymous';
-		logo.onload = () => {
-			// Fill white background
-			ctx.fillStyle = '#ffffff';
-			ctx.fillRect(0, 0, canvas.width / 2, canvas.height / 2);
-
-			// Draw logo at top left
-			const logoWidth = 80;
-			const logoHeight = (logo.height / logo.width) * logoWidth;
-			ctx.drawImage(logo, 20, yPosition, logoWidth, logoHeight);
-
-			// Set font and color for title (Arial font family)
-			ctx.font = 'bold 18px Arial, sans-serif';
-			ctx.fillStyle = '#272727';
-			ctx.textAlign = 'center';
-
-			yPosition = Math.max(yPosition + logoHeight + 20, 80);
-
-			// Get chart title and value type information
-			const chartTitle = getChartTitle();
-			const valueTypeText = valueType === 'per-sqm' ? '(per sqm GIA)' : '(Total values)';
-
-			// Draw title
-			ctx.fillText(chartTitle, canvas.width / 4, yPosition);
-
-			// Draw value type subtitle
-			ctx.font = '14px Arial, sans-serif';
-			ctx.fillText(valueTypeText, canvas.width / 4, yPosition + 25);
-
-			yPosition += 50;
-
-			// Get benchmark data for PNG export
-			const getBenchmarkDataForPNG = () => {
-				// Get UKNZCBS benchmark data for upfront carbon
-				if (selectedKPI1 === 'upfrontCarbon' && selectedBarChartBenchmark && valueType === 'per-sqm' && projects.length > 0) {
-					const benchmarkColor = getSectorBenchmarkColor(projects[0]['Primary Sector']);
-
-					// Get the PC date from the primary project to determine benchmark year
-					let benchmarkYear = parseInt(projects[0]['PC Date']) || 2025;
-					if (benchmarkYear < 2025) benchmarkYear = 2025;
-
-					// Get benchmark values for this sector and sub-sector
-					const sectorData = uknzcbsBenchmarks[projects[0]['Primary Sector'] as keyof typeof uknzcbsBenchmarks];
-					if (!sectorData) return { lines: [], title: '' };
-
-					const subSectorData = sectorData[selectedBarChartBenchmark as keyof typeof sectorData];
-					if (!subSectorData) return { lines: [], title: '' };
-
-					const newBuildValue = subSectorData['New building']?.[benchmarkYear as keyof (typeof subSectorData)['New building']];
-					const retrofitValue = subSectorData['Retrofit']?.[benchmarkYear as keyof (typeof subSectorData)['Retrofit']];
-
-					const benchmarkLines = [];
-					if (newBuildValue !== undefined) {
-						benchmarkLines.push({
-							name: `New building (PC ${benchmarkYear})`,
-							value: newBuildValue,
-							color: benchmarkColor,
-							year: benchmarkYear,
-						});
-					}
-					if (retrofitValue !== undefined) {
-						benchmarkLines.push({
-							name: `Retrofit (PC ${benchmarkYear})`,
-							value: retrofitValue,
-							color: benchmarkColor,
-							year: benchmarkYear,
-						});
-					}
-
-					return {
-						lines: benchmarkLines,
-						title: `UKNZCBS: ${selectedBarChartBenchmark}`,
-					};
-				}
-
-				// Get benchmark data for total embodied carbon
-				if (showBenchmarks && selectedKPI1 === 'totalEmbodiedCarbon' && valueType === 'per-sqm' && projects.length > 0) {
-					const benchmarkColor = getSectorBenchmarkColor(projects[0]['Primary Sector']);
-
-					// Get benchmark values for this sector
-					const sectorBenchmarks = totalEmbodiedCarbonBenchmarks[projects[0]['Primary Sector'] as keyof typeof totalEmbodiedCarbonBenchmarks];
-
-					if (!sectorBenchmarks) return { lines: [], title: '' };
-
-					const benchmarkLines = Object.entries(sectorBenchmarks).map(([name, value]) => ({
-						name,
-						value,
-						color: benchmarkColor,
-					}));
-
-					return {
-						lines: benchmarkLines,
-						title: `Benchmarks: ${projects[0]['Primary Sector']}`,
-					};
-				}
-
-				return { lines: [], title: '' };
-			};
-
-			// Add benchmark information if available
-			const benchmarkData = getBenchmarkDataForPNG();
-			if (benchmarkData.lines.length > 0) {
-				// Draw benchmark title
-				ctx.font = 'bold 14px Arial, sans-serif';
-				ctx.fillStyle = '#666666';
-				ctx.textAlign = 'left';
-
-				ctx.fillText(benchmarkData.title, 20, yPosition);
-				yPosition += 30;
-
-				// Draw benchmark legend
-				ctx.font = '12px Arial, sans-serif';
-				let xPos = 20;
-
-				benchmarkData.lines.forEach((benchmark, index) => {
-					// Draw line indicator
-					ctx.strokeStyle = benchmark.color;
-					ctx.lineWidth = 2;
-					ctx.setLineDash(benchmark.name.includes('New building') ? [5, 5] : [10, 5]);
-					ctx.beginPath();
-					ctx.moveTo(xPos, yPosition - 5);
-					ctx.lineTo(xPos + 24, yPosition - 5);
-					ctx.stroke();
-					ctx.setLineDash([]); // Reset dash pattern
-
-					// Draw text
-					ctx.fillStyle = '#272727';
-					ctx.fillText(benchmark.name, xPos + 30, yPosition);
-
-					xPos += 200; // Space for next legend item
-					if (xPos > canvas.width / 2 - 200) {
-						xPos = 20;
-						yPosition += 20;
-					}
-				});
-
-				yPosition += 30;
-			}
-
-			ctx.fillStyle = '#272727'; // Reset color
-			ctx.textAlign = 'center'; // Reset alignment
-
-			// Convert SVG to data URL
-			const svgData = new XMLSerializer().serializeToString(svgElement);
-			const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
-			const svgUrl = URL.createObjectURL(svgBlob);
-
-			// Create image and draw to canvas
-			const img = new Image();
-			img.onload = () => {
-				// Draw the SVG image below the title
-				ctx.drawImage(img, 0, yPosition, svgRect.width, svgRect.height);
-
-				// Convert canvas to PNG and download
-				canvas.toBlob((blob) => {
-					if (blob) {
-						const url = URL.createObjectURL(blob);
-						const a = document.createElement('a');
-						a.href = url;
-						a.download = `chart-${selectedKPI1}-${valueType}-${Date.now()}.png`;
-						a.click();
-						URL.revokeObjectURL(url);
-					}
-				}, 'image/png');
-
-				URL.revokeObjectURL(svgUrl);
-			};
-
-			img.src = svgUrl;
-		};
-
-		logo.src = '/lovable-uploads/4ce0bfd4-e09c-45a3-bb7c-0a84df6eca91.png';
+		exportChartToPNG({
+			projects,
+			chartType,
+			selectedKPI1,
+			selectedKPI2,
+			embodiedCarbonBreakdown,
+			valueType,
+			showBenchmarks,
+			selectedBarChartBenchmark,
+		});
 	};
 
 	const getUnitLabel = (baseUnit: string, valueType: ValueType, forCSV: boolean = false): string => {
