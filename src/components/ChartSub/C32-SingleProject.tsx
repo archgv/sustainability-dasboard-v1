@@ -1,7 +1,7 @@
 import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine } from 'recharts';
 import { Project, availableKPIs } from '@/types/project';
 import { EmbodiedCarbonBreakdown, ValueType } from '../R31-ChartOption';
-import { getSectorColor, getSectorBenchmarkColor } from '@/utils/projectUtils';
+import { getSectorColor, getSectorBenchmarkColor } from '@/components/Utils/projectUtils';
 import { formatNumber } from '@/lib/utils';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks } from '@/data/benchmarkData';
 

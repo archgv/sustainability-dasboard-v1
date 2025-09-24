@@ -1,7 +1,7 @@
 import { Project, availableKPIs } from '@/types/project';
 import { ChartType, EmbodiedCarbonBreakdown, ValueType } from '@/components/R31-ChartOption';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks } from '@/data/benchmarkData';
-import { getSectorBenchmarkColor } from '@/utils/projectUtils';
+import { getSectorBenchmarkColor } from '@/components/Utils/projectUtils';
 
 interface ExportPNGOptions {
 	projects: Project[];

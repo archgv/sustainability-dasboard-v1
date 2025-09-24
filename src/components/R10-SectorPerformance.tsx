@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine } from 'recharts';
 import { formatNumber } from '@/lib/utils';
-import { sectorConfig } from '@/utils/projectUtils';
+import { sectorConfig } from '@/components/Utils/projectUtils';
 import { Project } from '@/types/project';
 
 interface SectorStats {

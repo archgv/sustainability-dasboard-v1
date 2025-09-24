@@ -1,7 +1,7 @@
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Project, availableKPIs } from '@/types/project';
 import { ValueType } from '../R31-ChartOption';
-import { getSectorColor, getSectorShape } from '@/utils/projectUtils';
+import { getSectorColor, getSectorShape } from '@/components/Utils/projectUtils';
 import { formatNumber } from '@/lib/utils';
 import { ChartShape } from '../R33-ChartShape';
 

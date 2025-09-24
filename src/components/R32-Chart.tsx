@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Download, FileText, Eye, EyeOff } from 'lucide-react';
 import { Project, availableKPIs } from '@/types/project';
 import { ChartType, EmbodiedCarbonBreakdown, ValueType } from './R31-ChartOption';
-import { getSectorBenchmarkColor } from '@/utils/projectUtils';
+import { getSectorBenchmarkColor } from '@/components/Utils/projectUtils';
 import { formatNumber } from '@/lib/utils';
 import { useState } from 'react';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks, uknzcbsOperationalEnergyBenchmarks } from '@/data/benchmarkData';
