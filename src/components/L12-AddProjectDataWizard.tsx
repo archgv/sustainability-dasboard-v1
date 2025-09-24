@@ -21,7 +21,6 @@ export interface WizardData {
 	selectedProjectId: string;
 	projectData: {
 		// Section B - Project Overview (user input)
-
 		'Operational Energy Existing Building'?: string;
 		'GIA'?: string;
 		'Building Lifespan'?: string;
