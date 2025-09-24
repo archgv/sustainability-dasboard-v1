@@ -3,10 +3,10 @@ import * as React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Project, StageKey, StageKeys } from '@/types/project';
-import { ProjectSelectionScreen } from './wizard/ProjectSelectionScreen';
-import { ProjectOverviewScreen } from './wizard/ProjectOverviewScreen';
-import { CertificationsScreen } from './wizard/CertificationsScreen';
-import { RibaStageScreen } from './wizard/RibaStageScreen';
+import { ProjectSelectionScreen } from './AddProjectWizard/P00-Selection';
+import { ProjectOverviewScreen } from './AddProjectWizard/P11-Overview';
+import { CertificationsScreen } from './AddProjectWizard/P12-Certifications';
+import { RibaStageScreen } from './AddProjectWizard/P13-RibaStage';
 
 interface AddProjectDataWizardProps {
 	isOpen: boolean;
@@ -22,10 +22,10 @@ export interface WizardData {
 	projectData: {
 		// Section B - Project Overview (user input)
 
-		'Operational Energy Existing Building': string;
+		'Operational Energy Existing Building'?: string;
 		'GIA'?: string;
 		'Building Lifespan'?: string;
-		'PC Date': string;
+		'PC Date'?: string;
 
 		'EI Team Scope'?: string;
 		'External Consultants'?: string;
@@ -154,6 +154,7 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
 		const updatedProjectData = {
 			...wizardData.projectData,
 
+			'Operational Energy Existing Building': project['Operational Energy Existing Building']?.toString() || '',
 			'GIA': project['GIA']?.toString() || '',
 			'PC Date': project['PC Date'] ? new Date(project['PC Date']).getFullYear().toString() : '',
 
@@ -162,8 +163,6 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
 			'WELL': mapCertificationValue(project['WELL'] || ''),
 			'Passivhaus or EnePHit': project['Passivhaus or EnePHit'] ? 'passivhaus' : '',
 			'NABERS': project['NABERS']?.includes('Star') ? 'yes' : '',
-
-			'Operational Energy Existing Building': project['Operational Energy Existing Building']?.toString() || '',
 		};
 
 		const mapStageData = (stage: Project['RIBA Stage'][StageKey]) => ({

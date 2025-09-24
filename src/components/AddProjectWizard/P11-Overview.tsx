@@ -6,8 +6,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { HelpCircle, AlertTriangle } from 'lucide-react';
-import { Project, StageKey } from '@/types/project';
-
+import { Project } from '@/types/project';
+import { WizardData } from '../L12-AddProjectDataWizard';
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -20,30 +20,10 @@ import {
 	AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 
-interface ProjectFormData {
-	'Operational Energy Existing Building'?: string;
-	'GIA'?: string;
-	'Building Lifespan'?: string;
-	'PC Date'?: string;
-
-	'EI Team Scope'?: string;
-	'External Consultants'?: string;
-	'Sustianability Champion Name'?: string;
-	'Mission Statement'?: string;
-
-	'BREEAM': string;
-	'LEED': string;
-	'WELL': string;
-	'Passivhaus or EnePHit': string;
-	'NABERS': string;
-
-	'Current RIBA Stage': StageKey;
-}
-
 interface ProjectOverviewScreenProps {
 	selectedProject?: Project;
-	projectData: ProjectFormData;
-	onDataUpdate: (data: ProjectFormData) => void;
+	projectData: WizardData['projectData'];
+	onDataUpdate: (data: WizardData['projectData']) => void;
 	onSave: () => void;
 	onSaveAndExit: () => void;
 	onCancel: () => void;

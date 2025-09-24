@@ -3,11 +3,11 @@ import { Button } from '@/components/ui/button';
 import { Download, FileText, Eye, EyeOff } from 'lucide-react';
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, LineChart, Line, Legend, Cell, ReferenceLine, ReferenceDot } from 'recharts';
 import { Project, availableKPIs } from '@/types/project';
-import { ChartType, EmbodiedCarbonBreakdown, ValueType } from './ChartTypeSelector';
+import { ChartType, EmbodiedCarbonBreakdown, ValueType } from './R31-ChartTypeSelector';
 import { getSectorColor, getSectorShape, sectorConfig, getSectorBenchmarkColor } from '@/utils/projectUtils';
 import { formatNumber } from '@/lib/utils';
 import { useState } from 'react';
-import { CustomShape } from './CustomShapes';
+import { CustomShape } from './R33-CustomShapes';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks, uknzcbsOperationalEnergyBenchmarks } from '@/data/benchmarkData';
 
 interface ChartSectionProps {
@@ -88,7 +88,6 @@ export const ChartSection = ({ projects, chartType, selectedKPI1, selectedKPI2, 
 	const kpi1Config = availableKPIs.find((kpi) => kpi.key === selectedKPI1);
 	const kpi2Config = availableKPIs.find((kpi) => kpi.key === selectedKPI2);
 
-
 	// Mock building area data for demonstration
 	const getProjectArea = (projectId: string): number => {
 		const areas: Record<string, number> = {
@@ -101,7 +100,7 @@ export const ChartSection = ({ projects, chartType, selectedKPI1, selectedKPI2, 
 		return areas[projectId] || 10000;
 	};
 
-	const transformDataForValueType = (data: any[]) => {
+	const transformDataForValueType = (data: Project[]): Project[] => {
 		if (valueType === 'per-sqm') {
 			return data; // Data is already per sqm in our KPIs
 		}
@@ -161,13 +160,13 @@ export const ChartSection = ({ projects, chartType, selectedKPI1, selectedKPI2, 
 			// CSV data rows
 			transformedProjects.forEach((project) => {
 				const baseId = project.id.split('-')[0];
-				const displayName = isComparingToSelf && project.ribaStage ? `${project.name} (RIBA ${project.ribaStage.replace('stage-', '')})` : project.name;
+				const displayName = isComparingToSelf && project['Current RIBA Stage'] ? `${project['Project Name']} (RIBA ${project['Current RIBA Stage']})` : project['Project Name'];
 
 				const row = [`"${displayName}"`, project[selectedKPI1 as keyof Project]?.toString() || '0'];
 
 				// For Total Embodied Carbon charts, add biogenic carbon as negative value
 				if (chartType === 'single-bar' && selectedKPI1 === 'totalEmbodiedCarbon') {
-					const biogenicValue = project.biogenicCarbon || 0;
+					const biogenicValue = project['Biogenic Carbon'] || 0;
 					const finalBiogenicValue = valueType === 'total' ? -Math.abs(biogenicValue * getProjectArea(baseId)) : -Math.abs(biogenicValue);
 					row.push(finalBiogenicValue.toString());
 				}
@@ -177,7 +176,7 @@ export const ChartSection = ({ projects, chartType, selectedKPI1, selectedKPI2, 
 					row.push(getProjectArea(baseId).toString());
 				}
 				if (chartType === 'single-timeline') {
-					row.push(new Date(project.completionDate).getFullYear().toString());
+					row.push(new Date(project['PC Date']).getFullYear().toString());
 				}
 
 				csvContent += row.join(',') + '\n';
@@ -531,7 +530,7 @@ export const ChartSection = ({ projects, chartType, selectedKPI1, selectedKPI2, 
 			const baseId = project.id.split('-')[0];
 			const displayName = isComparingToSelf && project['Current RIBA Stage'] ? `${project['Project Name']} (RIBA ${project['Current RIBA Stage']})` : project['Project Name'];
 
-			const projectData: any = { name: displayName };
+			const projectData = { name: displayName };
 
 			// Mock breakdown data - in real app this would come from project.embodiedCarbonBreakdown
 			categories.forEach((category, index) => {
@@ -690,7 +689,7 @@ export const ChartSection = ({ projects, chartType, selectedKPI1, selectedKPI2, 
 								data={bubbleChartData}
 								fill={chartColors.primary}
 								fillOpacity={0.8}
-								shape={(props: any) => {
+								shape={(props) => {
 									const { cx, cy, payload } = props;
 									if (!payload) return null;
 
@@ -708,7 +707,7 @@ export const ChartSection = ({ projects, chartType, selectedKPI1, selectedKPI2, 
 				);
 
 			case 'single-bar': {
-				const MultiLineTickComponent = (props: any) => {
+				const MultiLineTickComponent = (props) => {
 					const { x, y, payload } = props;
 					const words = payload.value.split(' ');
 					const lines = [];
@@ -1110,16 +1109,16 @@ export const ChartSection = ({ projects, chartType, selectedKPI1, selectedKPI2, 
 				const timelineData = transformedProjects
 					.map((project) => {
 						const baseId = project.id.split('-')[0];
-						const displayName = isComparingToSelf && project.ribaStage ? `${project['Project Name']} (RIBA ${project.ribaStage.replace('stage-', '')})` : project['Project Name'];
+						const displayName = isComparingToSelf && project['Current RIBA Stage'] ? `${project['Project Name']} (RIBA ${project['Current RIBA Stage']})` : project['Project Name'];
 
 						// Extract year only from completion date
-						const completionYear = new Date(project.completionDate).getFullYear();
+						const completionYear = new Date(project['PC Date']).getFullYear();
 
 						return {
 							...project,
 							displayName,
 							completionYear,
-							date: new Date(project.completionDate).getTime(),
+							date: new Date(project['PC Date']).getTime(),
 						};
 					})
 					.sort((a, b) => a.date - b.date);

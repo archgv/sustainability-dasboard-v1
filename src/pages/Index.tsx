@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import { FilterPanel } from '@/components/FilterPanel';
-import { ChartSection } from '@/components/ChartSection';
-import { ProjectPortfolio } from '@/components/ProjectPortfolio';
-import { DashboardHeader } from '@/components/DashboardHeader';
-import { AddProjectData } from '@/components/AddProjectData';
-import { ChartTypeSelector, ChartType, EmbodiedCarbonBreakdown, ValueType } from '@/components/ChartTypeSelector';
-import { ProjectComparison } from '@/components/ProjectComparison';
-import { SectorPerformance } from '@/components/SectorPerformance';
-import { CertificationAnalysis } from '@/components/CertificationAnalysis';
+import { FilterPanel } from '@/components/L20-FilterPanel';
+import { ChartSection } from '@/components/R32-ChartSection';
+import { ProjectPortfolio } from '@/components/R40-ProjectPortfolio';
+import { DashboardHeader } from '@/components/T00-DashboardHeader';
+import { AddProjectData } from '@/components/L10-AddProjectData';
+import { ChartTypeSelector, ChartType, EmbodiedCarbonBreakdown, ValueType } from '@/components/R31-ChartTypeSelector';
+import { ProjectComparison } from '@/components/R30-ProjectComparison';
+import { SectorPerformance } from '@/components/R10-SectorPerformance';
+import { CertificationAnalysis } from '@/components/R20-CertificationAnalysis';
 import { sampleProjects } from '@/data/sampleData';
 import { Project } from '@/types/project';
 
