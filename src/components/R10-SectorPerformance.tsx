@@ -137,7 +137,7 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 		return {
 			sector: sector,
 			value: baseValue,
-			biogenicValue: -Math.abs(biogenicValue), // Make it negative
+			biogenicValue: -Math.abs(biogenicValue), // Make it negative for below zero
 			count: stats ? stats.count : 0,
 		};
 	});
@@ -405,7 +405,7 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 											/>
 										))}
 									</Bar>
-									{/* Show biogenic data as negative bars underneath for Total Embodied Carbon */}
+									{/* Show biogenic data as negative bars below zero for Total Embodied Carbon */}
 									{selectedKPI === 'Total Embodied Carbon' && (
 										<Bar dataKey="biogenicValue" barSize={50} radius={[6, 6, 0, 0]}>
 											{chartData.map((entry, index) => (
