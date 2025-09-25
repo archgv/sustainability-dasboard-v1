@@ -4,7 +4,6 @@ import { Chart } from '@/components/R32-Chart';
 import { Portfolio } from '@/components/R40-Portfolio';
 import { DashboardHeader } from '@/components/T00-Header';
 import { AddProjectData } from '@/components/L10-AddProjectData';
-import { ChartOption, ChartType, ValueType } from '@/components/R31-ChartOption';
 import { Comparison } from '@/components/R30-Comparison';
 import { SectorPerformance } from '@/components/R10-SectorPerformance';
 import { Certification } from '@/components/R20-Certification';
@@ -13,10 +12,6 @@ import { Project } from '@/components/Utils/project';
 
 const Index = () => {
 	const [filteredProjects, setFilteredProjects] = useState(sampleProjects);
-	const [chartType, setChartType] = useState<ChartType>('compare-bubble');
-	const [selectedKPI1, setSelectedKPI1] = useState('Total Embodied Carbon');
-	const [selectedKPI2, setSelectedKPI2] = useState('Operational Energy Total');
-	const [valueType, setValueType] = useState<ValueType>('per-sqm');
 	const [primaryProject, setPrimaryProject] = useState(sampleProjects[0]?.id || '');
 	const [comparisonProjects, setComparisonProjects] = useState<string[]>([]);
 	const [compareToSelf, setCompareToSelf] = useState(false);
@@ -153,25 +148,9 @@ const Index = () => {
 							onComparisonProjectsChange={handleComparisonChange}
 						/>
 
-						{/* Chart Type Selector */}
-						<ChartOption
-							chartType={chartType}
-							selectedKPI1={selectedKPI1}
-							selectedKPI2={selectedKPI2}
-							valueType={valueType}
-							onChartTypeChange={setChartType}
-							onKPI1Change={setSelectedKPI1}
-							onKPI2Change={setSelectedKPI2}
-							onValueTypeChange={setValueType}
-						/>
-
 						{/* Charts Section */}
 						<Chart
 							projects={displayProjects}
-							chartType={chartType}
-							selectedKPI1={selectedKPI1}
-							selectedKPI2={selectedKPI2}
-							valueType={valueType}
 							isComparingToSelf={compareToSelf}
 							selectedRibaStages={selectedRibaStages}
 						/>

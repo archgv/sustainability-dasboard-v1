@@ -1,5 +1,5 @@
 import { Project, KPIOptions } from '@/components/Utils/project';
-import { ChartType, ValueType } from '@/components/R31-ChartOption';
+import { ChartType, ValueType } from '@/components/R32-Chart';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks } from '@/data/benchmarkData';
 import { getSectorBenchmarkColor } from '@/components/Utils/UtilSector';
 

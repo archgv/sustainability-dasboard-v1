@@ -1,8 +1,9 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Download, FileText, Eye, EyeOff } from 'lucide-react';
 import { Project, KPIOptions } from '@/components/Utils/project';
-import { ChartType, ValueType } from './R31-ChartOption';
 import { useState } from 'react';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks, uknzcbsOperationalEnergyBenchmarks } from '@/data/benchmarkData';
 import { exportChartToCSV } from '@/components/ChartSub/C11-ExportCSV';
@@ -13,17 +14,115 @@ import { TimelineChart } from './ChartSub/C33-SingleTime';
 import { chartColors } from './Utils/UtilColor';
 import { generateNiceTicks } from './Utils/UtilShape';
 
+export type ChartType = 'compare-bubble' | 'single-bar' | 'single-timeline';
+export type ValueType = 'total' | 'per-sqm';
+
 interface ChartProps {
 	projects: Project[];
-	chartType: ChartType;
-	selectedKPI1: string;
-	selectedKPI2: string;
-	valueType: ValueType;
 	isComparingToSelf?: boolean;
 	selectedRibaStages?: string[];
 }
 
-export const Chart = ({ projects, chartType, selectedKPI1, selectedKPI2, valueType, isComparingToSelf = false, selectedRibaStages = [] }: ChartProps) => {
+// Define the 10 specific KPIs for charts
+const chartKPIs = [
+	'Operational Energy Total',
+	'Operational Energy Part L',
+	'Operational Energy Gas',
+	'Space Heating Demand',
+	'Total Renewable Energy Generation',
+	'Upfront Carbon',
+	'Total Embodied Carbon',
+	'Biogenic Carbon',
+	'Biodiversity Net Gain',
+	'Urban Greening Factor',
+];
+
+// Filter KPIOptions to only include the chart KPIs
+const filteredKPIs = KPIOptions.filter((kpi) => chartKPIs.includes(kpi.key));
+
+// KPI compatibility matrix
+const kpiCompatibilityMatrix: Record<string, string[]> = {
+	'Operational Energy Total': [
+		'Operational Energy Part L',
+		'Operational Energy Gas',
+		'Space Heating Demand',
+		'Total Renewable Energy Generation',
+		'Upfront Carbon',
+		'Total Embodied Carbon',
+		'Biogenic Carbon',
+	],
+	'Operational Energy Part L': [
+		'Operational Energy Total',
+		'Operational Energy Gas',
+		'Space Heating Demand',
+		'Total Renewable Energy Generation',
+		'Upfront Carbon',
+		'Total Embodied Carbon',
+		'Biogenic Carbon',
+	],
+	'Operational Energy Gas': [
+		'Operational Energy Total',
+		'Operational Energy Part L',
+		'Space Heating Demand',
+		'Total Renewable Energy Generation',
+		'Upfront Carbon',
+		'Total Embodied Carbon',
+		'Biogenic Carbon',
+	],
+	'Space Heating Demand': [
+		'Operational Energy Total',
+		'Operational Energy Part L',
+		'Operational Energy Gas',
+		'Total Renewable Energy Generation',
+		'Upfront Carbon',
+		'Total Embodied Carbon',
+		'Biogenic Carbon',
+	],
+	'Total Renewable Energy Generation': [
+		'Operational Energy Total',
+		'Operational Energy Part L',
+		'Operational Energy Gas',
+		'Space Heating Demand',
+		'Upfront Carbon',
+		'Total Embodied Carbon',
+		'Biogenic Carbon',
+	],
+	'Upfront Carbon': [
+		'Operational Energy Total',
+		'Operational Energy Part L',
+		'Operational Energy Gas',
+		'Space Heating Demand',
+		'Total Renewable Energy Generation',
+		'Total Embodied Carbon',
+		'Biogenic Carbon',
+	],
+	'Total Embodied Carbon': [
+		'Operational Energy Total',
+		'Operational Energy Part L',
+		'Operational Energy Gas',
+		'Space Heating Demand',
+		'Total Renewable Energy Generation',
+		'Upfront Carbon',
+		'Biogenic Carbon',
+	],
+	'Biogenic Carbon': [
+		'Operational Energy Total',
+		'Operational Energy Part L',
+		'Operational Energy Gas',
+		'Space Heating Demand',
+		'Total Renewable Energy Generation',
+		'Upfront Carbon',
+		'Total Embodied Carbon',
+	],
+	'Biodiversity Net Gain': ['Urban Greening Factor'],
+	'Urban Greening Factor': ['Biodiversity Net Gain'],
+};
+
+export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages = [] }: ChartProps) => {
+	const [chartType, setChartType] = useState<ChartType>('compare-bubble');
+	const [selectedKPI1, setSelectedKPI1] = useState('Total Embodied Carbon');
+	const [selectedKPI2, setSelectedKPI2] = useState('Operational Energy Total');
+	const [valueType, setValueType] = useState<ValueType>('per-sqm');
 	const [showBenchmarks, setShowBenchmarks] = useState(false);
 	const [selectedSubSector, setSelectedSubSector] = useState<string>('');
 	const [selectedBarChartBenchmark, setSelectedBarChartBenchmark] = useState<string>('');
@@ -176,7 +275,93 @@ export const Chart = ({ projects, chartType, selectedKPI1, selectedKPI2, valueTy
 		(selectedKPI1 === 'Upfront Carbon' || selectedKPI1 === 'Operational Energy Total') && valueType === 'per-sqm' && chartType === 'single-timeline' && availableSubSectors.length > 1;
 	const showSingleSectorToggle = selectedKPI1 === 'Upfront Carbon' && valueType === 'per-sqm' && chartType === 'single-bar' && availableSubSectors.length > 0;
 
+	// Get compatible KPI2 options based on selected KPI1
+	const showKPI2 = chartType === 'compare-bubble';
+	const compatibleKPI2Options = showKPI2 ? filteredKPIs.filter((kpi) => kpiCompatibilityMatrix[selectedKPI1]?.includes(kpi.key)) : [];
+
 	return (
+		<div className="space-y-6">
+			{/* Chart Configuration */}
+			<Card className="p-4">
+				<div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+					<div>
+						<Label htmlFor="chart-type" className="text-sm font-medium text-gray-700 mb-2 block">
+							Chart Type
+						</Label>
+						<Select value={chartType} onValueChange={(value) => setChartType(value as ChartType)}>
+							<SelectTrigger>
+								<SelectValue placeholder="Select chart type" />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value="compare-bubble">Compare two KPIs (bubble)</SelectItem>
+								<SelectItem value="single-bar">Single KPI across projects (bar chart)</SelectItem>
+								<SelectItem value="single-timeline">Single KPI over time (timeline)</SelectItem>
+							</SelectContent>
+						</Select>
+					</div>
+
+					<div>
+						<Label htmlFor="value-type" className="text-sm font-medium text-gray-700 mb-2 block">
+							Value Type
+						</Label>
+						<Select value={valueType} onValueChange={(value) => setValueType(value as ValueType)}>
+							<SelectTrigger>
+								<SelectValue placeholder="Select value type" />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value="total">Total Values</SelectItem>
+								<SelectItem value="per-sqm">Per sqm GIA</SelectItem>
+							</SelectContent>
+						</Select>
+					</div>
+
+					<div>
+						<Label htmlFor="kpi1" className="text-sm font-medium text-gray-700 mb-2 block">
+							KPI 1
+						</Label>
+						<Select value={selectedKPI1} onValueChange={setSelectedKPI1}>
+							<SelectTrigger>
+								<SelectValue placeholder="Select first KPI" />
+							</SelectTrigger>
+							<SelectContent>
+								{filteredKPIs
+									.filter((kpi) => {
+										// Remove biogenic from single-bar and single-timeline charts
+										if ((chartType === 'single-bar' || chartType === 'single-timeline') && kpi.key === 'Biogenic Carbon') {
+											return false;
+										}
+										return true;
+									})
+									.map((kpi) => (
+										<SelectItem key={kpi.key} value={kpi.key}>
+											{kpi.label} ({kpi.unit})
+										</SelectItem>
+									))}
+							</SelectContent>
+						</Select>
+					</div>
+
+					{showKPI2 && (
+						<div>
+							<Label htmlFor="kpi2" className="text-sm font-medium text-gray-700 mb-2 block">
+								KPI 2
+							</Label>
+							<Select value={selectedKPI2} onValueChange={setSelectedKPI2}>
+								<SelectTrigger>
+									<SelectValue placeholder="Select second KPI" />
+								</SelectTrigger>
+								<SelectContent>
+									{compatibleKPI2Options.map((kpi) => (
+										<SelectItem key={kpi.key} value={kpi.key}>
+											{kpi.label} ({kpi.unit})
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						</div>
+					)}
+				</div>
+			</Card>
 		<Card className="p-6">
 			<div className="flex justify-between items-center mb-6">
 				<h2 className="text-xl font-semibold" style={{ color: chartColors.dark }}>
@@ -252,5 +437,6 @@ export const Chart = ({ projects, chartType, selectedKPI1, selectedKPI2, valueTy
 				{renderChart()}
 			</div>
 		</Card>
+		</div>
 	);
 };
