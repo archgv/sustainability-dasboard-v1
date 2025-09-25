@@ -149,11 +149,7 @@ const Index = () => {
 						/>
 
 						{/* Charts Section */}
-						<Chart
-							projects={displayProjects}
-							isComparingToSelf={compareToSelf}
-							selectedRibaStages={selectedRibaStages}
-						/>
+						<Chart projects={displayProjects} isComparingToSelf={compareToSelf} selectedRibaStages={selectedRibaStages} />
 
 						{/* Projects Portfolio */}
 						<Portfolio projects={displayProjects} isComparingToSelf={compareToSelf} selectedRibaStages={selectedRibaStages} primaryProject={primaryProject} />

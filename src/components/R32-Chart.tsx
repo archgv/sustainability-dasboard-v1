@@ -8,14 +8,14 @@ import { useState } from 'react';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks, uknzcbsOperationalEnergyBenchmarks } from '@/data/benchmarkData';
 import { exportChartToCSV } from '@/components/ChartSub/C11-ExportCSV';
 import { exportChartToPNG } from '@/components/ChartSub/C12-ExportPNG';
-import { BubbleChart } from './ChartSub/C31-CompareTwo';
+import { CompareTwo } from './ChartSub/C31-CompareTwo';
 import { SingleProject } from './ChartSub/C32-SingleProject';
-import { TimelineChart } from './ChartSub/C33-SingleTime';
+import { SingleTime } from './ChartSub/C33-SingleTime';
 import { chartColors } from './Utils/UtilColor';
 import { generateNiceTicks } from './Utils/UtilShape';
 import { chartKPIs, filteredKPIs, kpiCompatibilityMatrix } from './Utils/UtilChart';
 
-export type ChartType = 'compare-bubble' | 'single-bar' | 'single-timeline';
+export type ChartType = 'Compare Two' | 'Single Project' | 'Single Time';
 export type ValueType = 'total' | 'per-sqm';
 
 interface ChartProps {
@@ -24,9 +24,8 @@ interface ChartProps {
 	selectedRibaStages?: string[];
 }
 
-
 export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages = [] }: ChartProps) => {
-	const [chartType, setChartType] = useState<ChartType>('compare-bubble');
+	const [chartType, setChartType] = useState<ChartType>('Compare Two');
 	const [selectedKPI1, setSelectedKPI1] = useState('Total Embodied Carbon');
 	const [selectedKPI2, setSelectedKPI2] = useState('Operational Energy Total');
 	const [valueType, setValueType] = useState<ValueType>('per-sqm');
@@ -92,11 +91,11 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 		const valueTypeLabel = valueType === 'per-sqm' ? 'per sqm' : 'total';
 
 		switch (chartType) {
-			case 'compare-bubble':
+			case 'Compare Two':
 				return `${kpi1Config?.label} vs ${kpi2Config?.label} (${valueTypeLabel}) - Bubble Chart`;
-			case 'single-bar':
+			case 'Single Project':
 				return `${kpi1Config?.label} by Project (${valueTypeLabel}) - Bar Chart`;
-			case 'single-timeline':
+			case 'Single Time':
 				return `${kpi1Config?.label} Over Time (${valueTypeLabel}) - Timeline`;
 			default:
 				return 'Chart';
@@ -105,9 +104,9 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 
 	const renderChart = () => {
 		switch (chartType) {
-			case 'compare-bubble':
+			case 'Compare Two':
 				return (
-					<BubbleChart
+					<CompareTwo
 						projects={projects}
 						selectedKPI1={selectedKPI1}
 						selectedKPI2={selectedKPI2}
@@ -120,7 +119,7 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 					/>
 				);
 
-			case 'single-bar':
+			case 'Single Project':
 				return (
 					<SingleProject
 						projects={projects}
@@ -136,9 +135,9 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 					/>
 				);
 
-			case 'single-timeline':
+			case 'Single Time':
 				return (
-					<TimelineChart
+					<SingleTime
 						projects={projects}
 						selectedKPI1={selectedKPI1}
 						valueType={valueType}
@@ -179,11 +178,11 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 
 	const availableSubSectors = getAvailableSubSectors();
 	const showSingleTimeSectorToggle =
-		(selectedKPI1 === 'Upfront Carbon' || selectedKPI1 === 'Operational Energy Total') && valueType === 'per-sqm' && chartType === 'single-timeline' && availableSubSectors.length > 1;
-	const showSingleSectorToggle = selectedKPI1 === 'Upfront Carbon' && valueType === 'per-sqm' && chartType === 'single-bar' && availableSubSectors.length > 0;
+		(selectedKPI1 === 'Upfront Carbon' || selectedKPI1 === 'Operational Energy Total') && valueType === 'per-sqm' && chartType === 'Single Time' && availableSubSectors.length > 1;
+	const showSingleSectorToggle = selectedKPI1 === 'Upfront Carbon' && valueType === 'per-sqm' && chartType === 'Single Project' && availableSubSectors.length > 0;
 
 	// Get compatible KPI2 options based on selected KPI1
-	const showKPI2 = chartType === 'compare-bubble';
+	const showKPI2 = chartType === 'Compare Two';
 	const compatibleKPI2Options = showKPI2 ? filteredKPIs.filter((kpi) => kpiCompatibilityMatrix[selectedKPI1]?.includes(kpi.key)) : [];
 
 	return (
@@ -234,7 +233,7 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 								{filteredKPIs
 									.filter((kpi) => {
 										// Remove biogenic from single-bar and single-timeline charts
-										if ((chartType === 'single-bar' || chartType === 'single-timeline') && kpi.key === 'Biogenic Carbon') {
+										if ((chartType === 'Single Project' || chartType === 'Single Time') && kpi.key === 'Biogenic Carbon') {
 											return false;
 										}
 										return true;
@@ -269,81 +268,81 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 					)}
 				</div>
 			</Card>
-		<Card className="p-6">
-			<div className="flex justify-between items-center mb-6">
-				<h2 className="text-xl font-semibold" style={{ color: chartColors.dark }}>
-					{getChartTitle()}
-				</h2>
-				<div className="flex items-center space-x-2">
-					{/* Show benchmark toggle only for Total Embodied Carbon with per-sqm values */}
-					{selectedKPI1 === 'Total Embodied Carbon' && valueType === 'per-sqm' && chartType === 'single-bar' && (
-						<Button
-							variant={showBenchmarks ? 'default' : 'outline'}
-							size="sm"
-							onClick={() => setShowBenchmarks(!showBenchmarks)}
-							disabled={!hasBenchmarks()}
-							className="flex items-center gap-2"
-						>
-							{showBenchmarks ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-							Benchmarks
-						</Button>
-					)}
-					<Button variant="outline" size="sm" onClick={handleExportCSV} className="flex items-center gap-2">
-						<FileText className="w-4 h-4" />
-						CSV
-					</Button>
-					<Button variant="outline" size="sm" onClick={handleExportPNG} className="flex items-center gap-2">
-						<Download className="w-4 h-4" />
-						PNG
-					</Button>
-				</div>
-			</div>
-
-			{/* Sub-sector toggle for upfront carbon timeline */}
-			{showSingleTimeSectorToggle && (
-				<div className="mb-4">
-					<p className="text-sm font-medium mb-2" style={{ color: chartColors.dark }}>
-						UKNZCBS benchmarks
-					</p>
-					<div className="flex flex-wrap gap-2">
-						{availableSubSectors.map((subSector) => (
-							<Button key={subSector} variant={selectedSubSector === subSector ? 'default' : 'outline'} size="sm" onClick={() => setSelectedSubSector(subSector)} className="text-xs">
-								{subSector}
-							</Button>
-						))}
-					</div>
-				</div>
-			)}
-
-			{/* Sub-sector toggle for upfront carbon bar chart */}
-			{showSingleSectorToggle && (
-				<div className="mb-4">
-					<p className="text-sm font-medium mb-2" style={{ color: chartColors.dark }}>
-						UKNZCBS benchmarks
-					</p>
-					<div className="flex flex-wrap gap-2">
-						<Button variant={selectedBarChartBenchmark === '' ? 'default' : 'outline'} size="sm" onClick={() => setSelectedBarChartBenchmark('')} className="text-xs">
-							None
-						</Button>
-						{availableSubSectors.map((subSector) => (
+			<Card className="p-6">
+				<div className="flex justify-between items-center mb-6">
+					<h2 className="text-xl font-semibold" style={{ color: chartColors.dark }}>
+						{getChartTitle()}
+					</h2>
+					<div className="flex items-center space-x-2">
+						{/* Show benchmark toggle only for Total Embodied Carbon with per-sqm values */}
+						{selectedKPI1 === 'Total Embodied Carbon' && valueType === 'per-sqm' && chartType === 'Single Project' && (
 							<Button
-								key={subSector}
-								variant={selectedBarChartBenchmark === subSector ? 'default' : 'outline'}
+								variant={showBenchmarks ? 'default' : 'outline'}
 								size="sm"
-								onClick={() => setSelectedBarChartBenchmark(subSector)}
-								className="text-xs"
+								onClick={() => setShowBenchmarks(!showBenchmarks)}
+								disabled={!hasBenchmarks()}
+								className="flex items-center gap-2"
 							>
-								{subSector}
+								{showBenchmarks ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+								Benchmarks
 							</Button>
-						))}
+						)}
+						<Button variant="outline" size="sm" onClick={handleExportCSV} className="flex items-center gap-2">
+							<FileText className="w-4 h-4" />
+							CSV
+						</Button>
+						<Button variant="outline" size="sm" onClick={handleExportPNG} className="flex items-center gap-2">
+							<Download className="w-4 h-4" />
+							PNG
+						</Button>
 					</div>
 				</div>
-			)}
 
-			<div className="h-[480px]" data-chart="chart-container">
-				{renderChart()}
-			</div>
-		</Card>
+				{/* Sub-sector toggle for upfront carbon timeline */}
+				{showSingleTimeSectorToggle && (
+					<div className="mb-4">
+						<p className="text-sm font-medium mb-2" style={{ color: chartColors.dark }}>
+							UKNZCBS benchmarks
+						</p>
+						<div className="flex flex-wrap gap-2">
+							{availableSubSectors.map((subSector) => (
+								<Button key={subSector} variant={selectedSubSector === subSector ? 'default' : 'outline'} size="sm" onClick={() => setSelectedSubSector(subSector)} className="text-xs">
+									{subSector}
+								</Button>
+							))}
+						</div>
+					</div>
+				)}
+
+				{/* Sub-sector toggle for upfront carbon bar chart */}
+				{showSingleSectorToggle && (
+					<div className="mb-4">
+						<p className="text-sm font-medium mb-2" style={{ color: chartColors.dark }}>
+							UKNZCBS benchmarks
+						</p>
+						<div className="flex flex-wrap gap-2">
+							<Button variant={selectedBarChartBenchmark === '' ? 'default' : 'outline'} size="sm" onClick={() => setSelectedBarChartBenchmark('')} className="text-xs">
+								None
+							</Button>
+							{availableSubSectors.map((subSector) => (
+								<Button
+									key={subSector}
+									variant={selectedBarChartBenchmark === subSector ? 'default' : 'outline'}
+									size="sm"
+									onClick={() => setSelectedBarChartBenchmark(subSector)}
+									className="text-xs"
+								>
+									{subSector}
+								</Button>
+							))}
+						</div>
+					</div>
+				)}
+
+				<div className="h-[480px]" data-chart="chart-container">
+					{renderChart()}
+				</div>
+			</Card>
 		</div>
 	);
 };

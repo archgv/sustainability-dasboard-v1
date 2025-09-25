@@ -7,7 +7,7 @@ import { uknzcbsBenchmarks, uknzcbsOperationalEnergyBenchmarks } from '@/data/be
 import { chartColors } from '../Utils/UtilColor';
 import { getResponsiveContainerProps, getLineChartProps, getCartesianGridProps, getYAxisProps, getXAxisProps, getBarProps, getTooltipContainerStyle, getUnitLabel } from './C00-ChartConfig';
 
-interface TimelineChartProps {
+interface SingleTimeProps {
 	projects: Project[];
 	selectedKPI1: string;
 	valueType: ValueType;
@@ -18,7 +18,7 @@ interface TimelineChartProps {
 	transformDataForValueType: (data: Project[]) => Project[];
 }
 
-export const TimelineChart = ({ projects, selectedKPI1, valueType, isComparingToSelf = false, selectedSubSector, chartColors, generateNiceTicks, transformDataForValueType }: TimelineChartProps) => {
+export const SingleTime = ({ projects, selectedKPI1, valueType, isComparingToSelf = false, selectedSubSector, chartColors, generateNiceTicks, transformDataForValueType }: SingleTimeProps) => {
 	const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
 
 	const transformedProjects = transformDataForValueType(projects);

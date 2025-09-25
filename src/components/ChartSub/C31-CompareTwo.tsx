@@ -7,7 +7,7 @@ import { ChartShape } from '../R33-ChartShape';
 import { chartColors } from '../Utils/UtilColor';
 import { getResponsiveContainerProps, getScatterChartProps, getCartesianGridProps, getYAxisProps, getXAxisProps, getBarProps, getTooltipContainerStyle, getUnitLabel } from './C00-ChartConfig';
 
-interface BubbleChartProps {
+interface CompareTwoProps {
 	projects: Project[];
 	selectedKPI1: string;
 	selectedKPI2: string;
@@ -19,7 +19,7 @@ interface BubbleChartProps {
 	transformDataForValueType: (data: Project[]) => Project[];
 }
 
-export const BubbleChart = ({
+export const CompareTwo = ({
 	projects,
 	selectedKPI1,
 	selectedKPI2,
@@ -29,7 +29,7 @@ export const BubbleChart = ({
 	generateNiceTicks,
 	getProjectArea,
 	transformDataForValueType,
-}: BubbleChartProps) => {
+}: CompareTwoProps) => {
 	const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
 	const kpi2Config = KPIOptions.find((kpi) => kpi.key === selectedKPI2);
 
