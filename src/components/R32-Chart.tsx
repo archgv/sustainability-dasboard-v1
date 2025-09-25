@@ -13,6 +13,7 @@ import { SingleProject } from './ChartSub/C32-SingleProject';
 import { TimelineChart } from './ChartSub/C33-SingleTime';
 import { chartColors } from './Utils/UtilColor';
 import { generateNiceTicks } from './Utils/UtilShape';
+import { chartKPIs, filteredKPIs, kpiCompatibilityMatrix } from './Utils/UtilChart';
 
 export type ChartType = 'compare-bubble' | 'single-bar' | 'single-timeline';
 export type ValueType = 'total' | 'per-sqm';
@@ -23,100 +24,6 @@ interface ChartProps {
 	selectedRibaStages?: string[];
 }
 
-// Define the 10 specific KPIs for charts
-const chartKPIs = [
-	'Operational Energy Total',
-	'Operational Energy Part L',
-	'Operational Energy Gas',
-	'Space Heating Demand',
-	'Total Renewable Energy Generation',
-	'Upfront Carbon',
-	'Total Embodied Carbon',
-	'Biogenic Carbon',
-	'Biodiversity Net Gain',
-	'Urban Greening Factor',
-];
-
-// Filter KPIOptions to only include the chart KPIs
-const filteredKPIs = KPIOptions.filter((kpi) => chartKPIs.includes(kpi.key));
-
-// KPI compatibility matrix
-const kpiCompatibilityMatrix: Record<string, string[]> = {
-	'Operational Energy Total': [
-		'Operational Energy Part L',
-		'Operational Energy Gas',
-		'Space Heating Demand',
-		'Total Renewable Energy Generation',
-		'Upfront Carbon',
-		'Total Embodied Carbon',
-		'Biogenic Carbon',
-	],
-	'Operational Energy Part L': [
-		'Operational Energy Total',
-		'Operational Energy Gas',
-		'Space Heating Demand',
-		'Total Renewable Energy Generation',
-		'Upfront Carbon',
-		'Total Embodied Carbon',
-		'Biogenic Carbon',
-	],
-	'Operational Energy Gas': [
-		'Operational Energy Total',
-		'Operational Energy Part L',
-		'Space Heating Demand',
-		'Total Renewable Energy Generation',
-		'Upfront Carbon',
-		'Total Embodied Carbon',
-		'Biogenic Carbon',
-	],
-	'Space Heating Demand': [
-		'Operational Energy Total',
-		'Operational Energy Part L',
-		'Operational Energy Gas',
-		'Total Renewable Energy Generation',
-		'Upfront Carbon',
-		'Total Embodied Carbon',
-		'Biogenic Carbon',
-	],
-	'Total Renewable Energy Generation': [
-		'Operational Energy Total',
-		'Operational Energy Part L',
-		'Operational Energy Gas',
-		'Space Heating Demand',
-		'Upfront Carbon',
-		'Total Embodied Carbon',
-		'Biogenic Carbon',
-	],
-	'Upfront Carbon': [
-		'Operational Energy Total',
-		'Operational Energy Part L',
-		'Operational Energy Gas',
-		'Space Heating Demand',
-		'Total Renewable Energy Generation',
-		'Total Embodied Carbon',
-		'Biogenic Carbon',
-	],
-	'Total Embodied Carbon': [
-		'Operational Energy Total',
-		'Operational Energy Part L',
-		'Operational Energy Gas',
-		'Space Heating Demand',
-		'Total Renewable Energy Generation',
-		'Upfront Carbon',
-		'Biogenic Carbon',
-	],
-	'Biogenic Carbon': [
-		'Operational Energy Total',
-		'Operational Energy Part L',
-		'Operational Energy Gas',
-		'Space Heating Demand',
-		'Total Renewable Energy Generation',
-		'Upfront Carbon',
-		'Total Embodied Carbon',
-	],
-	'Biodiversity Net Gain': ['Urban Greening Factor'],
-	'Urban Greening Factor': ['Biodiversity Net Gain'],
-};
 
 export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages = [] }: ChartProps) => {
 	const [chartType, setChartType] = useState<ChartType>('compare-bubble');
