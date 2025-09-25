@@ -9,6 +9,7 @@ import { certificationColors } from './Utils/UtilColor';
 export const Certification = ({ projects }: { projects: Project[] }) => {
 	const [isExpanded, setIsExpanded] = useState(false);
 	const [selectedCertification, setSelectedCertification] = useState<string>('BREEAM');
+	const [expandedRatings, setExpandedRatings] = useState<Record<string, boolean>>({});
 	const getCertificationData = (certification: string) => {
 		const ratings = certificationRatings[certification as keyof typeof certificationRatings] || [];
 		const data: {
@@ -40,6 +41,13 @@ export const Certification = ({ projects }: { projects: Project[] }) => {
 		const baseId = project.id.split('-')[0];
 		const projectNumber = `250${parseInt(baseId) + 116}`;
 		return `${projectNumber}_${project['Project Name']}`;
+	};
+
+	const toggleRatingExpansion = (rating: string) => {
+		setExpandedRatings(prev => ({
+			...prev,
+			[rating]: !prev[rating]
+		}));
 	};
 	return (
 		<Card className="p-6">
@@ -94,12 +102,25 @@ export const Certification = ({ projects }: { projects: Project[] }) => {
 											</div>
 										</div>
 										
-										<div className="w-8 flex-shrink-0 text-right">
+										<div className="flex items-center gap-2">
 											<span className="text-sm font-medium text-gray-700">{count}</span>
+											{count > 0 && (
+												<button
+													onClick={() => toggleRatingExpansion(rating)}
+													className="p-1 hover:bg-gray-100 rounded transition-colors"
+													aria-label={expandedRatings[rating] ? 'Hide projects' : 'Show projects'}
+												>
+													<ChevronDown 
+														className={`h-4 w-4 text-gray-400 transition-transform ${
+															expandedRatings[rating] ? 'rotate-180' : ''
+														}`} 
+													/>
+												</button>
+											)}
 										</div>
 									</div>
 
-									{count > 0 && (
+									{count > 0 && expandedRatings[rating] && (
 										<div className="ml-28 space-y-1">
 											{projectsWithRating.map((project) => (
 												<div key={project.id} className="text-sm text-gray-600">
