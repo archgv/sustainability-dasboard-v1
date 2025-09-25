@@ -10,7 +10,7 @@ export const DashboardHeader = () => {
 							<img src="/lovable-uploads/4ce0bfd4-e09c-45a3-bb7c-0a84df6eca91.png" alt="Hawkins Brown" className="h-12 w-auto" />
 						</div>
 						<div>
-							<h1 className="text-3xl font-bold text-gray-900">Sustainability Performance Dashboard11111</h1>
+							<h1 className="text-3xl font-bold text-gray-900">Sustainability Performance Dashboard</h1>
 							<p className="text-gray-600 mt-1">Track environmental KPIs across all architectural projects</p>
 						</div>
 					</div>
