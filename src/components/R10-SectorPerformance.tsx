@@ -10,6 +10,7 @@ import { Project } from '@/components/Utils/project';
 import { exportSectorCSV } from '@/components/SectorSub/S01-ExportCSV';
 import { exportSectorPNG } from '@/components/SectorSub/S02-ExportPNG';
 import { chartColors } from './Utils/UtilColor';
+import { getResponsiveContainerProps, getCartesianGridProps, getYAxisProps, getTooltipContainerStyle } from './ChartSub/ChartConfig';
 
 interface SectorStats {
 	count: number;
@@ -269,9 +270,9 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 							{currentKPI?.value} by Sector ({getDisplayUnit()})
 						</h3>
 						<div className="h-[460px] flex justify-center" data-chart="sector-chart">
-							<ResponsiveContainer width="90%" height="100%">
+							<ResponsiveContainer {...getResponsiveContainerProps(true)}>
 								<BarChart data={chartData} barGap={-50} margin={{ top: 20, right: 30, left: 40, bottom: 60 }}>
-									<CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} />
+									<CartesianGrid {...getCartesianGridProps()} />
 									<XAxis dataKey="sector" tick={{ fill: chartColors.dark, dy: 20 }} axisLine={false} tickLine={false} interval={0} />
 									<YAxis
 										label={{
@@ -281,10 +282,8 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 											offset: -10,
 											style: { textAnchor: 'middle', fontSize: 12 },
 										}}
-										tick={{ fill: chartColors.dark, fontSize: 12 }}
+										{...getYAxisProps()}
 										tickFormatter={(value) => formatNumber(value)}
-										tickLine={false}
-										axisLine={{ strokeWidth: 0 }}
 										domain={(() => {
 											// Get the data range
 											const values = chartData.flatMap((d) => [d.value, d.biogenicValue || 0]);
@@ -354,15 +353,14 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 											return [`${formatNumber(Number(value))} ${getDisplayUnit()}`, effectiveValueType === 'total' ? 'Cumulative total' : 'Average'];
 										}}
 										labelFormatter={(label) => `Sector: ${label}`}
+										contentStyle={getTooltipContainerStyle()}
 										content={({ active, payload, label }) => {
 											if (active && payload && payload.length && selectedKPI === 'Total Embodied Carbon') {
 												const data = payload[0].payload;
 												return (
 													<div
 														style={{
-															backgroundColor: 'white',
-															border: `1px solid ${chartColors.primary}`,
-															borderRadius: '8px',
+															...getTooltipContainerStyle(),
 															padding: '8px',
 														}}
 													>
@@ -376,9 +374,7 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 												return (
 													<div
 														style={{
-															backgroundColor: 'white',
-															border: `1px solid ${chartColors.primary}`,
-															borderRadius: '8px',
+															...getTooltipContainerStyle(),
 															padding: '8px',
 														}}
 													>
