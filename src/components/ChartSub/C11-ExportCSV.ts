@@ -48,11 +48,11 @@ const getChartTitle = (chartType: ChartType, selectedKPI1: string, selectedKPI2:
 	const kpi2Config = KPIOptions.find((kpi) => kpi.key === selectedKPI2);
 
 	switch (chartType) {
-		case 'compare-bubble':
+		case 'Compare Two':
 			return `${kpi1Config?.label} vs ${kpi2Config?.label} (${valueTypeLabel}) - Bubble Chart`;
-		case 'single-bar':
+		case 'Single Project':
 			return `${kpi1Config?.label} by Project (${valueTypeLabel}) - Bar Chart`;
-		case 'single-timeline':
+		case 'Single Time':
 			return `${kpi1Config?.label} Over Time (${valueTypeLabel}) - Timeline`;
 		default:
 			return 'Chart';
@@ -108,15 +108,15 @@ export const exportChartToCSV = (options: ExportCSVOptions) => {
 	const headers = ['Project Name', `${kpi1Config?.label || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType, true)})`];
 
 	// For Total Embodied Carbon charts, include biogenic carbon column
-	if (chartType === 'single-bar' && selectedKPI1 === 'Total Embodied Carbon') {
+	if (chartType === 'Single Project' && selectedKPI1 === 'Total Embodied Carbon') {
 		headers.push(`Biogenic (${getUnitLabel(kpi1Config?.unit || '', valueType, true)})`);
 	}
 
-	if (chartType === 'compare-bubble') {
+	if (chartType === 'Compare Two') {
 		headers.push(`${kpi2Config?.label || selectedKPI2} (${getUnitLabel(kpi2Config?.unit || '', valueType, true)})`);
 		headers.push('Building Area (m²)');
 	}
-	if (chartType === 'single-timeline') {
+	if (chartType === 'Single Time') {
 		headers.push('Completion Year');
 	}
 	csvContent += headers.join(',') + '\n';
@@ -129,17 +129,17 @@ export const exportChartToCSV = (options: ExportCSVOptions) => {
 		const row = [`"${displayName}"`, (project[selectedKPI1 as keyof Project] as number)?.toString() || '0'];
 
 		// For Total Embodied Carbon charts, add biogenic carbon as negative value
-		if (chartType === 'single-bar' && selectedKPI1 === 'Total Embodied Carbon') {
+		if (chartType === 'Single Project' && selectedKPI1 === 'Total Embodied Carbon') {
 			const biogenicValue = project['Biogenic Carbon'] || 0;
 			const finalBiogenicValue = valueType === 'total' ? -Math.abs(biogenicValue * getProjectArea(baseId)) : -Math.abs(biogenicValue);
 			row.push(finalBiogenicValue.toString());
 		}
 
-		if (chartType === 'compare-bubble') {
+		if (chartType === 'Compare Two') {
 			row.push((project[selectedKPI2 as keyof Project] as number)?.toString() || '0');
 			row.push(getProjectArea(baseId).toString());
 		}
-		if (chartType === 'single-timeline') {
+		if (chartType === 'Single Time') {
 			row.push(new Date(project['PC Date']).getFullYear().toString());
 		}
 

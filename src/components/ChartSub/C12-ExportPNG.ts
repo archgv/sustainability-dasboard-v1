@@ -29,11 +29,11 @@ const getChartTitle = (chartType: ChartType, selectedKPI1: string, selectedKPI2:
 	const kpi2Config = KPIOptions.find((kpi) => kpi.key === selectedKPI2);
 
 	switch (chartType) {
-		case 'compare-bubble':
+		case 'Compare Two':
 			return `${kpi1Config?.label} vs ${kpi2Config?.label} (${valueTypeLabel}) - Bubble Chart`;
-		case 'single-bar':
+		case 'Single Project':
 			return `${kpi1Config?.label} by Project (${valueTypeLabel}) - Bar Chart`;
-		case 'single-timeline':
+		case 'Single Time':
 			return `${kpi1Config?.label} Over Time (${valueTypeLabel}) - Timeline`;
 		default:
 			return 'Chart';

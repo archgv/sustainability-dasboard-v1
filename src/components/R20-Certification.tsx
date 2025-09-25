@@ -75,36 +75,39 @@ export const Certification = ({ projects }: { projects: Project[] }) => {
 							const barWidth = count === 0 ? baseWidth : Math.max(baseWidth, (count / maxCount) * 100);
 							return (
 								<div key={rating} className="space-y-2">
-									<div className="flex items-center justify-between">
-										<div className="flex items-center space-x-2">
+									<div className="flex items-center gap-4">
+										<div className="w-24 flex-shrink-0">
 											<span className="text-sm font-medium text-black">{rating}</span>
 										</div>
-										<span className="text-sm font-medium text-gray-700">{count}</span>
-									</div>
-
-									<div className="relative">
-										<div className="w-full rounded-full h-6 bg-gray-50">
-											{count > 0 && (
-												<div
-													className="h-6 rounded-full transition-all duration-300"
-													style={{
-														width: `${barWidth}%`,
-														backgroundColor: getBarColor(rating, selectedCertification),
-													}}
-												/>
-											)}
-										</div>
-
-										{count > 0 && (
-											<div className="mt-2 space-y-1">
-												{projectsWithRating.map((project) => (
-													<div key={project.id} className="text-sm text-gray-600 pl-2">
-														{getDisplayName(project)}
-													</div>
-												))}
+										
+										<div className="flex-1 relative">
+											<div className="w-full rounded-full h-6 bg-gray-50">
+												{count > 0 && (
+													<div
+														className="h-6 rounded-full transition-all duration-300"
+														style={{
+															width: `${barWidth}%`,
+															backgroundColor: getBarColor(rating, selectedCertification),
+														}}
+													/>
+												)}
 											</div>
-										)}
+										</div>
+										
+										<div className="w-8 flex-shrink-0 text-right">
+											<span className="text-sm font-medium text-gray-700">{count}</span>
+										</div>
 									</div>
+
+									{count > 0 && (
+										<div className="ml-28 space-y-1">
+											{projectsWithRating.map((project) => (
+												<div key={project.id} className="text-sm text-gray-600">
+													{getDisplayName(project)}
+												</div>
+											))}
+										</div>
+									)}
 								</div>
 							);
 						})}
