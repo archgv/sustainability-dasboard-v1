@@ -199,9 +199,9 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 								<SelectValue placeholder="Select chart type" />
 							</SelectTrigger>
 							<SelectContent>
-								<SelectItem value="compare-bubble">Compare two KPIs (bubble)</SelectItem>
-								<SelectItem value="single-bar">Single KPI across projects (bar chart)</SelectItem>
-								<SelectItem value="single-timeline">Single KPI over time (timeline)</SelectItem>
+								<SelectItem value="Compare Two">Compare Two KPIs</SelectItem>
+								<SelectItem value="Single Project">Single KPI across Projects</SelectItem>
+								<SelectItem value="Single Time">Single KPI over Time</SelectItem>
 							</SelectContent>
 						</Select>
 					</div>
@@ -215,8 +215,8 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 								<SelectValue placeholder="Select value type" />
 							</SelectTrigger>
 							<SelectContent>
-								<SelectItem value="total">Total Values</SelectItem>
-								<SelectItem value="per-sqm">Per sqm GIA</SelectItem>
+								<SelectItem value="total">Total</SelectItem>
+								<SelectItem value="per-sqm">/m² GIA</SelectItem>
 							</SelectContent>
 						</Select>
 					</div>
