@@ -205,8 +205,8 @@ export const Chart = ({ projects, chartType, selectedKPI1, selectedKPI2, valueTy
 							disabled={!hasBenchmarks()}
 							className="flex items-center gap-2"
 						>
-							{showBenchmarks ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-							Show Benchmarks
+							{showBenchmarks ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+							Benchmarks
 						</Button>
 					)}
 					<Button variant="outline" size="sm" onClick={handleExportCSV} className="flex items-center gap-2">

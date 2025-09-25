@@ -142,7 +142,7 @@ export const SingleProject = ({
 	const barChartBenchmarkLines = getBarChartBenchmarkLines();
 
 	return (
-		<div className="w-full h-full">
+		<div className="w-full h-full flex justify-center">
 			{/* Benchmark Legend - positioned after title, before chart */}
 			{barChartBenchmarkLines.length > 0 && (
 				<div className="flex justify-center items-center gap-6 mb-4">
@@ -158,8 +158,8 @@ export const SingleProject = ({
 					))}
 				</div>
 			)}
-			<ResponsiveContainer width="100%" height="100%">
-				<BarChart data={chartData} margin={{ top: 50, right: 30, left: 20, bottom: 80 }}>
+			<ResponsiveContainer width="90%" height="100%">
+				<BarChart data={chartData} barGap={-100} margin={{ top: 50, right: 30, left: 20, bottom: 80 }}>
 					<CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} horizontal={true} verticalPoints={[]} />
 					<XAxis
 						dataKey={(item) => {
@@ -177,10 +177,13 @@ export const SingleProject = ({
 							value: `${kpi1Config?.label || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType)})`,
 							angle: -90,
 							position: 'insideLeft',
-							style: { textAnchor: 'middle' },
+							offset: -10,
+							style: { textAnchor: 'middle', fontSize: 12 },
 						}}
-						tick={{ fill: chartColors.dark }}
+						tick={{ fill: chartColors.dark, fontSize: 12 }}
 						tickFormatter={(value) => formatNumber(value)}
+						tickLine={false}
+						axisLine={{ strokeWidth: 0 }}
 						domain={selectedKPI1 === 'Total Embodied Carbon' ? [0, 1600] : [0, 'dataMax']}
 						ticks={
 							selectedKPI1 === 'Total Embodied Carbon'
@@ -236,17 +239,17 @@ export const SingleProject = ({
 							return null;
 						}}
 					/>
-					<Bar dataKey={selectedKPI1} fill={chartColors.primary} name={kpi1Config?.label || selectedKPI1} radius={[4, 4, 0, 0]}>
+					<Bar dataKey={selectedKPI1} barSize={100} fill={chartColors.primary} name={kpi1Config?.label || selectedKPI1} radius={[6, 6, 0, 0]}>
 						{sortedProjects.map((project, index) => {
 							const sectorColor = getSectorColor(project['Primary Sector']);
-							return <Cell key={index} fill={sectorColor} />;
+							return <Cell key={index} fill={sectorColor} stroke={sectorColor} strokeWidth={3} />;
 						})}
 					</Bar>
 					{selectedKPI1 === 'Total Embodied Carbon' && (
-						<Bar dataKey="Biogenic Carbon" fill="white" name="Biogenic Carbon" radius={[0, 0, 4, 4]}>
+						<Bar dataKey="Biogenic Carbon" barSize={100} fill="white" name="Biogenic Carbon" radius={[6, 6, 0, 0]}>
 							{sortedProjects.map((project, index) => {
 								const sectorColor = getSectorColor(project['Primary Sector']);
-								return <Cell key={index} fill="white" stroke={sectorColor} strokeWidth={2} />;
+								return <Cell key={index} fill="white" stroke={sectorColor} strokeWidth={3} />;
 							})}
 						</Bar>
 					)}
