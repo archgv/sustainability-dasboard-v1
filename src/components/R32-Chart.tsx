@@ -200,8 +200,8 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 							</SelectTrigger>
 							<SelectContent>
 								<SelectItem value="Compare Two">Compare Two KPIs</SelectItem>
-								<SelectItem value="Single Project">Single KPI across Projects</SelectItem>
-								<SelectItem value="Single Time">Single KPI over Time</SelectItem>
+								<SelectItem value="Single Project">Single KPI Across Projects</SelectItem>
+								<SelectItem value="Single Time">Single KPI Over Time</SelectItem>
 							</SelectContent>
 						</Select>
 					</div>
