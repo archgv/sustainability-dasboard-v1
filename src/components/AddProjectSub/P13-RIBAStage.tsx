@@ -19,7 +19,7 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { StageKey } from '@/types/project';
+import { StageKey } from '@/components/Utils/project';
 
 interface RibaStageProps {
 	stageNumber: string;

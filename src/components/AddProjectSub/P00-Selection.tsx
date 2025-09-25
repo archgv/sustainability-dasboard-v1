@@ -6,7 +6,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Check, ChevronDown, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Project } from '@/types/project';
+import { Project } from '@/components/Utils/project';
 import { WizardProgressIndicator } from './P10-Progress';
 
 interface ProjectSelectionProps {

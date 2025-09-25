@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Project } from '@/types/project';
+import { Project } from '@/components/Utils/project';
 import { certificationRatings } from './Utils/UtilCertification';
+import { certificationColors } from './Utils/UtilColor';
 
 export const Certification = ({ projects }: { projects: Project[] }) => {
 	const [isExpanded, setIsExpanded] = useState(false);
@@ -29,27 +30,11 @@ export const Certification = ({ projects }: { projects: Project[] }) => {
 	const certificationData = getCertificationData(selectedCertification);
 	const maxCount = Math.max(...Object.values(certificationData).map((projects) => projects.length), 4);
 
-	const getBarColor = (rating: string) => {
-		const colors = {
-			'Outstanding': '#253E2C',
-			'Excellent': '#2D9B4D',
-			'Very Good': '#39FF8D',
-			'Good': '#C2FF39',
-			'Pass': '#E9E8D3',
-			'Platinum': '#253E2C',
-			'Gold': '#2D9B4D',
-			'Silver': '#39FF8D',
-			'Bronze': '#C2FF39',
-			'Certified': selectedCertification === 'LEED' ? '#E9E8D3' : '#253E2C',
-			'Net Zero': '#253E2C',
-			'6 Star': '#253E2C',
-			'5 Star': '#2D9B4D',
-			'4 Star': '#39FF8D',
-			'3 Star': '#C2FF39',
-			'2 Star': '#E9E8D3',
-			'1 Star': '#F5F5F5',
-		};
-		return colors[rating as keyof typeof colors] || '#E9E8D3';
+	const getBarColor = (rating: string, selectedCertification: string) => {
+		if (rating === 'Certified' && selectedCertification === 'LEED') {
+			return '#E9E8D3'; // LEED special case
+		}
+		return certificationColors[rating] || '#E9E8D3';
 	};
 	const getDisplayName = (project: Project) => {
 		const baseId = project.id.split('-')[0];
@@ -104,7 +89,7 @@ export const Certification = ({ projects }: { projects: Project[] }) => {
 													className="h-6 rounded-full transition-all duration-300"
 													style={{
 														width: `${barWidth}%`,
-														backgroundColor: getBarColor(rating),
+														backgroundColor: getBarColor(rating, selectedCertification),
 													}}
 												/>
 											)}

@@ -1,4 +1,4 @@
-import { Project, availableKPIs } from '@/types/project';
+import { Project, availableKPIs } from '@/components/Utils/project';
 import { ChartType, ValueType } from '@/components/R31-ChartOption';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks } from '@/data/benchmarkData';
 import { getSectorBenchmarkColor } from '@/components/Utils/UtilSector';

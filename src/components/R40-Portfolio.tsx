@@ -1,6 +1,6 @@
 import { Card } from '@/components/ui/card';
 import { Calendar, MapPin, Zap, Leaf, FileText } from 'lucide-react';
-import { Project } from '@/types/project';
+import { Project } from '@/components/Utils/project';
 
 interface PortfolioProps {
 	projects: Project[];

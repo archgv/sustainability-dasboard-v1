@@ -3,7 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { AddProjectDataWizard } from './L12-AddProjectDataWizard';
-import { Project } from '@/types/project';
+import { Project } from '@/components/Utils/project';
 
 import { WizardData } from './L12-AddProjectDataWizard';
 

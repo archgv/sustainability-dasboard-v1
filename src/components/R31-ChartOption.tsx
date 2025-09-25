@@ -2,7 +2,7 @@ import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { availableKPIs } from '@/types/project';
+import { availableKPIs } from '@/components/Utils/project';
 export type ChartType = 'compare-bubble' | 'single-bar' | 'single-timeline';
 export type ValueType = 'total' | 'per-sqm';
 interface ChartOptionProps {

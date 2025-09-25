@@ -2,7 +2,7 @@ import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Project } from '@/types/project';
+import { Project, StageKeys } from '@/components/Utils/project';
 import { Building2, Calendar, MapPin } from 'lucide-react';
 import { useState } from 'react';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
@@ -23,32 +23,6 @@ export const Comparison = ({ projects, primaryProject, comparisonProjects, onPri
 	const [compareToSelf, setCompareToSelf] = useState(false);
 	const [selectedRibaStages, setSelectedRibaStages] = useState<string[]>([]);
 	const [open, setOpen] = useState(false);
-
-	const ribaStages = [
-		{ id: 'stage-1', label: 'RIBA 1' },
-		{ id: 'stage-2', label: 'RIBA 2' },
-		{ id: 'stage-3', label: 'RIBA 3' },
-		{ id: 'stage-4', label: 'RIBA 4' },
-		{ id: 'stage-5', label: 'RIBA 5' },
-		{ id: 'stage-6', label: 'RIBA 6' },
-		{ id: 'stage-7', label: 'RIBA 7' },
-	];
-
-	// Map typologies to the correct sectors
-	const getSectorDisplay = (typology: string) => {
-		const sectorMap: { [key: string]: string } = {
-			'residential': 'Residential',
-			'educational': 'Education',
-			'healthcare': 'Healthcare',
-			'infrastructure': 'Infrastructure',
-			'CCC': 'CCC',
-			'ccc': 'CCC',
-			'office': 'Workplace',
-			'retail': 'Workplace',
-			'mixed-use': 'Workplace',
-		};
-		return sectorMap[typology] || 'Workplace';
-	};
 
 	const handleComparisonToggle = (projectId: string) => {
 		const isSelected = comparisonProjects.includes(projectId);
@@ -136,7 +110,7 @@ export const Comparison = ({ projects, primaryProject, comparisonProjects, onPri
 									{primaryProjectData['Project Location']}
 								</div>
 								<Badge variant="outline" className="capitalize">
-									{getSectorDisplay(primaryProjectData['Primary Sector'])}
+									{primaryProjectData['Primary Sector']}
 								</Badge>
 								<Badge variant="outline" className="capitalize">
 									{primaryProjectData['Project Type']}
@@ -162,18 +136,18 @@ export const Comparison = ({ projects, primaryProject, comparisonProjects, onPri
 					{compareToSelf ? (
 						/* RIBA Stage Selection */
 						<div className="space-y-2 max-h-64 overflow-y-auto">
-							{ribaStages.map((stage) => (
+							{StageKeys.map((stage) => (
 								<div
-									key={stage.id}
+									key={stage}
 									className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-										selectedRibaStages.includes(stage.id) ? 'border-green-200 bg-green-50' : 'border-gray-200 hover:border-gray-300'
+										selectedRibaStages.includes(stage) ? 'border-green-200 bg-green-50' : 'border-gray-200 hover:border-gray-300'
 									}`}
-									onClick={() => handleRibaStageToggle(stage.id)}
+									onClick={() => handleRibaStageToggle(stage)}
 								>
 									<div className="flex items-center justify-between">
-										<span className="font-medium text-gray-900">{stage.label}</span>
-										<div className={`w-4 h-4 rounded border-2 ${selectedRibaStages.includes(stage.id) ? 'bg-green-500 border-green-500' : 'border-gray-300'}`}>
-											{selectedRibaStages.includes(stage.id) && (
+										<span className="font-medium text-gray-900">RIBA {stage}</span>
+										<div className={`w-4 h-4 rounded border-2 ${selectedRibaStages.includes(stage) ? 'bg-green-500 border-green-500' : 'border-gray-300'}`}>
+											{selectedRibaStages.includes(stage) && (
 												<div className="w-full h-full flex items-center justify-center">
 													<div className="w-2 h-2 bg-white rounded-full"></div>
 												</div>
@@ -201,7 +175,7 @@ export const Comparison = ({ projects, primaryProject, comparisonProjects, onPri
 												<p className="font-medium text-gray-900">{project['Project Name']}</p>
 												<div className="flex items-center gap-2 mt-1">
 													<Badge variant="outline" className="text-xs capitalize">
-														{getSectorDisplay(project['Primary Sector'])}
+														{project['Primary Sector']}
 													</Badge>
 													<Badge variant="outline" className="text-xs capitalize">
 														{project['Project Type']}

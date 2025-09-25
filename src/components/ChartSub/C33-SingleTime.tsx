@@ -1,10 +1,10 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import { Project, availableKPIs } from '@/types/project';
+import { Project, availableKPIs } from '@/components/Utils/project';
 import { ValueType } from '../R31-ChartOption';
 import { getSectorColor, getSectorBenchmarkColor } from '@/components/Utils/UtilSector';
 import { formatNumber } from '@/lib/utils';
 import { uknzcbsBenchmarks, uknzcbsOperationalEnergyBenchmarks } from '@/data/benchmarkData';
-import { chartColors } from './C01-UtilColor';
+import { chartColors } from '../Utils/UtilColor';
 
 interface TimelineChartProps {
 	projects: Project[];

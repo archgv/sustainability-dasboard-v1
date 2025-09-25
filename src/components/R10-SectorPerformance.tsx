@@ -6,10 +6,10 @@ import { Button } from '@/components/ui/button';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine } from 'recharts';
 import { formatNumber } from '@/lib/utils';
 import { sectorConfig } from '@/components/Utils/UtilSector';
-import { Project } from '@/types/project';
+import { Project } from '@/components/Utils/project';
 import { exportSectorCSV } from '@/components/SectorSub/S01-ExportCSV';
 import { exportSectorPNG } from '@/components/SectorSub/S02-ExportPNG';
-import { chartColors } from './ChartSub/C01-UtilColor';
+import { chartColors } from './Utils/UtilColor';
 
 interface SectorStats {
 	count: number;
@@ -193,9 +193,6 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 					{/* Controls Row */}
 					<div className="flex flex-wrap items-center gap-4 mx-4">
 						<div className="flex items-center space-x-2">
-							<label className="text-sm font-medium" style={{ color: chartColors.dark }}>
-								KPI
-							</label>
 							<Select value={selectedKPI} onValueChange={setSelectedKPI}>
 								<SelectTrigger className="w-80 rounded-full pl-6 pr-6">
 									<SelectValue />

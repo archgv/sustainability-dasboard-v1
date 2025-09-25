@@ -16,15 +16,22 @@ export const chartColors = {
 	muted: '#272727', // Updated to use new dark gray
 };
 
-// Color arrays for different chart types
-export const seriesColors = [
-	chartColors.primary,
-	chartColors.secondary,
-	chartColors.tertiary,
-	chartColors.quaternary,
-	chartColors.warning,
-	chartColors.info,
-	chartColors.success,
-	chartColors.muted,
-	chartColors.darkGreen,
-];
+export const certificationColors = {
+	'Outstanding': '#253E2C',
+	'Excellent': '#2D9B4D',
+	'Very Good': '#39FF8D',
+	'Good': '#C2FF39',
+	'Pass': '#E9E8D3',
+	'Platinum': '#253E2C',
+	'Gold': '#2D9B4D',
+	'Silver': '#39FF8D',
+	'Bronze': '#C2FF39',
+	'Certified': '#253E2C',
+	'Net Zero': '#253E2C',
+	'6 Star': '#253E2C',
+	'5 Star': '#2D9B4D',
+	'4 Star': '#39FF8D',
+	'3 Star': '#C2FF39',
+	'2 Star': '#E9E8D3',
+	'1 Star': '#F5F5F5',
+};

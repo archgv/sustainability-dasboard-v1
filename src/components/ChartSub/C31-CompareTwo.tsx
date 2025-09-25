@@ -1,10 +1,10 @@
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Project, availableKPIs } from '@/types/project';
+import { Project, availableKPIs } from '@/components/Utils/project';
 import { ValueType } from '../R31-ChartOption';
 import { getSectorColor, getSectorShape } from '@/components/Utils/UtilSector';
 import { formatNumber } from '@/lib/utils';
 import { ChartShape } from '../R33-ChartShape';
-import { chartColors } from './C01-UtilColor';
+import { chartColors } from '../Utils/UtilColor';
 
 interface BubbleChartProps {
 	projects: Project[];

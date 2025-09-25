@@ -9,7 +9,7 @@ import { Comparison } from '@/components/R30-Comparison';
 import { SectorPerformance } from '@/components/R10-SectorPerformance';
 import { Certification } from '@/components/R20-Certification';
 import { sampleProjects } from '@/data/sampleData';
-import { Project } from '@/types/project';
+import { Project } from '@/components/Utils/project';
 
 const Index = () => {
 	const [filteredProjects, setFilteredProjects] = useState(sampleProjects);

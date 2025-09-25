@@ -9,7 +9,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { HelpCircle, Check, ChevronsUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Project } from '@/types/project';
+import { Project } from '@/components/Utils/project';
 
 interface AddProjectDataModalProps {
 	isOpen: boolean;
@@ -389,7 +389,7 @@ export const AddProjectDataModal = ({ isOpen, onClose, onSave, projects }: AddPr
 			'WELL': formData['WELL'],
 			'Fitwell': formData['Fitwell'],
 			'Passivhaus': formData['Passivhaus'],
-			'EnePHit': formData['EnePHit'],
+			'EnerPHit': formData['EnerPHit'],
 			'NABERS': formData['NABERS'],
 			'UKNZCBS': formData['UKNZCBS'],
 
