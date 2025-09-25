@@ -1,5 +1,3 @@
-import { sampleProjects } from '@/data/sampleData';
-
 export const DashboardHeader = () => {
 	return (
 		<header className="bg-white shadow-sm border-b sticky top-0 z-50">
@@ -13,11 +11,6 @@ export const DashboardHeader = () => {
 							<h1 className="text-3xl font-bold text-gray-900">Sustainability Performance Dashboard</h1>
 							<p className="text-gray-600 mt-1">Track environmental KPIs across all architectural projects</p>
 						</div>
-					</div>
-
-					<div className="text-right">
-						<div className="text-sm text-gray-500">Total Projects</div>
-						<div className="text-2xl font-bold text-green-600">{sampleProjects.length}</div>
 					</div>
 				</div>
 			</div>

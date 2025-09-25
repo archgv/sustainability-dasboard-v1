@@ -41,8 +41,8 @@ export const SingleTime = ({ projects, selectedKPI1, valueType, isComparingToSel
 		.sort((a, b) => a.date - b.date);
 
 	// Get UKNZCBS benchmark data for timeline - ONLY for Upfront Carbon and Operational Energy with per sqm
-	const shouldShowUpfrontBenchmark = valueType === 'per-sqm' && selectedKPI1 === 'upfrontCarbon' && timelineData.length > 0;
-	const shouldShowOperationalEnergyBenchmark = valueType === 'per-sqm' && selectedKPI1 === 'operationalEnergyTotal' && timelineData.length > 0;
+	const shouldShowUpfrontBenchmark = valueType === 'average' && selectedKPI1 === 'upfrontCarbon' && timelineData.length > 0;
+	const shouldShowOperationalEnergyBenchmark = valueType === 'average' && selectedKPI1 === 'operationalEnergyTotal' && timelineData.length > 0;
 
 	// Create UKNZCBS benchmark data for upfront carbon
 	const createUpfrontBenchmarkData = () => {
@@ -206,7 +206,7 @@ export const SingleTime = ({ projects, selectedKPI1, valueType, isComparingToSel
 												Project: {projectData.payload.displayName}
 											</p>
 											<p className="text-sm" style={{ color: chartColors.dark }}>
-												{kpi1Config?.label}: {formatNumber(projectData.value as number)} {getUnitLabel(kpi1Config, valueType)}
+												{kpi1Config.key}: {formatNumber(projectData.value as number)} {getUnitLabel(kpi1Config, valueType)}
 											</p>
 										</>
 									)}
@@ -232,7 +232,7 @@ export const SingleTime = ({ projects, selectedKPI1, valueType, isComparingToSel
 				/>
 
 				{/* Project data as scatter points */}
-				<Line type="monotone" dataKey={selectedKPI1} stroke="transparent" strokeWidth={0} dot={false} name={kpi1Config?.label || selectedKPI1} legendType="none" />
+				<Line type="monotone" dataKey={selectedKPI1} stroke="transparent" strokeWidth={0} dot={false} name={kpi1Config.key || selectedKPI1} legendType="none" />
 
 				{/* Render dots with sector colors */}
 				{timelineData.map((project, index) => {

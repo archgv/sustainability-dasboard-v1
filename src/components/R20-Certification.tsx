@@ -44,15 +44,15 @@ export const Certification = ({ projects }: { projects: Project[] }) => {
 	};
 
 	const toggleRatingExpansion = (rating: string) => {
-		setExpandedRatings(prev => ({
+		setExpandedRatings((prev) => ({
 			...prev,
-			[rating]: !prev[rating]
+			[rating]: !prev[rating],
 		}));
 	};
 	return (
 		<Card className="p-6">
 			<div className="flex items-center justify-between cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
-				<h2 className="text-xl font-semibold text-gray-900">Certification Analysis</h2>
+				<h2>Certification Analysis</h2>
 				<ChevronDown className={`h-5 w-5 text-gray-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
 			</div>
 
@@ -87,7 +87,7 @@ export const Certification = ({ projects }: { projects: Project[] }) => {
 										<div className="w-24 flex-shrink-0">
 											<span className="text-sm font-medium text-black">{rating}</span>
 										</div>
-										
+
 										<div className="flex-1 relative">
 											<div className="w-full rounded-full h-6 bg-gray-50">
 												{count > 0 && (
@@ -101,11 +101,11 @@ export const Certification = ({ projects }: { projects: Project[] }) => {
 												)}
 											</div>
 										</div>
-										
+
 										<div className="w-8 flex-shrink-0 text-right">
 											<span className="text-sm font-medium text-gray-700">{count}</span>
 										</div>
-										
+
 										<div className="w-8 flex-shrink-0 flex justify-center">
 											{count > 0 && (
 												<button
@@ -113,11 +113,7 @@ export const Certification = ({ projects }: { projects: Project[] }) => {
 													className="p-1 hover:bg-gray-100 rounded transition-colors"
 													aria-label={expandedRatings[rating] ? 'Hide projects' : 'Show projects'}
 												>
-													<ChevronDown 
-														className={`h-4 w-4 text-gray-400 transition-transform ${
-															expandedRatings[rating] ? 'rotate-180' : ''
-														}`} 
-													/>
+													<ChevronDown className={`h-4 w-4 text-gray-400 transition-transform ${expandedRatings[rating] ? 'rotate-180' : ''}`} />
 												</button>
 											)}
 										</div>

@@ -55,7 +55,7 @@ export const SingleProject = ({
 
 	// Get UKNZCBS benchmark data for the bar chart - always based on PRIMARY project only
 	const getBarChartBenchmarkLines = () => {
-		if (!selectedBarChartBenchmark || selectedKPI1 !== 'Upfront Carbon' || valueType !== 'per-sqm' || projects.length === 0) {
+		if (!selectedBarChartBenchmark || selectedKPI1 !== 'Upfront Carbon' || valueType !== 'average' || projects.length === 0) {
 			return [];
 		}
 
@@ -97,9 +97,9 @@ export const SingleProject = ({
 		return benchmarkLines;
 	};
 
-	// Get benchmark data for the primary project's sector (only for Total Embodied Carbon with per-sqm)
+	// Get benchmark data for the primary project's sector (only for Total Embodied Carbon with average)
 	const getBenchmarkLines = () => {
-		if (!showBenchmarks || selectedKPI1 !== 'Total Embodied Carbon' || valueType !== 'per-sqm' || projects.length === 0) {
+		if (!showBenchmarks || selectedKPI1 !== 'Total Embodied Carbon' || valueType !== 'average' || projects.length === 0) {
 			return [];
 		}
 
@@ -176,7 +176,7 @@ export const SingleProject = ({
 					<Tooltip
 						formatter={(value: number, name: string) => [
 							`${formatNumber(value)} ${getUnitLabel(kpi1Config, valueType)}`,
-							name === 'Biogenic Carbon' ? 'Biogenic Carbon' : kpi1Config?.label || selectedKPI1,
+							name === 'Biogenic Carbon' ? 'Biogenic Carbon' : kpi1Config.key || selectedKPI1,
 						]}
 						labelFormatter={(label) => `Project: ${label}`}
 						contentStyle={getTooltipContainerStyle()}
@@ -192,7 +192,7 @@ export const SingleProject = ({
 										</p>
 										{mainData && (
 											<p className="text-sm" style={{ color: chartColors.dark }}>
-												{kpi1Config?.label}: {formatNumber(mainData.value)} {getUnitLabel(kpi1Config, valueType)}
+												{kpi1Config.key}: {formatNumber(mainData.value)} {getUnitLabel(kpi1Config, valueType)}
 											</p>
 										)}
 										{biogenicData && (
@@ -218,7 +218,7 @@ export const SingleProject = ({
 							return null;
 						}}
 					/>
-					<Bar dataKey={selectedKPI1} {...getBarProps()} fill={chartColors.primary} name={kpi1Config?.label || selectedKPI1}>
+					<Bar dataKey={selectedKPI1} {...getBarProps()} fill={chartColors.primary} name={kpi1Config.key || selectedKPI1}>
 						{sortedProjects.map((project, index) => {
 							const sectorColor = getSectorColor(project['Primary Sector']);
 							return <Cell key={index} fill={sectorColor} stroke={sectorColor} strokeWidth={3} />;

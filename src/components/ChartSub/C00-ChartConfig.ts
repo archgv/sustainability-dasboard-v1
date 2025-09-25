@@ -79,7 +79,7 @@ export const getDisplayUnit = (currentKPI: KPIOption, valueType: string, forCSV:
 export const getXAxisProps = (chart: string, selectedKPI: string, currentKPI: KPIOption, valueType: ValueType) => {
 	let value = 'Year';
 	if (chart === 'Single Time') {
-		value = `${currentKPI?.label || selectedKPI} (${getUnitLabel(currentKPI, valueType)})`;
+		value = `${currentKPI.key || selectedKPI} (${getUnitLabel(currentKPI, valueType)})`;
 	}
 	let label = { value: value, position: 'insideBottom', offset: -20, style: { textAnchor: 'middle', fontSize: 12 } };
 	if (chart === 'Single Project') {
@@ -95,7 +95,7 @@ export const getXAxisProps = (chart: string, selectedKPI: string, currentKPI: KP
 
 // Common YAxis props for bar charts
 export const getYAxisProps = (chart: string, selectedKPI: string, currentKPI: KPIOption, valueType: ValueType) => {
-	const value = `${currentKPI?.label || selectedKPI} (${getUnitLabel(currentKPI, valueType)})`;
+	const value = `${currentKPI.key || selectedKPI} (${getUnitLabel(currentKPI, valueType)})`;
 	// if (chart === 'Single Time') {
 	//    value = `${currentKPI?.value} (${getDisplayUnit()})`;
 	// }

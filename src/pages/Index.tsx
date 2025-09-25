@@ -9,6 +9,7 @@ import { SectorPerformance } from '@/components/R10-SectorPerformance';
 import { Certification } from '@/components/R20-Certification';
 import { sampleProjects } from '@/data/sampleData';
 import { Project } from '@/components/Utils/project';
+import { Card } from '@/components/ui/card';
 
 const Index = () => {
 	const [filteredProjects, setFilteredProjects] = useState(sampleProjects);
@@ -121,18 +122,20 @@ const Index = () => {
 		<div className="min-h-screen bg-gray-50">
 			<DashboardHeader />
 
-			<div className="container mx-auto px-6 py-8">
+			<div className="container mx-auto">
 				<div className="flex">
 					{/* Fixed Filter Panel - aligned with main content */}
-					<div className="fixed left-6 top-[calc(4rem+4rem)] w-80 h-[calc(100vh-10rem)] overflow-y-auto z-10">
-						<div className="space-y-6">
-							<AddProjectData projects={sampleProjects} />
-							<FilterPanel filters={filters} onFilterChange={handleFilterChange} onClearFilters={handleClearFilters} />
+					<div className="fixed px-0 top-[6rem] bottom-0 overflow-y-auto pt-8">
+						<div className="space-y-6 p-6">
+							<Card className="p-0 rounded-tl-[60px] rounded-tr-[60px] rounded-bl-[200px] rounded-br-[200px]">
+								<AddProjectData projects={sampleProjects} />
+								<FilterPanel filters={filters} onFilterChange={handleFilterChange} onClearFilters={handleClearFilters} />
+							</Card>
 						</div>
 					</div>
 
 					{/* Main Content with left margin to account for fixed sidebar */}
-					<div className="flex-1 ml-96 space-y-8">
+					<div className="flex-1 ml-96 space-y-8 pt-8">
 						{/* Sector Performance Analysis */}
 						<SectorPerformance projects={sampleProjects} />
 

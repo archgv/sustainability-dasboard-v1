@@ -16,7 +16,7 @@ import { generateNiceTicks } from './Utils/UtilShape';
 import { chartKPIs, filteredKPIs, kpiCompatibilityMatrix } from './Utils/UtilChart';
 
 export type ChartType = 'Compare Two' | 'Single Project' | 'Single Time';
-export type ValueType = 'total' | 'per-sqm';
+export type ValueType = 'total' | 'average';
 
 interface ChartProps {
 	projects: Project[];
@@ -28,7 +28,7 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 	const [chartType, setChartType] = useState<ChartType>('Compare Two');
 	const [selectedKPI1, setSelectedKPI1] = useState('Total Embodied Carbon');
 	const [selectedKPI2, setSelectedKPI2] = useState('Operational Energy Total');
-	const [valueType, setValueType] = useState<ValueType>('per-sqm');
+	const [valueType, setValueType] = useState<ValueType>('average');
 	const [showBenchmarks, setShowBenchmarks] = useState(false);
 	const [selectedSubSector, setSelectedSubSector] = useState<string>('');
 	const [selectedBarChartBenchmark, setSelectedBarChartBenchmark] = useState<string>('');
@@ -49,7 +49,7 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 	};
 
 	const transformDataForValueType = (data: Project[]): Project[] => {
-		if (valueType === 'per-sqm') {
+		if (valueType === 'average') {
 			return data; // Data is already per sqm in our KPIs
 		}
 
@@ -88,15 +88,15 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 	};
 
 	const getChartTitle = () => {
-		const valueTypeLabel = valueType === 'per-sqm' ? 'per sqm' : 'total';
+		const valueTypeLabel = valueType === 'average' ? 'per sqm' : 'total';
 
 		switch (chartType) {
 			case 'Compare Two':
-				return `${kpi1Config?.label} vs ${kpi2Config?.label} (${valueTypeLabel}) - Bubble Chart`;
+				return `${kpi1Config.key} vs ${kpi2Config.key} (${valueTypeLabel}) - Bubble Chart`;
 			case 'Single Project':
-				return `${kpi1Config?.label} by Project (${valueTypeLabel}) - Bar Chart`;
+				return `${kpi1Config.key} by Project (${valueTypeLabel}) - Bar Chart`;
 			case 'Single Time':
-				return `${kpi1Config?.label} Over Time (${valueTypeLabel}) - Timeline`;
+				return `${kpi1Config.key} Over Time (${valueTypeLabel}) - Timeline`;
 			default:
 				return 'Chart';
 		}
@@ -178,8 +178,8 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 
 	const availableSubSectors = getAvailableSubSectors();
 	const showSingleTimeSectorToggle =
-		(selectedKPI1 === 'Upfront Carbon' || selectedKPI1 === 'Operational Energy Total') && valueType === 'per-sqm' && chartType === 'Single Time' && availableSubSectors.length > 1;
-	const showSingleSectorToggle = selectedKPI1 === 'Upfront Carbon' && valueType === 'per-sqm' && chartType === 'Single Project' && availableSubSectors.length > 0;
+		(selectedKPI1 === 'Upfront Carbon' || selectedKPI1 === 'Operational Energy Total') && valueType === 'average' && chartType === 'Single Time' && availableSubSectors.length > 1;
+	const showSingleSectorToggle = selectedKPI1 === 'Upfront Carbon' && valueType === 'average' && chartType === 'Single Project' && availableSubSectors.length > 0;
 
 	// Get compatible KPI2 options based on selected KPI1
 	const showKPI2 = chartType === 'Compare Two';
@@ -189,93 +189,108 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 		<div className="space-y-6">
 			{/* Chart Configuration */}
 			<Card className="p-4">
-				<div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-					<div>
-						<Label htmlFor="chart-type" className="text-sm font-medium text-gray-700 mb-2 block">
-							Chart Type
-						</Label>
-						<Select value={chartType} onValueChange={(value) => setChartType(value as ChartType)}>
-							<SelectTrigger>
-								<SelectValue placeholder="Select chart type" />
-							</SelectTrigger>
-							<SelectContent>
-								<SelectItem value="Compare Two">Compare Two KPIs</SelectItem>
-								<SelectItem value="Single Project">Single KPI Across Projects</SelectItem>
-								<SelectItem value="Single Time">Single KPI Over Time</SelectItem>
-							</SelectContent>
-						</Select>
-					</div>
-
-					<div>
-						<Label htmlFor="value-type" className="text-sm font-medium text-gray-700 mb-2 block">
-							Value Type
-						</Label>
-						<Select value={valueType} onValueChange={(value) => setValueType(value as ValueType)}>
-							<SelectTrigger>
-								<SelectValue placeholder="Select value type" />
-							</SelectTrigger>
-							<SelectContent>
-								<SelectItem value="total">Total</SelectItem>
-								<SelectItem value="per-sqm">/m² GIA</SelectItem>
-							</SelectContent>
-						</Select>
-					</div>
-
-					<div>
-						<Label htmlFor="kpi1" className="text-sm font-medium text-gray-700 mb-2 block">
-							KPI 1
-						</Label>
-						<Select value={selectedKPI1} onValueChange={setSelectedKPI1}>
-							<SelectTrigger>
-								<SelectValue placeholder="Select first KPI" />
-							</SelectTrigger>
-							<SelectContent>
-								{filteredKPIs
-									.filter((kpi) => {
-										// Remove biogenic from single-bar and single-timeline charts
-										if ((chartType === 'Single Project' || chartType === 'Single Time') && kpi.key === 'Biogenic Carbon') {
-											return false;
-										}
-										return true;
-									})
-									.map((kpi) => (
-										<SelectItem key={kpi.key} value={kpi.key}>
-											{kpi.label} ({kpi.unit})
-										</SelectItem>
-									))}
-							</SelectContent>
-						</Select>
-					</div>
-
-					{showKPI2 && (
-						<div>
-							<Label htmlFor="kpi2" className="text-sm font-medium text-gray-700 mb-2 block">
-								KPI 2
+				<div className="flex flex-wrap items-center justify-between gap-4">
+					<div className="flex items-center gap-2">
+						<div className="w-56">
+							<Label htmlFor="chart-type" className="text-sm font-medium text-gray-700 mb-2 block px-4">
+								Chart Type
 							</Label>
-							<Select value={selectedKPI2} onValueChange={setSelectedKPI2}>
-								<SelectTrigger>
-									<SelectValue placeholder="Select second KPI" />
+							<Select value={chartType} onValueChange={(value) => setChartType(value as ChartType)}>
+								<SelectTrigger className="rounded-full pl-4">
+									<SelectValue placeholder="Select Chart Type" />
 								</SelectTrigger>
-								<SelectContent>
-									{compatibleKPI2Options.map((kpi) => (
-										<SelectItem key={kpi.key} value={kpi.key}>
-											{kpi.label} ({kpi.unit})
-										</SelectItem>
-									))}
+								<SelectContent className="rounded-[20px]">
+									<SelectItem className="rounded-full " value="Compare Two">
+										Compare Two KPIs
+									</SelectItem>
+									<SelectItem className="rounded-full " value="Single Project">
+										Single KPI Across Projects
+									</SelectItem>
+									<SelectItem className="rounded-full " value="Single Time">
+										Single KPI Over Time
+									</SelectItem>
 								</SelectContent>
 							</Select>
 						</div>
-					)}
+
+						<div className="w-28">
+							<Label htmlFor="value-type" className="text-sm font-medium text-gray-700 mb-2 block pl-4">
+								Value Type
+							</Label>
+							<Select value={valueType} onValueChange={(value) => setValueType(value as ValueType)}>
+								<SelectTrigger className="rounded-full pl-4">
+									<SelectValue placeholder="Select Value Type" />
+								</SelectTrigger>
+								<SelectContent className="rounded-[20px]">
+									<SelectItem className="rounded-full" value="total">
+										Total
+									</SelectItem>
+									<SelectItem className="rounded-full" value="average">
+										/m² GIA
+									</SelectItem>
+								</SelectContent>
+							</Select>
+						</div>
+					</div>
+
+					<div className="flex items-center gap-2">
+						<div className="w-[274px]">
+							<Label htmlFor="kpi1" className="text-sm font-medium text-gray-700 mb-2 block pl-4">
+								KPI 1
+							</Label>
+							<Select value={selectedKPI1} onValueChange={setSelectedKPI1}>
+								<SelectTrigger className="rounded-full pl-4">
+									<SelectValue placeholder="Select First KPI" />
+								</SelectTrigger>
+								<SelectContent className="rounded-[20px]">
+									{filteredKPIs
+										.filter((kpi) => {
+											// Remove biogenic from single-bar and single-timeline charts
+											if ((chartType === 'Single Project' || chartType === 'Single Time') && kpi.key === 'Biogenic Carbon') {
+												return false;
+											}
+											return true;
+										})
+										.map((kpi) => (
+											<SelectItem className="rounded-full" key={kpi.key} value={kpi.key}>
+												{kpi.key}
+											</SelectItem>
+										))}
+								</SelectContent>
+							</Select>
+						</div>
+
+						{showKPI2 && (
+							<div className="w-[274px]">
+								<Label htmlFor="kpi2" className="text-sm font-medium text-gray-700 mb-2 block pl-4">
+									KPI 2
+								</Label>
+								<Select value={selectedKPI2} onValueChange={setSelectedKPI2}>
+									<SelectTrigger className="rounded-full pl-4">
+										<SelectValue placeholder="Select Second KPI" />
+									</SelectTrigger>
+									<SelectContent className="rounded-[20px]">
+										{compatibleKPI2Options.map((kpi) => (
+											<SelectItem className="rounded-full" key={kpi.key} value={kpi.key}>
+												{kpi.key}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+							</div>
+						)}
+					</div>
 				</div>
 			</Card>
+
 			<Card className="p-6">
 				<div className="flex justify-between items-center mb-6">
 					<h2 className="text-xl font-semibold" style={{ color: chartColors.dark }}>
 						{getChartTitle()}
 					</h2>
 					<div className="flex items-center space-x-2">
-						{/* Show benchmark toggle only for Total Embodied Carbon with per-sqm values */}
-						{selectedKPI1 === 'Total Embodied Carbon' && valueType === 'per-sqm' && chartType === 'Single Project' && (
+						{/* Show benchmark toggle only for Total Embodied Carbon with average values */}
+						{selectedKPI1 === 'Total Embodied Carbon' && valueType === 'average' && chartType === 'Single Project' && (
 							<Button
 								variant={showBenchmarks ? 'default' : 'outline'}
 								size="sm"

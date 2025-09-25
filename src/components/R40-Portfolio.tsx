@@ -56,7 +56,7 @@ export const Portfolio = ({ projects, isComparingToSelf = false, selectedRibaSta
 	return (
 		<div>
 			<div className="flex items-center justify-between mb-6">
-				<h2 className="text-xl font-semibold text-gray-900">{isComparingToSelf ? 'Project RIBA Stages' : 'Project Portfolio'}</h2>
+				<h2 className="">{isComparingToSelf ? 'Project RIBA Stages' : 'Project Portfolio'}</h2>
 				<div className="text-sm text-gray-500">
 					Showing {formatNumber(projects.length)} {isComparingToSelf ? 'stages' : 'projects'}
 				</div>
@@ -123,18 +123,6 @@ export const Portfolio = ({ projects, isComparingToSelf = false, selectedRibaSta
 									</div>
 								)}
 							</div>
-
-							{/* {project.certifications && project.certifications.length > 0 && (
-                <div className="mt-4 pt-4 border-t">
-                  <div className="flex flex-wrap gap-1">
-                    {project.certifications.map((cert, index) => (
-                      <span key={index} className="text-xs text-gray-600 mr-2">
-                        {cert}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )} */}
 						</Card>
 					);
 				})}

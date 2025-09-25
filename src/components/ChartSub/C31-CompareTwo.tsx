@@ -51,7 +51,7 @@ export const CompareTwo = ({
 					{...getXAxisProps('Compare Two', selectedKPI1, kpi1Config, valueType)}
 					type="number"
 					dataKey={selectedKPI1}
-					name={kpi1Config?.label || selectedKPI1}
+					name={kpi1Config.key || selectedKPI1}
 					tick={{ fill: chartColors.dark, fontSize: 12 }}
 					tickFormatter={(value) => formatNumber(value)}
 					ticks={(() => {
@@ -63,7 +63,7 @@ export const CompareTwo = ({
 					{...getYAxisProps('Compare Two', selectedKPI2, kpi2Config, valueType)}
 					type="number"
 					dataKey={selectedKPI2}
-					name={kpi2Config?.label || selectedKPI2}
+					name={kpi2Config.key || selectedKPI2}
 					tickFormatter={(value) => formatNumber(value)}
 					ticks={(() => {
 						const maxValue = Math.max(...bubbleChartData.map((p) => Math.abs(p[selectedKPI2] || 0)));
@@ -92,10 +92,10 @@ export const CompareTwo = ({
 										Area: {formatNumber(area)} m²
 									</p>
 									<p className="text-sm" style={{ color: chartColors.dark }}>
-										{kpi1Config?.label}: {formatNumber(data[selectedKPI1])} {getUnitLabel(kpi1Config, valueType)}
+										{kpi1Config.key}: {formatNumber(data[selectedKPI1])} {getUnitLabel(kpi1Config, valueType)}
 									</p>
 									<p className="text-sm" style={{ color: chartColors.dark }}>
-										{kpi2Config?.label}: {formatNumber(data[selectedKPI2])} {getUnitLabel(kpi2Config, valueType)}
+										{kpi2Config.key}: {formatNumber(data[selectedKPI2])} {getUnitLabel(kpi2Config, valueType)}
 									</p>
 								</div>
 							);
@@ -114,7 +114,7 @@ export const CompareTwo = ({
 
 						const baseId = payload.id.split('-')[0];
 						const area = getProjectArea(baseId);
-						const bubbleSize = valueType === 'per-sqm' ? Math.sqrt(area / 500) : 8;
+						const bubbleSize = valueType === 'average' ? Math.sqrt(area / 500) : 8;
 						const sectorColor = getSectorColor(payload['Primary Sector']);
 						const shape = getSectorShape(payload['Primary Sector']);
 
