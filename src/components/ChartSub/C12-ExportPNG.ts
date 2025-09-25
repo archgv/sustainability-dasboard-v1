@@ -1,4 +1,4 @@
-import { Project, availableKPIs } from '@/components/Utils/project';
+import { Project, KPIOptions } from '@/components/Utils/project';
 import { ChartType, ValueType } from '@/components/R31-ChartOption';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks } from '@/data/benchmarkData';
 import { getSectorBenchmarkColor } from '@/components/Utils/UtilSector';
@@ -25,8 +25,8 @@ const getUnitLabel = (baseUnit: string, valueType: ValueType, forCSV: boolean = 
 
 const getChartTitle = (chartType: ChartType, selectedKPI1: string, selectedKPI2: string, valueType: ValueType) => {
 	const valueTypeLabel = valueType === 'per-sqm' ? 'per sqm' : 'total';
-	const kpi1Config = availableKPIs.find((kpi) => kpi.key === selectedKPI1);
-	const kpi2Config = availableKPIs.find((kpi) => kpi.key === selectedKPI2);
+	const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
+	const kpi2Config = KPIOptions.find((kpi) => kpi.key === selectedKPI2);
 
 	switch (chartType) {
 		case 'compare-bubble':
@@ -122,13 +122,13 @@ export const exportChartToPNG = (options: ExportPNGOptions) => {
 				const subSectorData = sectorData[selectedBarChartBenchmark as keyof typeof sectorData];
 				if (!subSectorData) return { lines: [], title: '' };
 
-				const newBuildValue = subSectorData['New building']?.[benchmarkYear as keyof (typeof subSectorData)['New building']];
+				const newBuildValue = subSectorData['New Build']?.[benchmarkYear as keyof (typeof subSectorData)['New Build']];
 				const retrofitValue = subSectorData['Retrofit']?.[benchmarkYear as keyof (typeof subSectorData)['Retrofit']];
 
 				const benchmarkLines = [];
 				if (newBuildValue !== undefined) {
 					benchmarkLines.push({
-						name: `New building (PC ${benchmarkYear})`,
+						name: `New Build (PC ${benchmarkYear})`,
 						value: newBuildValue,
 						color: benchmarkColor,
 						year: benchmarkYear,
@@ -192,7 +192,7 @@ export const exportChartToPNG = (options: ExportPNGOptions) => {
 				// Draw line indicator
 				ctx.strokeStyle = benchmark.color;
 				ctx.lineWidth = 2;
-				ctx.setLineDash(benchmark.name.includes('New building') ? [5, 5] : [10, 5]);
+				ctx.setLineDash(benchmark.name.includes('New Build') ? [5, 5] : [10, 5]);
 				ctx.beginPath();
 				ctx.moveTo(xPos, yPosition - 5);
 				ctx.lineTo(xPos + 24, yPosition - 5);

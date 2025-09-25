@@ -1,4 +1,5 @@
 import { formatNumber } from '@/lib/utils';
+import { KPIOption } from '../Utils/project';
 
 interface SectorStats {
 	count: number;
@@ -13,19 +14,19 @@ type SectorStatsMap = Record<string, SectorStats>;
 
 interface ExportCSVOptions {
 	selectedKPI: string;
-	currentKPI: { value: string; unit: string; totalUnit: string } | undefined;
-	effectiveValueType: string;
+	currentKPI: KPIOption;
+	valueType: string;
 	yearFilter: string;
 	sectorStats: SectorStatsMap;
 	allSectors: string[];
 }
 
-const getDisplayUnit = (currentKPI: { unit: string; totalUnit: string } | undefined, effectiveValueType: string, forCSV: boolean = false) => {
-	if (effectiveValueType === 'total') {
-		const unit = currentKPI?.totalUnit || '';
+const getDisplayUnit = (currentKPI: KPIOption, valueType: string, forCSV: boolean = false) => {
+	if (valueType === 'total') {
+		const unit = currentKPI.totalUnit;
 		return forCSV ? unit.replace(/CO₂/g, 'CO2').replace(/²/g, '2') : unit;
 	}
-	const unit = currentKPI?.unit || '';
+	const unit = currentKPI.unit;
 	return forCSV ? unit.replace(/CO₂/g, 'CO2').replace(/²/g, '2') : unit;
 };
 
@@ -34,22 +35,22 @@ const getAverage = (total: number, count: number) => {
 };
 
 export const exportSectorCSV = (options: ExportCSVOptions) => {
-	const { selectedKPI, currentKPI, effectiveValueType, yearFilter, sectorStats, allSectors } = options;
+	const { selectedKPI, currentKPI, valueType, yearFilter, sectorStats, allSectors } = options;
 
 	console.log('Downloading CSV for sector performance analysis');
 
 	const csvContent =
 		[
 			'Sector Performance Analysis',
-			`KPI: ${currentKPI?.value} (${getDisplayUnit(currentKPI, effectiveValueType, true)})`,
-			`Value Type: ${effectiveValueType}`,
+			`KPI: ${currentKPI.key} (${getDisplayUnit(currentKPI, valueType, true)})`,
+			`Value Type: ${valueType}`,
 			`Year Filter: ${yearFilter}`,
 			'',
-			`Sector,Projects,Average (${getDisplayUnit(currentKPI, effectiveValueType, true)}),Min (${getDisplayUnit(currentKPI, effectiveValueType, true)}),Max (${getDisplayUnit(
+			`Sector,Projects,Average (${getDisplayUnit(currentKPI, valueType, true)}),Min (${getDisplayUnit(currentKPI, valueType, true)}),Max (${getDisplayUnit(
 				currentKPI,
-				effectiveValueType,
+				valueType,
 				true
-			)}),Range (${getDisplayUnit(currentKPI, effectiveValueType, true)})`,
+			)}),Range (${getDisplayUnit(currentKPI, valueType, true)})`,
 		].join('\n') + '\n';
 
 	const csvData = allSectors
@@ -69,7 +70,7 @@ export const exportSectorCSV = (options: ExportCSVOptions) => {
 	const url = URL.createObjectURL(blob);
 	const a = document.createElement('a');
 	a.href = url;
-	a.download = `sector-performance-${selectedKPI}-${effectiveValueType}-${Date.now()}.csv`;
+	a.download = `sector-performance-${selectedKPI}-${valueType}-${Date.now()}.csv`;
 	a.click();
 	URL.revokeObjectURL(url);
 };

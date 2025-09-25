@@ -1,11 +1,11 @@
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Project, availableKPIs } from '@/components/Utils/project';
+import { Project, KPIOptions } from '@/components/Utils/project';
 import { ValueType } from '../R31-ChartOption';
 import { getSectorColor, getSectorShape } from '@/components/Utils/UtilSector';
 import { formatNumber } from '@/lib/utils';
 import { ChartShape } from '../R33-ChartShape';
 import { chartColors } from '../Utils/UtilColor';
-import { getResponsiveContainerProps, getScatterChartProps, getCartesianGridProps, getTooltipContainerStyle } from './ChartConfig';
+import { getResponsiveContainerProps, getScatterChartProps, getCartesianGridProps, getYAxisProps, getXAxisProps, getBarProps, getTooltipContainerStyle, getUnitLabel } from './C00-ChartConfig';
 
 interface BubbleChartProps {
 	projects: Project[];
@@ -15,7 +15,6 @@ interface BubbleChartProps {
 	isComparingToSelf?: boolean;
 	chartColors: typeof chartColors;
 	generateNiceTicks: (maxValue: number, tickCount?: number) => number[];
-	getUnitLabel: (baseUnit: string, valueType: ValueType, forCSV?: boolean) => string;
 	getProjectArea: (projectId: string) => number;
 	transformDataForValueType: (data: Project[]) => Project[];
 }
@@ -28,12 +27,11 @@ export const BubbleChart = ({
 	isComparingToSelf = false,
 	chartColors,
 	generateNiceTicks,
-	getUnitLabel,
 	getProjectArea,
 	transformDataForValueType,
 }: BubbleChartProps) => {
-	const kpi1Config = availableKPIs.find((kpi) => kpi.key === selectedKPI1);
-	const kpi2Config = availableKPIs.find((kpi) => kpi.key === selectedKPI2);
+	const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
+	const kpi2Config = KPIOptions.find((kpi) => kpi.key === selectedKPI2);
 
 	const transformedProjects = transformDataForValueType(projects);
 	const sortedProjects = transformedProjects;
@@ -47,14 +45,14 @@ export const BubbleChart = ({
 
 	return (
 		<ResponsiveContainer {...getResponsiveContainerProps()}>
-			<ScatterChart className="gggg" {...getScatterChartProps()}>
+			<ScatterChart {...getScatterChartProps()}>
 				<CartesianGrid {...getCartesianGridProps()} />
 				<XAxis
+					{...getXAxisProps('Compare Two', selectedKPI1, kpi1Config, valueType)}
 					type="number"
 					dataKey={selectedKPI1}
 					name={kpi1Config?.label || selectedKPI1}
-					label={{ value: `${kpi1Config?.label || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType)})`, position: 'insideBottom', offset: -5 }}
-					tick={{ fill: chartColors.dark }}
+					tick={{ fill: chartColors.dark, fontSize: 12 }}
 					tickFormatter={(value) => formatNumber(value)}
 					ticks={(() => {
 						const maxValue = Math.max(...bubbleChartData.map((p) => Math.abs(p[selectedKPI1] || 0)));
@@ -62,17 +60,10 @@ export const BubbleChart = ({
 					})()}
 				/>
 				<YAxis
+					{...getYAxisProps('Compare Two', selectedKPI2, kpi2Config, valueType)}
 					type="number"
 					dataKey={selectedKPI2}
 					name={kpi2Config?.label || selectedKPI2}
-					label={{
-						value: `${kpi2Config?.label || selectedKPI2} (${getUnitLabel(kpi2Config?.unit || '', valueType)})`,
-						angle: -90,
-						position: 'outside',
-						textAnchor: 'middle',
-						offset: 10,
-					}}
-					tick={{ fill: chartColors.dark }}
 					tickFormatter={(value) => formatNumber(value)}
 					ticks={(() => {
 						const maxValue = Math.max(...bubbleChartData.map((p) => Math.abs(p[selectedKPI2] || 0)));
@@ -101,10 +92,10 @@ export const BubbleChart = ({
 										Area: {formatNumber(area)} m²
 									</p>
 									<p className="text-sm" style={{ color: chartColors.dark }}>
-										{kpi1Config?.label}: {formatNumber(data[selectedKPI1])} {getUnitLabel(kpi1Config?.unit || '', valueType)}
+										{kpi1Config?.label}: {formatNumber(data[selectedKPI1])} {getUnitLabel(kpi1Config, valueType)}
 									</p>
 									<p className="text-sm" style={{ color: chartColors.dark }}>
-										{kpi2Config?.label}: {formatNumber(data[selectedKPI2])} {getUnitLabel(kpi2Config?.unit || '', valueType)}
+										{kpi2Config?.label}: {formatNumber(data[selectedKPI2])} {getUnitLabel(kpi2Config, valueType)}
 									</p>
 								</div>
 							);

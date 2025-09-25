@@ -91,26 +91,30 @@ export interface KPIOption {
 	key: keyof Project;
 	label: string;
 	unit: string;
+	totalUnit: string;
 	numericOnly?: boolean;
 }
 
-export const availableKPIs: KPIOption[] = [
+export const KPIOptions: KPIOption[] = [
 	{
 		key: 'Operational Energy Total',
 		label: 'Operational energy: Total',
 		unit: 'kWh/m²/year',
+		totalUnit: 'MWh/yr',
 		numericOnly: true,
 	},
 	{
 		key: 'Operational Energy Part L',
 		label: 'Operational energy Part L',
 		unit: 'kWh/m²/year',
+		totalUnit: 'MWh/yr',
 		numericOnly: true,
 	},
 	{
 		key: 'Operational Energy Gas',
 		label: 'Operational energy: Gas',
 		unit: 'kWh/m²/year',
+		totalUnit: 'MWh/yr',
 		numericOnly: true,
 	},
 
@@ -118,12 +122,14 @@ export const availableKPIs: KPIOption[] = [
 		key: 'Space Heating Demand',
 		label: 'Space heating demand',
 		unit: 'kWh/m²/year',
+		totalUnit: 'MWh/yr',
 		numericOnly: true,
 	},
 	{
 		key: 'Total Renewable Energy Generation',
 		label: 'Renewable energy generation',
 		unit: 'kWh/m²/year',
+		totalUnit: 'MWh/yr',
 		numericOnly: true,
 	},
 
@@ -131,18 +137,21 @@ export const availableKPIs: KPIOption[] = [
 		key: 'Upfront Carbon',
 		label: 'Upfront Carbon',
 		unit: 'kgCO2e/m²',
+		totalUnit: 'tCO₂e',
 		numericOnly: true,
 	},
 	{
 		key: 'Total Embodied Carbon',
 		label: 'Total Embodied Carbon',
 		unit: 'kgCO2e/m²',
+		totalUnit: 'tCO₂e',
 		numericOnly: true,
 	},
 	{
 		key: 'Biogenic Carbon',
 		label: 'Biogenic carbon',
 		unit: 'kgCO2e/m²',
+		totalUnit: 'MWh/yr',
 		numericOnly: true,
 	},
 
@@ -150,18 +159,21 @@ export const availableKPIs: KPIOption[] = [
 		key: 'Biodiversity Net Gain',
 		label: 'Biodiversity net gain',
 		unit: '%',
+		totalUnit: '%',
 		numericOnly: true,
 	},
 	{
 		key: 'Habitats Units Gained',
 		label: 'Habitat Units Gained',
 		unit: 'units',
+		totalUnit: 'units',
 		numericOnly: true,
 	},
 	{
 		key: 'Urban Greening Factor',
 		label: 'Urban greening factor',
 		unit: '%',
+		totalUnit: '%',
 		numericOnly: true,
 	},
 ];

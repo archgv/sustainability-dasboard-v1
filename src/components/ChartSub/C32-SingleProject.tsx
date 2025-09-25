@@ -1,19 +1,21 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine } from 'recharts';
-import { Project, availableKPIs } from '@/components/Utils/project';
+import { Project, KPIOptions } from '@/components/Utils/project';
 import { ValueType } from '../R31-ChartOption';
 import { getSectorColor, getSectorBenchmarkColor } from '@/components/Utils/UtilSector';
 import { formatNumber } from '@/lib/utils';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks } from '@/data/benchmarkData';
 import { chartColors } from '../Utils/UtilColor';
-import { 
-	getResponsiveContainerProps, 
-	getBarChartProps, 
-	getCartesianGridProps, 
-	getYAxisProps, 
-	getXAxisProps, 
-	getBarProps, 
-	getTooltipContainerStyle 
-} from './ChartConfig';
+import {
+	getResponsiveContainerProps,
+	getBarChartProps,
+	getCartesianGridProps,
+	getYAxisProps,
+	getXAxisProps,
+	getBarProps,
+	getTooltipContainerStyle,
+	getUnitLabel,
+	MultiLineTickComponent,
+} from './C00-ChartConfig';
 
 interface BarChartProps {
 	projects: Project[];
@@ -24,7 +26,6 @@ interface BarChartProps {
 	selectedBarChartBenchmark: string;
 	chartColors: typeof chartColors;
 	generateNiceTicks: (maxValue: number, tickCount?: number) => number[];
-	getUnitLabel: (baseUnit: string, valueType: ValueType, forCSV?: boolean) => string;
 	getProjectArea: (projectId: string) => number;
 	transformDataForValueType: (data: Project[]) => Project[];
 }
@@ -38,43 +39,13 @@ export const SingleProject = ({
 	selectedBarChartBenchmark,
 	chartColors,
 	generateNiceTicks,
-	getUnitLabel,
 	getProjectArea,
 	transformDataForValueType,
 }: BarChartProps) => {
-	const kpi1Config = availableKPIs.find((kpi) => kpi.key === selectedKPI1);
+	const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
 
 	const transformedProjects = transformDataForValueType(projects);
 	const sortedProjects = transformedProjects;
-
-	const MultiLineTickComponent = (props) => {
-		const { x, y, payload } = props;
-		const words = payload.value.split(' ');
-		const lines = [];
-		let currentLine = '';
-
-		// Split text into lines of max 2-3 words
-		for (let i = 0; i < words.length; i++) {
-			const testLine = currentLine + (currentLine ? ' ' : '') + words[i];
-			if (testLine.length > 15 && currentLine) {
-				lines.push(currentLine);
-				currentLine = words[i];
-			} else {
-				currentLine = testLine;
-			}
-		}
-		if (currentLine) lines.push(currentLine);
-
-		return (
-			<g transform={`translate(${x},${y + 20})`}>
-				{lines.map((line, index) => (
-					<text key={index} x={0} y={index * 16} textAnchor="end" fill={chartColors.dark} fontSize="12" transform="rotate(-45)">
-						{line}
-					</text>
-				))}
-			</g>
-		);
-	};
 
 	// Add biogenic data as negative values for totalEmbodiedCarbon - use sorted projects
 	const chartData = sortedProjects.map((project) => ({
@@ -102,13 +73,13 @@ export const SingleProject = ({
 		const subSectorData = sectorData[selectedBarChartBenchmark as keyof typeof sectorData];
 		if (!subSectorData) return [];
 
-		const newBuildValue = subSectorData['New building']?.[benchmarkYear as keyof (typeof subSectorData)['New building']];
+		const newBuildValue = subSectorData['New Build']?.[benchmarkYear as keyof (typeof subSectorData)['New Build']];
 		const retrofitValue = subSectorData['Retrofit']?.[benchmarkYear as keyof (typeof subSectorData)['Retrofit']];
 
 		const benchmarkLines = [];
 		if (newBuildValue !== undefined) {
 			benchmarkLines.push({
-				name: `New building (PC ${benchmarkYear})`,
+				name: `New Build (PC ${benchmarkYear})`,
 				value: newBuildValue,
 				color: benchmarkColor,
 				year: benchmarkYear,
@@ -158,7 +129,7 @@ export const SingleProject = ({
 					{barChartBenchmarkLines.map((item, index) => (
 						<div key={index} className="flex items-center gap-2">
 							<svg width="24" height="2" className="inline-block">
-								<line x1="0" y1="1" x2="24" y2="1" stroke={item.color} strokeWidth="2" strokeDasharray={item.name.includes('New building') ? '5 5' : '10 5'} />
+								<line x1="0" y1="1" x2="24" y2="1" stroke={item.color} strokeWidth="2" strokeDasharray={item.name.includes('New Build') ? '5 5' : '10 5'} />
 							</svg>
 							<span className="text-sm" style={{ color: chartColors.dark }}>
 								{item.name}
@@ -171,24 +142,26 @@ export const SingleProject = ({
 				<BarChart data={chartData} {...getBarChartProps()}>
 					<CartesianGrid {...getCartesianGridProps()} />
 					<XAxis
+						{...getXAxisProps('Single Project', selectedKPI1, kpi1Config, valueType)}
 						dataKey={(item) => {
 							const displayName = isComparingToSelf && item['Current RIBA Stage'] ? `${item['Project Name']} (RIBA ${item['Current RIBA Stage']})` : item['Project Name'];
 							return displayName;
 						}}
-						height={80}
-						interval={0}
-						tick={<MultiLineTickComponent />}
-						{...getXAxisProps()}
+						tick={(props) => {
+							const lines = MultiLineTickComponent(props);
+							return (
+								<g transform={`translate(${props.x + 25},${props.y + 20})`}>
+									{lines.map((line, index) => (
+										<text key={index} x={0} y={index * 12} textAnchor="end" fill={chartColors.dark} fontSize="10">
+											{line}
+										</text>
+									))}
+								</g>
+							);
+						}}
 					/>
 					<YAxis
-						label={{
-							value: `${kpi1Config?.label || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType)})`,
-							angle: -90,
-							position: 'insideLeft',
-							offset: -10,
-							style: { textAnchor: 'middle', fontSize: 12 },
-						}}
-						{...getYAxisProps()}
+						{...getYAxisProps('Single Project', selectedKPI1, kpi1Config, valueType)}
 						tickFormatter={(value) => formatNumber(value)}
 						domain={selectedKPI1 === 'Total Embodied Carbon' ? [0, 1600] : [0, 'dataMax']}
 						ticks={
@@ -202,7 +175,7 @@ export const SingleProject = ({
 					/>
 					<Tooltip
 						formatter={(value: number, name: string) => [
-							`${formatNumber(value)} ${getUnitLabel(kpi1Config?.unit || '', valueType)}`,
+							`${formatNumber(value)} ${getUnitLabel(kpi1Config, valueType)}`,
 							name === 'Biogenic Carbon' ? 'Biogenic Carbon' : kpi1Config?.label || selectedKPI1,
 						]}
 						labelFormatter={(label) => `Project: ${label}`}
@@ -219,12 +192,12 @@ export const SingleProject = ({
 										</p>
 										{mainData && (
 											<p className="text-sm" style={{ color: chartColors.dark }}>
-												{kpi1Config?.label}: {formatNumber(mainData.value)} {getUnitLabel(kpi1Config?.unit || '', valueType)}
+												{kpi1Config?.label}: {formatNumber(mainData.value)} {getUnitLabel(kpi1Config, valueType)}
 											</p>
 										)}
 										{biogenicData && (
 											<p className="text-sm" style={{ color: chartColors.dark }}>
-												Biogenic Carbon: {formatNumber(Math.abs(biogenicData.value))} {getUnitLabel(kpi1Config?.unit || '', valueType)}
+												Biogenic Carbon: {formatNumber(Math.abs(biogenicData.value))} {getUnitLabel(kpi1Config, valueType)}
 											</p>
 										)}
 										{barChartBenchmarkLines.length > 0 && (
@@ -234,7 +207,7 @@ export const SingleProject = ({
 												</p>
 												{barChartBenchmarkLines.map((benchmark, idx) => (
 													<p key={idx} className="text-xs" style={{ color: chartColors.dark }}>
-														{benchmark.name}: {formatNumber(benchmark.value)} {getUnitLabel(kpi1Config?.unit || '', valueType)}
+														{benchmark.name}: {formatNumber(benchmark.value)} {getUnitLabel(kpi1Config, valueType)}
 													</p>
 												))}
 											</div>
@@ -259,7 +232,7 @@ export const SingleProject = ({
 							})}
 						</Bar>
 					)}
-					{selectedKPI1 === 'Total Embodied Carbon' && <ReferenceLine y={0} stroke="#A8A8A3" strokeWidth={2} />}
+					{<ReferenceLine y={0} stroke="#A8A8A3" strokeWidth={4} />}
 
 					{/* Benchmark lines for Total Embodied Carbon */}
 					{benchmarkLines.map((benchmark, index) => (
@@ -280,7 +253,7 @@ export const SingleProject = ({
 
 					{/* UKNZCBS Benchmark lines for Upfront Carbon */}
 					{barChartBenchmarkLines.map((benchmark, index) => (
-						<ReferenceLine key={benchmark.name} y={benchmark.value} stroke={benchmark.color} strokeWidth={2} strokeDasharray={benchmark.name.includes('New building') ? '5 5' : '10 5'} />
+						<ReferenceLine key={benchmark.name} y={benchmark.value} stroke={benchmark.color} strokeWidth={2} strokeDasharray={benchmark.name.includes('New Build') ? '5 5' : '10 5'} />
 					))}
 				</BarChart>
 			</ResponsiveContainer>

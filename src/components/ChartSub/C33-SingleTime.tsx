@@ -1,11 +1,11 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import { Project, availableKPIs } from '@/components/Utils/project';
+import { Project, KPIOptions } from '@/components/Utils/project';
 import { ValueType } from '../R31-ChartOption';
 import { getSectorColor, getSectorBenchmarkColor } from '@/components/Utils/UtilSector';
 import { formatNumber } from '@/lib/utils';
 import { uknzcbsBenchmarks, uknzcbsOperationalEnergyBenchmarks } from '@/data/benchmarkData';
 import { chartColors } from '../Utils/UtilColor';
-import { getResponsiveContainerProps, getLineChartProps, getCartesianGridProps, getTooltipContainerStyle } from './ChartConfig';
+import { getResponsiveContainerProps, getLineChartProps, getCartesianGridProps, getYAxisProps, getXAxisProps, getBarProps, getTooltipContainerStyle, getUnitLabel } from './C00-ChartConfig';
 
 interface TimelineChartProps {
 	projects: Project[];
@@ -15,22 +15,11 @@ interface TimelineChartProps {
 	selectedSubSector: string;
 	chartColors: typeof chartColors;
 	generateNiceTicks: (maxValue: number, tickCount?: number) => number[];
-	getUnitLabel: (baseUnit: string, valueType: ValueType, forCSV?: boolean) => string;
 	transformDataForValueType: (data: Project[]) => Project[];
 }
 
-export const TimelineChart = ({
-	projects,
-	selectedKPI1,
-	valueType,
-	isComparingToSelf = false,
-	selectedSubSector,
-	chartColors,
-	generateNiceTicks,
-	getUnitLabel,
-	transformDataForValueType,
-}: TimelineChartProps) => {
-	const kpi1Config = availableKPIs.find((kpi) => kpi.key === selectedKPI1);
+export const TimelineChart = ({ projects, selectedKPI1, valueType, isComparingToSelf = false, selectedSubSector, chartColors, generateNiceTicks, transformDataForValueType }: TimelineChartProps) => {
+	const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
 
 	const transformedProjects = transformDataForValueType(projects);
 
@@ -77,8 +66,8 @@ export const TimelineChart = ({
 		const newBuildData = years
 			.map((year) => ({
 				completionYear: year,
-				benchmarkValue: subSectorData['New building'][year as keyof (typeof subSectorData)['New building']],
-				benchmarkType: 'New building',
+				benchmarkValue: subSectorData['New Build'][year as keyof (typeof subSectorData)['New Build']],
+				benchmarkType: 'New Build',
 			}))
 			.filter((item) => item.benchmarkValue !== undefined);
 
@@ -118,7 +107,7 @@ export const TimelineChart = ({
 
 		const newBuildData = benchmarkYears
 			.map((year) => {
-				const newBuildValues = subSectorData['New building'];
+				const newBuildValues = subSectorData['New Build'];
 				const value = newBuildValues?.[year as keyof typeof newBuildValues];
 
 				return {
@@ -160,23 +149,17 @@ export const TimelineChart = ({
 			<LineChart data={timelineData} {...getLineChartProps()}>
 				<CartesianGrid {...getCartesianGridProps()} />
 				<XAxis
+					{...getXAxisProps('Single Time', selectedKPI1, kpi1Config, valueType)}
 					dataKey="completionYear"
 					type="number"
 					scale="linear"
 					domain={xAxisDomain}
 					ticks={xAxisTicks}
 					tickFormatter={(value) => value.toString()}
-					label={{ value: 'Year', position: 'insideBottom', offset: -5 }}
-					tick={{ fill: chartColors.dark }}
+					tick={{ fill: chartColors.dark, fontSize: 12 }}
 				/>
 				<YAxis
-					label={{
-						value: `${kpi1Config?.label || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType)})`,
-						angle: -90,
-						position: 'insideLeft',
-						style: { textAnchor: 'middle' },
-					}}
-					tick={{ fill: chartColors.dark }}
+					{...getYAxisProps('Single Time', selectedKPI1, kpi1Config, valueType)}
 					tickFormatter={(value) => formatNumber(value)}
 					ticks={(() => {
 						const maxValue = Math.max(
@@ -223,7 +206,7 @@ export const TimelineChart = ({
 												Project: {projectData.payload.displayName}
 											</p>
 											<p className="text-sm" style={{ color: chartColors.dark }}>
-												{kpi1Config?.label}: {formatNumber(projectData.value as number)} {getUnitLabel(kpi1Config?.unit || '', valueType)}
+												{kpi1Config?.label}: {formatNumber(projectData.value as number)} {getUnitLabel(kpi1Config, valueType)}
 											</p>
 										</>
 									)}
@@ -231,12 +214,12 @@ export const TimelineChart = ({
 										<div className="mt-2 pt-2 border-t border-gray-200">
 											{newBuildBenchmark && (
 												<p className="text-sm" style={{ color: benchmarkColor }}>
-													New Build: {formatNumber(newBuildBenchmark)} {getUnitLabel(kpi1Config?.unit || '', valueType)}
+													New Build: {formatNumber(newBuildBenchmark)} {getUnitLabel(kpi1Config, valueType)}
 												</p>
 											)}
 											{retrofitBenchmark && (
 												<p className="text-sm" style={{ color: benchmarkColor }}>
-													Retrofit: {formatNumber(retrofitBenchmark)} {getUnitLabel(kpi1Config?.unit || '', valueType)}
+													Retrofit: {formatNumber(retrofitBenchmark)} {getUnitLabel(kpi1Config, valueType)}
 												</p>
 											)}
 										</div>
@@ -278,7 +261,7 @@ export const TimelineChart = ({
 						strokeWidth={2}
 						strokeDasharray="5 5"
 						dot={false}
-						name="New building benchmark"
+						name="New Build Benchmark"
 						connectNulls={false}
 					/>
 				)}
@@ -292,7 +275,7 @@ export const TimelineChart = ({
 						strokeWidth={2}
 						strokeDasharray="10 5"
 						dot={false}
-						name="Retrofit benchmark"
+						name="Retrofit Benchmark"
 						connectNulls={false}
 					/>
 				)}
@@ -307,7 +290,7 @@ export const TimelineChart = ({
 						strokeWidth={2}
 						strokeDasharray="5 5"
 						dot={false}
-						name="New building benchmark"
+						name="New Build Benchmark"
 						connectNulls={false}
 					/>
 				)}
@@ -321,7 +304,7 @@ export const TimelineChart = ({
 						strokeWidth={2}
 						strokeDasharray="10 5"
 						dot={false}
-						name="Retrofit benchmark"
+						name="Retrofit Benchmark"
 						connectNulls={false}
 					/>
 				)}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ChevronDown, Download, FileText } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -6,11 +6,11 @@ import { Button } from '@/components/ui/button';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine } from 'recharts';
 import { formatNumber } from '@/lib/utils';
 import { sectorConfig } from '@/components/Utils/UtilSector';
-import { Project } from '@/components/Utils/project';
+import { Project, KPIOptions } from '@/components/Utils/project';
 import { exportSectorCSV } from '@/components/SectorSub/S01-ExportCSV';
 import { exportSectorPNG } from '@/components/SectorSub/S02-ExportPNG';
 import { chartColors } from './Utils/UtilColor';
-import { getResponsiveContainerProps, getCartesianGridProps, getYAxisProps, getTooltipContainerStyle } from './ChartSub/ChartConfig';
+import { getResponsiveContainerProps, getCartesianGridProps, getYAxisProps, getTooltipContainerStyle, getDisplayUnit } from './ChartSub/C00-ChartConfig';
 
 interface SectorStats {
 	count: number;
@@ -31,27 +31,15 @@ interface BiogenicStats {
 export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 	const [isExpanded, setIsExpanded] = useState(false);
 	const [selectedKPI, setSelectedKPI] = useState('Total Embodied Carbon');
-	const [valueType, setValueType] = useState('average');
+	const [valueType, setValueType] = useState<'average' | 'total'>('average');
 	const [yearFilter, setYearFilter] = useState('all');
 	// Force average for biodiversity metrics
-	const effectiveValueType = ['Biodiversity Net Gain', 'Urban Greening Factor'].includes(selectedKPI) ? 'average' : valueType;
-
-	const kpiOptions = [
-		{ value: 'Operational Energy Total', unit: 'kWh/m²/yr', totalUnit: 'MWh/yr' },
-		{ value: 'Operational Energy Part L', unit: 'kWh/m²/yr', totalUnit: 'MWh/yr' },
-		{ value: 'Operational Energy Gas', unit: 'kWh/m²/yr', totalUnit: 'MWh/yr' },
-
-		{ value: 'Space Heating Demand', unit: 'kWh/m²/yr', totalUnit: 'MWh/yr' },
-		{ value: 'Total Renewable Energy Generation', unit: 'kWh/m²/yr', totalUnit: 'MWh/yr' },
-
-		{ value: 'Upfront Carbon', unit: 'kgCO₂e/m²', totalUnit: 'tCO₂e' },
-		{ value: 'Total Embodied Carbon', unit: 'kgCO₂e/m²', totalUnit: 'tCO₂e' },
-
-		{ value: 'Biodiversity Net Gain', unit: '%', totalUnit: '%' },
-		{ value: 'Urban Greening Factor', unit: 'score', totalUnit: 'score' },
-	];
-
-	const currentKPI = kpiOptions.find((kpi) => kpi.value === selectedKPI);
+	useEffect(() => {
+		if (['Biodiversity Net Gain', 'Urban Greening Factor'].includes(selectedKPI)) {
+			setValueType('average'); // runs only when selectedKPI changes
+		}
+	}, [selectedKPI]);
+	const currentKPI = KPIOptions.find((kpi) => kpi.key === selectedKPI);
 	const allSectors = ['Residential', 'Education', 'Healthcare', 'Infrastructure', 'CCC', 'Workplace'];
 
 	// Filter projects by year if needed
@@ -79,7 +67,7 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 		acc[sector].count++;
 		const value = project[selectedKPI] || 0;
 		const gia = project['GIA'] || 0;
-		if (effectiveValueType === 'total' && gia > 0) {
+		if (valueType === 'total' && gia > 0) {
 			let totalValue = value * gia;
 			// Convert to appropriate units for totals
 			if (selectedKPI === 'Upfront Carbon' || selectedKPI === 'Total Embodied Carbon') {
@@ -118,7 +106,7 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 					if (project['Primary Sector'] === sector) {
 						const value = project['Biogenic Carbon'] || 0;
 						const gia = project['GIA'] || 0;
-						if (effectiveValueType === 'total' && gia > 0) {
+						if (valueType === 'total' && gia > 0) {
 							let totalValue = value * gia;
 							totalValue = totalValue / 1000; // Convert kg to tonnes
 							acc.totalValue += totalValue;
@@ -153,7 +141,7 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 		exportSectorCSV({
 			selectedKPI,
 			currentKPI,
-			effectiveValueType,
+			valueType,
 			yearFilter,
 			sectorStats,
 			allSectors,
@@ -164,20 +152,11 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 		exportSectorPNG({
 			selectedKPI,
 			currentKPI,
-			effectiveValueType,
+			valueType,
 			yearFilter,
 			sectorStats,
 			allSectors,
 		});
-	};
-
-	const getDisplayUnit = (forCSV: boolean = false) => {
-		if (effectiveValueType === 'total') {
-			const unit = currentKPI?.totalUnit || '';
-			return forCSV ? unit.replace(/CO₂/g, 'CO2').replace(/²/g, '2') : unit;
-		}
-		const unit = currentKPI?.unit || '';
-		return forCSV ? unit.replace(/CO₂/g, 'CO2').replace(/²/g, '2') : unit;
 	};
 
 	return (
@@ -199,9 +178,9 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 									<SelectValue />
 								</SelectTrigger>
 								<SelectContent className="w-80 rounded-3xl pr-10 mr-4">
-									{kpiOptions.map((kpi) => (
-										<SelectItem key={kpi.value} value={kpi.value} className="rounded-full m-1 mr-4 pr-10">
-											{kpi.value}
+									{KPIOptions.map((kpi) => (
+										<SelectItem key={kpi.key} value={kpi.key} className="rounded-full m-1 mr-4 pr-10">
+											{kpi.key}
 										</SelectItem>
 									))}
 								</SelectContent>
@@ -267,7 +246,7 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 					{/* Chart Section */}
 					<div>
 						<h3 className="font-medium mt-12 mb-2 text-center" style={{ color: chartColors.dark }}>
-							{currentKPI?.value} by Sector ({getDisplayUnit()})
+							{currentKPI.key} by Sector ({getDisplayUnit(currentKPI, valueType)})
 						</h3>
 						<div className="h-[460px] flex justify-center" data-chart="sector-chart">
 							<ResponsiveContainer {...getResponsiveContainerProps(true)}>
@@ -276,13 +255,13 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 									<XAxis dataKey="sector" tick={{ fill: chartColors.dark, dy: 20 }} axisLine={false} tickLine={false} interval={0} />
 									<YAxis
 										label={{
-											value: `${currentKPI?.value} (${getDisplayUnit()})`,
+											value: `${currentKPI.key} (${getDisplayUnit(currentKPI, valueType)})`,
 											angle: -90,
 											position: 'insideLeft',
 											offset: -10,
 											style: { textAnchor: 'middle', fontSize: 12 },
 										}}
-										{...getYAxisProps()}
+										//{...getYAxisProps('Sector', selectedKPI, currentKPI, valueType)}
 										tickFormatter={(value) => formatNumber(value)}
 										domain={(() => {
 											// Get the data range
@@ -348,9 +327,12 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 												const data = props.payload;
 												const wholeLifeCarbon = formatNumber(Number(data.value));
 												const biogenic = formatNumber(Number(data.biogenicValue));
-												return [`${wholeLifeCarbon} ${getDisplayUnit()}`, effectiveValueType === 'total' ? 'Average Whole Life Carbon' : 'Average Whole Life Carbon'];
+												return [
+													`${wholeLifeCarbon} ${getDisplayUnit(currentKPI, valueType)}`,
+													valueType === 'total' ? 'Average Whole Life Carbon' : 'Average Whole Life Carbon',
+												];
 											}
-											return [`${formatNumber(Number(value))} ${getDisplayUnit()}`, effectiveValueType === 'total' ? 'Cumulative total' : 'Average'];
+											return [`${formatNumber(Number(value))} ${getDisplayUnit(currentKPI, valueType)}`, valueType === 'total' ? 'Cumulative total' : 'Average'];
 										}}
 										labelFormatter={(label) => `Sector: ${label}`}
 										contentStyle={getTooltipContainerStyle()}
@@ -365,8 +347,14 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 														}}
 													>
 														<p style={{ margin: 0, fontWeight: 'bold' }}>{`Sector: ${label}`}</p>
-														<p style={{ margin: 0, color: chartColors.primary }}>{`Average Whole Life Carbon: ${formatNumber(data.value)} ${getDisplayUnit()}`}</p>
-														<p style={{ margin: 0, color: chartColors.dark }}>{`Average biogenic: ${formatNumber(data.biogenicValue)} ${getDisplayUnit()}`}</p>
+														<p style={{ margin: 0, color: chartColors.primary }}>{`Average Whole Life Carbon: ${formatNumber(data.value)} ${getDisplayUnit(
+															currentKPI,
+															valueType
+														)}`}</p>
+														<p style={{ margin: 0, color: chartColors.dark }}>{`Average biogenic: ${formatNumber(data.biogenicValue)} ${getDisplayUnit(
+															currentKPI,
+															valueType
+														)}`}</p>
 													</div>
 												);
 											}
@@ -380,7 +368,10 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 													>
 														<p style={{ margin: 0, fontWeight: 'bold' }}>{`Sector: ${label}`}</p>
 														<p style={{ margin: 0, color: chartColors.primary }}>
-															{`${effectiveValueType === 'total' ? 'Cumulative total' : 'Average'}: ${formatNumber(Number(payload[0].value))} ${getDisplayUnit()}`}
+															{`${valueType === 'total' ? 'Cumulative total' : 'Average'}: ${formatNumber(Number(payload[0].value))} ${getDisplayUnit(
+																currentKPI,
+																valueType
+															)}`}
 														</p>
 													</div>
 												);
@@ -432,16 +423,16 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 										<>
 											<th className="px-4 py-2 text-center">Project Count</th>
 										</>
-										{effectiveValueType === 'average' ? (
+										{valueType === 'average' ? (
 											<>
-												<th className="px-4 py-2 text-center">Average ({getDisplayUnit()})</th>
+												<th className="px-4 py-2 text-center">Average ({getDisplayUnit(currentKPI, valueType)})</th>
 												<th className="px-4 py-2 text-center">Min</th>
 												<th className="px-4 py-2 text-center">Max</th>
 												<th className="px-4 py-2 text-center">Range</th>
 											</>
 										) : (
 											<>
-												<th className="px-4 py-2 text-center">Total ({getDisplayUnit()})</th>
+												<th className="px-4 py-2 text-center">Total ({getDisplayUnit(currentKPI, valueType)})</th>
 												<th className="px-4 py-2 text-center">Min</th>
 												<th className="px-4 py-2 text-center">Max</th>
 												<th className="px-4 py-2 text-center">Total Area (m²)</th>
@@ -462,7 +453,7 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 											<tr key={sector} className="divide-y-2 divide-x-4 divide-white">
 												<td className="px-4 py-2 text-left font-medium">{sector}</td>
 												<td className="px-4 py-2 text-center">{count}</td>
-												{effectiveValueType === 'average' ? (
+												{valueType === 'average' ? (
 													<>
 														<td className="px-4 py-2 text-center">{formatNumber(avg)}</td>
 														<td className="px-4 py-2 text-center">{formatNumber(min)}</td>

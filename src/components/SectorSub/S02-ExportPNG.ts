@@ -1,4 +1,5 @@
 import { formatNumber } from '@/lib/utils';
+import { KPIOption } from '../Utils/project';
 
 interface SectorStats {
 	count: number;
@@ -13,15 +14,15 @@ type SectorStatsMap = Record<string, SectorStats>;
 
 interface ExportPNGOptions {
 	selectedKPI: string;
-	currentKPI: { value: string; unit: string; totalUnit: string } | undefined;
-	effectiveValueType: string;
+	currentKPI: KPIOption;
+	valueType: string;
 	yearFilter: string;
 	sectorStats: SectorStatsMap;
 	allSectors: string[];
 }
 
-const getDisplayUnit = (currentKPI: { unit: string; totalUnit: string } | undefined, effectiveValueType: string, forCSV: boolean = false) => {
-	if (effectiveValueType === 'total') {
+const getDisplayUnit = (currentKPI: KPIOption, valueType: string, forCSV: boolean = false) => {
+	if (valueType === 'total') {
 		const unit = currentKPI?.totalUnit || '';
 		return forCSV ? unit.replace(/CO₂/g, 'CO2').replace(/²/g, '2') : unit;
 	}
@@ -34,7 +35,7 @@ const getAverage = (total: number, count: number) => {
 };
 
 export const exportSectorPNG = (options: ExportPNGOptions) => {
-	const { selectedKPI, currentKPI, effectiveValueType, yearFilter, sectorStats, allSectors } = options;
+	const { selectedKPI, currentKPI, valueType, yearFilter, sectorStats, allSectors } = options;
 
 	console.log('Downloading PNG for sector performance analysis');
 
@@ -73,8 +74,8 @@ export const exportSectorPNG = (options: ExportPNGOptions) => {
 		yPosition = Math.max(yPosition + logoHeight + 20, 80);
 
 		// Draw title with Average/Cumulative prefix
-		const prefix = effectiveValueType === 'total' ? 'Cumulative' : 'Average';
-		const title = `${prefix} ${currentKPI?.value.toLowerCase()} by sector (${getDisplayUnit(currentKPI, effectiveValueType)})`;
+		const prefix = valueType === 'total' ? 'Cumulative' : 'Average';
+		const title = `${prefix} ${currentKPI?.key} by sector (${getDisplayUnit(currentKPI, valueType)})`;
 		ctx.fillText(title, canvas.width / 2, yPosition);
 		yPosition += 60;
 
@@ -124,9 +125,9 @@ export const exportSectorPNG = (options: ExportPNGOptions) => {
 
 			// Draw table
 			const tableHeaders =
-				effectiveValueType === 'per-sqm'
-					? ['Sector', 'No. of projects', `Average (${getDisplayUnit(currentKPI, effectiveValueType)})`, 'Min', 'Max', 'Range']
-					: ['Sector', 'No. of projects', `Cumulative total (${getDisplayUnit(currentKPI, effectiveValueType)})`, 'Min', 'Max', `Cumulative total Area (m²)`];
+				valueType === 'per-sqm'
+					? ['Sector', 'No. of projects', `Average (${getDisplayUnit(currentKPI, valueType)})`, 'Min', 'Max', 'Range']
+					: ['Sector', 'No. of projects', `Cumulative total (${getDisplayUnit(currentKPI, valueType)})`, 'Min', 'Max', `Cumulative total Area (m²)`];
 
 			const colWidths = [120, 100, 140, 80, 80, 120];
 			const rowHeight = 25;
@@ -174,7 +175,7 @@ export const exportSectorPNG = (options: ExportPNGOptions) => {
 				const totalArea = stats ? Math.round(stats.totalGIA) : 0;
 
 				const rowData =
-					effectiveValueType === 'per-sqm'
+					valueType === 'per-sqm'
 						? [sector, count.toString(), formatNumber(avg), formatNumber(min), formatNumber(max), formatNumber(range)]
 						: [sector, count.toString(), formatNumber(stats ? stats.totalValue : 0), formatNumber(min), formatNumber(max), formatNumber(totalArea)];
 
@@ -202,7 +203,7 @@ export const exportSectorPNG = (options: ExportPNGOptions) => {
 					const url = URL.createObjectURL(blob);
 					const a = document.createElement('a');
 					a.href = url;
-					a.download = `sector-performance-${selectedKPI}-${effectiveValueType}-${Date.now()}.png`;
+					a.download = `sector-performance-${selectedKPI}-${valueType}-${Date.now()}.png`;
 					a.click();
 					URL.revokeObjectURL(url);
 				}

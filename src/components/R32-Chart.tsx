@@ -1,7 +1,7 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Download, FileText, Eye, EyeOff } from 'lucide-react';
-import { Project, availableKPIs } from '@/components/Utils/project';
+import { Project, KPIOptions } from '@/components/Utils/project';
 import { ChartType, ValueType } from './R31-ChartOption';
 import { useState } from 'react';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks, uknzcbsOperationalEnergyBenchmarks } from '@/data/benchmarkData';
@@ -28,8 +28,8 @@ export const Chart = ({ projects, chartType, selectedKPI1, selectedKPI2, valueTy
 	const [selectedSubSector, setSelectedSubSector] = useState<string>('');
 	const [selectedBarChartBenchmark, setSelectedBarChartBenchmark] = useState<string>('');
 
-	const kpi1Config = availableKPIs.find((kpi) => kpi.key === selectedKPI1);
-	const kpi2Config = availableKPIs.find((kpi) => kpi.key === selectedKPI2);
+	const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
+	const kpi2Config = KPIOptions.find((kpi) => kpi.key === selectedKPI2);
 
 	// Mock building area data for demonstration
 	const getProjectArea = (projectId: string): number => {
@@ -82,16 +82,6 @@ export const Chart = ({ projects, chartType, selectedKPI1, selectedKPI2, valueTy
 		});
 	};
 
-	const getUnitLabel = (baseUnit: string, valueType: ValueType, forCSV: boolean = false): string => {
-		// For CSV exports, use plain text to avoid encoding issues
-		const unit = forCSV ? baseUnit.replace(/CO2/g, 'CO2').replace(/₂/g, '2') : baseUnit.replace(/CO2/g, 'CO₂');
-
-		if (valueType === 'total') {
-			return unit.replace('/m²', '').replace('/year', '/year total');
-		}
-		return unit;
-	};
-
 	const getChartTitle = () => {
 		const valueTypeLabel = valueType === 'per-sqm' ? 'per sqm' : 'total';
 
@@ -119,7 +109,6 @@ export const Chart = ({ projects, chartType, selectedKPI1, selectedKPI2, valueTy
 						isComparingToSelf={isComparingToSelf}
 						chartColors={chartColors}
 						generateNiceTicks={generateNiceTicks}
-						getUnitLabel={getUnitLabel}
 						getProjectArea={getProjectArea}
 						transformDataForValueType={transformDataForValueType}
 					/>
@@ -136,7 +125,6 @@ export const Chart = ({ projects, chartType, selectedKPI1, selectedKPI2, valueTy
 						selectedBarChartBenchmark={selectedBarChartBenchmark}
 						chartColors={chartColors}
 						generateNiceTicks={generateNiceTicks}
-						getUnitLabel={getUnitLabel}
 						getProjectArea={getProjectArea}
 						transformDataForValueType={transformDataForValueType}
 					/>
@@ -152,7 +140,6 @@ export const Chart = ({ projects, chartType, selectedKPI1, selectedKPI2, valueTy
 						selectedSubSector={selectedSubSector}
 						chartColors={chartColors}
 						generateNiceTicks={generateNiceTicks}
-						getUnitLabel={getUnitLabel}
 						transformDataForValueType={transformDataForValueType}
 					/>
 				);

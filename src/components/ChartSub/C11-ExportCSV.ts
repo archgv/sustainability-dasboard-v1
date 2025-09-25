@@ -1,4 +1,4 @@
-import { Project, availableKPIs } from '@/components/Utils/project';
+import { Project, KPIOptions } from '@/components/Utils/project';
 import { ChartType, ValueType } from '@/components/R31-ChartOption';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks } from '@/data/benchmarkData';
 
@@ -44,8 +44,8 @@ const getUnitLabel = (baseUnit: string, valueType: ValueType, forCSV: boolean = 
 
 const getChartTitle = (chartType: ChartType, selectedKPI1: string, selectedKPI2: string, valueType: ValueType) => {
 	const valueTypeLabel = valueType === 'per-sqm' ? 'per sqm' : 'total';
-	const kpi1Config = availableKPIs.find((kpi) => kpi.key === selectedKPI1);
-	const kpi2Config = availableKPIs.find((kpi) => kpi.key === selectedKPI2);
+	const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
+	const kpi2Config = KPIOptions.find((kpi) => kpi.key === selectedKPI2);
 
 	switch (chartType) {
 		case 'compare-bubble':
@@ -96,8 +96,8 @@ const transformDataForValueType = (data: Project[], valueType: ValueType, select
 export const exportChartToCSV = (options: ExportCSVOptions) => {
 	const { projects, chartType, selectedKPI1, selectedKPI2, valueType, isComparingToSelf = false, selectedRibaStages = [], showBenchmarks, selectedBarChartBenchmark } = options;
 
-	const kpi1Config = availableKPIs.find((kpi) => kpi.key === selectedKPI1);
-	const kpi2Config = availableKPIs.find((kpi) => kpi.key === selectedKPI2);
+	const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
+	const kpi2Config = KPIOptions.find((kpi) => kpi.key === selectedKPI2);
 
 	const chartTitle = getChartTitle(chartType, selectedKPI1, selectedKPI2, valueType);
 	let csvContent = `${chartTitle}\n\n`;
@@ -164,13 +164,13 @@ export const exportChartToCSV = (options: ExportCSVOptions) => {
 			const subSectorData = sectorData[selectedBarChartBenchmark as keyof typeof sectorData];
 			if (!subSectorData) return { lines: [], title: '' };
 
-			const newBuildValue = subSectorData['New building']?.[benchmarkYear as keyof (typeof subSectorData)['New building']];
+			const newBuildValue = subSectorData['New Build']?.[benchmarkYear as keyof (typeof subSectorData)['New Build']];
 			const retrofitValue = subSectorData['Retrofit']?.[benchmarkYear as keyof (typeof subSectorData)['Retrofit']];
 
 			const benchmarkLines = [];
 			if (newBuildValue !== undefined) {
 				benchmarkLines.push({
-					name: `New building (PC ${benchmarkYear})`,
+					name: `New Build (PC ${benchmarkYear})`,
 					value: newBuildValue,
 				});
 			}
