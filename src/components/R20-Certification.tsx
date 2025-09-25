@@ -92,7 +92,7 @@ export const Certification = ({ projects }: { projects: Project[] }) => {
 											<div className="w-full rounded-full h-6 bg-gray-50">
 												{count > 0 && (
 													<div
-														className="h-6 rounded-full transition-all duration-300"
+														className="h-6 rounded-full transition-all duration-300 ml-auto"
 														style={{
 															width: `${barWidth}%`,
 															backgroundColor: getBarColor(rating, selectedCertification),
@@ -102,8 +102,11 @@ export const Certification = ({ projects }: { projects: Project[] }) => {
 											</div>
 										</div>
 										
-										<div className="flex items-center gap-2">
+										<div className="w-8 flex-shrink-0 text-right">
 											<span className="text-sm font-medium text-gray-700">{count}</span>
+										</div>
+										
+										<div className="w-8 flex-shrink-0 flex justify-center">
 											{count > 0 && (
 												<button
 													onClick={() => toggleRatingExpansion(rating)}
@@ -121,7 +124,7 @@ export const Certification = ({ projects }: { projects: Project[] }) => {
 									</div>
 
 									{count > 0 && expandedRatings[rating] && (
-										<div className="ml-28 space-y-1">
+										<div className="ml-40 space-y-1">
 											{projectsWithRating.map((project) => (
 												<div key={project.id} className="text-sm text-gray-600">
 													{getDisplayName(project)}
