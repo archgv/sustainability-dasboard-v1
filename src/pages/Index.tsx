@@ -142,7 +142,7 @@ const Index = () => {
 						<SectorPerformance projects={sampleProjects} />
 
 						{/* Certification Analysis */}
-						<Certification projects={sampleProjects} primaryProject={primaryProject} />
+						<Certification projects={sampleProjects} />
 
 						{/* Project Comparison */}
 						<Comparison

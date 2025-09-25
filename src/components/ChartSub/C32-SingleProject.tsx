@@ -5,6 +5,15 @@ import { getSectorColor, getSectorBenchmarkColor } from '@/components/Utils/Util
 import { formatNumber } from '@/lib/utils';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks } from '@/data/benchmarkData';
 import { chartColors } from '../Utils/UtilColor';
+import { 
+	getResponsiveContainerProps, 
+	getBarChartProps, 
+	getCartesianGridProps, 
+	getYAxisProps, 
+	getXAxisProps, 
+	getBarProps, 
+	getTooltipContainerStyle 
+} from './ChartConfig';
 
 interface BarChartProps {
 	projects: Project[];
@@ -158,9 +167,9 @@ export const SingleProject = ({
 					))}
 				</div>
 			)}
-			<ResponsiveContainer width="90%" height="100%">
-				<BarChart data={chartData} barGap={-100} margin={{ top: 50, right: 30, left: 20, bottom: 80 }}>
-					<CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} horizontal={true} verticalPoints={[]} />
+			<ResponsiveContainer {...getResponsiveContainerProps(true)}>
+				<BarChart data={chartData} {...getBarChartProps()}>
+					<CartesianGrid {...getCartesianGridProps()} />
 					<XAxis
 						dataKey={(item) => {
 							const displayName = isComparingToSelf && item['Current RIBA Stage'] ? `${item['Project Name']} (RIBA ${item['Current RIBA Stage']})` : item['Project Name'];
@@ -169,8 +178,7 @@ export const SingleProject = ({
 						height={80}
 						interval={0}
 						tick={<MultiLineTickComponent />}
-						axisLine={{ stroke: chartColors.dark, strokeWidth: 1 }}
-						tickLine={false}
+						{...getXAxisProps()}
 					/>
 					<YAxis
 						label={{
@@ -180,10 +188,8 @@ export const SingleProject = ({
 							offset: -10,
 							style: { textAnchor: 'middle', fontSize: 12 },
 						}}
-						tick={{ fill: chartColors.dark, fontSize: 12 }}
+						{...getYAxisProps()}
 						tickFormatter={(value) => formatNumber(value)}
-						tickLine={false}
-						axisLine={{ strokeWidth: 0 }}
 						domain={selectedKPI1 === 'Total Embodied Carbon' ? [0, 1600] : [0, 'dataMax']}
 						ticks={
 							selectedKPI1 === 'Total Embodied Carbon'
@@ -200,7 +206,7 @@ export const SingleProject = ({
 							name === 'Biogenic Carbon' ? 'Biogenic Carbon' : kpi1Config?.label || selectedKPI1,
 						]}
 						labelFormatter={(label) => `Project: ${label}`}
-						contentStyle={{ backgroundColor: 'white', border: `1px solid ${chartColors.primary}`, borderRadius: '8px' }}
+						contentStyle={getTooltipContainerStyle()}
 						content={({ active, payload, label }) => {
 							if (active && payload && payload.length) {
 								const mainData = payload.find((p) => p.dataKey === selectedKPI1);
@@ -239,14 +245,14 @@ export const SingleProject = ({
 							return null;
 						}}
 					/>
-					<Bar dataKey={selectedKPI1} barSize={100} fill={chartColors.primary} name={kpi1Config?.label || selectedKPI1} radius={[6, 6, 0, 0]}>
+					<Bar dataKey={selectedKPI1} {...getBarProps()} fill={chartColors.primary} name={kpi1Config?.label || selectedKPI1}>
 						{sortedProjects.map((project, index) => {
 							const sectorColor = getSectorColor(project['Primary Sector']);
 							return <Cell key={index} fill={sectorColor} stroke={sectorColor} strokeWidth={3} />;
 						})}
 					</Bar>
 					{selectedKPI1 === 'Total Embodied Carbon' && (
-						<Bar dataKey="Biogenic Carbon" barSize={100} fill="white" name="Biogenic Carbon" radius={[6, 6, 0, 0]}>
+						<Bar dataKey="Biogenic Carbon" {...getBarProps()} fill="white" name="Biogenic Carbon">
 							{sortedProjects.map((project, index) => {
 								const sectorColor = getSectorColor(project['Primary Sector']);
 								return <Cell key={index} fill="white" stroke={sectorColor} strokeWidth={3} />;

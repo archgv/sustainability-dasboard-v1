@@ -5,6 +5,7 @@ import { getSectorColor, getSectorShape } from '@/components/Utils/UtilSector';
 import { formatNumber } from '@/lib/utils';
 import { ChartShape } from '../R33-ChartShape';
 import { chartColors } from '../Utils/UtilColor';
+import { getResponsiveContainerProps, getScatterChartProps, getCartesianGridProps, getTooltipContainerStyle } from './ChartConfig';
 
 interface BubbleChartProps {
 	projects: Project[];
@@ -45,9 +46,9 @@ export const BubbleChart = ({
 	}));
 
 	return (
-		<ResponsiveContainer width="100%" height="100%">
-			<ScatterChart className="gggg" margin={{ top: 80, right: 20, bottom: 20, left: 80 }}>
-				<CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} horizontal={true} verticalPoints={[]} />
+		<ResponsiveContainer {...getResponsiveContainerProps()}>
+			<ScatterChart className="gggg" {...getScatterChartProps()}>
+				<CartesianGrid {...getCartesianGridProps()} />
 				<XAxis
 					type="number"
 					dataKey={selectedKPI1}
@@ -80,7 +81,7 @@ export const BubbleChart = ({
 				/>
 				<Tooltip
 					cursor={{ strokeDasharray: '3 3' }}
-					contentStyle={{ backgroundColor: 'white', border: `1px solid ${chartColors.primary}`, borderRadius: '8px' }}
+					contentStyle={getTooltipContainerStyle()}
 					content={({ active, payload }) => {
 						if (active && payload && payload.length) {
 							const data = payload[0].payload;

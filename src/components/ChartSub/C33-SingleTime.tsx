@@ -5,6 +5,7 @@ import { getSectorColor, getSectorBenchmarkColor } from '@/components/Utils/Util
 import { formatNumber } from '@/lib/utils';
 import { uknzcbsBenchmarks, uknzcbsOperationalEnergyBenchmarks } from '@/data/benchmarkData';
 import { chartColors } from '../Utils/UtilColor';
+import { getResponsiveContainerProps, getLineChartProps, getCartesianGridProps, getTooltipContainerStyle } from './ChartConfig';
 
 interface TimelineChartProps {
 	projects: Project[];
@@ -155,9 +156,9 @@ export const TimelineChart = ({
 	const xAxisTicks = [2020, 2022, 2024, 2026, 2028, 2030, 2032, 2034, 2036, 2038, 2040, 2042, 2044, 2046, 2048, 2050];
 
 	return (
-		<ResponsiveContainer width="100%" height="100%">
-			<LineChart data={timelineData} margin={{ top: 40, right: 30, left: 60, bottom: 80 }}>
-				<CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} horizontal={true} verticalPoints={[]} />
+		<ResponsiveContainer {...getResponsiveContainerProps()}>
+			<LineChart data={timelineData} {...getLineChartProps()}>
+				<CartesianGrid {...getCartesianGridProps()} />
 				<XAxis
 					dataKey="completionYear"
 					type="number"
@@ -193,7 +194,7 @@ export const TimelineChart = ({
 					})()}
 				/>
 				<Tooltip
-					contentStyle={{ backgroundColor: 'white', border: `1px solid ${chartColors.primary}`, borderRadius: '8px' }}
+					contentStyle={getTooltipContainerStyle()}
 					content={({ active, payload, label }) => {
 						if (active && payload && payload.length) {
 							const projectData = payload.find((p) => p.dataKey === selectedKPI1);
