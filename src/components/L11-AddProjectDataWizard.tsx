@@ -35,7 +35,8 @@ export interface WizardData {
 		'LEED': string;
 		'WELL': string;
 		'Fitwell'?: string;
-		'Passivhaus or EnePHit': string;
+		'Passivhaus': string;
+		'EnerPHit': string;
 		'UKNZCBS'?: string;
 		'NABERS': string;
 		'Other Cerification'?: string;
@@ -90,7 +91,8 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
 			'LEED': '',
 			'WELL': '',
 			'Fitwell': '',
-			'Passivhaus or EnePHit': '',
+			'Passivhaus': '',
+			'EnerPHit': '',
 			'UKNZCBS': '',
 			'NABERS': '',
 			'Other Cerification': '',
@@ -121,7 +123,8 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
 				'LEED': '',
 				'WELL': '',
 				'Fitwell': '',
-				'Passivhaus or EnePHit': '',
+				'Passivhaus': '',
+				'EnerPHit': '',
 				'UKNZCBS': '',
 				'NABERS': '',
 				'Other Cerification': '',
@@ -160,7 +163,8 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
 			'BREEAM': mapCertificationValue(project['BREEAM'] || ''),
 			'LEED': mapCertificationValue(project['LEED'] || ''),
 			'WELL': mapCertificationValue(project['WELL'] || ''),
-			'Passivhaus or EnePHit': project['Passivhaus or EnePHit'] ? 'passivhaus' : '',
+			'Passivhaus': project['Passivhaus'] ? 'Passivhaus' : '',
+			'EnerPHit': project['EnerPHit'] ? 'EnerPHit' : '',
 			'NABERS': project['NABERS']?.includes('Star') ? 'yes' : '',
 		};
 

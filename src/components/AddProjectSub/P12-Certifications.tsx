@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { HelpCircle, AlertTriangle } from 'lucide-react';
-import { WizardData } from '../L12-AddProjectDataWizard';
+import { WizardData } from '../L11-AddProjectDataWizard';
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -200,7 +200,9 @@ export const AddCertifications = ({ projectData, onDataUpdate, onSave, onSaveAnd
 					<div className="flex flex-col sm:flex-row justify-between gap-3">
 						<AlertDialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
 							<AlertDialogTrigger asChild>
-								<Button variant="outline" className="w-full sm:w-auto">Cancel</Button>
+								<Button variant="outline" className="w-full sm:w-auto">
+									Cancel
+								</Button>
 							</AlertDialogTrigger>
 							<AlertDialogContent>
 								<AlertDialogHeader>
@@ -220,7 +222,9 @@ export const AddCertifications = ({ projectData, onDataUpdate, onSave, onSaveAnd
 						<div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
 							<AlertDialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
 								<AlertDialogTrigger asChild>
-									<Button variant="outline" className="w-full sm:w-auto">Save</Button>
+									<Button variant="outline" className="w-full sm:w-auto">
+										Save
+									</Button>
 								</AlertDialogTrigger>
 								<AlertDialogContent>
 									<AlertDialogHeader>

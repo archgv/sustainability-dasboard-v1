@@ -72,11 +72,10 @@ export const AddSelection = ({ projects, selectedProjectId, onProjectSelect, onN
 															{project['BREEAM'] && <span className="bg-green-100 text-green-800 px-2 py-0.5 rounded text-xs">BREEAM: {project['BREEAM']}</span>}
 															{project['LEED'] && <span className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-xs">LEED: {project['LEED']}</span>}
 															{project['WELL'] && <span className="bg-purple-100 text-purple-800 px-2 py-0.5 rounded text-xs">WELL: {project['WELL']}</span>}
-															{project['Passivhaus or EnePHit'] && (
-																<span className="bg-orange-100 text-orange-800 px-2 py-0.5 rounded text-xs">
-																	Passivhaus or EnePHit: {project['Passivhaus or EnePHit']}
-																</span>
+															{project['Passivhaus'] && (
+																<span className="bg-orange-100 text-orange-800 px-2 py-0.5 rounded text-xs">Passivhaus: {project['Passivhaus']}</span>
 															)}
+															{project['EnerPHit'] && <span className="bg-orange-100 text-orange-800 px-2 py-0.5 rounded text-xs">EnerPHit: {project['EnerPHit']}</span>}
 														</div>
 														<div className="flex gap-4 text-xs">
 															{/* {project.operationalEnergy && <span>Energy: {project.operationalEnergy} kWh/m²/yr</span>} */}
