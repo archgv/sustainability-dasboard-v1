@@ -1,25 +1,13 @@
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Project } from '@/types/project';
-interface CertificationProps {
-	projects: Project[];
-	primaryProject?: string;
-}
-const certificationRatings = {
-	breeam: ['Outstanding', 'Excellent', 'Very Good', 'Good', 'Pass'],
-	leed: ['Platinum', 'Gold', 'Silver', 'Certified'],
-	well: ['Platinum', 'Gold', 'Silver', 'Bronze'],
-	nabers: ['6 Star', '5 Star', '4 Star', '3 Star', '2 Star', '1 Star'],
-	passivhaus: ['Certified'],
-	enerphit: ['Certified'],
-	uknzcbs: ['Net Zero'],
-};
-export const Certification = ({ projects, primaryProject = '' }: CertificationProps) => {
+import { certificationRatings } from './Utils/UtilCertification';
+
+export const Certification = ({ projects }: { projects: Project[] }) => {
 	const [isExpanded, setIsExpanded] = useState(false);
-	const [selectedCertification, setSelectedCertification] = useState<string>('breeam');
+	const [selectedCertification, setSelectedCertification] = useState<string>('BREEAM');
 	const getCertificationData = (certification: string) => {
 		const ratings = certificationRatings[certification as keyof typeof certificationRatings] || [];
 		const data: {
@@ -31,30 +19,7 @@ export const Certification = ({ projects, primaryProject = '' }: CertificationPr
 			data[rating] = [];
 		});
 		projects.forEach((project) => {
-			let projectRating = '';
-			switch (certification) {
-				case 'breeam':
-					projectRating = project['BREEAM'];
-					break;
-				case 'leed':
-					projectRating = project['LEED'];
-					break;
-				case 'well':
-					projectRating = project['WELL'];
-					break;
-				case 'nabers':
-					projectRating = project['NABERS'];
-					break;
-				case 'passivhaus':
-					if (project['Passivhaus or EnePHit']) projectRating = 'Certified';
-					break;
-				// case 'uknzcbs':
-				//   const uknzcbsCert = project["UKNZCBS"];
-				//   if (uknzcbsCert) {
-				//     if (uknzcbsCert.includes('Net Zero')) projectRating = 'Net Zero';
-				//   }
-				//   break;
-			}
+			const projectRating = project[certification];
 			if (projectRating && projectRating !== 'N/A' && data[projectRating]) {
 				data[projectRating].push(project);
 			}
@@ -63,10 +28,7 @@ export const Certification = ({ projects, primaryProject = '' }: CertificationPr
 	};
 	const certificationData = getCertificationData(selectedCertification);
 	const maxCount = Math.max(...Object.values(certificationData).map((projects) => projects.length), 4);
-	const getRatingColor = (rating: string) => {
-		// Return black text on white background for all ratings
-		return 'text-black';
-	};
+
 	const getBarColor = (rating: string) => {
 		const colors = {
 			'Outstanding': '#253E2C',
@@ -78,7 +40,7 @@ export const Certification = ({ projects, primaryProject = '' }: CertificationPr
 			'Gold': '#2D9B4D',
 			'Silver': '#39FF8D',
 			'Bronze': '#C2FF39',
-			'Certified': selectedCertification === 'leed' ? '#E9E8D3' : '#253E2C',
+			'Certified': selectedCertification === 'LEED' ? '#E9E8D3' : '#253E2C',
 			'Net Zero': '#253E2C',
 			'6 Star': '#253E2C',
 			'5 Star': '#2D9B4D',
@@ -104,19 +66,19 @@ export const Certification = ({ projects, primaryProject = '' }: CertificationPr
 			{isExpanded && (
 				<div className="mt-6 space-y-4">
 					<div className="flex items-center space-x-4">
-						<label className="text-sm font-medium text-gray-700">Select Certification:</label>
 						<Select value={selectedCertification} onValueChange={setSelectedCertification}>
-							<SelectTrigger className="w-48">
+							<SelectTrigger className="w-48 rounded-full px-6">
 								<SelectValue />
 							</SelectTrigger>
 							<SelectContent>
-								<SelectItem value="breeam">BREEAM</SelectItem>
-								<SelectItem value="leed">LEED</SelectItem>
-								<SelectItem value="well">WELL</SelectItem>
-								<SelectItem value="nabers">NABERS</SelectItem>
-								<SelectItem value="passivhaus">Passivhaus</SelectItem>
-								<SelectItem value="enerphit">EnerPHit</SelectItem>
-								<SelectItem value="uknzcbs">UKNZCBS</SelectItem>
+								<SelectItem value="BREEAM">BREEAM</SelectItem>
+								<SelectItem value="LEED">LEED</SelectItem>
+								<SelectItem value="WELL">WELL</SelectItem>
+								<SelectItem value="Fitwell">Fitwell</SelectItem>
+								<SelectItem value="Passivhaus">Passivhaus</SelectItem>
+								<SelectItem value="EnerPHit">EnerPHit</SelectItem>
+								<SelectItem value="NABERS">NABERS</SelectItem>
+								<SelectItem value="UKNZCBS">UKNZCBS</SelectItem>
 							</SelectContent>
 						</Select>
 					</div>
@@ -130,7 +92,7 @@ export const Certification = ({ projects, primaryProject = '' }: CertificationPr
 								<div key={rating} className="space-y-2">
 									<div className="flex items-center justify-between">
 										<div className="flex items-center space-x-2">
-											<span className={`text-sm font-medium ${getRatingColor(rating)}`}>{rating}</span>
+											<span className="text-sm font-medium text-black">{rating}</span>
 										</div>
 										<span className="text-sm font-medium text-gray-700">{count}</span>
 									</div>

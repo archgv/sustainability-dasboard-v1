@@ -4,7 +4,7 @@ import { ValueType } from '../R31-ChartOption';
 import { getSectorColor, getSectorShape } from '@/components/Utils/UtilSector';
 import { formatNumber } from '@/lib/utils';
 import { ChartShape } from '../R33-ChartShape';
-import { chartNamedColors } from './C01-UtilColor';
+import { chartColors } from './C01-UtilColor';
 
 interface BubbleChartProps {
 	projects: Project[];
@@ -12,7 +12,7 @@ interface BubbleChartProps {
 	selectedKPI2: string;
 	valueType: ValueType;
 	isComparingToSelf?: boolean;
-	chartColors: typeof chartNamedColors;
+	chartColors: typeof chartColors;
 	generateNiceTicks: (maxValue: number, tickCount?: number) => number[];
 	getUnitLabel: (baseUnit: string, valueType: ValueType, forCSV?: boolean) => string;
 	getProjectArea: (projectId: string) => number;

@@ -21,8 +21,8 @@ export const sampleProjects: Project[] = [
 		'Fitwell': '3 Stars',
 		'NABERS': '1 Star',
 		'Passivhaus': 'Certified',
-		'EnePHit': 'Not Targeted',
-        'UKNZCBS' : 'Yes - 2026',
+		'EnerPHit': 'Not Targeted',
+		'UKNZCBS': 'Yes - 2026',
 
 		'Current RIBA Stage': '7',
 
@@ -163,7 +163,7 @@ export const sampleProjects: Project[] = [
 		'Fitwell': '2 Stars',
 		'NABERS': '4 Star',
 		'Passivhaus': 'Not Targeted',
-		'EnePHit': 'Certified',
+		'EnerPHit': 'Certified',
 		'UKNZCBS': 'Yes - 2025',
 
 		'Current RIBA Stage': '7',
@@ -313,7 +313,7 @@ export const sampleProjects: Project[] = [
 		'Fitwell': '5 Stars',
 		'NABERS': '6 Star',
 		'Passivhaus': 'Certified',
-		'EnePHit': 'Not Targeted',
+		'EnerPHit': 'Not Targeted',
 		'UKNZCBS': 'Yes - 2024',
 
 		'Current RIBA Stage': '7',

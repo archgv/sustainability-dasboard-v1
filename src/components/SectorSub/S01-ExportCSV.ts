@@ -13,7 +13,7 @@ type SectorStatsMap = Record<string, SectorStats>;
 
 interface ExportCSVOptions {
 	selectedKPI: string;
-	currentKPI: { label: string; unit: string; totalUnit: string } | undefined;
+	currentKPI: { value: string; unit: string; totalUnit: string } | undefined;
 	effectiveValueType: string;
 	yearFilter: string;
 	sectorStats: SectorStatsMap;
@@ -35,19 +35,23 @@ const getAverage = (total: number, count: number) => {
 
 export const exportSectorCSV = (options: ExportCSVOptions) => {
 	const { selectedKPI, currentKPI, effectiveValueType, yearFilter, sectorStats, allSectors } = options;
-	
+
 	console.log('Downloading CSV for sector performance analysis');
-	
+
 	const csvContent =
 		[
 			'Sector Performance Analysis',
-			`KPI: ${currentKPI?.label} (${getDisplayUnit(currentKPI, effectiveValueType, true)})`,
+			`KPI: ${currentKPI?.value} (${getDisplayUnit(currentKPI, effectiveValueType, true)})`,
 			`Value Type: ${effectiveValueType}`,
 			`Year Filter: ${yearFilter}`,
 			'',
-			`Sector,Projects,Average (${getDisplayUnit(currentKPI, effectiveValueType, true)}),Min (${getDisplayUnit(currentKPI, effectiveValueType, true)}),Max (${getDisplayUnit(currentKPI, effectiveValueType, true)}),Range (${getDisplayUnit(currentKPI, effectiveValueType, true)})`,
+			`Sector,Projects,Average (${getDisplayUnit(currentKPI, effectiveValueType, true)}),Min (${getDisplayUnit(currentKPI, effectiveValueType, true)}),Max (${getDisplayUnit(
+				currentKPI,
+				effectiveValueType,
+				true
+			)}),Range (${getDisplayUnit(currentKPI, effectiveValueType, true)})`,
 		].join('\n') + '\n';
-		
+
 	const csvData = allSectors
 		.map((sector) => {
 			const stats = sectorStats[sector];
@@ -59,7 +63,7 @@ export const exportSectorCSV = (options: ExportCSVOptions) => {
 			return `${sector},${count},${formatNumber(avg)},${formatNumber(min)},${formatNumber(max)},${formatNumber(range)}`;
 		})
 		.join('\n');
-		
+
 	const fullCsvContent = csvContent + csvData;
 	const blob = new Blob([fullCsvContent], { type: 'text/csv;charset=utf-8;' });
 	const url = URL.createObjectURL(blob);

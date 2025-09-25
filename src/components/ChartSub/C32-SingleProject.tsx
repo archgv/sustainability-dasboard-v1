@@ -4,7 +4,7 @@ import { ValueType } from '../R31-ChartOption';
 import { getSectorColor, getSectorBenchmarkColor } from '@/components/Utils/UtilSector';
 import { formatNumber } from '@/lib/utils';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks } from '@/data/benchmarkData';
-import { chartNamedColors } from './C01-UtilColor';
+import { chartColors } from './C01-UtilColor';
 
 interface BarChartProps {
 	projects: Project[];
@@ -13,7 +13,7 @@ interface BarChartProps {
 	isComparingToSelf?: boolean;
 	showBenchmarks: boolean;
 	selectedBarChartBenchmark: string;
-	chartColors: typeof chartNamedColors;
+	chartColors: typeof chartColors;
 	generateNiceTicks: (maxValue: number, tickCount?: number) => number[];
 	getUnitLabel: (baseUnit: string, valueType: ValueType, forCSV?: boolean) => string;
 	getProjectArea: (projectId: string) => number;

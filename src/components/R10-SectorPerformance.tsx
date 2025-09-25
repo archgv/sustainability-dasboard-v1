@@ -9,6 +9,7 @@ import { sectorConfig } from '@/components/Utils/UtilSector';
 import { Project } from '@/types/project';
 import { exportSectorCSV } from '@/components/SectorSub/S01-ExportCSV';
 import { exportSectorPNG } from '@/components/SectorSub/S02-ExportPNG';
+import { chartColors } from './ChartSub/C01-UtilColor';
 
 interface SectorStats {
 	count: number;
@@ -26,41 +27,27 @@ interface BiogenicStats {
 	count: number;
 }
 
-// Custom color palette matching ChartSection
-const chartColors = {
-	primary: '#2D9B4D', // Updated to green as requested
-	secondary: '#48DE9D', // Bright green
-	tertiary: '#FF8EE5', // Updated bright pink as requested
-	quaternary: '#5dc5ed', // Light blue
-	accent1: '#E9E8D3', // Updated light green fill as requested
-	accent2: '#c9e1ea', // Light blue/grey
-	dark: '#272727', // Updated dark gray as requested
-	darkGreen: '#004033', // Dark green
-	muted: '#272727', // Updated to use new dark gray
-};
-
 export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 	const [isExpanded, setIsExpanded] = useState(false);
 	const [selectedKPI, setSelectedKPI] = useState('Total Embodied Carbon');
-	const [valueType, setValueType] = useState('per-sqm');
-
-	// Force per-sqm for biodiversity metrics
-	const effectiveValueType = ['Biodiversity Net Gain', 'Urban Greening Factor'].includes(selectedKPI) ? 'per-sqm' : valueType;
+	const [valueType, setValueType] = useState('average');
 	const [yearFilter, setYearFilter] = useState('all');
+	// Force average for biodiversity metrics
+	const effectiveValueType = ['Biodiversity Net Gain', 'Urban Greening Factor'].includes(selectedKPI) ? 'average' : valueType;
 
 	const kpiOptions = [
-		{ value: 'Operational Energy Total', label: 'Operational Energy Total', unit: 'kWh/m²/yr', totalUnit: 'MWh/yr' },
-		{ value: 'Operational Energy Part L', label: 'Operational Energy Part L', unit: 'kWh/m²/yr', totalUnit: 'MWh/yr' },
-		{ value: 'Operational Energy Gas', label: 'Operational Energy Gas', unit: 'kWh/m²/yr', totalUnit: 'MWh/yr' },
+		{ value: 'Operational Energy Total', unit: 'kWh/m²/yr', totalUnit: 'MWh/yr' },
+		{ value: 'Operational Energy Part L', unit: 'kWh/m²/yr', totalUnit: 'MWh/yr' },
+		{ value: 'Operational Energy Gas', unit: 'kWh/m²/yr', totalUnit: 'MWh/yr' },
 
-		{ value: 'Space Heating Demand', label: 'Space Heating Demand', unit: 'kWh/m²/yr', totalUnit: 'MWh/yr' },
-		{ value: 'Total Renewable Energy Generation', label: 'Total Renewable Energy Generation', unit: 'kWh/m²/yr', totalUnit: 'MWh/yr' },
+		{ value: 'Space Heating Demand', unit: 'kWh/m²/yr', totalUnit: 'MWh/yr' },
+		{ value: 'Total Renewable Energy Generation', unit: 'kWh/m²/yr', totalUnit: 'MWh/yr' },
 
-		{ value: 'Upfront Carbon', label: 'Upfront Carbon', unit: 'kgCO₂e/m²', totalUnit: 'tCO₂e' },
-		{ value: 'Total Embodied Carbon', label: 'Total Embodied Carbon', unit: 'kgCO₂e/m²', totalUnit: 'tCO₂e' },
+		{ value: 'Upfront Carbon', unit: 'kgCO₂e/m²', totalUnit: 'tCO₂e' },
+		{ value: 'Total Embodied Carbon', unit: 'kgCO₂e/m²', totalUnit: 'tCO₂e' },
 
-		{ value: 'Biodiversity Net Gain', label: 'Biodiversity Net Gain', unit: '%', totalUnit: '%' },
-		{ value: 'Urban Greening Factor', label: 'Urban Greening Factor', unit: 'score', totalUnit: 'score' },
+		{ value: 'Biodiversity Net Gain', unit: '%', totalUnit: '%' },
+		{ value: 'Urban Greening Factor', unit: 'score', totalUnit: 'score' },
 	];
 
 	const currentKPI = kpiOptions.find((kpi) => kpi.value === selectedKPI);
@@ -168,7 +155,7 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 			effectiveValueType,
 			yearFilter,
 			sectorStats,
-			allSectors
+			allSectors,
 		});
 	};
 
@@ -179,7 +166,7 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 			effectiveValueType,
 			yearFilter,
 			sectorStats,
-			allSectors
+			allSectors,
 		});
 	};
 
@@ -204,19 +191,19 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 			{isExpanded && (
 				<div className="mt-6 space-y-6">
 					{/* Controls Row */}
-					<div className="flex flex-wrap items-center gap-4">
+					<div className="flex flex-wrap items-center gap-4 mx-4">
 						<div className="flex items-center space-x-2">
 							<label className="text-sm font-medium" style={{ color: chartColors.dark }}>
-								KPI:
+								KPI
 							</label>
 							<Select value={selectedKPI} onValueChange={setSelectedKPI}>
-								<SelectTrigger className="w-64">
+								<SelectTrigger className="w-80 rounded-full pl-6 pr-6">
 									<SelectValue />
 								</SelectTrigger>
-								<SelectContent>
+								<SelectContent className="w-80 rounded-3xl pr-10 mr-4">
 									{kpiOptions.map((kpi) => (
-										<SelectItem key={kpi.value} value={kpi.value}>
-											{kpi.label}
+										<SelectItem key={kpi.value} value={kpi.value} className="rounded-full m-1 mr-4 pr-10">
+											{kpi.value}
 										</SelectItem>
 									))}
 								</SelectContent>
@@ -226,26 +213,26 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 						{/* Only show value type selector for non-biodiversity KPIs */}
 						{!['Biodiversity Net Gain', 'Urban Greening Factor'].includes(selectedKPI) && (
 							<div className="flex items-center space-x-2">
-								<div style={{ backgroundColor: chartColors.accent1 }} className="flex rounded-md p-1 bg-slate-100">
+								<div style={{ backgroundColor: chartColors.accent1 }} className="flex rounded-full p-1 bg-slate-100">
 									<button
-										className={`px-3 py-1 rounded text-sm font-medium transition-colors ${valueType === 'per-sqm' ? 'bg-white shadow-sm' : 'hover:opacity-80'}`}
+										className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${valueType === 'average' ? 'bg-white shadow-sm' : 'hover:opacity-80'}`}
 										style={{
-											color: valueType === 'per-sqm' ? chartColors.dark : chartColors.darkGreen,
-											backgroundColor: valueType === 'per-sqm' ? 'white' : 'transparent',
+											color: valueType === 'average' ? chartColors.dark : chartColors.darkGreen,
+											backgroundColor: valueType === 'average' ? 'white' : 'transparent',
 										}}
-										onClick={() => setValueType('per-sqm')}
+										onClick={() => setValueType('average')}
 									>
-										Average per m²
+										Average/m²
 									</button>
 									<button
-										className={`px-3 py-1 rounded text-sm font-medium transition-colors ${valueType === 'total' ? 'bg-white shadow-sm' : 'hover:opacity-80'}`}
+										className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${valueType === 'total' ? 'bg-white shadow-sm' : 'hover:opacity-80'}`}
 										style={{
 											color: valueType === 'total' ? chartColors.dark : chartColors.darkGreen,
 											backgroundColor: valueType === 'total' ? 'white' : 'transparent',
 										}}
 										onClick={() => setValueType('total')}
 									>
-										Cumulative total
+										Total
 									</button>
 								</div>
 							</div>
@@ -253,7 +240,7 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 
 						<div className="flex items-center space-x-2">
 							<Select value={yearFilter} onValueChange={setYearFilter}>
-								<SelectTrigger className="w-40">
+								<SelectTrigger className="w-36 rounded-full pl-6 pr-6">
 									<SelectValue />
 								</SelectTrigger>
 								<SelectContent>
@@ -268,11 +255,11 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 						</div>
 
 						<div className="flex items-center space-x-2 ml-auto">
-							<Button variant="outline" size="sm" onClick={handleDownloadCSV} className="flex items-center gap-2">
+							<Button variant="outline" size="sm" onClick={handleDownloadCSV} className="flex items-center gap-2 rounded-full">
 								<FileText className="h-4 w-4" />
 								CSV
 							</Button>
-							<Button variant="outline" size="sm" onClick={handleDownloadPNG} className="flex items-center gap-2">
+							<Button variant="outline" size="sm" onClick={handleDownloadPNG} className="flex items-center gap-2 rounded-full">
 								<Download className="h-4 w-4" />
 								PNG
 							</Button>
@@ -281,23 +268,26 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 
 					{/* Chart Section */}
 					<div>
-						<h3 className="text-lg font-semibold mb-4" style={{ color: chartColors.dark }}>
-							{currentKPI?.label} by Sector ({getDisplayUnit()})
+						<h3 className="font-medium mt-12 mb-2 text-center" style={{ color: chartColors.dark }}>
+							{currentKPI?.value} by Sector ({getDisplayUnit()})
 						</h3>
-						<div className="h-80" data-chart="sector-chart">
-							<ResponsiveContainer width="100%" height="100%">
-								<BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
+						<div className="h-[460px] flex justify-center" data-chart="sector-chart">
+							<ResponsiveContainer width="90%" height="100%">
+								<BarChart data={chartData} barGap={-50} margin={{ top: 20, right: 30, left: 40, bottom: 60 }}>
 									<CartesianGrid strokeDasharray="3 3" stroke={chartColors.accent1} />
 									<XAxis dataKey="sector" tick={{ fill: chartColors.dark, dy: 20 }} axisLine={false} tickLine={false} interval={0} />
 									<YAxis
 										label={{
-											value: `${currentKPI?.label} (${getDisplayUnit()})`,
+											value: `${currentKPI?.value} (${getDisplayUnit()})`,
 											angle: -90,
 											position: 'insideLeft',
-											style: { textAnchor: 'middle' },
+											offset: -10,
+											style: { textAnchor: 'middle', fontSize: 12 },
 										}}
-										tick={{ fill: chartColors.dark }}
+										tick={{ fill: chartColors.dark, fontSize: 12 }}
 										tickFormatter={(value) => formatNumber(value)}
+										tickLine={false}
+										axisLine={{ strokeWidth: 0 }}
 										domain={(() => {
 											// Get the data range
 											const values = chartData.flatMap((d) => [d.value, d.biogenicValue || 0]);
@@ -405,25 +395,30 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 											return null;
 										}}
 									/>
-									<Bar dataKey="value">
+									<Bar dataKey="value" barSize={50} radius={[6, 6, 0, 0]}>
 										{chartData.map((entry, index) => (
-											<Cell key={`cell-${index}`} fill={sectorConfig[entry.sector as keyof typeof sectorConfig]?.color || chartColors.primary} />
+											<Cell
+												key={`cell-${index}`}
+												fill={sectorConfig[entry.sector as keyof typeof sectorConfig]?.color || chartColors.primary}
+												stroke={sectorConfig[entry.sector as keyof typeof sectorConfig]?.color || chartColors.primary}
+												strokeWidth={3}
+											/>
 										))}
 									</Bar>
 									{/* Show biogenic data as negative bars underneath for Total Embodied Carbon */}
 									{selectedKPI === 'Total Embodied Carbon' && (
-										<Bar dataKey="biogenicValue">
+										<Bar dataKey="biogenicValue" barSize={50} radius={[6, 6, 0, 0]}>
 											{chartData.map((entry, index) => (
 												<Cell
 													key={`biogenic-cell-${index}`}
 													fill="white"
 													stroke={sectorConfig[entry.sector as keyof typeof sectorConfig]?.color || chartColors.primary}
-													strokeWidth={2}
+													strokeWidth={3}
 												/>
 											))}
 										</Bar>
 									)}
-									<ReferenceLine y={0} stroke="#A8A8A3" strokeWidth={2} />
+									<ReferenceLine y={0} stroke="#A8A8A3" strokeWidth={4} />
 								</BarChart>
 							</ResponsiveContainer>
 						</div>
@@ -431,53 +426,37 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 
 					{/* Summary Statistics Table */}
 					<div className="mt-12">
-						<h3 className="text-lg font-semibold mb-4" style={{ color: chartColors.dark }}>
+						<h3 className="text-lg font-semibold mb-4 mx-4" style={{ color: chartColors.dark }}>
 							Summary Statistics
 						</h3>
 						<div className="overflow-x-auto">
-							<table className="w-full border-collapse border" style={{ borderColor: chartColors.dark }}>
+							<table className="w-full border-separate rounded-2xl overflow-hidden" style={{ borderSpacing: 0 }}>
 								<thead>
-									<tr style={{ backgroundColor: chartColors.accent1 }}>
-										<th className="border px-4 py-2 text-left" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>
-											Sector
-										</th>
-										<th className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>
-											No. of projects
-										</th>
-										{effectiveValueType === 'per-sqm' ? (
+									<tr className="divide-x-4 divide-white" style={{ backgroundColor: chartColors.accent1 }}>
+										<>
+											<th className="px-4 py-2 text-left">Sector</th>
+										</>
+										<>
+											<th className="px-4 py-2 text-center">Project Count</th>
+										</>
+										{effectiveValueType === 'average' ? (
 											<>
-												<th className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>
-													Average ({getDisplayUnit()})
-												</th>
-												<th className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>
-													Min
-												</th>
-												<th className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>
-													Max
-												</th>
-												<th className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>
-													Range
-												</th>
+												<th className="px-4 py-2 text-center">Average ({getDisplayUnit()})</th>
+												<th className="px-4 py-2 text-center">Min</th>
+												<th className="px-4 py-2 text-center">Max</th>
+												<th className="px-4 py-2 text-center">Range</th>
 											</>
 										) : (
 											<>
-												<th className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>
-													Cumulative total ({getDisplayUnit()})
-												</th>
-												<th className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>
-													Min
-												</th>
-												<th className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>
-													Max
-												</th>
-												<th className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>
-													Cumulative total Area (m²)
-												</th>
+												<th className="px-4 py-2 text-center">Total ({getDisplayUnit()})</th>
+												<th className="px-4 py-2 text-center">Min</th>
+												<th className="px-4 py-2 text-center">Max</th>
+												<th className="px-4 py-2 text-center">Total Area (m²)</th>
 											</>
 										)}
 									</tr>
 								</thead>
-								<tbody>
+								<tbody className="bg-gray-100">
 									{allSectors.map((sector) => {
 										const stats = sectorStats[sector];
 										const avg = stats ? getAverage(stats.totalValue, stats.count) : 0;
@@ -487,42 +466,22 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 										const count = stats ? stats.count : 0;
 										const totalArea = stats ? Math.round(stats.totalGIA) : 0;
 										return (
-											<tr key={sector}>
-												<td className="border px-4 py-2 font-medium" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>
-													{sector}
-												</td>
-												<td className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>
-													{count}
-												</td>
-												{effectiveValueType === 'per-sqm' ? (
+											<tr key={sector} className="divide-y-2 divide-x-4 divide-white">
+												<td className="px-4 py-2 text-left font-medium">{sector}</td>
+												<td className="px-4 py-2 text-center">{count}</td>
+												{effectiveValueType === 'average' ? (
 													<>
-														<td className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>
-															{formatNumber(avg)}
-														</td>
-														<td className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>
-															{formatNumber(min)}
-														</td>
-														<td className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>
-															{formatNumber(max)}
-														</td>
-														<td className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>
-															{formatNumber(range)}
-														</td>
+														<td className="px-4 py-2 text-center">{formatNumber(avg)}</td>
+														<td className="px-4 py-2 text-center">{formatNumber(min)}</td>
+														<td className="px-4 py-2 text-center">{formatNumber(max)}</td>
+														<td className="px-4 py-2 text-center">{formatNumber(range)}</td>
 													</>
 												) : (
 													<>
-														<td className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>
-															{formatNumber(stats ? stats.totalValue : 0)}
-														</td>
-														<td className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>
-															{formatNumber(min)}
-														</td>
-														<td className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>
-															{formatNumber(max)}
-														</td>
-														<td className="border px-4 py-2 text-center" style={{ borderColor: chartColors.dark, color: chartColors.dark }}>
-															{formatNumber(totalArea)}
-														</td>
+														<td className="px-4 py-2 text-center">{formatNumber(stats ? stats.totalValue : 0)}</td>
+														<td className="px-4 py-2 text-center">{formatNumber(min)}</td>
+														<td className="px-4 py-2 text-center">{formatNumber(max)}</td>
+														<td className="px-4 py-2 text-center">{formatNumber(totalArea)}</td>
 													</>
 												)}
 											</tr>

@@ -28,7 +28,7 @@ export interface Project {
 	'WELL': string;
 	'Fitwell': string; //1-5 stars xxx not on the list
 	'Passivhaus': string; // Unknown, Cetified, Not Targeted xxx doesnt work
-	'EnePHit': string; // Unknown, Cetified, Not Targeted xxx doesnt work
+	'EnerPHit': string; // Unknown, Cetified, Not Targeted xxx doesnt work
 	'UKNZCBS': string; // Unknown, Cetified + year
 	'NABERS': string; //1-6 stars
 	'Other Cerification'?: string; //? // TEXT

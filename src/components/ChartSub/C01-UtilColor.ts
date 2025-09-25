@@ -1,5 +1,5 @@
 // Custom color palette based on your specifications
-export const chartNamedColors = {
+export const chartColors = {
 	primary: '#2D9B4D', // Updated to green as requested
 	secondary: '#48DE9D', // Bright green
 	tertiary: '#FF8EE5', // Updated bright pink as requested
@@ -18,13 +18,13 @@ export const chartNamedColors = {
 
 // Color arrays for different chart types
 export const seriesColors = [
-	chartNamedColors.primary,
-	chartNamedColors.secondary,
-	chartNamedColors.tertiary,
-	chartNamedColors.quaternary,
-	chartNamedColors.warning,
-	chartNamedColors.info,
-	chartNamedColors.success,
-	chartNamedColors.muted,
-	chartNamedColors.darkGreen,
+	chartColors.primary,
+	chartColors.secondary,
+	chartColors.tertiary,
+	chartColors.quaternary,
+	chartColors.warning,
+	chartColors.info,
+	chartColors.success,
+	chartColors.muted,
+	chartColors.darkGreen,
 ];

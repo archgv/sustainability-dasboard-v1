@@ -13,7 +13,7 @@ type SectorStatsMap = Record<string, SectorStats>;
 
 interface ExportPNGOptions {
 	selectedKPI: string;
-	currentKPI: { label: string; unit: string; totalUnit: string } | undefined;
+	currentKPI: { value: string; unit: string; totalUnit: string } | undefined;
 	effectiveValueType: string;
 	yearFilter: string;
 	sectorStats: SectorStatsMap;
@@ -35,7 +35,7 @@ const getAverage = (total: number, count: number) => {
 
 export const exportSectorPNG = (options: ExportPNGOptions) => {
 	const { selectedKPI, currentKPI, effectiveValueType, yearFilter, sectorStats, allSectors } = options;
-	
+
 	console.log('Downloading PNG for sector performance analysis');
 
 	// Create a canvas element with dimensions for full layout
@@ -74,7 +74,7 @@ export const exportSectorPNG = (options: ExportPNGOptions) => {
 
 		// Draw title with Average/Cumulative prefix
 		const prefix = effectiveValueType === 'total' ? 'Cumulative' : 'Average';
-		const title = `${prefix} ${currentKPI?.label.toLowerCase()} by sector (${getDisplayUnit(currentKPI, effectiveValueType)})`;
+		const title = `${prefix} ${currentKPI?.value.toLowerCase()} by sector (${getDisplayUnit(currentKPI, effectiveValueType)})`;
 		ctx.fillText(title, canvas.width / 2, yPosition);
 		yPosition += 60;
 
