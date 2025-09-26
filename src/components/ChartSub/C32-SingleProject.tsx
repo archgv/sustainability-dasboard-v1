@@ -138,7 +138,7 @@ export const SingleProject = ({
 					))}
 				</div>
 			)}
-			<ResponsiveContainer {...getResponsiveContainerProps(true)}>
+			<ResponsiveContainer {...getResponsiveContainerProps()}>
 				<BarChart data={chartData} {...getChartProps()}>
 					<CartesianGrid vertical={false} {...getCartesianGridProps()} />
 					<XAxis

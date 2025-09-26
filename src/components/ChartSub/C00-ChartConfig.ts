@@ -5,8 +5,8 @@ import { chartColors } from '../Utils/UtilColor';
 import { KPIOption } from '../Utils/project';
 
 // Common ResponsiveContainer props
-export const getResponsiveContainerProps = (isBarChart = false) => ({
-	width: isBarChart ? '90%' : '100%',
+export const getResponsiveContainerProps = () => ({
+	width: '100%',
 	height: '100%' as const,
 });
 

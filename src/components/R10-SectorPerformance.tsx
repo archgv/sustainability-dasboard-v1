@@ -249,7 +249,7 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 								{currentKPI.key} by Sector ({getDisplayUnit(currentKPI, valueType)})
 							</h3>
 							<div className="h-[460px] flex justify-center" data-chart="sector-chart">
-								<ResponsiveContainer {...getResponsiveContainerProps(true)}>
+								<ResponsiveContainer {...getResponsiveContainerProps()}>
 									<BarChart data={chartData} barGap={-50} margin={{ top: 10, right: 20, left: 20, bottom: 10 }}>
 										<CartesianGrid vertical={false} {...getCartesianGridProps()} />
 										<XAxis dataKey="sector" tick={{ fill: chartColors.dark, dy: 20 }} axisLine={false} tickLine={false} interval={0} />
