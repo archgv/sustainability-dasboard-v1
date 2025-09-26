@@ -140,7 +140,7 @@ export const SingleProject = ({
 			)}
 			<ResponsiveContainer {...getResponsiveContainerProps(true)}>
 				<BarChart data={chartData} {...getBarChartProps()}>
-					<CartesianGrid {...getCartesianGridProps()} />
+					<CartesianGrid vertical={false} {...getCartesianGridProps()} />
 					<XAxis
 						{...getXAxisProps('Single Project', selectedKPI1, kpi1Config, valueType)}
 						dataKey={(item) => {

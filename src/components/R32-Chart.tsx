@@ -274,10 +274,8 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 			</Card>
 
 			<Card className="p-6">
-				<div className="flex justify-between items-center mb-6">
-					<h2 className="text-xl font-semibold" style={{ color: chartColors.dark }}>
-						{getChartTitle()}
-					</h2>
+				<div className="flex justify-between items-center text-center mb-2">
+					<h2 className="py-2">{getChartTitle()}</h2>
 					<div className="flex items-center space-x-2">
 						{/* Show benchmark toggle only for Total Embodied Carbon with average values */}
 						{selectedKPI1 === 'Total Embodied Carbon' && valueType === 'average' && chartType === 'Single Project' && (
@@ -305,9 +303,9 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 
 				{/* Sub-sector toggle for upfront carbon timeline */}
 				{showSingleTimeSectorToggle && (
-					<div className="mb-4">
-						<p className="text-sm font-medium mb-2" style={{ color: chartColors.dark }}>
-							UKNZCBS benchmarks
+					<div className="mb-2 flex justify-between items-center py-4">
+						<p className="text-sm font-medium mb-2 px-10" style={{ color: chartColors.pink }}>
+							UKNZCBS Benchmarks
 						</p>
 						<div className="flex flex-wrap gap-2">
 							{availableSubSectors.map((subSector) => (
@@ -321,9 +319,9 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 
 				{/* Sub-sector toggle for upfront carbon bar chart */}
 				{showSingleSectorToggle && (
-					<div className="mb-4">
-						<p className="text-sm font-medium mb-2" style={{ color: chartColors.dark }}>
-							UKNZCBS benchmarks
+					<div className="mb-2 flex justify-between items-center py-4">
+						<p className="text-me font-medium mb-2 px-10" style={{ color: chartColors.pink }}>
+							UKNZCBS Benchmarks
 						</p>
 						<div className="flex flex-wrap gap-2">
 							<Button variant={selectedBarChartBenchmark === '' ? 'default' : 'outline'} size="sm" onClick={() => setSelectedBarChartBenchmark('')} className="text-xs">

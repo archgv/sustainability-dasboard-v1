@@ -6,7 +6,7 @@ export const chartColors = {
 	quaternary: '#5dc5ed', // Light blue
 	accent1: '#E9E8D3', // Updated light green fill as requested
 	accent2: '#c9e1ea', // Light blue/grey
-	dark: '#272727', // Updated dark gray as requested
+	dark: '#808080', // Updated dark gray as requested
 	darkGreen: '#004033', // Dark green
 	benchmark: '#e74c3c', // Red for benchmark lines
 	// Additional complementary colors
@@ -14,6 +14,7 @@ export const chartColors = {
 	info: '#3498db', // Medium blue
 	success: '#2D9B4D', // Updated to use new green
 	muted: '#272727', // Updated to use new dark gray
+	pink: '#fccee8', // Light pink
 };
 
 export const certificationColors = {

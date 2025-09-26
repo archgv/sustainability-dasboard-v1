@@ -251,7 +251,7 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 							<div className="h-[460px] flex justify-center" data-chart="sector-chart">
 								<ResponsiveContainer {...getResponsiveContainerProps(true)}>
 									<BarChart data={chartData} barGap={-50} margin={{ top: 10, right: 20, left: 20, bottom: 10 }}>
-										<CartesianGrid {...getCartesianGridProps()} />
+										<CartesianGrid vertical={false} {...getCartesianGridProps()} />
 										<XAxis dataKey="sector" tick={{ fill: chartColors.dark, dy: 20 }} axisLine={false} tickLine={false} interval={0} />
 										<YAxis
 											label={{
@@ -261,7 +261,9 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 												offset: -10,
 												style: { textAnchor: 'middle', fontSize: 12 },
 											}}
-											//{...getYAxisProps('Sector', selectedKPI, currentKPI, valueType)}
+											tick={{ fill: chartColors.pink, fontSize: 12 }}
+											tickLine={false}
+											axisLine={{ stroke: chartColors.pink, strokeWidth: 4 }}
 											tickFormatter={(value) => formatNumber(value)}
 											domain={(() => {
 												// Get the data range
@@ -402,7 +404,7 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 												))}
 											</Bar>
 										)}
-										<ReferenceLine y={0} stroke="#A8A8A3" strokeWidth={4} />
+										<ReferenceLine y={0} stroke={chartColors.pink} strokeWidth={4} />
 									</BarChart>
 								</ResponsiveContainer>
 							</div>

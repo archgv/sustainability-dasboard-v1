@@ -88,7 +88,7 @@ export const getXAxisProps = (chart: string, selectedKPI: string, currentKPI: KP
 
 	return {
 		tickLine: false,
-		axisLine: { strokeWidth: 0 },
+		axisLine: { strokeWidth: 4, stroke: chartColors.pink },
 		label: label,
 	};
 };
@@ -102,7 +102,7 @@ export const getYAxisProps = (chart: string, selectedKPI: string, currentKPI: KP
 	return {
 		tick: { fill: chartColors.dark, fontSize: 12 },
 		tickLine: false,
-		axisLine: { strokeWidth: 0 },
+		axisLine: { strokeWidth: 4, stroke: chartColors.pink },
 		label: {
 			value: value,
 			angle: -90,
