@@ -6,6 +6,8 @@ import { getSectorColor, getSectorBenchmarkColor } from '../Key/KeySector';
 import { formatNumber } from '@/lib/utils';
 import { uknzcbsBenchmarks, uknzcbsOperationalEnergyBenchmarks } from '@/data/benchmarkData';
 import { chartColors } from '../Key/KeyColor';
+import { generateNiceTicks } from '../UtilChart/UtilTick';
+import { transformDataForValueType } from '../UtilChart/UtilValueType';
 import { getResponsiveContainerProps, getChartProps, getCartesianGridProps, getYAxisProps, getXAxisProps, getBarProps, getTooltipContainerStyle, getUnitLabel } from '../UtilChart/ChartConfig';
 
 interface SingleTimeProps {
@@ -14,15 +16,12 @@ interface SingleTimeProps {
 	valueType: ValueType;
 	isComparingToSelf?: boolean;
 	selectedSubSector: string;
-	chartColors: typeof chartColors;
-	generateNiceTicks: (maxValue: number, tickCount?: number) => number[];
-	transformDataForValueType: (data: Project[]) => Project[];
 }
 
-export const SingleTime = ({ projects, selectedKPI1, valueType, isComparingToSelf = false, selectedSubSector, chartColors, generateNiceTicks, transformDataForValueType }: SingleTimeProps) => {
+export const SingleTime = ({ projects, selectedKPI1, valueType, isComparingToSelf = false, selectedSubSector }: SingleTimeProps) => {
 	const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
 
-	const transformedProjects = transformDataForValueType(projects);
+	const transformedProjects = transformDataForValueType(projects, valueType, selectedKPI1, '');
 
 	const timelineData = transformedProjects
 		.map((project) => {

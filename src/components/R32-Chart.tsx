@@ -63,50 +63,37 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 	};
 
 
+	const commonProps = {
+		projects,
+		selectedKPI1,
+		valueType,
+		isComparingToSelf,
+	};
+
 	const renderChart = () => {
 		switch (chartType) {
 			case 'Compare Two':
 				return (
 					<CompareTwo
-						projects={projects}
-						selectedKPI1={selectedKPI1}
+						{...commonProps}
 						selectedKPI2={selectedKPI2}
-						valueType={valueType}
-						isComparingToSelf={isComparingToSelf}
-						chartColors={chartColors}
-						generateNiceTicks={generateNiceTicks}
-						getProjectArea={getProjectArea}
-						transformDataForValueType={(data) => transformDataForValueType(data, valueType, selectedKPI1, selectedKPI2)}
 					/>
 				);
 
 			case 'Single Project':
 				return (
 					<SingleProject
-						projects={projects}
-						selectedKPI1={selectedKPI1}
-						valueType={valueType}
-						isComparingToSelf={isComparingToSelf}
+						{...commonProps}
 						showBenchmarks={showBenchmarks}
 						selectedBarChartBenchmark={selectedBarChartBenchmark}
-						chartColors={chartColors}
-						generateNiceTicks={generateNiceTicks}
-						getProjectArea={getProjectArea}
-						transformDataForValueType={(data) => transformDataForValueType(data, valueType, selectedKPI1, selectedKPI2)}
 					/>
 				);
 
 			case 'Single Time':
 				return (
 					<SingleTime
-						projects={projects}
-						selectedKPI1={selectedKPI1}
-						valueType={valueType}
-						isComparingToSelf={isComparingToSelf}
+						{...commonProps}
 						selectedSubSector={selectedSubSector}
-						chartColors={chartColors}
-						generateNiceTicks={generateNiceTicks}
-						transformDataForValueType={(data) => transformDataForValueType(data, valueType, selectedKPI1, selectedKPI2)}
 					/>
 				);
 

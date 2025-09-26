@@ -1,11 +1,13 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine } from 'recharts';
 import { Project } from '../Key/project';
 import { KPIOptions } from '../Key/KeyKPI';
-import { ValueType } from '../Key/KeyChart';
+import { ValueType, getProjectArea } from '../Key/KeyChart';
 import { getSectorColor, getSectorBenchmarkColor } from '@/components/Key/KeySector';
 import { formatNumber } from '@/lib/utils';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks } from '@/data/benchmarkData';
 import { chartColors } from '../Key/KeyColor';
+import { generateNiceTicks } from '../UtilChart/UtilTick';
+import { transformDataForValueType } from '../UtilChart/UtilValueType';
 import {
 	getResponsiveContainerProps,
 	getChartProps,
@@ -25,10 +27,6 @@ interface BarChartProps {
 	isComparingToSelf?: boolean;
 	showBenchmarks: boolean;
 	selectedBarChartBenchmark: string;
-	chartColors: typeof chartColors;
-	generateNiceTicks: (maxValue: number, tickCount?: number) => number[];
-	getProjectArea: (projectId: string) => number;
-	transformDataForValueType: (data: Project[]) => Project[];
 }
 
 export const SingleProject = ({
@@ -38,14 +36,10 @@ export const SingleProject = ({
 	isComparingToSelf = false,
 	showBenchmarks,
 	selectedBarChartBenchmark,
-	chartColors,
-	generateNiceTicks,
-	getProjectArea,
-	transformDataForValueType,
 }: BarChartProps) => {
 	const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
 
-	const transformedProjects = transformDataForValueType(projects);
+	const transformedProjects = transformDataForValueType(projects, valueType, selectedKPI1, '');
 	const sortedProjects = transformedProjects;
 
 	// Add biogenic data as negative values for totalEmbodiedCarbon - use sorted projects
