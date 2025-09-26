@@ -46,24 +46,18 @@ export const FilterPanel = ({ filters, onFilterChange, onClearFilters }: FilterP
 	return (
 		<Card className="p-2 rounded-tl-[80px] rounded-tr-[80px] rounded-bl-[200px] rounded-br-[200px] ">
 			<Card className="rounded-tl-[80px] rounded-tr-[80px] rounded-bl-[200px] rounded-br-[200px] p-0 shadow-md">
-				<Card className="rounded-tl-[80px] rounded-tr-[80px] rounded-bl-[200px] rounded-br-[200px] p-6 pb-24 sticky top-8 shadow-inner">
-					<div className="flex items-center justify-between mb-6">
-						<div className="flex items-center space-x-2">
-							<Filter className="h-5 w-5 text-blue-600" />
-							<h3 className="text-lg font-semibold text-gray-900">Filters</h3>
-						</div>
-						<Button variant="outline" size="sm" onClick={onClearFilters} className="flex items-center gap-2">
-							<X className="h-4 w-4" />
-							Clear
-						</Button>
+				<Card className="rounded-tl-[60px] rounded-tr-[60px] rounded-bl-[200px] rounded-br-[200px] p-6 pb-10 sticky shadow-inner">
+					<div className="flex items-center space-x-2">
+						<h2 className="pl-6">Filters</h2>
+						<Filter className="h-4 w-4 text-rose-400" />
 					</div>
 
-					<p className="text-gray-600 mb-4 italic text-xs">Filters apply to project comparison only</p>
+					<p className="text-pink-200 mt-0 mb-4 text-xs pl-6">For Project Comparison Only</p>
 
-					<div className="space-y-6">
+					<div className="space-y-4">
 						{/* Typology Filter */}
 						<div>
-							<Label htmlFor="typology" className="text-sm font-medium text-gray-700 mb-2 block">
+							<Label htmlFor="typology" className="text-sm font-medium text-gray-700 mb-1 block pl-6">
 								Sector
 							</Label>
 							<Select value={filters['Primary Sector']} onValueChange={handlePrimarySectorChange}>
@@ -72,19 +66,19 @@ export const FilterPanel = ({ filters, onFilterChange, onClearFilters }: FilterP
 								</SelectTrigger>
 								<SelectContent>
 									<SelectItem value="all">All Sectors</SelectItem>
-									<SelectItem value="Workplace">Workplace</SelectItem>
 									<SelectItem value="Residential">Residential</SelectItem>
 									<SelectItem value="Education">Education</SelectItem>
 									<SelectItem value="Healthcare">Healthcare</SelectItem>
 									<SelectItem value="Infrastructure">Infrastructure</SelectItem>
 									<SelectItem value="CCC">CCC</SelectItem>
+									<SelectItem value="Workplace">Workplace</SelectItem>
 								</SelectContent>
 							</Select>
 						</div>
 
 						{/* Project Type Filter */}
 						<div>
-							<Label htmlFor="projectType" className="text-sm font-medium text-gray-700 mb-2 block">
+							<Label htmlFor="projectType" className="text-sm font-medium text-gray-700 mb-2 block pl-6">
 								Project Type
 							</Label>
 							<Select value={filters['Project Type'] || 'all'} onValueChange={handleProjectTypeChange}>
@@ -101,7 +95,7 @@ export const FilterPanel = ({ filters, onFilterChange, onClearFilters }: FilterP
 
 						{/* RIBA Stage Filter */}
 						<div>
-							<Label htmlFor="ribaStage" className="text-sm font-medium text-gray-700 mb-2 block">
+							<Label htmlFor="ribaStage" className="text-sm font-medium text-gray-700 mb-2 block pl-6">
 								RIBA Stage
 							</Label>
 							<Select value={filters['Current RIBA Stage'] || 'all'} onValueChange={handleRibaStageChange}>
@@ -123,7 +117,7 @@ export const FilterPanel = ({ filters, onFilterChange, onClearFilters }: FilterP
 
 						{/* Date Range Filter */}
 						<div>
-							<Label htmlFor="dateRange" className="text-sm font-medium text-gray-700 mb-2 block">
+							<Label htmlFor="dateRange" className="text-sm font-medium text-gray-700 mb-2 block pl-6">
 								Project Timeline
 							</Label>
 							<Select value={filters.dateRange} onValueChange={handleDateRangeChange}>
@@ -137,6 +131,12 @@ export const FilterPanel = ({ filters, onFilterChange, onClearFilters }: FilterP
 								</SelectContent>
 							</Select>
 						</div>
+					</div>
+					<div className="flex items-center justify-center mt-8">
+						<Button variant="outline" size="default" onClick={onClearFilters} className="flex items-center gap-2 text-rose-400">
+							<X className="h-4 w-4 text-rose-400" />
+							Clear
+						</Button>
 					</div>
 				</Card>
 			</Card>

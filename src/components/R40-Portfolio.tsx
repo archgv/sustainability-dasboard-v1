@@ -54,21 +54,21 @@ export const Portfolio = ({ projects, isComparingToSelf = false, selectedRibaSta
 	};
 
 	return (
-		<div>
-			<div className="flex items-center justify-between mb-6">
+		<Card className="shadow-inner rounded-tl-[40px] rounded-tr-[40px] rounded-bl-none rounded-br-none pb-20">
+			<div className="flex items-center justify-between mb-2">
 				<h2 className="">{isComparingToSelf ? 'Project RIBA Stages' : 'Project Portfolio'}</h2>
-				<div className="text-sm text-gray-500">
+				<div className="text-sm text-gray-300 pr-10">
 					Showing {formatNumber(projects.length)} {isComparingToSelf ? 'stages' : 'projects'}
 				</div>
 			</div>
 
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 				{projects.map((project, index) => {
 					const displayName = getDisplayName(project, index);
 					const sectorDisplay = getSectorDisplay(project['Primary Sector']);
 
 					return (
-						<Card key={project.id} className="p-6 hover:shadow-lg transition-shadow duration-200">
+						<Card key={project.id} className="px-8 pb-8 hover:shadow-lg transition-shadow duration-200">
 							<div className="flex justify-between items-start mb-4">
 								<h3 className="text-lg font-semibold text-gray-900 line-clamp-2">{displayName}</h3>
 								<span className="ml-2 capitalize text-sm text-gray-600">{sectorDisplay}</span>
@@ -127,6 +127,6 @@ export const Portfolio = ({ projects, isComparingToSelf = false, selectedRibaSta
 					);
 				})}
 			</div>
-		</div>
+		</Card>
 	);
 };

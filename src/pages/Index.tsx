@@ -120,14 +120,19 @@ const Index = () => {
 
 	return (
 		<div className="min-h-screen bg-gray-50">
-			<DashboardHeader />
+			{/* <DashboardHeader /> */}
 
-			<div className="container mx-auto">
+			{/* <div className="container mx-auto"> */}
+			<div className="px-36 mx-auto">
 				<div className="flex">
-					{/* Fixed Filter Panel - aligned with main content */}
-					<div className="fixed px-0 top-[6rem] bottom-0 overflow-y-auto pt-8">
-						<div className="space-y-6 p-6">
-							<Card className="p-0 rounded-tl-[60px] rounded-tr-[60px] rounded-bl-[200px] rounded-br-[200px]">
+					<div className="min-w-96 fixed px-0 top-0 bottom-0 overflow-y-auto pt-0">
+						<div className="flex flex-col items-center px-10 pb-10">
+							<Card className="p-4 w-[calc(100%+60px)] bg-cyan-100 rounded-tl-none rounded-tr-none rounded-bl-[80px] rounded-br-[80px]">
+								<div className="h-24 p-4 flex justify-center">
+									<img src="/lovable-uploads/4ce0bfd4-e09c-45a3-bb7c-0a84df6eca91.png" alt="Hawkins Brown" className="h-12 w-auto" />
+								</div>
+							</Card>
+							<Card className="p-0 mt-8 w-full rounded-tl-[60px] rounded-tr-[60px] rounded-bl-[200px] rounded-br-[200px]">
 								<AddProjectData projects={sampleProjects} />
 								<FilterPanel filters={filters} onFilterChange={handleFilterChange} onClearFilters={handleClearFilters} />
 							</Card>
@@ -135,27 +140,35 @@ const Index = () => {
 					</div>
 
 					{/* Main Content with left margin to account for fixed sidebar */}
-					<div className="flex-1 ml-96 space-y-8 pt-8">
-						{/* Sector Performance Analysis */}
-						<SectorPerformance projects={sampleProjects} />
+					<div className="flex-1 ml-[460px] mr-10 space-y-8">
+						<Card className="p-0 w-[calc(100%+160px)] -ml-[85px] -mr-[80px] bg-pink-300 rounded-tl-none rounded-tr-none rounded-bl-[120px] rounded-br-[120px]">
+							<div className="px-24 py-4 flex justify-between text-center items-center">
+								<h1 className="text-white text-2xl font-bold">Sustainability Performance Dashboard</h1>
+								<p className=" text-rose-100 text-lg">Track environmental KPIs across all architectural projects</p>
+							</div>
+						</Card>
+						<div className="w-full space-y-8">
+							{/* Sector Performance Analysis */}
+							<SectorPerformance projects={sampleProjects} />
 
-						{/* Certification Analysis */}
-						<Certification projects={sampleProjects} />
+							{/* Certification Analysis */}
+							<Certification projects={sampleProjects} />
 
-						{/* Project Comparison */}
-						<Comparison
-							projects={filteredProjects}
-							primaryProject={primaryProject}
-							comparisonProjects={comparisonProjects}
-							onPrimaryProjectChange={handlePrimaryProjectChange}
-							onComparisonProjectsChange={handleComparisonChange}
-						/>
+							{/* Project Comparison */}
+							<Comparison
+								projects={filteredProjects}
+								primaryProject={primaryProject}
+								comparisonProjects={comparisonProjects}
+								onPrimaryProjectChange={handlePrimaryProjectChange}
+								onComparisonProjectsChange={handleComparisonChange}
+							/>
 
-						{/* Charts Section */}
-						<Chart projects={displayProjects} isComparingToSelf={compareToSelf} selectedRibaStages={selectedRibaStages} />
+							{/* Charts Section */}
+							<Chart projects={displayProjects} isComparingToSelf={compareToSelf} selectedRibaStages={selectedRibaStages} />
 
-						{/* Projects Portfolio */}
-						<Portfolio projects={displayProjects} isComparingToSelf={compareToSelf} selectedRibaStages={selectedRibaStages} primaryProject={primaryProject} />
+							{/* Projects Portfolio */}
+							<Portfolio projects={displayProjects} isComparingToSelf={compareToSelf} selectedRibaStages={selectedRibaStages} primaryProject={primaryProject} />
+						</div>
 					</div>
 				</div>
 			</div>

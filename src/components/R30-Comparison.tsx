@@ -62,9 +62,9 @@ export const Comparison = ({ projects, primaryProject, comparisonProjects, onPri
 		<Card className="p-6 mb-6">
 			<h2>Project Comparison</h2>
 
-			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+			<Card className="grid grid-cols-1 lg:grid-cols-2 gap-6 shadow-inner mt-6 p-2">
 				{/* Primary Project Selection */}
-				<div>
+				<Card className="px-8">
 					<Label className="text-sm font-medium text-gray-700 mb-2 block">Primary Project</Label>
 					<Popover open={open} onOpenChange={setOpen}>
 						<PopoverTrigger asChild>
@@ -99,7 +99,7 @@ export const Comparison = ({ projects, primaryProject, comparisonProjects, onPri
 					</Popover>
 
 					{primaryProjectData && (
-						<div className="mt-3 p-3 bg-blue-50 rounded-lg">
+						<div className="mt-3 px-6 py-4 bg-blue-50 rounded-[20px]">
 							<div className="flex items-center gap-2 mb-2">
 								<Building2 className="h-4 w-4 text-blue-600" />
 								<span className="font-medium text-blue-900">{primaryProjectData['Project Name']}</span>
@@ -109,54 +109,49 @@ export const Comparison = ({ projects, primaryProject, comparisonProjects, onPri
 									<MapPin className="h-3 w-3" />
 									{primaryProjectData['Project Location']}
 								</div>
-								<Badge variant="outline" className="capitalize">
+								<Badge variant="outline" className="capitalize shadow-inner">
 									{primaryProjectData['Primary Sector']}
 								</Badge>
-								<Badge variant="outline" className="capitalize">
+								<Badge variant="outline" className="capitalize shadow-inner">
 									{primaryProjectData['Project Type']}
 								</Badge>
 							</div>
 						</div>
 					)}
-				</div>
+				</Card>
 
 				{/* Comparison Selection */}
-				<div>
+				<Card className="px-8">
 					<Label className="text-sm font-medium text-gray-700 mb-2 block">Compare With ({getComparisonCount()} selected)</Label>
 
 					<div className="mb-4">
 						<div className="flex items-center space-x-2">
 							<Checkbox id="compare-to-self" checked={compareToSelf} onCheckedChange={handleCompareToSelfToggle} />
 							<label htmlFor="compare-to-self" className="text-sm font-medium">
-								Compare to itself (RIBA Stages)
+								Self Compare (RIBA Stages)
 							</label>
 						</div>
 					</div>
 
 					{compareToSelf ? (
 						/* RIBA Stage Selection */
-						<div className="space-y-2 max-h-64 overflow-y-auto">
-							{StageKeys.map((stage) => (
-								<div
-									key={stage}
-									className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-										selectedRibaStages.includes(stage) ? 'border-green-200 bg-green-50' : 'border-gray-200 hover:border-gray-300'
-									}`}
-									onClick={() => handleRibaStageToggle(stage)}
-								>
-									<div className="flex items-center justify-between">
-										<span className="font-medium text-gray-900">RIBA {stage}</span>
-										<div className={`w-4 h-4 rounded border-2 ${selectedRibaStages.includes(stage) ? 'bg-green-500 border-green-500' : 'border-gray-300'}`}>
-											{selectedRibaStages.includes(stage) && (
-												<div className="w-full h-full flex items-center justify-center">
-													<div className="w-2 h-2 bg-white rounded-full"></div>
-												</div>
-											)}
+						<Card className="space-y-2 max-h-64 overflow-y-auto rounded-[38px] shadow-inner px-4 pt-4 pb-0">
+							<div className="grid grid-cols-2 gap-x-8 gap-y-2">
+								{StageKeys.map((stage) => (
+									<div
+										key={stage}
+										className={`p-3 shadow-inner rounded-full bg-gray-50 cursor-pointer transition-colors ${
+											selectedRibaStages.includes(stage) ? ' bg-pink-100' : 'hover:border-gray-300'
+										}`}
+										onClick={() => handleRibaStageToggle(stage)}
+									>
+										<div className="flex items-center justify-center">
+											<span className="font-medium text-gray-600">RIBA {stage}</span>
 										</div>
 									</div>
-								</div>
-							))}
-						</div>
+								))}
+							</div>
+						</Card>
 					) : (
 						/* Project Selection */
 						<div className="space-y-2 max-h-64 overflow-y-auto">
@@ -165,9 +160,7 @@ export const Comparison = ({ projects, primaryProject, comparisonProjects, onPri
 								.map((project) => (
 									<div
 										key={project.id}
-										className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-											comparisonProjects.includes(project.id) ? 'border-green-200 bg-green-50' : 'border-gray-200 hover:border-gray-300'
-										}`}
+										className={`py-3 px-6 shadow-inner rounded-[20px] cursor-pointer transition-colors ${comparisonProjects.includes(project.id) ? ' bg-pink-200' : 'bg-gray-50'}`}
 										onClick={() => handleComparisonToggle(project.id)}
 									>
 										<div className="flex items-center justify-between">
@@ -183,20 +176,16 @@ export const Comparison = ({ projects, primaryProject, comparisonProjects, onPri
 													<span className="text-xs text-gray-500">RIBA {project['Current RIBA Stage']}</span>
 												</div>
 											</div>
-											<div className={`w-4 h-4 rounded border-2 ${comparisonProjects.includes(project.id) ? 'bg-green-500 border-green-500' : 'border-gray-300'}`}>
-												{comparisonProjects.includes(project.id) && (
-													<div className="w-full h-full flex items-center justify-center">
-														<div className="w-2 h-2 bg-white rounded-full"></div>
-													</div>
-												)}
+											<div className={`w-4 h-4 rounded-full  ${comparisonProjects.includes(project.id) ? 'bg-purple-300' : 'bg-gray-200'}`}>
+												{comparisonProjects.includes(project.id) && <div className="w-full h-full flex items-center justify-center"></div>}
 											</div>
 										</div>
 									</div>
 								))}
 						</div>
 					)}
-				</div>
-			</div>
+				</Card>
+			</Card>
 		</Card>
 	);
 };

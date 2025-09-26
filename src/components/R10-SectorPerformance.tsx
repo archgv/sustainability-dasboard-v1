@@ -168,10 +168,10 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 			</div>
 
 			{isExpanded && (
-				<div className="mt-6 space-y-6">
-					<div className="p-6">
+				<div className="">
+					<div className="px-6">
 						{/* Controls Row */}
-						<Card className="flex flex-wrap items-center gap-4 shadow-sm-inner p-2">
+						<Card className="flex flex-wrap items-center gap-4 shadow-sm-inner p-2 mb-6">
 							<div className="flex items-center space-x-2">
 								<Select value={selectedKPI} onValueChange={setSelectedKPI}>
 									<SelectTrigger className="w-80 pr-6">
@@ -244,7 +244,7 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 						</Card>
 
 						{/* Chart Section */}
-						<Card className="shadow-inner">
+						<Card className="shadow-inner mb-8">
 							<h3 className="font-medium mt-8 mb-2 text-center" style={{ color: chartColors.dark }}>
 								{currentKPI.key} by Sector ({getDisplayUnit(currentKPI, valueType)})
 							</h3>

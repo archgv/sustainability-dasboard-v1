@@ -188,61 +188,51 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 	return (
 		<div className="space-y-6">
 			{/* Chart Configuration */}
-			<Card className="p-4">
+			<Card className="p-6">
 				<div className="flex flex-wrap items-center justify-between gap-4">
 					<div className="flex items-center gap-2">
-						<div className="w-56">
-							<Label htmlFor="chart-type" className="text-sm font-medium text-gray-700 mb-2 block px-4">
+						<div>
+							<Label htmlFor="chart-type" className="text-sm font-medium text-gray-700 mb-4 block pl-6">
 								Chart Type
 							</Label>
 							<Select value={chartType} onValueChange={(value) => setChartType(value as ChartType)}>
-								<SelectTrigger className="rounded-full pl-4">
+								<SelectTrigger>
 									<SelectValue placeholder="Select Chart Type" />
 								</SelectTrigger>
-								<SelectContent className="rounded-[20px]">
-									<SelectItem className="rounded-full " value="Compare Two">
-										Compare Two KPIs
-									</SelectItem>
-									<SelectItem className="rounded-full " value="Single Project">
-										Single KPI Across Projects
-									</SelectItem>
-									<SelectItem className="rounded-full " value="Single Time">
-										Single KPI Over Time
-									</SelectItem>
+								<SelectContent>
+									<SelectItem value="Compare Two">Compare Two KPIs</SelectItem>
+									<SelectItem value="Single Project">Single KPI Across Projects</SelectItem>
+									<SelectItem value="Single Time">Single KPI Over Time</SelectItem>
 								</SelectContent>
 							</Select>
 						</div>
 
-						<div className="w-28">
-							<Label htmlFor="value-type" className="text-sm font-medium text-gray-700 mb-2 block pl-4">
+						<div className="w-[120px]">
+							<Label htmlFor="value-type" className="text-sm font-medium text-gray-700 mb-4 block pl-6">
 								Value Type
 							</Label>
 							<Select value={valueType} onValueChange={(value) => setValueType(value as ValueType)}>
-								<SelectTrigger className="rounded-full pl-4">
+								<SelectTrigger>
 									<SelectValue placeholder="Select Value Type" />
 								</SelectTrigger>
-								<SelectContent className="rounded-[20px]">
-									<SelectItem className="rounded-full" value="total">
-										Total
-									</SelectItem>
-									<SelectItem className="rounded-full" value="average">
-										/m² GIA
-									</SelectItem>
+								<SelectContent>
+									<SelectItem value="total">Total</SelectItem>
+									<SelectItem value="average">/m² GIA</SelectItem>
 								</SelectContent>
 							</Select>
 						</div>
 					</div>
 
 					<div className="flex items-center gap-2">
-						<div className="w-[274px]">
-							<Label htmlFor="kpi1" className="text-sm font-medium text-gray-700 mb-2 block pl-4">
+						<div>
+							<Label htmlFor="kpi1" className="text-sm font-medium text-gray-700 mb-4 block pl-6">
 								KPI 1
 							</Label>
 							<Select value={selectedKPI1} onValueChange={setSelectedKPI1}>
-								<SelectTrigger className="rounded-full pl-4">
+								<SelectTrigger>
 									<SelectValue placeholder="Select First KPI" />
 								</SelectTrigger>
-								<SelectContent className="rounded-[20px]">
+								<SelectContent>
 									{filteredKPIs
 										.filter((kpi) => {
 											// Remove biogenic from single-bar and single-timeline charts
@@ -261,12 +251,12 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 						</div>
 
 						{showKPI2 && (
-							<div className="w-[274px]">
-								<Label htmlFor="kpi2" className="text-sm font-medium text-gray-700 mb-2 block pl-4">
+							<div>
+								<Label htmlFor="kpi2" className="text-sm font-medium text-gray-700 mb-4 block pl-6">
 									KPI 2
 								</Label>
 								<Select value={selectedKPI2} onValueChange={setSelectedKPI2}>
-									<SelectTrigger className="rounded-full pl-4">
+									<SelectTrigger>
 										<SelectValue placeholder="Select Second KPI" />
 									</SelectTrigger>
 									<SelectContent className="rounded-[20px]">
