@@ -15,6 +15,7 @@ import { generateNiceTicks } from './UtilChart/UtilTick';
 import { chartKPIs, ChartType, filteredKPIs, getProjectArea, kpiCompatibilityMatrix, ValueType } from './Key/KeyChart';
 import { Selector } from './R31-Selector';
 import { transformDataForValueType } from './UtilChart/UtilValueType';
+import { getChartTitle, hasBenchmarks, getAvailableSubSectors, getChartToggles } from './UtilChart/UtilChart';
 
 interface ChartProps {
 	projects: Project[];
@@ -61,20 +62,6 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 		});
 	};
 
-	const getChartTitle = () => {
-		const valueTypeLabel = valueType === 'average' ? '/m²' : 'total';
-
-		switch (chartType) {
-			case 'Compare Two':
-				return `${kpi1Config.key} vs ${kpi2Config.key} (${valueTypeLabel})`;
-			case 'Single Project':
-				return `${kpi1Config.key} by Project (${valueTypeLabel})`;
-			case 'Single Time':
-				return `${kpi1Config.key} Over Time (${valueTypeLabel})`;
-			default:
-				return 'Chart';
-		}
-	};
 
 	const renderChart = () => {
 		switch (chartType) {
@@ -128,32 +115,8 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 		}
 	};
 
-	// Check if there are benchmarks available for the current sector
-	const hasBenchmarks = () => {
-		if (projects.length === 0) return false;
-		return !!totalEmbodiedCarbonBenchmarks[projects[0]['Primary Sector'] as keyof typeof totalEmbodiedCarbonBenchmarks];
-	};
-
-	// Get sub-sectors for the primary project's sector
-	const getAvailableSubSectors = (): string[] => {
-		if (projects.length === 0) return [];
-
-		// Check both upfront carbon and operational energy benchmarks
-		if (selectedKPI1 === 'Upfront Carbon') {
-			const sectorData = uknzcbsBenchmarks[projects[0]['Primary Sector'] as keyof typeof uknzcbsBenchmarks];
-			return sectorData ? Object.keys(sectorData) : [];
-		} else if (selectedKPI1 === 'Operational Energy Total') {
-			const sectorData = uknzcbsOperationalEnergyBenchmarks[projects[0]['Primary Sector'] as keyof typeof uknzcbsOperationalEnergyBenchmarks];
-			return sectorData ? Object.keys(sectorData) : [];
-		}
-
-		return [];
-	};
-
-	const availableSubSectors = getAvailableSubSectors();
-	const showSingleTimeSectorToggle =
-		(selectedKPI1 === 'Upfront Carbon' || selectedKPI1 === 'Operational Energy Total') && valueType === 'average' && chartType === 'Single Time' && availableSubSectors.length > 1;
-	const showSingleSectorToggle = selectedKPI1 === 'Upfront Carbon' && valueType === 'average' && chartType === 'Single Project' && availableSubSectors.length > 0;
+	const availableSubSectors = getAvailableSubSectors(projects, selectedKPI1);
+	const { showSingleTimeSectorToggle, showSingleSectorToggle } = getChartToggles(selectedKPI1, valueType, chartType, availableSubSectors);
 
 	return (
 		<div className="space-y-6">
@@ -171,7 +134,7 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 
 			<Card className="p-6">
 				<div className="flex justify-between items-center text-center mb-2">
-					<h2 className="py-2">{getChartTitle()}</h2>
+					<h2 className="py-2">{getChartTitle(chartType, valueType, selectedKPI1, selectedKPI2)}</h2>
 					<div className="flex items-center space-x-2">
 						{/* Show benchmark toggle only for Total Embodied Carbon with average values */}
 						{selectedKPI1 === 'Total Embodied Carbon' && valueType === 'average' && chartType === 'Single Project' && (
@@ -179,7 +142,7 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 								variant={showBenchmarks ? 'default' : 'outline'}
 								size="sm"
 								onClick={() => setShowBenchmarks(!showBenchmarks)}
-								disabled={!hasBenchmarks()}
+								disabled={!hasBenchmarks(projects)}
 								className="flex items-center gap-2"
 							>
 								{showBenchmarks ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
