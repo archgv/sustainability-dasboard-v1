@@ -12,7 +12,7 @@ interface SectorSelectorProps {
 	setValueType: (value: 'average' | 'total') => void;
 	yearFilter: string;
 	setYearFilter: (value: string) => void;
-	projects: any[];
+	availableYears: number[];
 	onDownloadCSV: () => void;
 	onDownloadPNG: () => void;
 }
@@ -24,15 +24,10 @@ export const SectorSelector = ({
 	setValueType,
 	yearFilter,
 	setYearFilter,
-	projects,
+	availableYears,
 	onDownloadCSV,
 	onDownloadPNG,
 }: SectorSelectorProps) => {
-	const getYearOptions = () => {
-		const years = projects.map((p) => new Date(p['PC Date']).getFullYear());
-		const uniqueYears = [...new Set(years)].sort((a, b) => b - a);
-		return uniqueYears;
-	};
 
 	return (
 		<Card className="flex flex-wrap items-center gap-4 shadow-sm-inner p-2 mb-6">
@@ -88,7 +83,7 @@ export const SectorSelector = ({
 					</SelectTrigger>
 					<SelectContent>
 						<SelectItem value="all">All years</SelectItem>
-						{getYearOptions().map((year) => (
+						{availableYears.map((year) => (
 							<SelectItem key={year} value={`from-${year}`}>
 								From {year}
 							</SelectItem>

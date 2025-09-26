@@ -40,6 +40,9 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 	}, [selectedKPI]);
 	const currentKPI = KPIOptions.find((kpi) => kpi.key === selectedKPI);
 
+	// Get available years from projects for selector
+	const availableYears = [...new Set(projects.map(p => new Date(p['PC Date']).getFullYear()))].sort((a, b) => b - a);
+
 	// Filter projects by year if needed
 	const filteredProjects =
 		yearFilter === 'all'
@@ -168,7 +171,7 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 							setValueType={setValueType}
 							yearFilter={yearFilter}
 							setYearFilter={setYearFilter}
-							projects={projects}
+							availableYears={availableYears}
 							onDownloadCSV={handleDownloadCSV}
 							onDownloadPNG={handleDownloadPNG}
 						/>
