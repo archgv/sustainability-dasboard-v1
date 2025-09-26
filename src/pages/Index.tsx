@@ -122,8 +122,8 @@ const Index = () => {
 		<div className="min-h-screen bg-gray-50">
 			{/* <DashboardHeader /> */}
 
-			{/* <div className="container mx-auto"> */}
-			<div className="px-36 mx-auto">
+			<div className="container mx-auto">
+				{/* <div className="px-36 mx-auto"> */}
 				<div className="flex">
 					<div className="min-w-96 fixed px-0 top-0 bottom-0 overflow-y-auto pt-0">
 						<div className="flex flex-col items-center px-10 pb-10">
