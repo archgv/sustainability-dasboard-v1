@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
-import { AddProjectDataWizard } from './L11-AddProjectDataWizard';
+import { AddProjectDataWizard } from './L11-AddWizard';
 import { Project } from '@/components/Utils/project';
 
-import { WizardData } from './L11-AddProjectDataWizard';
+import { WizardData } from './L11-AddWizard';
 import { sampleProjects } from '@/data/sampleData';
 
 interface AddProjectDataProps {

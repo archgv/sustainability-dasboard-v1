@@ -1,4 +1,3 @@
-// Sector color and shape mapping
 export const sectorConfig = {
 	'Residential': {
 		color: '#FD7B7B',
@@ -37,6 +36,11 @@ export const sectorConfig = {
 		name: 'Workplace',
 	},
 };
+
+// Generate list of all sectors dynamically
+export const SectorKeys = Object.keys(sectorConfig) as (keyof typeof sectorConfig)[];
+
+export type SectorKey = keyof typeof sectorConfig;
 
 // Get sector color
 export const getSectorColor = (sector: string): string => {

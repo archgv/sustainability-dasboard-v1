@@ -10,12 +10,9 @@ import { CompareTwo } from './ChartSub/C31-CompareTwo';
 import { SingleProject } from './ChartSub/C32-SingleProject';
 import { SingleTime } from './ChartSub/C33-SingleTime';
 import { chartColors } from './Utils/UtilColor';
-import { generateNiceTicks } from './Utils/UtilShape';
-import { chartKPIs, filteredKPIs, kpiCompatibilityMatrix } from './Utils/UtilChart';
+import { generateNiceTicks } from './ChartSub/C22-UtilTick';
+import { chartKPIs, ChartType, filteredKPIs, getProjectArea, kpiCompatibilityMatrix, ValueType } from './Utils/UtilChart';
 import { Selector } from './R31-Selector';
-
-export type ChartType = 'Compare Two' | 'Single Project' | 'Single Time';
-export type ValueType = 'total' | 'average';
 
 interface ChartProps {
 	projects: Project[];
@@ -34,18 +31,6 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 
 	const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
 	const kpi2Config = KPIOptions.find((kpi) => kpi.key === selectedKPI2);
-
-	// Mock building area data for demonstration
-	const getProjectArea = (projectId: string): number => {
-		const areas: Record<string, number> = {
-			'1': 15000, // Green Office Tower
-			'2': 8500, // Sustainable Housing Complex
-			'3': 22000, // Innovation Campus
-			'4': 12000, // Community Health Center
-			'5': 18000, // Urban Retail Hub
-		};
-		return areas[projectId] || 10000;
-	};
 
 	const transformDataForValueType = (data: Project[]): Project[] => {
 		if (valueType === 'average') {

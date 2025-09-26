@@ -1,11 +1,10 @@
 import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { Filter, X } from 'lucide-react';
 
-interface FilterPanelProps {
+interface FilterProps {
 	filters: {
 		'Primary Sector': string;
 		dateRange: string;
@@ -14,11 +13,11 @@ interface FilterPanelProps {
 		'Project Type': string;
 		'Current RIBA Stage': string;
 	};
-	onFilterChange: (filters: FilterPanelProps['filters']) => void;
+	onFilterChange: (filters: FilterProps['filters']) => void;
 	onClearFilters: () => void;
 }
 
-export const FilterPanel = ({ filters, onFilterChange, onClearFilters }: FilterPanelProps) => {
+export const FilterPanel = ({ filters, onFilterChange, onClearFilters }: FilterProps) => {
 	const handlePrimarySectorChange = (value: string) => {
 		onFilterChange({
 			...filters,
@@ -44,9 +43,9 @@ export const FilterPanel = ({ filters, onFilterChange, onClearFilters }: FilterP
 		});
 	};
 	return (
-		<Card className="p-2 rounded-tl-[80px] rounded-tr-[80px] rounded-bl-[200px] rounded-br-[200px] ">
-			<Card className="rounded-tl-[80px] rounded-tr-[80px] rounded-bl-[200px] rounded-br-[200px] p-0 shadow-md">
-				<Card className="rounded-tl-[60px] rounded-tr-[60px] rounded-bl-[200px] rounded-br-[200px] p-6 pb-10 sticky shadow-inner">
+		<Card className="p-2 rounded-tl-[80px] rounded-tr-[80px] rounded-bl-[68px] rounded-br-[68px] ">
+			<Card className="rounded-tl-[80px] rounded-tr-[80px] rounded-bl-[60px] rounded-br-[60px] p-0 shadow-md">
+				<Card className="rounded-tl-[60px] rounded-tr-[60px] rounded-bl-[60px] rounded-br-[60px] p-6 pb-4 sticky shadow-inner">
 					<div className="flex items-center space-x-2">
 						<h2 className="pl-6">Filters</h2>
 						<Filter className="h-4 w-4 text-rose-400" />
@@ -132,7 +131,7 @@ export const FilterPanel = ({ filters, onFilterChange, onClearFilters }: FilterP
 							</Select>
 						</div>
 					</div>
-					<div className="flex items-center justify-center mt-8">
+					<div className="flex items-center justify-center mt-6">
 						<Button variant="outline" size="default" onClick={onClearFilters} className="flex items-center gap-2 text-rose-400">
 							<X className="h-4 w-4 text-rose-400" />
 							Clear

@@ -1,3 +1,5 @@
+import { SectorKey } from './UtilSector';
+
 export const StageKeys = ['1', '2', '3', '4', '5', '6', '7'] as const;
 export type StageKey = (typeof StageKeys)[number];
 
@@ -5,7 +7,7 @@ export interface Project {
 	id: string;
 	'Project Name': string;
 	'Project Location': string;
-	'Primary Sector': 'Workplace' | 'Residential' | 'Education' | 'Healthcare' | 'CCC' | 'Infrastructure';
+	'Primary Sector': SectorKey;
 	'Sub Sector'?: string;
 	'Project Type': 'New Build' | 'Retrofit';
 	'Heritage Project'?: string;

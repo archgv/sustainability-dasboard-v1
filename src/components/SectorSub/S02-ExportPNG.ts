@@ -18,7 +18,7 @@ interface ExportPNGOptions {
 	valueType: string;
 	yearFilter: string;
 	sectorStats: SectorStatsMap;
-	allSectors: string[];
+	SectorKeys: string[];
 }
 
 const getDisplayUnit = (currentKPI: KPIOption, valueType: string, forCSV: boolean = false) => {
@@ -35,7 +35,7 @@ const getAverage = (total: number, count: number) => {
 };
 
 export const exportSectorPNG = (options: ExportPNGOptions) => {
-	const { selectedKPI, currentKPI, valueType, yearFilter, sectorStats, allSectors } = options;
+	const { selectedKPI, currentKPI, valueType, yearFilter, sectorStats, SectorKeys } = options;
 
 	console.log('Downloading PNG for sector performance analysis');
 
@@ -165,7 +165,7 @@ export const exportSectorPNG = (options: ExportPNGOptions) => {
 
 			// Draw table rows
 			ctx.font = '12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-			allSectors.forEach((sector) => {
+			SectorKeys.forEach((sector) => {
 				const stats = sectorStats[sector];
 				const avg = stats ? getAverage(stats.totalValue, stats.count) : 0;
 				const min = stats && stats.minValue !== Infinity ? Math.round(stats.minValue) : 0;

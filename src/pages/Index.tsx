@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { FilterPanel } from '@/components/L20-FilterPanel';
+import { FilterPanel } from '@/components/L20-Filter';
 import { Chart } from '@/components/R32-Chart';
 import { Portfolio } from '@/components/R40-Portfolio';
 import { DashboardHeader } from '@/components/T00-Header';
-import { AddProjectData } from '@/components/L10-AddProjectData';
+import { AddProjectData } from '@/components/L10-Add';
 import { Comparison } from '@/components/R30-Comparison';
-import { SectorPerformance } from '@/components/R10-SectorPerformance';
+import { SectorPerformance } from '@/components/R10-Sector';
 import { Certification } from '@/components/R20-Certification';
 import { sampleProjects } from '@/data/sampleData';
 import { Project } from '@/components/Utils/project';

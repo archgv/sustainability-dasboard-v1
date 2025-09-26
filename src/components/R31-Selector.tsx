@@ -1,8 +1,7 @@
 import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ChartType, ValueType } from './R32-Chart';
-import { filteredKPIs, kpiCompatibilityMatrix } from './Utils/UtilChart';
+import { ChartType, ValueType, filteredKPIs, kpiCompatibilityMatrix } from './Utils/UtilChart';
 
 interface SelectorProps {
 	chartType: ChartType;
@@ -15,16 +14,7 @@ interface SelectorProps {
 	setValueType: (value: ValueType) => void;
 }
 
-export const Selector = ({
-	chartType,
-	setChartType,
-	selectedKPI1,
-	setSelectedKPI1,
-	selectedKPI2,
-	setSelectedKPI2,
-	valueType,
-	setValueType,
-}: SelectorProps) => {
+export const Selector = ({ chartType, setChartType, selectedKPI1, setSelectedKPI1, selectedKPI2, setSelectedKPI2, valueType, setValueType }: SelectorProps) => {
 	// Get compatible KPI2 options based on selected KPI1
 	const showKPI2 = chartType === 'Compare Two';
 	const compatibleKPI2Options = showKPI2 ? filteredKPIs.filter((kpi) => kpiCompatibilityMatrix[selectedKPI1]?.includes(kpi.key)) : [];

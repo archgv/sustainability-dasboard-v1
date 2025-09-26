@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { HelpCircle, AlertTriangle } from 'lucide-react';
-import { WizardData } from '../L11-AddProjectDataWizard';
+import { WizardData } from '../L11-AddWizard';
 import {
 	AlertDialog,
 	AlertDialogAction,

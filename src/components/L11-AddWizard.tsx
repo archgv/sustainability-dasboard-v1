@@ -3,10 +3,10 @@ import * as React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Project, StageKey, StageKeys } from '@/components/Utils/project';
-import { AddSelection } from './AddProjectSub/P00-Selection';
-import { AddOverview } from './AddProjectSub/P11-Overview';
-import { AddCertifications } from './AddProjectSub/P12-Certifications';
-import { AddRIBAStage } from './AddProjectSub/P13-RIBAStage';
+import { AddSelection } from './AddSub/P00-Selection';
+import { AddOverview } from './AddSub/P11-Overview';
+import { AddCertifications } from './AddSub/P12-Certifications';
+import { AddRIBAStage } from './AddSub/P13-RIBAStage';
 
 interface AddProjectDataWizardProps {
 	isOpen: boolean;

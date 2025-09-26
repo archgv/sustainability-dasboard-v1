@@ -9,7 +9,6 @@ export const chartColors = {
 	dark: '#808080', // Updated dark gray as requested
 	darkGreen: '#004033', // Dark green
 	benchmark: '#e74c3c', // Red for benchmark lines
-	// Additional complementary colors
 	warning: '#f39c12', // Orange
 	info: '#3498db', // Medium blue
 	success: '#2D9B4D', // Updated to use new green

@@ -3,7 +3,7 @@ import { Project, KPIOptions } from '@/components/Utils/project';
 import { ValueType } from '../R32-Chart';
 import { getSectorColor, getSectorShape } from '@/components/Utils/UtilSector';
 import { formatNumber } from '@/lib/utils';
-import { ChartShape } from '../R33-ChartShape';
+import { ChartShape } from '../ChartSub/C21-UtilShape';
 import { chartColors } from '../Utils/UtilColor';
 import { getResponsiveContainerProps, getChartProps, getCartesianGridProps, getYAxisProps, getXAxisProps, getBarProps, getTooltipContainerStyle, getUnitLabel } from './C00-ChartConfig';
 

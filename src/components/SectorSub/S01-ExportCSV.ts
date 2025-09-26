@@ -18,7 +18,7 @@ interface ExportCSVOptions {
 	valueType: string;
 	yearFilter: string;
 	sectorStats: SectorStatsMap;
-	allSectors: string[];
+	SectorKeys: string[];
 }
 
 const getDisplayUnit = (currentKPI: KPIOption, valueType: string, forCSV: boolean = false) => {
@@ -35,7 +35,7 @@ const getAverage = (total: number, count: number) => {
 };
 
 export const exportSectorCSV = (options: ExportCSVOptions) => {
-	const { selectedKPI, currentKPI, valueType, yearFilter, sectorStats, allSectors } = options;
+	const { selectedKPI, currentKPI, valueType, yearFilter, sectorStats, SectorKeys } = options;
 
 	console.log('Downloading CSV for sector performance analysis');
 
@@ -53,17 +53,15 @@ export const exportSectorCSV = (options: ExportCSVOptions) => {
 			)}),Range (${getDisplayUnit(currentKPI, valueType, true)})`,
 		].join('\n') + '\n';
 
-	const csvData = allSectors
-		.map((sector) => {
-			const stats = sectorStats[sector];
-			const avg = stats ? getAverage(stats.totalValue, stats.count) : 0;
-			const min = stats && stats.minValue !== Infinity ? Math.round(stats.minValue) : 0;
-			const max = stats && stats.maxValue !== -Infinity ? Math.round(stats.maxValue) : 0;
-			const range = max - min;
-			const count = stats ? stats.count : 0;
-			return `${sector},${count},${formatNumber(avg)},${formatNumber(min)},${formatNumber(max)},${formatNumber(range)}`;
-		})
-		.join('\n');
+	const csvData = SectorKeys.map((sector) => {
+		const stats = sectorStats[sector];
+		const avg = stats ? getAverage(stats.totalValue, stats.count) : 0;
+		const min = stats && stats.minValue !== Infinity ? Math.round(stats.minValue) : 0;
+		const max = stats && stats.maxValue !== -Infinity ? Math.round(stats.maxValue) : 0;
+		const range = max - min;
+		const count = stats ? stats.count : 0;
+		return `${sector},${count},${formatNumber(avg)},${formatNumber(min)},${formatNumber(max)},${formatNumber(range)}`;
+	}).join('\n');
 
 	const fullCsvContent = csvContent + csvData;
 	const blob = new Blob([fullCsvContent], { type: 'text/csv;charset=utf-8;' });

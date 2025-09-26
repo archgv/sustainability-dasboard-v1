@@ -1,5 +1,8 @@
 import { KPIOptions } from './project';
 
+export type ChartType = 'Compare Two' | 'Single Project' | 'Single Time';
+export type ValueType = 'total' | 'average';
+
 // Define the 10 specific KPIs for charts
 export const chartKPIs = [
 	'Operational Energy Total',
@@ -93,4 +96,16 @@ export const kpiCompatibilityMatrix: Record<string, string[]> = {
 	],
 	'Biodiversity Net Gain': ['Urban Greening Factor'],
 	'Urban Greening Factor': ['Biodiversity Net Gain'],
+};
+
+// Mock building area data for demonstration
+export const getProjectArea = (projectId: string): number => {
+	const areas: Record<string, number> = {
+		'1': 15000, // Green Office Tower
+		'2': 8500, // Sustainable Housing Complex
+		'3': 22000, // Innovation Campus
+		'4': 12000, // Community Health Center
+		'5': 18000, // Urban Retail Hub
+	};
+	return areas[projectId] || 10000;
 };

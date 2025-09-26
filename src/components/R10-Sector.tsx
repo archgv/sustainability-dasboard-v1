@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine } from 'recharts';
 import { formatNumber } from '@/lib/utils';
-import { sectorConfig } from '@/components/Utils/UtilSector';
+import { SectorKeys, sectorConfig } from '@/components/Utils/UtilSector';
 import { Project, KPIOptions } from '@/components/Utils/project';
 import { exportSectorCSV } from '@/components/SectorSub/S01-ExportCSV';
 import { exportSectorPNG } from '@/components/SectorSub/S02-ExportPNG';
@@ -41,7 +41,6 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 		}
 	}, [selectedKPI]);
 	const currentKPI = KPIOptions.find((kpi) => kpi.key === selectedKPI);
-	const allSectors = ['Residential', 'Education', 'Healthcare', 'Infrastructure', 'CCC', 'Workplace'];
 
 	// Filter projects by year if needed
 	const filteredProjects =
@@ -95,7 +94,7 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 	};
 
 	// Create chart data ensuring all sectors are included
-	const chartData = allSectors.map((sector) => {
+	const chartData = SectorKeys.map((sector) => {
 		const stats = sectorStats[sector];
 		const baseValue = stats ? getAverage(stats.totalValue, stats.count) : 0;
 
@@ -145,7 +144,7 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 			valueType,
 			yearFilter,
 			sectorStats,
-			allSectors,
+			SectorKeys,
 		});
 	};
 
@@ -156,7 +155,7 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 			valueType,
 			yearFilter,
 			sectorStats,
-			allSectors,
+			SectorKeys,
 		});
 	};
 
@@ -443,7 +442,7 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 											</tr>
 										</thead>
 										<tbody className="bg-pink-50">
-											{allSectors.map((sector) => {
+											{SectorKeys.map((sector) => {
 												const stats = sectorStats[sector];
 												const avg = stats ? getAverage(stats.totalValue, stats.count) : 0;
 												const min = stats && stats.minValue !== Infinity ? Math.round(stats.minValue) : 0;
