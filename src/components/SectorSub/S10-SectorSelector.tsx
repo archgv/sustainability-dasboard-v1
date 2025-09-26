@@ -5,30 +5,28 @@ import { Button } from '@/components/ui/button';
 import { KPIOptionsOther } from '@/components/Key/KeyKPI';
 import { chartColors } from '../Key/KeyColor';
 
-interface SelectorState {
+interface SectorSelectorProps {
 	selectedKPI: string;
 	setSelectedKPI: (value: string) => void;
 	valueType: 'average' | 'total';
 	setValueType: (value: 'average' | 'total') => void;
 	yearFilter: string;
 	setYearFilter: (value: string) => void;
-}
-
-interface DownloadHandlers {
+	projects: any[];
 	onDownloadCSV: () => void;
 	onDownloadPNG: () => void;
 }
 
-interface SectorSelectorProps {
-	selectorState: SelectorState;
-	projects: any[];
-	downloadHandlers: DownloadHandlers;
-}
-
 export const SectorSelector = ({
-	selectorState: { selectedKPI, setSelectedKPI, valueType, setValueType, yearFilter, setYearFilter },
+	selectedKPI,
+	setSelectedKPI,
+	valueType,
+	setValueType,
+	yearFilter,
+	setYearFilter,
 	projects,
-	downloadHandlers: { onDownloadCSV, onDownloadPNG },
+	onDownloadCSV,
+	onDownloadPNG,
 }: SectorSelectorProps) => {
 	const getYearOptions = () => {
 		const years = projects.map((p) => new Date(p['PC Date']).getFullYear());

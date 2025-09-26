@@ -162,19 +162,15 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 				<div className="">
 					<div className="px-6">
 						<SectorSelector
-							selectorState={{
-								selectedKPI,
-								setSelectedKPI,
-								valueType,
-								setValueType,
-								yearFilter,
-								setYearFilter,
-							}}
+							selectedKPI={selectedKPI}
+							setSelectedKPI={setSelectedKPI}
+							valueType={valueType}
+							setValueType={setValueType}
+							yearFilter={yearFilter}
+							setYearFilter={setYearFilter}
 							projects={projects}
-							downloadHandlers={{
-								onDownloadCSV: handleDownloadCSV,
-								onDownloadPNG: handleDownloadPNG,
-							}}
+							onDownloadCSV={handleDownloadCSV}
+							onDownloadPNG={handleDownloadPNG}
 						/>
 
 						<SectorChart
