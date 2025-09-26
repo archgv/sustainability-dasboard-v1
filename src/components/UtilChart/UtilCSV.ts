@@ -60,27 +60,6 @@ const getChartTitle = (chartType: ChartType, selectedKPI1: string, selectedKPI2:
 	}
 };
 
-const getLifecycleStageCategories = (): ChartCategory[] => [
-	{ key: 'biogenicCarbon', label: 'Biogenic carbon (A1-A3)', color: '#FF8EE5' },
-	{ key: 'upfrontEmbodied', label: 'Upfront embodied carbon (A1-A5)', color: '#2D9B4D' },
-	{ key: 'inUseEmbodied', label: 'In-use embodied carbon (B1-B5)', color: '#48DE9D' },
-	{ key: 'endOfLife', label: 'End of life (C1-C4)', color: '#f39c12' },
-	{ key: 'benefitsLoads', label: 'Benefits and loads (D1)', color: '#5dc5ed' },
-	{ key: 'facilitatingWorks', label: 'Facilitating works', color: '#c9e1ea' },
-];
-
-const getBuildingElementCategories = (): ChartCategory[] => [
-	{ key: 'substructure', label: 'Substructure', color: '#2D9B4D' },
-	{ key: 'superstructureFrame', label: 'Superstructure - Frame', color: '#48DE9D' },
-	{ key: 'superstructureExternal', label: 'Superstructure - External envelope', color: '#FF8EE5' },
-	{ key: 'superstructureInternal', label: 'Superstructure - Internal assemblies', color: '#5dc5ed' },
-	{ key: 'finishes', label: 'Finishes', color: '#f39c12' },
-	{ key: 'ffe', label: 'FF&E', color: '#3498db' },
-	{ key: 'mep', label: 'MEP', color: '#2D9B4D' },
-	{ key: 'externalWorks', label: 'External works', color: '#004033' },
-	{ key: 'contingency', label: 'Contingency', color: '#272727' },
-];
-
 const transformDataForValueType = (data: Project[], valueType: ValueType, selectedKPI1: string, selectedKPI2: string): Project[] => {
 	if (valueType === 'average') {
 		return data; // Data is already per sqm in our KPIs

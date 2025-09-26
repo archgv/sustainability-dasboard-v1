@@ -14,16 +14,6 @@ interface ExportPNGOptions {
 	selectedBarChartBenchmark: string;
 }
 
-const getUnitLabel = (baseUnit: string, valueType: ValueType, forCSV: boolean = false): string => {
-	// For CSV exports, use plain text to avoid encoding issues
-	const unit = forCSV ? baseUnit.replace(/CO2/g, 'CO2').replace(/₂/g, '2') : baseUnit.replace(/CO2/g, 'CO₂');
-
-	if (valueType === 'total') {
-		return unit.replace('/m²', '').replace('/year', '/year total');
-	}
-	return unit;
-};
-
 const getChartTitle = (chartType: ChartType, selectedKPI1: string, selectedKPI2: string, valueType: ValueType) => {
 	const valueTypeLabel = valueType === 'average' ? 'per sqm' : 'total';
 	const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
