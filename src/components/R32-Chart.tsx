@@ -14,6 +14,7 @@ import { chartColors } from './Key/KeyColor';
 import { generateNiceTicks } from './UtilChart/UtilTick';
 import { chartKPIs, ChartType, filteredKPIs, getProjectArea, kpiCompatibilityMatrix, ValueType } from './Key/KeyChart';
 import { Selector } from './R31-Selector';
+import { transformDataForValueType } from './UtilChart/UtilValueType';
 
 interface ChartProps {
 	projects: Project[];
@@ -33,18 +34,6 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 	const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
 	const kpi2Config = KPIOptions.find((kpi) => kpi.key === selectedKPI2);
 
-	const transformDataForValueType = (data: Project[]): Project[] => {
-		if (valueType === 'average') {
-			return data;
-		}
-
-		// For total values, multiply by building area
-		return data.map((item) => ({
-			...item,
-			[selectedKPI1]: item[selectedKPI1] * getProjectArea(item.id.split('-')[0]), // Handle RIBA stage variants
-			[selectedKPI2]: selectedKPI2 ? item[selectedKPI2] * getProjectArea(item.id.split('-')[0]) : undefined,
-		}));
-	};
 
 	const handleExportCSV = () => {
 		exportChartToCSV({
@@ -100,7 +89,7 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 						chartColors={chartColors}
 						generateNiceTicks={generateNiceTicks}
 						getProjectArea={getProjectArea}
-						transformDataForValueType={transformDataForValueType}
+						transformDataForValueType={(data) => transformDataForValueType(data, valueType, selectedKPI1, selectedKPI2)}
 					/>
 				);
 
@@ -116,7 +105,7 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 						chartColors={chartColors}
 						generateNiceTicks={generateNiceTicks}
 						getProjectArea={getProjectArea}
-						transformDataForValueType={transformDataForValueType}
+						transformDataForValueType={(data) => transformDataForValueType(data, valueType, selectedKPI1, selectedKPI2)}
 					/>
 				);
 
@@ -130,7 +119,7 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 						selectedSubSector={selectedSubSector}
 						chartColors={chartColors}
 						generateNiceTicks={generateNiceTicks}
-						transformDataForValueType={transformDataForValueType}
+						transformDataForValueType={(data) => transformDataForValueType(data, valueType, selectedKPI1, selectedKPI2)}
 					/>
 				);
 
