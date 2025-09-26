@@ -43,17 +43,17 @@ const getUnitLabel = (baseUnit: string, valueType: ValueType, forCSV: boolean = 
 };
 
 const getChartTitle = (chartType: ChartType, selectedKPI1: string, selectedKPI2: string, valueType: ValueType) => {
-	const valueTypeLabel = valueType === 'per-sqm' ? 'per sqm' : 'total';
+	const valueTypeLabel = valueType === 'average' ? 'per sqm' : 'total';
 	const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
 	const kpi2Config = KPIOptions.find((kpi) => kpi.key === selectedKPI2);
 
 	switch (chartType) {
 		case 'Compare Two':
-			return `${kpi1Config?.label} vs ${kpi2Config?.label} (${valueTypeLabel}) - Bubble Chart`;
+			return `${kpi1Config?.key} vs ${kpi2Config?.key} (${valueTypeLabel}) - Bubble Chart`;
 		case 'Single Project':
-			return `${kpi1Config?.label} by Project (${valueTypeLabel}) - Bar Chart`;
+			return `${kpi1Config?.key} by Project (${valueTypeLabel}) - Bar Chart`;
 		case 'Single Time':
-			return `${kpi1Config?.label} Over Time (${valueTypeLabel}) - Timeline`;
+			return `${kpi1Config?.key} Over Time (${valueTypeLabel}) - Timeline`;
 		default:
 			return 'Chart';
 	}
@@ -81,7 +81,7 @@ const getBuildingElementCategories = (): ChartCategory[] => [
 ];
 
 const transformDataForValueType = (data: Project[], valueType: ValueType, selectedKPI1: string, selectedKPI2: string): Project[] => {
-	if (valueType === 'per-sqm') {
+	if (valueType === 'average') {
 		return data; // Data is already per sqm in our KPIs
 	}
 
@@ -105,7 +105,7 @@ export const exportChartToCSV = (options: ExportCSVOptions) => {
 	const transformedProjects = transformDataForValueType(projects, valueType, selectedKPI1, selectedKPI2);
 
 	// CSV headers
-	const headers = ['Project Name', `${kpi1Config?.label || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType, true)})`];
+	const headers = ['Project Name', `${kpi1Config?.key || selectedKPI1} (${getUnitLabel(kpi1Config?.unit || '', valueType, true)})`];
 
 	// For Total Embodied Carbon charts, include biogenic carbon column
 	if (chartType === 'Single Project' && selectedKPI1 === 'Total Embodied Carbon') {
@@ -113,7 +113,7 @@ export const exportChartToCSV = (options: ExportCSVOptions) => {
 	}
 
 	if (chartType === 'Compare Two') {
-		headers.push(`${kpi2Config?.label || selectedKPI2} (${getUnitLabel(kpi2Config?.unit || '', valueType, true)})`);
+		headers.push(`${kpi2Config?.key || selectedKPI2} (${getUnitLabel(kpi2Config?.unit || '', valueType, true)})`);
 		headers.push('Building Area (m²)');
 	}
 	if (chartType === 'Single Time') {
@@ -149,7 +149,7 @@ export const exportChartToCSV = (options: ExportCSVOptions) => {
 	// Add benchmark data to CSV if available
 	const getBenchmarkDataForCSV = () => {
 		// Get UKNZCBS benchmark data for upfront carbon
-		if (selectedKPI1 === 'Upfront Carbon' && selectedBarChartBenchmark && valueType === 'per-sqm' && projects.length > 0) {
+		if (selectedKPI1 === 'Upfront Carbon' && selectedBarChartBenchmark && valueType === 'average' && projects.length > 0) {
 			const primaryProject = projects[0];
 			const primarySector = primaryProject['Primary Sector'];
 
@@ -188,7 +188,7 @@ export const exportChartToCSV = (options: ExportCSVOptions) => {
 		}
 
 		// Get benchmark data for total embodied carbon
-		if (showBenchmarks && selectedKPI1 === 'Total Embodied Carbon' && valueType === 'per-sqm' && projects.length > 0) {
+		if (showBenchmarks && selectedKPI1 === 'Total Embodied Carbon' && valueType === 'average' && projects.length > 0) {
 			// Get benchmark values for this sector
 			const sectorBenchmarks = totalEmbodiedCarbonBenchmarks[projects[0]['Primary Sector'] as keyof typeof totalEmbodiedCarbonBenchmarks];
 

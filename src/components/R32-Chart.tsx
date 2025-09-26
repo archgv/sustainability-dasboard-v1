@@ -1,7 +1,5 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Download, FileText, Eye, EyeOff } from 'lucide-react';
 import { Project, KPIOptions } from '@/components/Utils/project';
 import { useState } from 'react';
@@ -14,6 +12,7 @@ import { SingleTime } from './ChartSub/C33-SingleTime';
 import { chartColors } from './Utils/UtilColor';
 import { generateNiceTicks } from './Utils/UtilShape';
 import { chartKPIs, filteredKPIs, kpiCompatibilityMatrix } from './Utils/UtilChart';
+import { Selector } from './R31-Selector';
 
 export type ChartType = 'Compare Two' | 'Single Project' | 'Single Time';
 export type ValueType = 'total' | 'average';
@@ -181,97 +180,19 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 		(selectedKPI1 === 'Upfront Carbon' || selectedKPI1 === 'Operational Energy Total') && valueType === 'average' && chartType === 'Single Time' && availableSubSectors.length > 1;
 	const showSingleSectorToggle = selectedKPI1 === 'Upfront Carbon' && valueType === 'average' && chartType === 'Single Project' && availableSubSectors.length > 0;
 
-	// Get compatible KPI2 options based on selected KPI1
-	const showKPI2 = chartType === 'Compare Two';
-	const compatibleKPI2Options = showKPI2 ? filteredKPIs.filter((kpi) => kpiCompatibilityMatrix[selectedKPI1]?.includes(kpi.key)) : [];
-
 	return (
 		<div className="space-y-6">
 			{/* Chart Configuration */}
-			<Card className="p-6">
-				<div className="flex flex-wrap items-center justify-between gap-4">
-					<div className="flex items-center gap-2">
-						<div>
-							<Label htmlFor="chart-type" className="text-sm font-medium text-gray-700 mb-4 block pl-6">
-								Chart Type
-							</Label>
-							<Select value={chartType} onValueChange={(value) => setChartType(value as ChartType)}>
-								<SelectTrigger>
-									<SelectValue placeholder="Select Chart Type" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="Compare Two">Compare Two KPIs</SelectItem>
-									<SelectItem value="Single Project">Single KPI Across Projects</SelectItem>
-									<SelectItem value="Single Time">Single KPI Over Time</SelectItem>
-								</SelectContent>
-							</Select>
-						</div>
-
-						<div className="w-[120px]">
-							<Label htmlFor="value-type" className="text-sm font-medium text-gray-700 mb-4 block pl-6">
-								Value Type
-							</Label>
-							<Select value={valueType} onValueChange={(value) => setValueType(value as ValueType)}>
-								<SelectTrigger>
-									<SelectValue placeholder="Select Value Type" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="total">Total</SelectItem>
-									<SelectItem value="average">/m² GIA</SelectItem>
-								</SelectContent>
-							</Select>
-						</div>
-					</div>
-
-					<div className="flex items-center gap-2">
-						<div>
-							<Label htmlFor="kpi1" className="text-sm font-medium text-gray-700 mb-4 block pl-6">
-								KPI 1
-							</Label>
-							<Select value={selectedKPI1} onValueChange={setSelectedKPI1}>
-								<SelectTrigger>
-									<SelectValue placeholder="Select First KPI" />
-								</SelectTrigger>
-								<SelectContent>
-									{filteredKPIs
-										.filter((kpi) => {
-											// Remove biogenic from single-bar and single-timeline charts
-											if ((chartType === 'Single Project' || chartType === 'Single Time') && kpi.key === 'Biogenic Carbon') {
-												return false;
-											}
-											return true;
-										})
-										.map((kpi) => (
-											<SelectItem className="rounded-full" key={kpi.key} value={kpi.key}>
-												{kpi.key}
-											</SelectItem>
-										))}
-								</SelectContent>
-							</Select>
-						</div>
-
-						{showKPI2 && (
-							<div>
-								<Label htmlFor="kpi2" className="text-sm font-medium text-gray-700 mb-4 block pl-6">
-									KPI 2
-								</Label>
-								<Select value={selectedKPI2} onValueChange={setSelectedKPI2}>
-									<SelectTrigger>
-										<SelectValue placeholder="Select Second KPI" />
-									</SelectTrigger>
-									<SelectContent className="rounded-[20px]">
-										{compatibleKPI2Options.map((kpi) => (
-											<SelectItem className="rounded-full" key={kpi.key} value={kpi.key}>
-												{kpi.key}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
-							</div>
-						)}
-					</div>
-				</div>
-			</Card>
+			<Selector
+				chartType={chartType}
+				setChartType={setChartType}
+				selectedKPI1={selectedKPI1}
+				setSelectedKPI1={setSelectedKPI1}
+				selectedKPI2={selectedKPI2}
+				setSelectedKPI2={setSelectedKPI2}
+				valueType={valueType}
+				setValueType={setValueType}
+			/>
 
 			<Card className="p-6">
 				<div className="flex justify-between items-center text-center mb-2">
