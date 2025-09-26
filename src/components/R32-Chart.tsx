@@ -50,7 +50,7 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 
 	const transformDataForValueType = (data: Project[]): Project[] => {
 		if (valueType === 'average') {
-			return data; // Data is already per sqm in our KPIs
+			return data;
 		}
 
 		// For total values, multiply by building area
@@ -88,7 +88,7 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 	};
 
 	const getChartTitle = () => {
-		const valueTypeLabel = valueType === 'average' ? 'per sqm' : 'total';
+		const valueTypeLabel = valueType === 'average' ? '/m²' : 'total';
 
 		switch (chartType) {
 			case 'Compare Two':
