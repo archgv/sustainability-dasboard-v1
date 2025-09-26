@@ -24,17 +24,17 @@ const getUnitLabel = (baseUnit: string, valueType: ValueType, forCSV: boolean = 
 };
 
 const getChartTitle = (chartType: ChartType, selectedKPI1: string, selectedKPI2: string, valueType: ValueType) => {
-	const valueTypeLabel = valueType === 'per-sqm' ? 'per sqm' : 'total';
+	const valueTypeLabel = valueType === 'average' ? 'per sqm' : 'total';
 	const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
 	const kpi2Config = KPIOptions.find((kpi) => kpi.key === selectedKPI2);
 
 	switch (chartType) {
 		case 'Compare Two':
-			return `${kpi1Config?.label} vs ${kpi2Config?.label} (${valueTypeLabel}) - Bubble Chart`;
-		case 'Single Project':
-			return `${kpi1Config?.label} by Project (${valueTypeLabel}) - Bar Chart`;
-		case 'Single Time':
-			return `${kpi1Config?.label} Over Time (${valueTypeLabel}) - Timeline`;
+		return `${kpi1Config?.key} vs ${kpi2Config?.key} (${valueTypeLabel}) - Bubble Chart`;
+	case 'Single Project':
+		return `${kpi1Config?.key} by Project (${valueTypeLabel}) - Bar Chart`;
+	case 'Single Time':
+		return `${kpi1Config?.key} Over Time (${valueTypeLabel}) - Timeline`;
 		default:
 			return 'Chart';
 	}
@@ -94,7 +94,7 @@ export const exportChartToPNG = (options: ExportPNGOptions) => {
 
 		// Get chart title and value type information
 		const chartTitle = getChartTitle(chartType, selectedKPI1, selectedKPI2, valueType);
-		const valueTypeText = valueType === 'per-sqm' ? '(per sqm GIA)' : '(Total values)';
+		const valueTypeText = valueType === 'average' ? '(per sqm GIA)' : '(Total values)';
 
 		// Draw title
 		ctx.fillText(chartTitle, canvas.width / 4, yPosition);
@@ -108,7 +108,7 @@ export const exportChartToPNG = (options: ExportPNGOptions) => {
 		// Get benchmark data for PNG export
 		const getBenchmarkDataForPNG = () => {
 			// Get UKNZCBS benchmark data for upfront carbon
-			if (selectedKPI1 === 'Upfront Carbon' && selectedBarChartBenchmark && valueType === 'per-sqm' && projects.length > 0) {
+			if (selectedKPI1 === 'Upfront Carbon' && selectedBarChartBenchmark && valueType === 'average' && projects.length > 0) {
 				const benchmarkColor = getSectorBenchmarkColor(projects[0]['Primary Sector']);
 
 				// Get the PC date from the primary project to determine benchmark year
@@ -150,7 +150,7 @@ export const exportChartToPNG = (options: ExportPNGOptions) => {
 			}
 
 			// Get benchmark data for total embodied carbon
-			if (showBenchmarks && selectedKPI1 === 'Total Embodied Carbon' && valueType === 'per-sqm' && projects.length > 0) {
+			if (showBenchmarks && selectedKPI1 === 'Total Embodied Carbon' && valueType === 'average' && projects.length > 0) {
 				const benchmarkColor = getSectorBenchmarkColor(projects[0]['Primary Sector']);
 
 				// Get benchmark values for this sector
