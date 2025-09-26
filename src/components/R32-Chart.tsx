@@ -11,10 +11,8 @@ import { CompareTwo } from './ChartSub/C01-CompareTwo';
 import { SingleProject } from './ChartSub/C02-SingleProject';
 import { SingleTime } from './ChartSub/C03-SingleTime';
 import { chartColors } from './Key/KeyColor';
-import { generateNiceTicks } from './UtilChart/UtilTick';
-import { chartKPIs, ChartType, filteredKPIs, getProjectArea, kpiCompatibilityMatrix, ValueType } from './Key/KeyChart';
+import { ChartType, ValueType } from './Key/KeyChart';
 import { Selector } from './R31-Selector';
-import { transformDataForValueType } from './UtilChart/UtilValueType';
 import { getChartTitle, hasBenchmarks, getAvailableSubSectors, getChartToggles } from './UtilChart/UtilChart';
 
 interface ChartProps {
@@ -34,7 +32,6 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 
 	const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
 	const kpi2Config = KPIOptions.find((kpi) => kpi.key === selectedKPI2);
-
 
 	const handleExportCSV = () => {
 		exportChartToCSV({
@@ -62,7 +59,6 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 		});
 	};
 
-
 	const commonProps = {
 		projects,
 		selectedKPI1,
@@ -73,29 +69,13 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 	const renderChart = () => {
 		switch (chartType) {
 			case 'Compare Two':
-				return (
-					<CompareTwo
-						{...commonProps}
-						selectedKPI2={selectedKPI2}
-					/>
-				);
+				return <CompareTwo {...commonProps} selectedKPI2={selectedKPI2} />;
 
 			case 'Single Project':
-				return (
-					<SingleProject
-						{...commonProps}
-						showBenchmarks={showBenchmarks}
-						selectedBarChartBenchmark={selectedBarChartBenchmark}
-					/>
-				);
+				return <SingleProject {...commonProps} showBenchmarks={showBenchmarks} selectedBarChartBenchmark={selectedBarChartBenchmark} />;
 
 			case 'Single Time':
-				return (
-					<SingleTime
-						{...commonProps}
-						selectedSubSector={selectedSubSector}
-					/>
-				);
+				return <SingleTime {...commonProps} selectedSubSector={selectedSubSector} />;
 
 			default:
 				return <div>Select a chart type to view data</div>;

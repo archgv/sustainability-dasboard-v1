@@ -102,7 +102,6 @@ export const Comparison = ({ projects, primaryProject, comparisonProjects, onPri
 					{primaryProjectData && (
 						<div className="mt-3 px-6 py-4 bg-blue-50 rounded-[20px]">
 							<div className="flex items-center gap-2 mb-2">
-								<Building2 className="h-4 w-4 text-blue-600" />
 								<span className="font-medium text-blue-900">{primaryProjectData['Project Name']}</span>
 							</div>
 							<div className="flex items-center gap-4 text-sm text-blue-700">
@@ -128,7 +127,7 @@ export const Comparison = ({ projects, primaryProject, comparisonProjects, onPri
 					<div className="mb-4">
 						<div className="flex items-center space-x-2">
 							<Checkbox id="compare-to-self" checked={compareToSelf} onCheckedChange={handleCompareToSelfToggle} />
-							<label htmlFor="compare-to-self" className="text-sm font-medium">
+							<label htmlFor="compare-to-self" className="text-sm font-medium ">
 								Self Compare (RIBA Stages)
 							</label>
 						</div>
