@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Project } from '@/components/Utils/project';
-import { certificationRatings } from './Utils/UtilCertification';
-import { certificationColors } from './Utils/UtilColor';
+import { Project } from '@/components/Key/project';
+import { certificationRatings } from './Key/KeyCertification';
+import { certificationColors } from './Key/KeyColor';
 
 export const Certification = ({ projects }: { projects: Project[] }) => {
 	const [isExpanded, setIsExpanded] = useState(false);

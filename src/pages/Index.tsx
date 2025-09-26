@@ -8,7 +8,7 @@ import { Comparison } from '@/components/R30-Comparison';
 import { SectorPerformance } from '@/components/R10-Sector';
 import { Certification } from '@/components/R20-Certification';
 import { sampleProjects } from '@/data/sampleData';
-import { Project } from '@/components/Utils/project';
+import { Project } from '@/components/Key/project';
 import { Card } from '@/components/ui/card';
 
 const Index = () => {

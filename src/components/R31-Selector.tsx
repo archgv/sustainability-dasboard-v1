@@ -1,7 +1,7 @@
 import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ChartType, ValueType, filteredKPIs, kpiCompatibilityMatrix } from './Utils/UtilChart';
+import { ChartType, ValueType, filteredKPIs, kpiCompatibilityMatrix } from './Key/KeyChart';
 
 interface SelectorProps {
 	chartType: ChartType;
@@ -39,7 +39,7 @@ export const Selector = ({ chartType, setChartType, selectedKPI1, setSelectedKPI
 						</Select>
 					</div>
 
-					<div className="w-[120px]">
+					<div className="w-[130px]">
 						<Label htmlFor="value-type" className="text-sm font-medium text-gray-700 mb-4 block pl-6">
 							Value Type
 						</Label>
@@ -49,7 +49,7 @@ export const Selector = ({ chartType, setChartType, selectedKPI1, setSelectedKPI
 							</SelectTrigger>
 							<SelectContent>
 								<SelectItem value="total">Total</SelectItem>
-								<SelectItem value="average">/m² GIA</SelectItem>
+								<SelectItem value="average">Per m² GIA</SelectItem>
 							</SelectContent>
 						</Select>
 					</div>

@@ -43,7 +43,7 @@ export const FilterPanel = ({ filters, onFilterChange, onClearFilters }: FilterP
 		});
 	};
 	return (
-		<Card className="p-2 rounded-tl-[80px] rounded-tr-[80px] rounded-bl-[68px] rounded-br-[68px] ">
+		<Card className="p-3 rounded-tl-[40px] rounded-tr-[40px] rounded-bl-[66px] rounded-br-[66px] ">
 			<Card className="rounded-tl-[80px] rounded-tr-[80px] rounded-bl-[60px] rounded-br-[60px] p-0 shadow-md">
 				<Card className="rounded-tl-[60px] rounded-tr-[60px] rounded-bl-[60px] rounded-br-[60px] p-6 pb-4 sticky shadow-inner">
 					<div className="flex items-center space-x-2">

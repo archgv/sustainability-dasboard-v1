@@ -2,11 +2,12 @@ import { useState } from 'react';
 import * as React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Project, StageKey, StageKeys } from '@/components/Utils/project';
+import { Project } from '@/components/Key/project';
 import { AddSelection } from './AddSub/P00-Selection';
 import { AddOverview } from './AddSub/P11-Overview';
 import { AddCertifications } from './AddSub/P12-Certifications';
 import { AddRIBAStage } from './AddSub/P13-RIBAStage';
+import { StageKey, StageKeys } from './Key/KeyStage';
 
 interface AddProjectDataWizardProps {
 	isOpen: boolean;

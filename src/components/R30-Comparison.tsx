@@ -2,7 +2,7 @@ import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Project, StageKeys } from '@/components/Utils/project';
+import { Project } from '@/components/Key/project';
 import { Building2, Calendar, MapPin } from 'lucide-react';
 import { useState } from 'react';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
@@ -10,6 +10,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Button } from '@/components/ui/button';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { StageKeys } from './Key/KeyStage';
 
 interface ComparisonProps {
 	projects: Project[];

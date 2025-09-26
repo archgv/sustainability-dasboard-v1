@@ -1,10 +1,11 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine } from 'recharts';
-import { Project, KPIOptions } from '@/components/Utils/project';
-import { ValueType } from '../R32-Chart';
-import { getSectorColor, getSectorBenchmarkColor } from '@/components/Utils/UtilSector';
+import { Project } from '../Key/project';
+import { KPIOptions } from '../Key/KeyKPI';
+import { ValueType } from '../Key/KeyChart';
+import { getSectorColor, getSectorBenchmarkColor } from '@/components/Key/KeySector';
 import { formatNumber } from '@/lib/utils';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks } from '@/data/benchmarkData';
-import { chartColors } from '../Utils/UtilColor';
+import { chartColors } from '../Key/KeyColor';
 import {
 	getResponsiveContainerProps,
 	getChartProps,
@@ -15,7 +16,7 @@ import {
 	getTooltipContainerStyle,
 	getUnitLabel,
 	MultiLineTickComponent,
-} from './C00-ChartConfig';
+} from '../UtilChart/ChartConfig';
 
 interface BarChartProps {
 	projects: Project[];

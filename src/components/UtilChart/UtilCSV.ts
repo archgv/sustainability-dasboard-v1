@@ -1,5 +1,6 @@
-import { Project, KPIOptions } from '@/components/Utils/project';
-import { ChartType, ValueType } from '@/components/R32-Chart';
+import { Project } from '../Key/project';
+import { KPIOptions } from '../Key/KeyKPI';
+import { ChartType, ValueType } from '../Key/KeyChart';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks } from '@/data/benchmarkData';
 
 interface ExportCSVOptions {

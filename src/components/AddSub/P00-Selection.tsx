@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Check, ChevronDown, Search } from 'lucide-react';
+import { Check, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Project } from '@/components/Utils/project';
+import { Project } from '@/components/Key/project';
 import { WizardProgressIndicator } from './P10-Progress';
 
 interface ProjectSelectionProps {

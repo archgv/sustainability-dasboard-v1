@@ -1,7 +1,8 @@
-import { Project, KPIOptions } from '@/components/Utils/project';
-import { ChartType, ValueType } from '@/components/R32-Chart';
+import { Project } from '../Key/project';
+import { KPIOptions } from '../Key/KeyKPI';
+import { ChartType, ValueType } from '@/components/Key/KeyChart';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks } from '@/data/benchmarkData';
-import { getSectorBenchmarkColor } from '@/components/Utils/UtilSector';
+import { getSectorBenchmarkColor } from '@/components/Key/KeySector';
 
 interface ExportPNGOptions {
 	projects: Project[];
@@ -30,11 +31,11 @@ const getChartTitle = (chartType: ChartType, selectedKPI1: string, selectedKPI2:
 
 	switch (chartType) {
 		case 'Compare Two':
-		return `${kpi1Config?.key} vs ${kpi2Config?.key} (${valueTypeLabel}) - Bubble Chart`;
-	case 'Single Project':
-		return `${kpi1Config?.key} by Project (${valueTypeLabel}) - Bar Chart`;
-	case 'Single Time':
-		return `${kpi1Config?.key} Over Time (${valueTypeLabel}) - Timeline`;
+			return `${kpi1Config?.key} vs ${kpi2Config?.key} (${valueTypeLabel}) - Bubble Chart`;
+		case 'Single Project':
+			return `${kpi1Config?.key} by Project (${valueTypeLabel}) - Bar Chart`;
+		case 'Single Time':
+			return `${kpi1Config?.key} Over Time (${valueTypeLabel}) - Timeline`;
 		default:
 			return 'Chart';
 	}

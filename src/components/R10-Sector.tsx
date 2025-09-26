@@ -5,12 +5,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine } from 'recharts';
 import { formatNumber } from '@/lib/utils';
-import { SectorKeys, sectorConfig } from '@/components/Utils/UtilSector';
-import { Project, KPIOptions } from '@/components/Utils/project';
+import { SectorKeys, sectorConfig } from '@/components/Key/KeySector';
+import { Project } from '@/components/Key/project';
+import { KPIOptions } from '@/components/Key/KeyKPI';
 import { exportSectorCSV } from '@/components/SectorSub/S01-ExportCSV';
 import { exportSectorPNG } from '@/components/SectorSub/S02-ExportPNG';
-import { chartColors } from './Utils/UtilColor';
-import { getResponsiveContainerProps, getCartesianGridProps, getYAxisProps, getTooltipContainerStyle, getDisplayUnit } from './ChartSub/C00-ChartConfig';
+import { chartColors } from './Key/KeyColor';
+import { getResponsiveContainerProps, getCartesianGridProps, getYAxisProps, getTooltipContainerStyle, getDisplayUnit } from './UtilChart/ChartConfig';
 
 interface SectorStats {
 	count: number;
@@ -198,7 +199,7 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 											}}
 											onClick={() => setValueType('average')}
 										>
-											Average/m²
+											Per m²
 										</button>
 										<button
 											className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${valueType === 'total' ? 'bg-white shadow-sm' : 'hover:opacity-80'}`}

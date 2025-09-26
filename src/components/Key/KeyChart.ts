@@ -1,4 +1,4 @@
-import { KPIOptions } from './project';
+import { KPIOptions } from './KeyKPI';
 
 export type ChartType = 'Compare Two' | 'Single Project' | 'Single Time';
 export type ValueType = 'total' | 'average';

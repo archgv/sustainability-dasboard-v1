@@ -1,17 +1,18 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Download, FileText, Eye, EyeOff } from 'lucide-react';
-import { Project, KPIOptions } from '@/components/Utils/project';
+import { Project } from '@/components/Key/project';
+import { KPIOptions } from '@/components/Key/KeyKPI';
 import { useState } from 'react';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks, uknzcbsOperationalEnergyBenchmarks } from '@/data/benchmarkData';
-import { exportChartToCSV } from '@/components/ChartSub/C11-ExportCSV';
-import { exportChartToPNG } from '@/components/ChartSub/C12-ExportPNG';
-import { CompareTwo } from './ChartSub/C31-CompareTwo';
-import { SingleProject } from './ChartSub/C32-SingleProject';
-import { SingleTime } from './ChartSub/C33-SingleTime';
-import { chartColors } from './Utils/UtilColor';
-import { generateNiceTicks } from './ChartSub/C22-UtilTick';
-import { chartKPIs, ChartType, filteredKPIs, getProjectArea, kpiCompatibilityMatrix, ValueType } from './Utils/UtilChart';
+import { exportChartToCSV } from '@/components/UtilChart/UtilCSV';
+import { exportChartToPNG } from '@/components/UtilChart/UtilPNG';
+import { CompareTwo } from './ChartSub/C01-CompareTwo';
+import { SingleProject } from './ChartSub/C02-SingleProject';
+import { SingleTime } from './ChartSub/C03-SingleTime';
+import { chartColors } from './Key/KeyColor';
+import { generateNiceTicks } from './UtilChart/UtilTick';
+import { chartKPIs, ChartType, filteredKPIs, getProjectArea, kpiCompatibilityMatrix, ValueType } from './Key/KeyChart';
 import { Selector } from './R31-Selector';
 
 interface ChartProps {
@@ -76,11 +77,11 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 
 		switch (chartType) {
 			case 'Compare Two':
-				return `${kpi1Config.key} vs ${kpi2Config.key} (${valueTypeLabel}) - Bubble Chart`;
+				return `${kpi1Config.key} vs ${kpi2Config.key} (${valueTypeLabel})`;
 			case 'Single Project':
-				return `${kpi1Config.key} by Project (${valueTypeLabel}) - Bar Chart`;
+				return `${kpi1Config.key} by Project (${valueTypeLabel})`;
 			case 'Single Time':
-				return `${kpi1Config.key} Over Time (${valueTypeLabel}) - Timeline`;
+				return `${kpi1Config.key} Over Time (${valueTypeLabel})`;
 			default:
 				return 'Chart';
 		}

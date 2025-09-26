@@ -1,8 +1,7 @@
 // Common chart configuration for ResponsiveContainer and chart components
-import { Value } from '@radix-ui/react-select';
-import { ValueType } from '../R32-Chart';
-import { chartColors } from '../Utils/UtilColor';
-import { KPIOption } from '../Utils/project';
+import { ValueType } from '../Key/KeyChart';
+import { chartColors } from '../Key/KeyColor';
+import { KPIOption } from '../Key/KeyKPI';
 
 // Common ResponsiveContainer props
 export const getResponsiveContainerProps = () => ({

@@ -1,11 +1,12 @@
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Project, KPIOptions } from '@/components/Utils/project';
-import { ValueType } from '../R32-Chart';
-import { getSectorColor, getSectorShape } from '@/components/Utils/UtilSector';
+import { Project } from '../Key/project';
+import { KPIOptions } from '../Key/KeyKPI';
+import { ValueType } from '../Key/KeyChart';
+import { getSectorColor, getSectorShape } from '@/components/Key/KeySector';
 import { formatNumber } from '@/lib/utils';
-import { ChartShape } from '../ChartSub/C21-UtilShape';
-import { chartColors } from '../Utils/UtilColor';
-import { getResponsiveContainerProps, getChartProps, getCartesianGridProps, getYAxisProps, getXAxisProps, getBarProps, getTooltipContainerStyle, getUnitLabel } from './C00-ChartConfig';
+import { ChartShape } from '../UtilChart/UtilShape';
+import { chartColors } from '../Key/KeyColor';
+import { getResponsiveContainerProps, getChartProps, getCartesianGridProps, getYAxisProps, getXAxisProps, getBarProps, getTooltipContainerStyle, getUnitLabel } from '../UtilChart/ChartConfig';
 
 interface CompareTwoProps {
 	projects: Project[];

@@ -1,5 +1,5 @@
 import { formatNumber } from '@/lib/utils';
-import { KPIOption } from '../Utils/project';
+import { KPIOption } from '../Key/KeyKPI';
 
 interface SectorStats {
 	count: number;

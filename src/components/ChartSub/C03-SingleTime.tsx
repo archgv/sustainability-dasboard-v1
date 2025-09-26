@@ -1,11 +1,12 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import { Project, KPIOptions } from '@/components/Utils/project';
-import { ValueType } from '../R32-Chart';
-import { getSectorColor, getSectorBenchmarkColor } from '@/components/Utils/UtilSector';
+import { Project } from '../Key/project';
+import { KPIOptions } from '../Key/KeyKPI';
+import { ValueType } from '../Key/KeyChart';
+import { getSectorColor, getSectorBenchmarkColor } from '../Key/KeySector';
 import { formatNumber } from '@/lib/utils';
 import { uknzcbsBenchmarks, uknzcbsOperationalEnergyBenchmarks } from '@/data/benchmarkData';
-import { chartColors } from '../Utils/UtilColor';
-import { getResponsiveContainerProps, getChartProps, getCartesianGridProps, getYAxisProps, getXAxisProps, getBarProps, getTooltipContainerStyle, getUnitLabel } from './C00-ChartConfig';
+import { chartColors } from '../Key/KeyColor';
+import { getResponsiveContainerProps, getChartProps, getCartesianGridProps, getYAxisProps, getXAxisProps, getBarProps, getTooltipContainerStyle, getUnitLabel } from '../UtilChart/ChartConfig';
 
 interface SingleTimeProps {
 	projects: Project[];

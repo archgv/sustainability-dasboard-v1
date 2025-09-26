@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -19,7 +18,7 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { StageKey } from '@/components/Utils/project';
+import { StageKey } from '@/components/Key/KeyStage';
 
 interface RibaStageProps {
 	stageNumber: string;
