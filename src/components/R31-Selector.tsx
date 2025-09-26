@@ -1,24 +1,20 @@
 import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ChartType, ValueType, filteredKPIs, kpiCompatibilityMatrix } from './Key/KeyChart';
+import { KPIMatrix, KPIOptionsOther, KPIOptionsCompareTwo } from './Key/KeyKPI';
 
 interface SelectorProps {
-	chartType: ChartType;
-	setChartType: (value: ChartType) => void;
+	chartType: string;
+	setChartType: (value: string) => void;
 	selectedKPI1: string;
 	setSelectedKPI1: (value: string) => void;
 	selectedKPI2: string;
 	setSelectedKPI2: (value: string) => void;
-	valueType: ValueType;
-	setValueType: (value: ValueType) => void;
+	valueType: string;
+	setValueType: (value: string) => void;
 }
 
 export const Selector = ({ chartType, setChartType, selectedKPI1, setSelectedKPI1, selectedKPI2, setSelectedKPI2, valueType, setValueType }: SelectorProps) => {
-	// Get compatible KPI2 options based on selected KPI1
-	const showKPI2 = chartType === 'Compare Two';
-	const compatibleKPI2Options = showKPI2 ? filteredKPIs.filter((kpi) => kpiCompatibilityMatrix[selectedKPI1]?.includes(kpi.key)) : [];
-
 	return (
 		<Card className="p-6">
 			<div className="flex flex-wrap items-center justify-between gap-4">
@@ -27,7 +23,7 @@ export const Selector = ({ chartType, setChartType, selectedKPI1, setSelectedKPI
 						<Label htmlFor="chart-type" className="text-sm font-medium text-gray-700 mb-4 block pl-6">
 							Chart Type
 						</Label>
-						<Select value={chartType} onValueChange={(value) => setChartType(value as ChartType)}>
+						<Select value={chartType} onValueChange={(value) => setChartType(value as string)}>
 							<SelectTrigger>
 								<SelectValue placeholder="Select Chart Type" />
 							</SelectTrigger>
@@ -43,7 +39,7 @@ export const Selector = ({ chartType, setChartType, selectedKPI1, setSelectedKPI
 						<Label htmlFor="value-type" className="text-sm font-medium text-gray-700 mb-4 block pl-6">
 							Value Type
 						</Label>
-						<Select value={valueType} onValueChange={(value) => setValueType(value as ValueType)}>
+						<Select value={valueType} onValueChange={(value) => setValueType(value as string)}>
 							<SelectTrigger>
 								<SelectValue placeholder="Select Value Type" />
 							</SelectTrigger>
@@ -57,44 +53,36 @@ export const Selector = ({ chartType, setChartType, selectedKPI1, setSelectedKPI
 
 				<div className="flex items-center gap-2">
 					<div>
-						<Label htmlFor="kpi1" className="text-sm font-medium text-gray-700 mb-4 block pl-6">
+						<Label htmlFor="kpi1" className=" mb-4 block pl-6">
 							KPI 1
 						</Label>
 						<Select value={selectedKPI1} onValueChange={setSelectedKPI1}>
 							<SelectTrigger>
-								<SelectValue placeholder="Select First KPI" />
+								<SelectValue />
 							</SelectTrigger>
 							<SelectContent>
-								{filteredKPIs
-									.filter((kpi) => {
-										// Remove biogenic from single-bar and single-timeline charts
-										if ((chartType === 'Single Project' || chartType === 'Single Time') && kpi.key === 'Biogenic Carbon') {
-											return false;
-										}
-										return true;
-									})
-									.map((kpi) => (
-										<SelectItem className="rounded-full" key={kpi.key} value={kpi.key}>
-											{kpi.key}
-										</SelectItem>
-									))}
+								{(chartType === 'Compare Two' ? KPIOptionsCompareTwo : KPIOptionsOther).map((kpi) => (
+									<SelectItem key={kpi.key} value={kpi.key}>
+										{kpi.label}
+									</SelectItem>
+								))}
 							</SelectContent>
 						</Select>
 					</div>
 
-					{showKPI2 && (
+					{chartType === 'Compare Two' && (
 						<div>
-							<Label htmlFor="kpi2" className="text-sm font-medium text-gray-700 mb-4 block pl-6">
+							<Label htmlFor="kpi2" className="text-sm font-medium mb-4 block pl-6">
 								KPI 2
 							</Label>
 							<Select value={selectedKPI2} onValueChange={setSelectedKPI2}>
 								<SelectTrigger>
 									<SelectValue placeholder="Select Second KPI" />
 								</SelectTrigger>
-								<SelectContent className="rounded-[20px]">
-									{compatibleKPI2Options.map((kpi) => (
-										<SelectItem className="rounded-full" key={kpi.key} value={kpi.key}>
-											{kpi.key}
+								<SelectContent>
+									{KPIOptionsCompareTwo.filter((kpi) => KPIMatrix[selectedKPI1]?.includes(kpi.key)).map((kpi) => (
+										<SelectItem key={kpi.key} value={kpi.key}>
+											{kpi.label}
 										</SelectItem>
 									))}
 								</SelectContent>

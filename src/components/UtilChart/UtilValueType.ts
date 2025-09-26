@@ -1,12 +1,7 @@
 import { Project } from '../Key/project';
-import { ValueType, getProjectArea } from '../Key/KeyChart';
+import { getProjectArea } from '../Key/KeyChart';
 
-export const transformDataForValueType = (
-	data: Project[],
-	valueType: ValueType,
-	selectedKPI1: string,
-	selectedKPI2: string
-): Project[] => {
+export const transformDataForValueType = (data: Project[], valueType: string, selectedKPI1: string, selectedKPI2: string): Project[] => {
 	if (valueType === 'average') {
 		return data;
 	}

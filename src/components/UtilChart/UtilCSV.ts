@@ -1,14 +1,13 @@
 import { Project } from '../Key/project';
 import { KPIOptions } from '../Key/KeyKPI';
-import { ChartType, ValueType } from '../Key/KeyChart';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks } from '@/data/benchmarkData';
 
 interface ExportCSVOptions {
 	projects: Project[];
-	chartType: ChartType;
+	chartType: string;
 	selectedKPI1: string;
 	selectedKPI2: string;
-	valueType: ValueType;
+	valueType: string;
 	isComparingToSelf?: boolean;
 	selectedRibaStages?: string[];
 	showBenchmarks: boolean;
@@ -33,7 +32,7 @@ const getProjectArea = (projectId: string): number => {
 	return areas[projectId] || 10000;
 };
 
-const getUnitLabel = (baseUnit: string, valueType: ValueType, forCSV: boolean = false): string => {
+const getUnitLabel = (baseUnit: string, valueType: string, forCSV: boolean = false): string => {
 	// For CSV exports, use plain text to avoid encoding issues
 	const unit = forCSV ? baseUnit.replace(/CO2/g, 'CO2').replace(/₂/g, '2') : baseUnit.replace(/CO2/g, 'CO₂');
 
@@ -43,7 +42,7 @@ const getUnitLabel = (baseUnit: string, valueType: ValueType, forCSV: boolean = 
 	return unit;
 };
 
-const getChartTitle = (chartType: ChartType, selectedKPI1: string, selectedKPI2: string, valueType: ValueType) => {
+const getChartTitle = (chartType: string, selectedKPI1: string, selectedKPI2: string, valueType: string) => {
 	const valueTypeLabel = valueType === 'average' ? 'per sqm' : 'total';
 	const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
 	const kpi2Config = KPIOptions.find((kpi) => kpi.key === selectedKPI2);
@@ -60,7 +59,7 @@ const getChartTitle = (chartType: ChartType, selectedKPI1: string, selectedKPI2:
 	}
 };
 
-const transformDataForValueType = (data: Project[], valueType: ValueType, selectedKPI1: string, selectedKPI2: string): Project[] => {
+const transformDataForValueType = (data: Project[], valueType: string, selectedKPI1: string, selectedKPI2: string): Project[] => {
 	if (valueType === 'average') {
 		return data; // Data is already per sqm in our KPIs
 	}

@@ -1,19 +1,18 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { Project } from '../Key/project';
 import { KPIOptions } from '../Key/KeyKPI';
-import { ValueType } from '../Key/KeyChart';
 import { getSectorColor, getSectorBenchmarkColor } from '../Key/KeySector';
 import { formatNumber } from '@/lib/utils';
 import { uknzcbsBenchmarks, uknzcbsOperationalEnergyBenchmarks } from '@/data/benchmarkData';
 import { chartColors } from '../Key/KeyColor';
 import { generateNiceTicks } from '../UtilChart/UtilTick';
 import { transformDataForValueType } from '../UtilChart/UtilValueType';
-import { getResponsiveContainerProps, getChartProps, getCartesianGridProps, getYAxisProps, getXAxisProps, getBarProps, getTooltipContainerStyle, getUnitLabel } from '../UtilChart/ChartConfig';
+import { getResponsiveContainerProps, getChartProps, getCartesianGridProps, getYAxisProps, getXAxisProps, getBarProps, getTooltipContainerStyle, findUnit } from '../UtilChart/ChartConfig';
 
 interface SingleTimeProps {
 	projects: Project[];
 	selectedKPI1: string;
-	valueType: ValueType;
+	valueType: string;
 	isComparingToSelf?: boolean;
 	selectedSubSector: string;
 }
@@ -206,7 +205,7 @@ export const SingleTime = ({ projects, selectedKPI1, valueType, isComparingToSel
 												Project: {projectData.payload.displayName}
 											</p>
 											<p className="text-sm" style={{ color: chartColors.dark }}>
-												{kpi1Config.key}: {formatNumber(projectData.value as number)} {getUnitLabel(kpi1Config, valueType)}
+												{kpi1Config.key}: {formatNumber(projectData.value as number)} {findUnit(kpi1Config, valueType)}
 											</p>
 										</>
 									)}
@@ -214,12 +213,12 @@ export const SingleTime = ({ projects, selectedKPI1, valueType, isComparingToSel
 										<div className="mt-2 pt-2 border-t border-gray-200">
 											{newBuildBenchmark && (
 												<p className="text-sm" style={{ color: benchmarkColor }}>
-													New Build: {formatNumber(newBuildBenchmark)} {getUnitLabel(kpi1Config, valueType)}
+													New Build: {formatNumber(newBuildBenchmark)} {findUnit(kpi1Config, valueType)}
 												</p>
 											)}
 											{retrofitBenchmark && (
 												<p className="text-sm" style={{ color: benchmarkColor }}>
-													Retrofit: {formatNumber(retrofitBenchmark)} {getUnitLabel(kpi1Config, valueType)}
+													Retrofit: {formatNumber(retrofitBenchmark)} {findUnit(kpi1Config, valueType)}
 												</p>
 											)}
 										</div>

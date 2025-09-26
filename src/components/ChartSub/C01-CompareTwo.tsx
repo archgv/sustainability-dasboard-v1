@@ -1,30 +1,24 @@
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Project } from '../Key/project';
 import { KPIOptions } from '../Key/KeyKPI';
-import { ValueType, getProjectArea } from '../Key/KeyChart';
+import { getProjectArea } from '../Key/KeyChart';
 import { getSectorColor, getSectorShape } from '@/components/Key/KeySector';
 import { formatNumber } from '@/lib/utils';
 import { ChartShape } from '../UtilChart/UtilShape';
 import { chartColors } from '../Key/KeyColor';
 import { generateNiceTicks } from '../UtilChart/UtilTick';
 import { transformDataForValueType } from '../UtilChart/UtilValueType';
-import { getResponsiveContainerProps, getChartProps, getCartesianGridProps, getYAxisProps, getXAxisProps, getBarProps, getTooltipContainerStyle, getUnitLabel } from '../UtilChart/ChartConfig';
+import { getResponsiveContainerProps, getChartProps, getCartesianGridProps, getYAxisProps, getXAxisProps, getBarProps, getTooltipContainerStyle, findUnit } from '../UtilChart/ChartConfig';
 
 interface CompareTwoProps {
 	projects: Project[];
 	selectedKPI1: string;
 	selectedKPI2: string;
-	valueType: ValueType;
+	valueType: string;
 	isComparingToSelf?: boolean;
 }
 
-export const CompareTwo = ({
-	projects,
-	selectedKPI1,
-	selectedKPI2,
-	valueType,
-	isComparingToSelf = false,
-}: CompareTwoProps) => {
+export const CompareTwo = ({ projects, selectedKPI1, selectedKPI2, valueType, isComparingToSelf = false }: CompareTwoProps) => {
 	const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
 	const kpi2Config = KPIOptions.find((kpi) => kpi.key === selectedKPI2);
 
@@ -87,10 +81,10 @@ export const CompareTwo = ({
 										Area: {formatNumber(area)} m²
 									</p>
 									<p className="text-sm" style={{ color: chartColors.dark }}>
-										{kpi1Config.key}: {formatNumber(data[selectedKPI1])} {getUnitLabel(kpi1Config, valueType)}
+										{kpi1Config.key}: {formatNumber(data[selectedKPI1])} {findUnit(kpi1Config, valueType)}
 									</p>
 									<p className="text-sm" style={{ color: chartColors.dark }}>
-										{kpi2Config.key}: {formatNumber(data[selectedKPI2])} {getUnitLabel(kpi2Config, valueType)}
+										{kpi2Config.key}: {formatNumber(data[selectedKPI2])} {findUnit(kpi2Config, valueType)}
 									</p>
 								</div>
 							);

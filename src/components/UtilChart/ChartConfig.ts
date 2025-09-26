@@ -1,5 +1,5 @@
 // Common chart configuration for ResponsiveContainer and chart components
-import { ValueType } from '../Key/KeyChart';
+
 import { chartColors } from '../Key/KeyColor';
 import { KPIOption } from '../Key/KeyKPI';
 
@@ -43,31 +43,27 @@ export const MultiLineTickComponent = (props) => {
 	return lines;
 };
 
-export const getUnitLabel = (currentKPI: KPIOption, valueType: ValueType, forCSV: boolean = false): string => {
-	const baseUnit = currentKPI?.unit;
-	// For CSV exports, use plain text to avoid encoding issues
-	const unit = forCSV ? baseUnit.replace(/CO2/g, 'CO2').replace(/₂/g, '2') : baseUnit.replace(/CO2/g, 'CO₂');
+// export const getUnitLabel = (currentKPI: KPIOption, valueType: string, forCSV: boolean = false): string => {
+// 	const baseUnit = currentKPI?.unit;
 
-	if (valueType === 'total') {
-		return unit.replace('/m²', '').replace('/year', '/year total');
-	}
-	return unit;
-};
+// 	const unit = forCSV ? baseUnit.replace(/CO2/g, 'CO2').replace(/₂/g, '2') : baseUnit.replace(/CO2/g, 'CO₂');
 
-export const getDisplayUnit = (currentKPI: KPIOption, valueType: string, forCSV: boolean = false) => {
-	if (valueType === 'total') {
-		const unit = currentKPI?.totalUnit || '';
-		return forCSV ? unit.replace(/CO₂/g, 'CO2').replace(/²/g, '2') : unit;
-	}
-	const unit = currentKPI?.unit || '';
+// 	if (valueType === 'total') {
+// 		return unit.replace('/m²', '').replace('/year', '/year total');
+// 	}
+// 	return unit;
+// };
+
+export const findUnit = (currentKPI: KPIOption, valueType: string, forCSV: boolean = false) => {
+	const unit = valueType === 'total' ? currentKPI.unitBracket : currentKPI.totalUnitBracket;
 	return forCSV ? unit.replace(/CO₂/g, 'CO2').replace(/²/g, '2') : unit;
 };
 
 // Common XAxis props for bar charts
-export const getXAxisProps = (chart: string, selectedKPI: string, currentKPI: KPIOption, valueType: ValueType) => {
+export const getXAxisProps = (chart: string, selectedKPI: string, currentKPI: KPIOption, valueType: string) => {
 	let value = 'Year';
 	if (chart === 'Single Time') {
-		value = `${currentKPI.key || selectedKPI} (${getUnitLabel(currentKPI, valueType)})`;
+		value = `${currentKPI.key || selectedKPI} (${findUnit(currentKPI, valueType)})`;
 	}
 	let label = { value: value, position: 'insideBottom', offset: -20, style: { textAnchor: 'middle', fontSize: 12 } };
 	if (chart === 'Single Project') {
@@ -82,8 +78,8 @@ export const getXAxisProps = (chart: string, selectedKPI: string, currentKPI: KP
 };
 
 // Common YAxis props for bar charts
-export const getYAxisProps = (chart: string, selectedKPI: string, currentKPI: KPIOption, valueType: ValueType) => {
-	const value = `${currentKPI.key || selectedKPI} (${getUnitLabel(currentKPI, valueType)})`;
+export const getYAxisProps = (chart: string, selectedKPI: string, currentKPI: KPIOption, valueType: string) => {
+	const value = `${currentKPI.key || selectedKPI} (${findUnit(currentKPI, valueType)})`;
 	// if (chart === 'Single Time') {
 	//    value = `${currentKPI?.value} (${getDisplayUnit()})`;
 	// }

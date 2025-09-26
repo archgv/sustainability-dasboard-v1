@@ -7,11 +7,11 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { formatNumber } from '@/lib/utils';
 import { SectorKeys, sectorConfig } from '@/components/Key/KeySector';
 import { Project } from '@/components/Key/project';
-import { KPIOptions } from '@/components/Key/KeyKPI';
+import { KPIOptions, KPIOptionsOther } from '@/components/Key/KeyKPI';
 import { exportSectorCSV } from '@/components/SectorSub/S01-ExportCSV';
 import { exportSectorPNG } from '@/components/SectorSub/S02-ExportPNG';
 import { chartColors } from './Key/KeyColor';
-import { getResponsiveContainerProps, getCartesianGridProps, getYAxisProps, getTooltipContainerStyle, getDisplayUnit } from './UtilChart/ChartConfig';
+import { getResponsiveContainerProps, getCartesianGridProps, getYAxisProps, getTooltipContainerStyle, findUnit, getChartProps } from './UtilChart/ChartConfig';
 
 interface SectorStats {
 	count: number;
@@ -172,52 +172,54 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 					<div className="px-6">
 						{/* Controls Row */}
 						<Card className="flex flex-wrap items-center gap-4 shadow-sm-inner p-2 mb-6">
+							{/* KPI Selector */}
 							<div className="flex items-center space-x-2">
 								<Select value={selectedKPI} onValueChange={setSelectedKPI}>
-									<SelectTrigger className="w-80 pr-6">
+									<SelectTrigger>
 										<SelectValue />
 									</SelectTrigger>
-									<SelectContent className="w-80 pr-10 mr-4">
-										{KPIOptions.map((kpi) => (
-											<SelectItem key={kpi.key} value={kpi.key} className="rounded-full m-1 mr-4 pr-10">
-												{kpi.key}
+									<SelectContent>
+										{KPIOptionsOther.map((kpi) => (
+											<SelectItem key={kpi.key} value={kpi.key}>
+												{kpi.label}
 											</SelectItem>
 										))}
 									</SelectContent>
 								</Select>
 							</div>
 
-							{/* Only show value type selector for non-biodiversity KPIs */}
+							{/* Value Type Selector */}
 							{!['Biodiversity Net Gain', 'Urban Greening Factor'].includes(selectedKPI) && (
 								<div className="flex items-center space-x-2">
-									<div style={{ backgroundColor: chartColors.accent1 }} className="flex rounded-full p-1 bg-slate-100">
-										<button
-											className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${valueType === 'average' ? 'bg-white shadow-sm' : 'hover:opacity-80'}`}
+									<div style={{ backgroundColor: chartColors.pink }} className="flex rounded-full p-1 bg-slate-100 gap-2">
+										<Button
+											className={`transition-colors ${valueType === 'average' ? 'bg-white shadow-sm' : 'hover:opacity-80'}`}
 											style={{
-												color: valueType === 'average' ? chartColors.dark : chartColors.darkGreen,
+												color: chartColors.dark,
 												backgroundColor: valueType === 'average' ? 'white' : 'transparent',
 											}}
 											onClick={() => setValueType('average')}
 										>
 											Per m²
-										</button>
-										<button
-											className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${valueType === 'total' ? 'bg-white shadow-sm' : 'hover:opacity-80'}`}
+										</Button>
+										<Button
+											className={`transition-colors ${valueType === 'total' ? 'bg-white shadow-sm' : 'hover:opacity-80'}`}
 											style={{
-												color: valueType === 'total' ? chartColors.dark : chartColors.darkGreen,
+												color: chartColors.dark,
 												backgroundColor: valueType === 'total' ? 'white' : 'transparent',
 											}}
 											onClick={() => setValueType('total')}
 										>
 											Total
-										</button>
+										</Button>
 									</div>
 								</div>
 							)}
 
+							{/* Year Selector */}
 							<div className="flex items-center space-x-2">
 								<Select value={yearFilter} onValueChange={setYearFilter}>
-									<SelectTrigger className="w-36 rounded-full pl-6 pr-6">
+									<SelectTrigger>
 										<SelectValue />
 									</SelectTrigger>
 									<SelectContent>
@@ -231,12 +233,13 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 								</Select>
 							</div>
 
+							{/* CSV PNG */}
 							<div className="flex items-center space-x-2 ml-auto">
-								<Button variant="outline" size="sm" onClick={handleDownloadCSV} className="flex items-center gap-2 rounded-full">
+								<Button variant="outline" size="sm" onClick={handleDownloadCSV}>
 									<FileText className="h-4 w-4" />
 									CSV
 								</Button>
-								<Button variant="outline" size="sm" onClick={handleDownloadPNG} className="flex items-center gap-2 rounded-full">
+								<Button variant="outline" size="sm" onClick={handleDownloadPNG}>
 									<Download className="h-4 w-4" />
 									PNG
 								</Button>
@@ -246,16 +249,16 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 						{/* Chart Section */}
 						<Card className="shadow-inner mb-8">
 							<h3 className="font-medium mt-8 mb-2 text-center" style={{ color: chartColors.dark }}>
-								{currentKPI.key} by Sector ({getDisplayUnit(currentKPI, valueType)})
+								{currentKPI.label} by sector {findUnit(currentKPI, valueType)}
 							</h3>
 							<div className="h-[460px] flex justify-center" data-chart="sector-chart">
 								<ResponsiveContainer {...getResponsiveContainerProps()}>
-									<BarChart data={chartData} barGap={-50} margin={{ top: 10, right: 20, left: 20, bottom: 10 }}>
+									<BarChart data={chartData} barGap={-50} {...getChartProps()}>
 										<CartesianGrid vertical={false} {...getCartesianGridProps()} />
 										<XAxis dataKey="sector" tick={{ fill: chartColors.dark, dy: 20 }} axisLine={false} tickLine={false} interval={0} />
 										<YAxis
 											label={{
-												value: `${currentKPI.key} (${getDisplayUnit(currentKPI, valueType)})`,
+												value: `${currentKPI.key} ${findUnit(currentKPI, valueType)}`,
 												angle: -90,
 												position: 'insideLeft',
 												offset: -10,
@@ -329,12 +332,9 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 													const data = props.payload;
 													const wholeLifeCarbon = formatNumber(Number(data.value));
 													const biogenic = formatNumber(Number(data.biogenicValue));
-													return [
-														`${wholeLifeCarbon} ${getDisplayUnit(currentKPI, valueType)}`,
-														valueType === 'total' ? 'Average Whole Life Carbon' : 'Average Whole Life Carbon',
-													];
+													return [`${wholeLifeCarbon} ${findUnit(currentKPI, valueType)}`, valueType === 'total' ? 'Average Whole Life Carbon' : 'Average Whole Life Carbon'];
 												}
-												return [`${formatNumber(Number(value))} ${getDisplayUnit(currentKPI, valueType)}`, valueType === 'total' ? 'Cumulative total' : 'Average'];
+												return [`${formatNumber(Number(value))} ${findUnit(currentKPI, valueType)}`, valueType === 'total' ? 'Cumulative total' : 'Average'];
 											}}
 											labelFormatter={(label) => `Sector: ${label}`}
 											contentStyle={getTooltipContainerStyle()}
@@ -349,11 +349,11 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 															}}
 														>
 															<p style={{ margin: 0, fontWeight: 'bold' }}>{`Sector: ${label}`}</p>
-															<p style={{ margin: 0, color: chartColors.primary }}>{`Average Whole Life Carbon: ${formatNumber(data.value)} ${getDisplayUnit(
+															<p style={{ margin: 0, color: chartColors.primary }}>{`Average Whole Life Carbon: ${formatNumber(data.value)} ${findUnit(
 																currentKPI,
 																valueType
 															)}`}</p>
-															<p style={{ margin: 0, color: chartColors.dark }}>{`Average biogenic: ${formatNumber(data.biogenicValue)} ${getDisplayUnit(
+															<p style={{ margin: 0, color: chartColors.dark }}>{`Average biogenic: ${formatNumber(data.biogenicValue)} ${findUnit(
 																currentKPI,
 																valueType
 															)}`}</p>
@@ -370,7 +370,7 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 														>
 															<p style={{ margin: 0, fontWeight: 'bold' }}>{`Sector: ${label}`}</p>
 															<p style={{ margin: 0, color: chartColors.primary }}>
-																{`${valueType === 'total' ? 'Cumulative total' : 'Average'}: ${formatNumber(Number(payload[0].value))} ${getDisplayUnit(
+																{`${valueType === 'total' ? 'Cumulative total' : 'Average'}: ${formatNumber(Number(payload[0].value))} ${findUnit(
 																	currentKPI,
 																	valueType
 																)}`}
@@ -427,14 +427,14 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 												<th className="px-4 py-2 text-center">Project Count</th>
 												{valueType === 'average' ? (
 													<>
-														<th className="px-4 py-2 text-center">Average ({getDisplayUnit(currentKPI, valueType)})</th>
+														<th className="px-4 py-2 text-center">Average ({findUnit(currentKPI, valueType)})</th>
 														<th className="px-4 py-2 text-center">Min</th>
 														<th className="px-4 py-2 text-center">Max</th>
 														<th className="px-4 py-2 text-center">Range</th>
 													</>
 												) : (
 													<>
-														<th className="px-4 py-2 text-center">Total ({getDisplayUnit(currentKPI, valueType)})</th>
+														<th className="px-4 py-2 text-center">Total ({findUnit(currentKPI, valueType)})</th>
 														<th className="px-4 py-2 text-center">Min</th>
 														<th className="px-4 py-2 text-center">Max</th>
 														<th className="px-4 py-2 text-center">Total Area (m²)</th>

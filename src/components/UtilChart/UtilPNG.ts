@@ -1,20 +1,19 @@
 import { Project } from '../Key/project';
 import { KPIOptions } from '../Key/KeyKPI';
-import { ChartType, ValueType } from '@/components/Key/KeyChart';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks } from '@/data/benchmarkData';
 import { getSectorBenchmarkColor } from '@/components/Key/KeySector';
 
 interface ExportPNGOptions {
 	projects: Project[];
-	chartType: ChartType;
+	chartType: string;
 	selectedKPI1: string;
 	selectedKPI2: string;
-	valueType: ValueType;
+	valueType: string;
 	showBenchmarks: boolean;
 	selectedBarChartBenchmark: string;
 }
 
-const getChartTitle = (chartType: ChartType, selectedKPI1: string, selectedKPI2: string, valueType: ValueType) => {
+const getChartTitle = (chartType: string, selectedKPI1: string, selectedKPI2: string, valueType: string) => {
 	const valueTypeLabel = valueType === 'average' ? 'per sqm' : 'total';
 	const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
 	const kpi2Config = KPIOptions.find((kpi) => kpi.key === selectedKPI2);

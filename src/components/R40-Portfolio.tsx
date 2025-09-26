@@ -29,7 +29,7 @@ export const Portfolio = ({ projects, isComparingToSelf = false, selectedRibaSta
 					return (
 						<Card key={project.id} className="px-8 pb-8 hover:shadow-lg transition-shadow duration-200">
 							<div className="flex justify-between items-start mb-4">
-								<h3 className="text-lg font-semibold text-gray-900 line-clamp-2">{project['Primary Name'] || 'ERROR'}</h3>
+								<h3 className="text-lg font-semibold text-gray-900 line-clamp-2">{project['Project Name'] || 'ERROR'}</h3>
 								<span className="ml-2 capitalize text-sm text-gray-600">{project['Primary Sector'] || 'ERROR'}</span>
 							</div>
 

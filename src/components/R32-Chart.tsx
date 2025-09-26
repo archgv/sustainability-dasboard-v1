@@ -11,7 +11,6 @@ import { CompareTwo } from './ChartSub/C01-CompareTwo';
 import { SingleProject } from './ChartSub/C02-SingleProject';
 import { SingleTime } from './ChartSub/C03-SingleTime';
 import { chartColors } from './Key/KeyColor';
-import { ChartType, ValueType } from './Key/KeyChart';
 import { Selector } from './R31-Selector';
 import { getChartTitle, hasBenchmarks, getAvailableSubSectors, getChartToggles } from './UtilChart/UtilChart';
 
@@ -22,13 +21,13 @@ interface ChartProps {
 }
 
 export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages = [] }: ChartProps) => {
-	const [chartType, setChartType] = useState<ChartType>('Compare Two');
+	const [chartType, setChartType] = useState('Compare Two');
 	const [selectedKPI1, setSelectedKPI1] = useState('Total Embodied Carbon');
 	const [selectedKPI2, setSelectedKPI2] = useState('Operational Energy Total');
-	const [valueType, setValueType] = useState<ValueType>('average');
+	const [valueType, setValueType] = useState('average');
 	const [showBenchmarks, setShowBenchmarks] = useState(false);
-	const [selectedSubSector, setSelectedSubSector] = useState<string>('');
-	const [selectedBarChartBenchmark, setSelectedBarChartBenchmark] = useState<string>('');
+	const [selectedSubSector, setSelectedSubSector] = useState('');
+	const [selectedBarChartBenchmark, setSelectedBarChartBenchmark] = useState('');
 
 	const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
 	const kpi2Config = KPIOptions.find((kpi) => kpi.key === selectedKPI2);

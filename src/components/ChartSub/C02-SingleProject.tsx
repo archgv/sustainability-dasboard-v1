@@ -1,7 +1,7 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine } from 'recharts';
 import { Project } from '../Key/project';
 import { KPIOptions } from '../Key/KeyKPI';
-import { ValueType, getProjectArea } from '../Key/KeyChart';
+import { getProjectArea } from '../Key/KeyChart';
 import { getSectorColor, getSectorBenchmarkColor } from '@/components/Key/KeySector';
 import { formatNumber } from '@/lib/utils';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks } from '@/data/benchmarkData';
@@ -16,27 +16,20 @@ import {
 	getXAxisProps,
 	getBarProps,
 	getTooltipContainerStyle,
-	getUnitLabel,
+	findUnit,
 	MultiLineTickComponent,
 } from '../UtilChart/ChartConfig';
 
 interface BarChartProps {
 	projects: Project[];
 	selectedKPI1: string;
-	valueType: ValueType;
+	valueType: string;
 	isComparingToSelf?: boolean;
 	showBenchmarks: boolean;
 	selectedBarChartBenchmark: string;
 }
 
-export const SingleProject = ({
-	projects,
-	selectedKPI1,
-	valueType,
-	isComparingToSelf = false,
-	showBenchmarks,
-	selectedBarChartBenchmark,
-}: BarChartProps) => {
+export const SingleProject = ({ projects, selectedKPI1, valueType, isComparingToSelf = false, showBenchmarks, selectedBarChartBenchmark }: BarChartProps) => {
 	const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
 
 	const transformedProjects = transformDataForValueType(projects, valueType, selectedKPI1, '');
@@ -170,7 +163,7 @@ export const SingleProject = ({
 					/>
 					<Tooltip
 						formatter={(value: number, name: string) => [
-							`${formatNumber(value)} ${getUnitLabel(kpi1Config, valueType)}`,
+							`${formatNumber(value)} ${findUnit(kpi1Config, valueType)}`,
 							name === 'Biogenic Carbon' ? 'Biogenic Carbon' : kpi1Config.key || selectedKPI1,
 						]}
 						labelFormatter={(label) => `Project: ${label}`}
@@ -187,12 +180,12 @@ export const SingleProject = ({
 										</p>
 										{mainData && (
 											<p className="text-sm" style={{ color: chartColors.dark }}>
-												{kpi1Config.key}: {formatNumber(mainData.value)} {getUnitLabel(kpi1Config, valueType)}
+												{kpi1Config.key}: {formatNumber(mainData.value)} {findUnit(kpi1Config, valueType)}
 											</p>
 										)}
 										{biogenicData && (
 											<p className="text-sm" style={{ color: chartColors.dark }}>
-												Biogenic Carbon: {formatNumber(Math.abs(biogenicData.value))} {getUnitLabel(kpi1Config, valueType)}
+												Biogenic Carbon: {formatNumber(Math.abs(biogenicData.value))} {findUnit(kpi1Config, valueType)}
 											</p>
 										)}
 										{barChartBenchmarkLines.length > 0 && (
@@ -202,7 +195,7 @@ export const SingleProject = ({
 												</p>
 												{barChartBenchmarkLines.map((benchmark, idx) => (
 													<p key={idx} className="text-xs" style={{ color: chartColors.dark }}>
-														{benchmark.name}: {formatNumber(benchmark.value)} {getUnitLabel(kpi1Config, valueType)}
+														{benchmark.name}: {formatNumber(benchmark.value)} {findUnit(kpi1Config, valueType)}
 													</p>
 												))}
 											</div>

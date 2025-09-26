@@ -149,5 +149,5 @@ h2 {
 }
 
 label {
-	@apply text-rose-400;
+	@apply text-sm font-medium text-rose-400;
 }

@@ -1,14 +1,8 @@
 import { Project } from '../Key/project';
-import { ChartType, ValueType } from '../Key/KeyChart';
 import { KPIOptions } from '../Key/KeyKPI';
 import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks, uknzcbsOperationalEnergyBenchmarks } from '@/data/benchmarkData';
 
-export const getChartTitle = (
-	chartType: ChartType,
-	valueType: ValueType,
-	selectedKPI1: string,
-	selectedKPI2: string
-): string => {
+export const getChartTitle = (chartType: string, valueType: string, selectedKPI1: string, selectedKPI2: string): string => {
 	const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
 	const kpi2Config = KPIOptions.find((kpi) => kpi.key === selectedKPI2);
 	const valueTypeLabel = valueType === 'average' ? '/m²' : 'total';
@@ -45,23 +39,11 @@ export const getAvailableSubSectors = (projects: Project[], selectedKPI1: string
 	return [];
 };
 
-export const getChartToggles = (
-	selectedKPI1: string,
-	valueType: ValueType,
-	chartType: ChartType,
-	availableSubSectors: string[]
-) => {
+export const getChartToggles = (selectedKPI1: string, valueType: string, chartType: string, availableSubSectors: string[]) => {
 	const showSingleTimeSectorToggle =
-		(selectedKPI1 === 'Upfront Carbon' || selectedKPI1 === 'Operational Energy Total') && 
-		valueType === 'average' && 
-		chartType === 'Single Time' && 
-		availableSubSectors.length > 1;
-	
-	const showSingleSectorToggle = 
-		selectedKPI1 === 'Upfront Carbon' && 
-		valueType === 'average' && 
-		chartType === 'Single Project' && 
-		availableSubSectors.length > 0;
+		(selectedKPI1 === 'Upfront Carbon' || selectedKPI1 === 'Operational Energy Total') && valueType === 'average' && chartType === 'Single Time' && availableSubSectors.length > 1;
+
+	const showSingleSectorToggle = selectedKPI1 === 'Upfront Carbon' && valueType === 'average' && chartType === 'Single Project' && availableSubSectors.length > 0;
 
 	return { showSingleTimeSectorToggle, showSingleSectorToggle };
 };
