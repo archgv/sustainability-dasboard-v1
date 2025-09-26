@@ -7,7 +7,7 @@ import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks } from '@/data/benchma
 import { chartColors } from '../Utils/UtilColor';
 import {
 	getResponsiveContainerProps,
-	getBarChartProps,
+	getChartProps,
 	getCartesianGridProps,
 	getYAxisProps,
 	getXAxisProps,
@@ -139,7 +139,7 @@ export const SingleProject = ({
 				</div>
 			)}
 			<ResponsiveContainer {...getResponsiveContainerProps(true)}>
-				<BarChart data={chartData} {...getBarChartProps()}>
+				<BarChart data={chartData} {...getChartProps()}>
 					<CartesianGrid vertical={false} {...getCartesianGridProps()} />
 					<XAxis
 						{...getXAxisProps('Single Project', selectedKPI1, kpi1Config, valueType)}

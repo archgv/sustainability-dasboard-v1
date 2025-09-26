@@ -5,7 +5,7 @@ import { getSectorColor, getSectorBenchmarkColor } from '@/components/Utils/Util
 import { formatNumber } from '@/lib/utils';
 import { uknzcbsBenchmarks, uknzcbsOperationalEnergyBenchmarks } from '@/data/benchmarkData';
 import { chartColors } from '../Utils/UtilColor';
-import { getResponsiveContainerProps, getLineChartProps, getCartesianGridProps, getYAxisProps, getXAxisProps, getBarProps, getTooltipContainerStyle, getUnitLabel } from './C00-ChartConfig';
+import { getResponsiveContainerProps, getChartProps, getCartesianGridProps, getYAxisProps, getXAxisProps, getBarProps, getTooltipContainerStyle, getUnitLabel } from './C00-ChartConfig';
 
 interface SingleTimeProps {
 	projects: Project[];
@@ -146,7 +146,7 @@ export const SingleTime = ({ projects, selectedKPI1, valueType, isComparingToSel
 
 	return (
 		<ResponsiveContainer {...getResponsiveContainerProps()}>
-			<LineChart data={timelineData} {...getLineChartProps()}>
+			<LineChart data={timelineData} {...getChartProps()}>
 				<CartesianGrid {...getCartesianGridProps()} />
 				<XAxis
 					{...getXAxisProps('Single Time', selectedKPI1, kpi1Config, valueType)}

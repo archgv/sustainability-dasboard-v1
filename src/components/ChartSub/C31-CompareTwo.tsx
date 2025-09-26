@@ -5,7 +5,7 @@ import { getSectorColor, getSectorShape } from '@/components/Utils/UtilSector';
 import { formatNumber } from '@/lib/utils';
 import { ChartShape } from '../R33-ChartShape';
 import { chartColors } from '../Utils/UtilColor';
-import { getResponsiveContainerProps, getScatterChartProps, getCartesianGridProps, getYAxisProps, getXAxisProps, getBarProps, getTooltipContainerStyle, getUnitLabel } from './C00-ChartConfig';
+import { getResponsiveContainerProps, getChartProps, getCartesianGridProps, getYAxisProps, getXAxisProps, getBarProps, getTooltipContainerStyle, getUnitLabel } from './C00-ChartConfig';
 
 interface CompareTwoProps {
 	projects: Project[];
@@ -45,7 +45,7 @@ export const CompareTwo = ({
 
 	return (
 		<ResponsiveContainer {...getResponsiveContainerProps()}>
-			<ScatterChart {...getScatterChartProps()}>
+			<ScatterChart {...getChartProps()}>
 				<CartesianGrid {...getCartesianGridProps()} />
 				<XAxis
 					{...getXAxisProps('Compare Two', selectedKPI1, kpi1Config, valueType)}

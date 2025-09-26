@@ -10,20 +10,9 @@ export const getResponsiveContainerProps = (isBarChart = false) => ({
 	height: '100%' as const,
 });
 
-// Common BarChart props
-export const getBarChartProps = () => ({
-	barGap: -100,
-	margin: { top: 50, right: 30, left: 20, bottom: 80 },
-});
-
-// Common ScatterChart props
-export const getScatterChartProps = () => ({
-	margin: { top: 80, right: 20, bottom: 20, left: 80 },
-});
-
-// Common LineChart props
-export const getLineChartProps = () => ({
-	margin: { top: 40, right: 30, left: 60, bottom: 80 },
+// Common Chart props
+export const getChartProps = () => ({
+	margin: { top: 50, bottom: 50, left: 50, right: 50 },
 });
 
 // Common CartesianGrid props
