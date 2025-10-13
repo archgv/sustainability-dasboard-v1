@@ -19,6 +19,7 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { StageKeys } from '../Key/KeyStage';
 
 interface ProjectOverviewProps {
 	selectedProject?: Project;
@@ -66,6 +67,7 @@ export const AddOverview = ({ selectedProject, projectData, onDataUpdate, onSave
 
 	const currentYear = new Date().getFullYear();
 	const years = Array.from({ length: 20 }, (_, i) => currentYear + i - 5);
+	const stages = StageKeys;
 
 	if (!selectedProject) {
 		return null;
@@ -113,16 +115,31 @@ export const AddOverview = ({ selectedProject, projectData, onDataUpdate, onSave
 							<p className="text-sm text-muted-foreground mt-1">{selectedProject['Neighbourhood']}</p>
 						</div>
 
-						<div>
+						{/* <div>
 							<Label className="text-sm font-medium">Current RIBA Stage</Label>
 							<p className="text-sm text-muted-foreground mt-1">{selectedProject['Current RIBA Stage']}</p>
-						</div>
+						</div> */}
 					</div>
 				</div>
 
 				{/* Project Overview */}
 				<div className="space-y-4">
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+						<TooltipField label="Current RIBA Stage" tooltip="Current RIBA Stage" required={true}>
+							<Select value={projectData['Current RIBA Stage'] || ''} onValueChange={(value) => handleInputChange('Current RIBA Stage', value)}>
+								<SelectTrigger>
+									<SelectValue placeholder="Select Current RIBA Stage" />
+								</SelectTrigger>
+								<SelectContent>
+									{stages.map((stage) => (
+										<SelectItem key={stage} value={stage.toString()}>
+											{stage}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						</TooltipField>
+
 						<TooltipField
 							label="PC year"
 							tooltip="Enter the expected or actual Practical Completion year. Please be as accurate as possible, as UKNZCBS benchmarks are year-specific"
@@ -147,7 +164,7 @@ export const AddOverview = ({ selectedProject, projectData, onDataUpdate, onSave
 								<Input
 									placeholder="Enter kWh/m²/yr (e.g. 130 kWh/m²/yr)"
 									value={projectData['Operational Energy Existing Building'] || ''}
-									onChange={(e) => handleInputChange('operationalEnergyExisting', e.target.value)}
+									onChange={(e) => handleInputChange('Operational Energy Existing Building', e.target.value)}
 									type="number"
 									min="0"
 									max="500"
@@ -162,7 +179,7 @@ export const AddOverview = ({ selectedProject, projectData, onDataUpdate, onSave
 								<Input
 									placeholder="Enter m² (e.g. 9,800 m²)"
 									value={projectData['GIA'] || ''}
-									onChange={(e) => handleInputChange('gia', e.target.value)}
+									onChange={(e) => handleInputChange('GIA', e.target.value)}
 									type="number"
 									min="1"
 									className="pr-12"
@@ -172,7 +189,7 @@ export const AddOverview = ({ selectedProject, projectData, onDataUpdate, onSave
 						</TooltipField>
 
 						<TooltipField label="Building lifespan" tooltip="Enter the anticipated building lifespan" required={true}>
-							<Select value={projectData['Building Lifespan'] || ''} onValueChange={(value) => handleInputChange('buildingLifespan', value)}>
+							<Select value={projectData['Building Lifespan'] || ''} onValueChange={(value) => handleInputChange('Building Lifespan', value)}>
 								<SelectTrigger>
 									<SelectValue placeholder="Enter years (e.g. 60)" />
 								</SelectTrigger>
@@ -186,7 +203,7 @@ export const AddOverview = ({ selectedProject, projectData, onDataUpdate, onSave
 						</TooltipField>
 
 						<TooltipField label="EI team: paid scope" tooltip="Indicate whether the Environmental Intelligence team has a paid scope" required={true}>
-							<Select value={projectData['EI Team Scope'] || ''} onValueChange={(value) => handleInputChange('paidScope', value)}>
+							<Select value={projectData['EI Team Scope'] || ''} onValueChange={(value) => handleInputChange('EI Team Scope', value)}>
 								<SelectTrigger>
 									<SelectValue placeholder="Select scope" />
 								</SelectTrigger>
@@ -198,11 +215,11 @@ export const AddOverview = ({ selectedProject, projectData, onDataUpdate, onSave
 						</TooltipField>
 
 						<TooltipField label="Sustainability consultant" tooltip="Enter the company name of the appointed external sustainability consultant (if applicable)">
-							<Input placeholder="Enter company name" value={projectData['External Consultants'] || ''} onChange={(e) => handleInputChange('sustainabilityConsultant', e.target.value)} />
+							<Input placeholder="Enter company name" value={projectData['External Consultants'] || ''} onChange={(e) => handleInputChange('External Consultants', e.target.value)} />
 						</TooltipField>
 
 						<TooltipField label="H&B Sustainability champion" tooltip="Enter the name of the internal sustainability champion on the project team (not a member of the EI team)">
-							<Select value={projectData['Sustianability Champion Name'] || ''} onValueChange={(value) => handleInputChange('sustainabilityChampion', value)}>
+							<Select value={projectData['Sustianability Champion Name'] || ''} onValueChange={(value) => handleInputChange('Sustianability Champion Name', value)}>
 								<SelectTrigger>
 									<SelectValue placeholder="Select name" />
 								</SelectTrigger>
@@ -219,7 +236,7 @@ export const AddOverview = ({ selectedProject, projectData, onDataUpdate, onSave
 						<Textarea
 							placeholder="Enter text (max 250 characters)"
 							value={projectData['Mission Statement'] || ''}
-							onChange={(e) => handleInputChange('missionStatement', e.target.value)}
+							onChange={(e) => handleInputChange('Mission Statement', e.target.value)}
 							maxLength={250}
 							className="resize-none"
 						/>

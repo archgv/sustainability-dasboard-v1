@@ -101,7 +101,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 								<Input
 									placeholder={`Enter value (e.g. 6,500) - Project GIA: ${projectGia || 'N/A'} m²`}
 									value={stageData['Updated GIA'] || ''}
-									onChange={(e) => handleInputChange('giaUpdate', e.target.value)}
+									onChange={(e) => handleInputChange('Updated GIA', e.target.value)}
 									type="number"
 									min="1"
 									className="pr-8"
@@ -111,7 +111,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 						</TooltipField>
 
 						<TooltipField label="Energy measurement method" tooltip="Provide the methodology used for measuring operational energy">
-							<Select value={stageData['Method Energy Measurement'] || ''} onValueChange={(value) => handleInputChange('energyMeasurementMethod', value)}>
+							<Select value={stageData['Method Energy Measurement'] || ''} onValueChange={(value) => handleInputChange('Method Energy Measurement', value)}>
 								<SelectTrigger>
 									<SelectValue placeholder="Confirm method" />
 								</SelectTrigger>
@@ -130,7 +130,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 								<Input
 									placeholder="Enter value (e.g. 65)"
 									value={stageData['Operational Energy Total'] || ''}
-									onChange={(e) => handleInputChange('operationalEnergyTotal', e.target.value)}
+									onChange={(e) => handleInputChange('Operational Energy Total', e.target.value)}
 									type="number"
 									min="0"
 									max="150"
@@ -145,7 +145,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 								<Input
 									placeholder="Enter value (e.g. 45)"
 									value={stageData['Operational Energy Part L'] || ''}
-									onChange={(e) => handleInputChange('operationalEnergyPartL', e.target.value)}
+									onChange={(e) => handleInputChange('Operational Energy Part L', e.target.value)}
 									type="number"
 									min="0"
 									max="150"
@@ -160,7 +160,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 								<Input
 									placeholder="Enter value (e.g. 35)"
 									value={stageData['Operational Energy Gas'] || ''}
-									onChange={(e) => handleInputChange('operationalEnergyGas', e.target.value)}
+									onChange={(e) => handleInputChange('Operational Energy Gas', e.target.value)}
 									type="number"
 									min="0"
 									max="150"
@@ -175,7 +175,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 								<Input
 									placeholder="Enter value (e.g. 35)"
 									value={stageData['Space Heating Demand'] || ''}
-									onChange={(e) => handleInputChange('spaceHeatingDemand', e.target.value)}
+									onChange={(e) => handleInputChange('Space Heating Demand', e.target.value)}
 									type="number"
 									min="0"
 									className="pr-20"
@@ -185,7 +185,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 						</TooltipField>
 
 						<TooltipField label="Renewable energy type" tooltip="Select the type of renewable energy (e.g. PV, wind)">
-							<Select value={stageData['Renewable Energy Type'] || ''} onValueChange={(value) => handleInputChange('renewableEnergyType', value)}>
+							<Select value={stageData['Renewable Energy Type'] || ''} onValueChange={(value) => handleInputChange('Renewable Energy Type', value)}>
 								<SelectTrigger>
 									<SelectValue placeholder="Choose renewable type (e.g. PV)" />
 								</SelectTrigger>
@@ -204,7 +204,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 								<Input
 									placeholder="Enter value (e.g. 5,000)"
 									value={stageData['Total Renewable Energy Generation'] || ''}
-									onChange={(e) => handleInputChange('renewableEnergyGeneration', e.target.value)}
+									onChange={(e) => handleInputChange('Total Renewable Energy Generation', e.target.value)}
 									type="number"
 									min="0"
 									className="pr-16"
@@ -219,7 +219,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 						<h3 className="text-lg font-semibold text-foreground border-b pb-2">Embodied Carbon</h3>
 
 						<TooltipField label="Structural frame material" tooltip="Select the dominant material used in the structural frame">
-							<Select value={stageData['Structural Frame Materials'] || ''} onValueChange={(value) => handleInputChange('structuralFrameMaterial', value)}>
+							<Select value={stageData['Structural Frame Materials'] || ''} onValueChange={(value) => handleInputChange('Structural Frame Materials', value)}>
 								<SelectTrigger>
 									<SelectValue placeholder="Select material" />
 								</SelectTrigger>
@@ -238,7 +238,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 								<Input
 									placeholder="Enter value (e.g. 600)"
 									value={stageData['Upfront Carbon'] || ''}
-									onChange={(e) => handleInputChange('upfrontCarbon', e.target.value)}
+									onChange={(e) => handleInputChange('Upfront Carbon', e.target.value)}
 									type="number"
 									min="0"
 									max="1500"
@@ -253,7 +253,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 								<Input
 									placeholder="Enter value (e.g. 900)"
 									value={stageData['Total Embodied Carbon'] || ''}
-									onChange={(e) => handleInputChange('totalEmbodiedCarbon', e.target.value)}
+									onChange={(e) => handleInputChange('Total Embodied Carbon', e.target.value)}
 									type="number"
 									min="0"
 									max="1500"
@@ -268,7 +268,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 								<Input
 									placeholder="Enter value (e.g. -150)"
 									value={stageData['Biogenic Carbon'] || ''}
-									onChange={(e) => handleInputChange('biogenicCarbon', e.target.value)}
+									onChange={(e) => handleInputChange('Biogenic Carbon', e.target.value)}
 									type="number"
 									min="-600"
 									max="0"
@@ -282,7 +282,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 							<Textarea
 								placeholder="e.g. A1–A5 only"
 								value={stageData['Embodied Carbon Scope Clarifications'] || ''}
-								onChange={(e) => handleInputChange('embodiedCarbonScope', e.target.value)}
+								onChange={(e) => handleInputChange('Embodied Carbon Scope Clarifications', e.target.value)}
 								maxLength={300}
 								className="resize-none"
 							/>
@@ -298,7 +298,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 								<Input
 									placeholder="Enter value (e.g. 10)"
 									value={stageData['Biodiversity Net Gain'] || ''}
-									onChange={(e) => handleInputChange('biodiversityNetGain', e.target.value)}
+									onChange={(e) => handleInputChange('Biodiversity Net Gain', e.target.value)}
 									type="number"
 									min="0"
 									max="200"
@@ -312,7 +312,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 							<Input
 								placeholder="Enter value (e.g. 13)"
 								value={stageData['Habitats Units Gained'] || ''}
-								onChange={(e) => handleInputChange('habitatUnits', e.target.value)}
+								onChange={(e) => handleInputChange('Habitats Units Gained', e.target.value)}
 								type="number"
 								min="0"
 								max="50"
@@ -323,7 +323,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 							<Input
 								placeholder="Enter value (e.g. 0.3)"
 								value={stageData['Urban Greening Factor'] || ''}
-								onChange={(e) => handleInputChange('urbanGreeningFactor', e.target.value)}
+								onChange={(e) => handleInputChange('Urban Greening Factor', e.target.value)}
 								type="number"
 								step="0.1"
 								min="0"
@@ -335,7 +335,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 							<Textarea
 								placeholder="Add clarification"
 								value={stageData['General Biodiversity Clarification Notes'] || ''}
-								onChange={(e) => handleInputChange('additionalNotes', e.target.value)}
+								onChange={(e) => handleInputChange('General Biodiversity Clarification Notes', e.target.value)}
 								maxLength={300}
 								className="resize-none"
 							/>

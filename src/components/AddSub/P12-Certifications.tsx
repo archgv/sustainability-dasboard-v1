@@ -69,7 +69,7 @@ export const AddCertifications = ({ projectData, onDataUpdate, onSave, onSaveAnd
 				<div className="space-y-4">
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 						<TooltipField label="BREEAM" tooltip="Select status or the targeted BREEAM rating" required={true}>
-							<Select value={projectData['BREEAM'] || ''} onValueChange={(value) => handleInputChange('breeam', value)}>
+							<Select value={projectData['BREEAM'] || ''} onValueChange={(value) => handleInputChange('BREEAM', value)}>
 								<SelectTrigger>
 									<SelectValue placeholder="Select rating" />
 								</SelectTrigger>
@@ -87,7 +87,7 @@ export const AddCertifications = ({ projectData, onDataUpdate, onSave, onSaveAnd
 						</TooltipField>
 
 						<TooltipField label="LEED" tooltip="Select status or the targeted LEED rating" required={true}>
-							<Select value={projectData['LEED'] || ''} onValueChange={(value) => handleInputChange('leed', value)}>
+							<Select value={projectData['LEED'] || ''} onValueChange={(value) => handleInputChange('LEED', value)}>
 								<SelectTrigger>
 									<SelectValue placeholder="Select rating" />
 								</SelectTrigger>
@@ -103,7 +103,7 @@ export const AddCertifications = ({ projectData, onDataUpdate, onSave, onSaveAnd
 						</TooltipField>
 
 						<TooltipField label="WELL" tooltip="Select status or the targeted WELL rating" required={true}>
-							<Select value={projectData['WELL'] || ''} onValueChange={(value) => handleInputChange('well', value)}>
+							<Select value={projectData['WELL'] || ''} onValueChange={(value) => handleInputChange('WELL', value)}>
 								<SelectTrigger>
 									<SelectValue placeholder="Select rating" />
 								</SelectTrigger>
@@ -119,7 +119,7 @@ export const AddCertifications = ({ projectData, onDataUpdate, onSave, onSaveAnd
 						</TooltipField>
 
 						<TooltipField label="Fitwel" tooltip="Select status or the targeted Fitwel rating" required={true}>
-							<Select value={projectData['Fitwell'] || ''} onValueChange={(value) => handleInputChange('fitwel', value)}>
+							<Select value={projectData['Fitwell'] || ''} onValueChange={(value) => handleInputChange('Fitwell', value)}>
 								<SelectTrigger>
 									<SelectValue placeholder="Select rating" />
 								</SelectTrigger>
@@ -134,22 +134,34 @@ export const AddCertifications = ({ projectData, onDataUpdate, onSave, onSaveAnd
 							</Select>
 						</TooltipField>
 
-						<TooltipField label="Passivhaus or EnePHit" tooltip="Indicate if targeting Passivhaus or EnePHit" required={true}>
-							<Select value={projectData['Passivhaus or EnePHit'] || ''} onValueChange={(value) => handleInputChange('passivhaus', value)}>
+						<TooltipField label="Passivhaus" tooltip="Indicate if targeting Passivhaus" required={true}>
+							<Select value={projectData['Passivhaus'] || ''} onValueChange={(value) => handleInputChange('Passivhaus', value)}>
 								<SelectTrigger>
 									<SelectValue placeholder="Indicate if targeting" />
 								</SelectTrigger>
 								<SelectContent>
 									<SelectItem value="not-targeted">Not targeted</SelectItem>
 									<SelectItem value="to-be-determined">To be determined</SelectItem>
-									<SelectItem value="passivhaus">Passivhaus</SelectItem>
-									<SelectItem value="enerphit">EnePHit</SelectItem>
+									<SelectItem value="Passivhaus">Passivhaus</SelectItem>
+								</SelectContent>
+							</Select>
+						</TooltipField>
+
+						<TooltipField label="EnerPHit" tooltip="Indicate if targeting EnerPHit" required={true}>
+							<Select value={projectData['EnerPHit'] || ''} onValueChange={(value) => handleInputChange('EnerPHit', value)}>
+								<SelectTrigger>
+									<SelectValue placeholder="Indicate if targeting" />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="not-targeted">Not targeted</SelectItem>
+									<SelectItem value="to-be-determined">To be determined</SelectItem>
+									<SelectItem value="EnerPHit">EnerPHit</SelectItem>
 								</SelectContent>
 							</Select>
 						</TooltipField>
 
 						<TooltipField label="UKNZCBS" tooltip="Indicate if targeting UKNZCBS. Ensure the PC year above is correct" required={true}>
-							<Select value={projectData['UKNZCBS'] || ''} onValueChange={(value) => handleInputChange('uknzcbs', value)}>
+							<Select value={projectData['UKNZCBS'] || ''} onValueChange={(value) => handleInputChange('UKNZCBS', value)}>
 								<SelectTrigger>
 									<SelectValue placeholder="Indicate if targeting" />
 								</SelectTrigger>
@@ -172,7 +184,7 @@ export const AddCertifications = ({ projectData, onDataUpdate, onSave, onSaveAnd
 						</TooltipField>
 
 						<TooltipField label="NABERS" tooltip="Select status or the targeted NABERS rating" required={true}>
-							<Select value={projectData['NABERS'] || ''} onValueChange={(value) => handleInputChange('nabers', value)}>
+							<Select value={projectData['NABERS'] || ''} onValueChange={(value) => handleInputChange('NABERS', value)}>
 								<SelectTrigger>
 									<SelectValue placeholder="Select rating" />
 								</SelectTrigger>
@@ -191,7 +203,7 @@ export const AddCertifications = ({ projectData, onDataUpdate, onSave, onSaveAnd
 					</div>
 
 					<TooltipField label="Other certification" tooltip="Insert name of other certification and target">
-						<Input placeholder="Add details" value={projectData['Other Cerification'] || ''} onChange={(e) => handleInputChange('otherCertification', e.target.value)} />
+						<Input placeholder="Add details" value={projectData['Other Cerification'] || ''} onChange={(e) => handleInputChange('Other certification', e.target.value)} />
 					</TooltipField>
 				</div>
 
