@@ -21,7 +21,7 @@ export const totalEmbodiedCarbonBenchmarks = {
 export const uknzcbsBenchmarks = {
 	'CCC': {
 		'Culture & entertainment (General)': {
-			'New building': {
+			'New Build': {
 				2025: 570,
 				2026: 540,
 				2027: 515,
@@ -79,7 +79,7 @@ export const uknzcbsBenchmarks = {
 			},
 		},
 		'Culture & entertainment (Performance)': {
-			'New building': {
+			'New Build': {
 				2025: 855,
 				2026: 810,
 				2027: 770,
@@ -139,7 +139,7 @@ export const uknzcbsBenchmarks = {
 	},
 	'Education': {
 		'Schools': {
-			'New building': {
+			'New Build': {
 				2025: 530,
 				2026: 505,
 				2027: 480,
@@ -197,7 +197,7 @@ export const uknzcbsBenchmarks = {
 			},
 		},
 		'Higher education': {
-			'New building': {
+			'New Build': {
 				2025: 640,
 				2026: 610,
 				2027: 575,
@@ -257,7 +257,7 @@ export const uknzcbsBenchmarks = {
 	},
 	'Healthcare': {
 		'Healthcare': {
-			'New building': {
+			'New Build': {
 				2025: 790,
 				2026: 750,
 				2027: 710,
@@ -317,7 +317,7 @@ export const uknzcbsBenchmarks = {
 	},
 	'Residential': {
 		'Single family homes': {
-			'New building': {
+			'New Build': {
 				2025: 430,
 				2026: 400,
 				2027: 375,
@@ -375,7 +375,7 @@ export const uknzcbsBenchmarks = {
 			},
 		},
 		'Flats': {
-			'New building': {
+			'New Build': {
 				2025: 565,
 				2026: 525,
 				2027: 490,
@@ -433,7 +433,7 @@ export const uknzcbsBenchmarks = {
 			},
 		},
 		'Commercial residential': {
-			'New building': {
+			'New Build': {
 				2025: 580,
 				2026: 550,
 				2027: 525,
@@ -491,7 +491,7 @@ export const uknzcbsBenchmarks = {
 			},
 		},
 		'Hotels': {
-			'New building': {
+			'New Build': {
 				2025: 670,
 				2026: 635,
 				2027: 605,
@@ -551,7 +551,7 @@ export const uknzcbsBenchmarks = {
 	},
 	'Workplace': {
 		'Workplace (Whole building)': {
-			'New building': {
+			'New Build': {
 				2025: 735,
 				2026: 700,
 				2027: 660,
@@ -609,7 +609,7 @@ export const uknzcbsBenchmarks = {
 			},
 		},
 		'Workplace (Shell & core)': {
-			'New building': {
+			'New Build': {
 				2025: 475,
 				2026: 450,
 				2027: 425,
@@ -639,7 +639,7 @@ export const uknzcbsBenchmarks = {
 			},
 		},
 		'Science & technology': {
-			'New building': {
+			'New Build': {
 				2025: 755,
 				2026: 715,
 				2027: 680,
@@ -703,7 +703,7 @@ export const uknzcbsBenchmarks = {
 export const uknzcbsOperationalEnergyBenchmarks = {
 	'CCC': {
 		'Culture & entertainment (Performance)': {
-			'New building': {
+			'New Build': {
 				2025: 80,
 				2026: 79,
 				2027: 77,
@@ -761,7 +761,7 @@ export const uknzcbsOperationalEnergyBenchmarks = {
 			},
 		},
 		'Culture & entertainment (Collection)': {
-			'New building': {
+			'New Build': {
 				2025: 60,
 				2026: 59,
 				2027: 58,
@@ -913,7 +913,7 @@ export const uknzcbsOperationalEnergyBenchmarks = {
 	},
 	'Education': {
 		'Primary school': {
-			'New building': {
+			'New Build': {
 				2025: 45,
 				2026: 45,
 				2027: 44,
@@ -971,7 +971,7 @@ export const uknzcbsOperationalEnergyBenchmarks = {
 			},
 		},
 		'Secondary school': {
-			'New building': {
+			'New Build': {
 				2025: 60,
 				2026: 59,
 				2027: 58,
@@ -1029,7 +1029,7 @@ export const uknzcbsOperationalEnergyBenchmarks = {
 			},
 		},
 		'Higher education': {
-			'New building': {
+			'New Build': {
 				2025: 100,
 				2026: 98,
 				2027: 95,
@@ -1089,7 +1089,7 @@ export const uknzcbsOperationalEnergyBenchmarks = {
 	},
 	'Residential': {
 		'Single family homes': {
-			'New building': {
+			'New Build': {
 				2025: 45,
 				2026: 45,
 				2027: 44,
@@ -1147,7 +1147,7 @@ export const uknzcbsOperationalEnergyBenchmarks = {
 			},
 		},
 		'Flats': {
-			'New building': {
+			'New Build': {
 				2025: 40,
 				2026: 40,
 				2027: 40,
@@ -1205,7 +1205,7 @@ export const uknzcbsOperationalEnergyBenchmarks = {
 			},
 		},
 		'Student residence': {
-			'New building': {
+			'New Build': {
 				2025: 75,
 				2026: 74,
 				2027: 72,
@@ -1263,7 +1263,7 @@ export const uknzcbsOperationalEnergyBenchmarks = {
 			},
 		},
 		'Hotels': {
-			'New building': {
+			'New Build': {
 				2025: 125,
 				2026: 122,
 				2027: 119,
@@ -1323,7 +1323,7 @@ export const uknzcbsOperationalEnergyBenchmarks = {
 	},
 	'Workplace': {
 		'Workplace': {
-			'New building': {
+			'New Build': {
 				2025: 85,
 				2026: 83,
 				2027: 80,
@@ -1381,7 +1381,7 @@ export const uknzcbsOperationalEnergyBenchmarks = {
 			},
 		},
 		'Science & technology': {
-			'New building': {
+			'New Build': {
 				2025: 305,
 				2026: 297,
 				2027: 289,

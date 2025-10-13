@@ -42,7 +42,7 @@ export const SingleProject = ({ projects, selectedKPI1, valueType, isComparingTo
 	}));
 
 	// Get UKNZCBS benchmark data for the bar chart - always based on PRIMARY project only
-	const getBarChartBenchmarkLines = () => {
+	const getBenchmarkUpfrontCarbon = () => {
 		if (!selectedBarChartBenchmark || selectedKPI1 !== 'Upfront Carbon' || valueType !== 'average' || projects.length === 0) {
 			return [];
 		}
@@ -86,7 +86,7 @@ export const SingleProject = ({ projects, selectedKPI1, valueType, isComparingTo
 	};
 
 	// Get benchmark data for the primary project's sector (only for Total Embodied Carbon with average)
-	const getBenchmarkLines = () => {
+	const getBenchmarkEmbodiedCarbon = () => {
 		if (!showBenchmarks || selectedKPI1 !== 'Total Embodied Carbon' || valueType !== 'average' || projects.length === 0) {
 			return [];
 		}
@@ -106,15 +106,15 @@ export const SingleProject = ({ projects, selectedKPI1, valueType, isComparingTo
 		}));
 	};
 
-	const benchmarkLines = getBenchmarkLines();
-	const barChartBenchmarkLines = getBarChartBenchmarkLines();
+	const benchmarkEmbodiedCarbon = getBenchmarkEmbodiedCarbon();
+	const benchmarkUpfrontCarbon = getBenchmarkUpfrontCarbon();
 
 	return (
 		<div className="w-full h-full flex justify-center">
 			{/* Benchmark Legend - positioned after title, before chart */}
-			{barChartBenchmarkLines.length > 0 && (
+			{/* {benchmarkUpfrontCarbon.length > 0 && (
 				<div className="flex justify-center items-center gap-6 mb-4">
-					{barChartBenchmarkLines.map((item, index) => (
+					{benchmarkUpfrontCarbon.map((item, index) => (
 						<div key={index} className="flex items-center gap-2">
 							<svg width="24" height="2" className="inline-block">
 								<line x1="0" y1="1" x2="24" y2="1" stroke={item.color} strokeWidth="2" strokeDasharray={item.name.includes('New Build') ? '5 5' : '10 5'} />
@@ -125,9 +125,9 @@ export const SingleProject = ({ projects, selectedKPI1, valueType, isComparingTo
 						</div>
 					))}
 				</div>
-			)}
+			)} */}
 			<ResponsiveContainer {...getResponsiveContainerProps()}>
-				<BarChart data={chartData} {...getChartProps()}>
+				<BarChart data={chartData} barGap={-100} {...getChartProps()}>
 					<CartesianGrid vertical={false} {...getCartesianGridProps()} />
 					<XAxis
 						{...getXAxisProps('Single Project', selectedKPI1, kpi1Config, valueType)}
@@ -188,12 +188,12 @@ export const SingleProject = ({ projects, selectedKPI1, valueType, isComparingTo
 												Biogenic Carbon: {formatNumber(Math.abs(biogenicData.value))} {findUnit(kpi1Config, valueType)}
 											</p>
 										)}
-										{barChartBenchmarkLines.length > 0 && (
+										{benchmarkUpfrontCarbon.length > 0 && (
 											<div className="mt-2 pt-2 border-t">
 												<p className="text-xs font-medium" style={{ color: chartColors.dark }}>
 													Benchmarks:
 												</p>
-												{barChartBenchmarkLines.map((benchmark, idx) => (
+												{benchmarkUpfrontCarbon.map((benchmark, idx) => (
 													<p key={idx} className="text-xs" style={{ color: chartColors.dark }}>
 														{benchmark.name}: {formatNumber(benchmark.value)} {findUnit(kpi1Config, valueType)}
 													</p>
@@ -222,14 +222,14 @@ export const SingleProject = ({ projects, selectedKPI1, valueType, isComparingTo
 					)}
 					{<ReferenceLine y={0} stroke="#A8A8A3" strokeWidth={4} />}
 
-					{/* Benchmark lines for Total Embodied Carbon */}
-					{benchmarkLines.map((benchmark, index) => (
+					{/* Benchmark lines for Embodied Carbon */}
+					{benchmarkEmbodiedCarbon.map((benchmark, index) => (
 						<ReferenceLine
 							key={benchmark.name}
 							y={benchmark.value}
 							stroke={benchmark.color}
 							strokeWidth={2}
-							strokeDasharray="5 5"
+							strokeDasharray="2 2"
 							label={{
 								value: benchmark.name,
 								position: 'insideTopRight',
@@ -240,8 +240,20 @@ export const SingleProject = ({ projects, selectedKPI1, valueType, isComparingTo
 					))}
 
 					{/* UKNZCBS Benchmark lines for Upfront Carbon */}
-					{barChartBenchmarkLines.map((benchmark, index) => (
-						<ReferenceLine key={benchmark.name} y={benchmark.value} stroke={benchmark.color} strokeWidth={2} strokeDasharray={benchmark.name.includes('New Build') ? '5 5' : '10 5'} />
+					{benchmarkUpfrontCarbon.map((benchmark, index) => (
+						<ReferenceLine
+							key={benchmark.name}
+							y={benchmark.value}
+							stroke={benchmark.color}
+							strokeWidth={2}
+							strokeDasharray={benchmark.name.includes('New Build') ? '10 5' : '2 2'}
+							label={{
+								value: benchmark.name,
+								position: 'insideTopRight',
+								offset: 10,
+								style: { fill: benchmark.color, fontSize: '12px', fontWeight: 'bold' },
+							}}
+						/>
 					))}
 				</BarChart>
 			</ResponsiveContainer>

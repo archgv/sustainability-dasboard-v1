@@ -55,14 +55,14 @@ export const MultiLineTickComponent = (props) => {
 // };
 
 export const findUnit = (currentKPI: KPIOption, valueType: string, forCSV: boolean = false) => {
-	const unit = valueType === 'total' ? currentKPI.unitBracket : currentKPI.totalUnitBracket;
+	const unit = valueType === 'total' ? currentKPI.unit : currentKPI.totalUnit;
 	return forCSV ? unit.replace(/CO₂/g, 'CO2').replace(/²/g, '2') : unit;
 };
 
 // Common XAxis props for bar charts
 export const getXAxisProps = (chart: string, selectedKPI: string, currentKPI: KPIOption, valueType: string) => {
 	let value = 'Year';
-	if (chart === 'Single Time') {
+	if (chart === 'Compare Two') {
 		value = `${currentKPI.key || selectedKPI} (${findUnit(currentKPI, valueType)})`;
 	}
 	let label = { value: value, position: 'insideBottom', offset: -20, style: { textAnchor: 'middle', fontSize: 12 } };

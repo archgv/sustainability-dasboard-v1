@@ -5,18 +5,12 @@ export interface KPIOption {
 	label: string;
 	unit: string;
 	totalUnit: string;
-	unitBracket: string;
-	totalUnitBracket: string;
 }
 
 const kWhm2yr = 'kWh/m²/yr';
 const MWhyr = 'MWh/yr';
 const kgCO2em2 = 'kgCO2e/m²';
 const tCO2e = 'tCO₂e';
-const kWhm2yrBracket = `(${kWhm2yr})`;
-const MWhyrBracket = `(${MWhyr})`;
-const kgCO2em2Bracket = `(${kgCO2em2})`;
-const tCO2eBracket = `(${tCO2e})`;
 
 export const KPIOptions: KPIOption[] = [
 	{
@@ -24,24 +18,18 @@ export const KPIOptions: KPIOption[] = [
 		label: 'Operational energy: reg & unreg',
 		unit: kWhm2yr,
 		totalUnit: MWhyr,
-		unitBracket: kWhm2yrBracket,
-		totalUnitBracket: MWhyrBracket,
 	},
 	{
 		key: 'Operational Energy Part L',
 		label: 'Operational energy: Part L',
 		unit: kWhm2yr,
 		totalUnit: MWhyr,
-		unitBracket: kWhm2yrBracket,
-		totalUnitBracket: MWhyrBracket,
 	},
 	{
 		key: 'Operational Energy Gas',
 		label: 'Operational energy (gas)',
 		unit: kWhm2yr,
 		totalUnit: MWhyr,
-		unitBracket: kWhm2yrBracket,
-		totalUnitBracket: MWhyrBracket,
 	},
 
 	{
@@ -49,16 +37,12 @@ export const KPIOptions: KPIOption[] = [
 		label: 'Space heating demand',
 		unit: kWhm2yr,
 		totalUnit: MWhyr,
-		unitBracket: kWhm2yrBracket,
-		totalUnitBracket: MWhyrBracket,
 	},
 	{
 		key: 'Total Renewable Energy Generation',
 		label: 'Renewable energy generation',
 		unit: kWhm2yr,
 		totalUnit: MWhyr,
-		unitBracket: kWhm2yrBracket,
-		totalUnitBracket: MWhyrBracket,
 	},
 
 	{
@@ -66,24 +50,18 @@ export const KPIOptions: KPIOption[] = [
 		label: 'Upfront carbon (A1-A5)',
 		unit: kgCO2em2,
 		totalUnit: tCO2e,
-		unitBracket: kgCO2em2Bracket,
-		totalUnitBracket: tCO2eBracket,
 	},
 	{
 		key: 'Total Embodied Carbon',
 		label: 'Embodied carbon (A-C)',
 		unit: kgCO2em2,
 		totalUnit: tCO2e,
-		unitBracket: kgCO2em2Bracket,
-		totalUnitBracket: tCO2eBracket,
 	},
 	{
 		key: 'Biogenic Carbon',
 		label: 'Biogenic carbon',
 		unit: kgCO2em2,
 		totalUnit: tCO2e,
-		unitBracket: kgCO2em2Bracket,
-		totalUnitBracket: tCO2eBracket,
 	},
 
 	{
@@ -91,24 +69,18 @@ export const KPIOptions: KPIOption[] = [
 		label: 'Biodiversity net gain',
 		unit: '%',
 		totalUnit: '%',
-		unitBracket: '(%)',
-		totalUnitBracket: '(%)',
 	},
 	{
 		key: 'Habitats Units Gained',
 		label: '',
 		unit: '',
 		totalUnit: '',
-		unitBracket: '',
-		totalUnitBracket: '',
 	},
 	{
 		key: 'Urban Greening Factor',
 		label: 'Urban greening factor',
 		unit: '',
 		totalUnit: '',
-		unitBracket: '',
-		totalUnitBracket: '',
 	},
 ];
 
