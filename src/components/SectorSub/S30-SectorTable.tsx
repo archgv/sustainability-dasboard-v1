@@ -5,10 +5,12 @@ import { formatNumber } from '@/lib/utils';
 import { SectorKeys } from '@/components/Key/KeySector';
 import { chartColors } from '../Key/KeyColor';
 import { findUnit } from '../UtilChart/ChartConfig';
+import { KPIOption } from '../Key/KeyKPI';
+import { SectorStatsMap } from '../R10-Sector';
 
 interface SectorTableProps {
-	sectorStats: any;
-	currentKPI: any;
+	sectorStats: SectorStatsMap;
+	currentKPI: KPIOption;
 	valueType: 'average' | 'total';
 }
 

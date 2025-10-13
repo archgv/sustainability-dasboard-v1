@@ -20,7 +20,23 @@ interface SectorStats {
 	values: number[];
 }
 
-type SectorStatsMap = Record<string, SectorStats>;
+export type SectorStatsMap = Record<string, SectorStats>;
+
+interface SectorStats {
+	count: number;
+	totalValue: number;
+	totalGIA: number;
+	minValue: number;
+	maxValue: number;
+	values: number[];
+}
+
+export interface ChartDataItem {
+	sector: string; // sector key like "Residential"
+	value: number; // average or total KPI value
+	biogenicValue: number; // negative biogenic carbon value
+	count: number; // number of projects
+}
 
 interface BiogenicStats {
 	totalValue: number;
@@ -41,7 +57,7 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 	const currentKPI = KPIOptions.find((kpi) => kpi.key === selectedKPI);
 
 	// Get available years from projects for selector
-	const availableYears = [...new Set(projects.map(p => new Date(p['PC Date']).getFullYear()))].sort((a, b) => b - a);
+	const availableYears = [...new Set(projects.map((p) => new Date(p['PC Date']).getFullYear()))].sort((a, b) => b - a);
 
 	// Filter projects by year if needed
 	const filteredProjects =
@@ -95,7 +111,7 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 	};
 
 	// Create chart data ensuring all sectors are included
-	const chartData = SectorKeys.map((sector) => {
+	const chartData: ChartDataItem[] = SectorKeys.map((sector) => {
 		const stats = sectorStats[sector];
 		const baseValue = stats ? getAverage(stats.totalValue, stats.count) : 0;
 
@@ -176,19 +192,10 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 							onDownloadPNG={handleDownloadPNG}
 						/>
 
-						<SectorChart
-							chartData={chartData}
-							currentKPI={currentKPI}
-							selectedKPI={selectedKPI}
-							valueType={valueType}
-						/>
+						<SectorChart chartData={chartData} currentKPI={currentKPI} selectedKPI={selectedKPI} valueType={valueType} />
 					</div>
 
-					<SectorTable
-						sectorStats={sectorStats}
-						currentKPI={currentKPI}
-						valueType={valueType}
-					/>
+					<SectorTable sectorStats={sectorStats} currentKPI={currentKPI} valueType={valueType} />
 				</div>
 			)}
 		</Card>

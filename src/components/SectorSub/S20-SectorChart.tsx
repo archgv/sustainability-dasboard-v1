@@ -4,10 +4,11 @@ import { formatNumber } from '@/lib/utils';
 import { sectorConfig } from '@/components/Key/KeySector';
 import { chartColors } from '../Key/KeyColor';
 import { getResponsiveContainerProps, getCartesianGridProps, getTooltipContainerStyle, findUnit, getChartProps } from '../UtilChart/ChartConfig';
+import { KPIOption } from '../Key/KeyKPI';
 
 interface SectorChartProps {
 	chartData: any[];
-	currentKPI: any;
+	currentKPI: KPIOption;
 	selectedKPI: string;
 	valueType: 'average' | 'total';
 }
@@ -115,14 +116,8 @@ export const SectorChart = ({ chartData, currentKPI, selectedKPI, valueType }: S
 											}}
 										>
 											<p style={{ margin: 0, fontWeight: 'bold' }}>{`Sector: ${label}`}</p>
-											<p style={{ margin: 0, color: chartColors.primary }}>{`Average Whole Life Carbon: ${formatNumber(data.value)} ${findUnit(
-												currentKPI,
-												valueType
-											)}`}</p>
-											<p style={{ margin: 0, color: chartColors.dark }}>{`Average biogenic: ${formatNumber(data.biogenicValue)} ${findUnit(
-												currentKPI,
-												valueType
-											)}`}</p>
+											<p style={{ margin: 0, color: chartColors.primary }}>{`Average Whole Life Carbon: ${formatNumber(data.value)} ${findUnit(currentKPI, valueType)}`}</p>
+											<p style={{ margin: 0, color: chartColors.dark }}>{`Average biogenic: ${formatNumber(data.biogenicValue)} ${findUnit(currentKPI, valueType)}`}</p>
 										</div>
 									);
 								}
@@ -136,10 +131,7 @@ export const SectorChart = ({ chartData, currentKPI, selectedKPI, valueType }: S
 										>
 											<p style={{ margin: 0, fontWeight: 'bold' }}>{`Sector: ${label}`}</p>
 											<p style={{ margin: 0, color: chartColors.primary }}>
-												{`${valueType === 'total' ? 'Cumulative total' : 'Average'}: ${formatNumber(Number(payload[0].value))} ${findUnit(
-													currentKPI,
-													valueType
-												)}`}
+												{`${valueType === 'total' ? 'Cumulative total' : 'Average'}: ${formatNumber(Number(payload[0].value))} ${findUnit(currentKPI, valueType)}`}
 											</p>
 										</div>
 									);
@@ -161,12 +153,7 @@ export const SectorChart = ({ chartData, currentKPI, selectedKPI, valueType }: S
 						{selectedKPI === 'Total Embodied Carbon' && (
 							<Bar dataKey="biogenicValue" barSize={50} radius={[6, 6, 0, 0]}>
 								{chartData.map((entry, index) => (
-									<Cell
-										key={`biogenic-cell-${index}`}
-										fill="white"
-										stroke={sectorConfig[entry.sector as keyof typeof sectorConfig]?.color || chartColors.primary}
-										strokeWidth={3}
-									/>
+									<Cell key={`biogenic-cell-${index}`} fill="white" stroke={sectorConfig[entry.sector as keyof typeof sectorConfig]?.color || chartColors.primary} strokeWidth={3} />
 								))}
 							</Bar>
 						)}
