@@ -259,8 +259,8 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
 					<DialogTitle className="text-2xl font-semibold">Project Data - {selectedProject?.['Project Name']}</DialogTitle>
 				</DialogHeader>
 
-				<Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-					<TabsList className="flex h-12 gap-2 rounded-full bg-gray-100 p-1">
+				<Tabs value={activeTab} onValueChange={setActiveTab} className="w-full ">
+					<TabsList className="flex h-12 gap-2 rounded-full bg-gray-100 p-4 my-4">
 						<TabsTrigger
 							value="project-overview"
 							className="rounded-full px-4 py-2 text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-gray-900"

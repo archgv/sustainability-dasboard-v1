@@ -17,6 +17,7 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { TooltipField } from '../ui/tooltip-field';
 
 interface CertificationsProps {
 	projectData: WizardData['projectData'];
@@ -25,29 +26,6 @@ interface CertificationsProps {
 	onSaveAndExit: () => void;
 	onCancel: () => void;
 }
-
-const TooltipField = ({ label, tooltip, required = false, children }: { label: string; tooltip?: string; required?: boolean; children: React.ReactNode }) => (
-	<div className="space-y-2">
-		<div className="flex items-center gap-2">
-			<Label className="text-sm font-medium">
-				{label} {required && <span className="text-destructive">*</span>}
-			</Label>
-			{tooltip && (
-				<TooltipProvider>
-					<Tooltip>
-						<TooltipTrigger asChild>
-							<HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
-						</TooltipTrigger>
-						<TooltipContent className="max-w-xs">
-							<p>{tooltip}</p>
-						</TooltipContent>
-					</Tooltip>
-				</TooltipProvider>
-			)}
-		</div>
-		{children}
-	</div>
-);
 
 export const AddCertifications = ({ projectData, onDataUpdate, onSave, onSaveAndExit, onCancel }: CertificationsProps) => {
 	const [showExitDialog, setShowExitDialog] = useState(false);

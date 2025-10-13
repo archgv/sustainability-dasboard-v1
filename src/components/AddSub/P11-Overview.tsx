@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { HelpCircle, AlertTriangle } from 'lucide-react';
+import { HelpCircle, AlertTriangle, Info } from 'lucide-react';
 import { Project } from '@/components/Key/project';
 import { WizardData } from '../L11-AddWizard';
 import {
@@ -20,6 +20,7 @@ import {
 	AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { StageKeys } from '../Key/KeyStage';
+import { TooltipField } from '../ui/tooltip-field';
 
 interface ProjectOverviewProps {
 	selectedProject?: Project;
@@ -29,29 +30,6 @@ interface ProjectOverviewProps {
 	onSaveAndExit: () => void;
 	onCancel: () => void;
 }
-
-const TooltipField = ({ label, tooltip, required = false, children }: { label: string; tooltip?: string; required?: boolean; children: React.ReactNode }) => (
-	<div className="space-y-2">
-		<div className="flex items-center gap-2">
-			<Label className="text-sm font-medium">
-				{label} {required && <span className="text-destructive">*</span>}
-			</Label>
-			{tooltip && (
-				<TooltipProvider>
-					<Tooltip>
-						<TooltipTrigger asChild>
-							<HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
-						</TooltipTrigger>
-						<TooltipContent className="max-w-xs">
-							<p>{tooltip}</p>
-						</TooltipContent>
-					</Tooltip>
-				</TooltipProvider>
-			)}
-		</div>
-		{children}
-	</div>
-);
 
 export const AddOverview = ({ selectedProject, projectData, onDataUpdate, onSave, onSaveAndExit, onCancel }: ProjectOverviewProps) => {
 	const [showExitDialog, setShowExitDialog] = useState(false);
@@ -79,7 +57,7 @@ export const AddOverview = ({ selectedProject, projectData, onDataUpdate, onSave
 			<div className="flex-1 overflow-y-auto space-y-6 pr-2">
 				{/* Project Information */}
 				<div className="space-y-4">
-					<div className="grid grid-cols-2 gap-x-8 gap-y-4 bg-muted/30 p-4 rounded-lg">
+					<div className="grid grid-cols-2 gap-x-8 gap-y-4 bg-muted/30 p-4 rounded-[20px] px-6">
 						<div>
 							<Label className="text-sm font-medium">Project Location</Label>
 							<p className="text-sm text-muted-foreground mt-1">{selectedProject['Project Location']}</p>

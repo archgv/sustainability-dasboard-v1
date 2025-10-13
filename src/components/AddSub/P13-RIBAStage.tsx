@@ -19,6 +19,7 @@ import {
 	AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { StageKey } from '@/components/Key/KeyStage';
+import { TooltipField } from '../ui/tooltip-field';
 
 interface RibaStageProps {
 	stageNumber: string;
@@ -32,29 +33,6 @@ interface RibaStageProps {
 	completedSteps: string[];
 	stageCompletionData?: { [key: string]: { completed: boolean; date?: string } };
 }
-
-const TooltipField = ({ label, tooltip, required = false, children }: { label: string; tooltip?: string; required?: boolean; children: React.ReactNode }) => (
-	<div className="space-y-2">
-		<div className="flex items-center gap-2">
-			<Label className="text-sm font-medium">
-				{label} {required && <span className="text-destructive">*</span>}
-			</Label>
-			{tooltip && (
-				<TooltipProvider>
-					<Tooltip>
-						<TooltipTrigger asChild>
-							<HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
-						</TooltipTrigger>
-						<TooltipContent className="max-w-xs">
-							<p>{tooltip}</p>
-						</TooltipContent>
-					</Tooltip>
-				</TooltipProvider>
-			)}
-		</div>
-		{children}
-	</div>
-);
 
 export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate, onSave, onSaveAndExit, onCancel, currentStep, completedSteps, stageCompletionData }: RibaStageProps) => {
 	const [showExitDialog, setShowExitDialog] = useState(false);
@@ -94,7 +72,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 				<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 					{/* Operational Energy */}
 					<div className="space-y-4">
-						<h3 className="text-lg font-semibold text-foreground border-b pb-2">Operational Energy</h3>
+						<h3 className="text-lg font-semibold text-foreground py-2">Operational Energy</h3>
 
 						<TooltipField label="Update GIA (only if different)" tooltip="Enter a stage-specific GIA below only if it differs from the project GIA">
 							<div className="relative">
@@ -209,14 +187,14 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 									min="0"
 									className="pr-16"
 								/>
-								<div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">kWh/yr</div>
+								<div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400 pointer-events-none">kWh/yr</div>
 							</div>
 						</TooltipField>
 					</div>
 
 					{/* Embodied Carbon */}
 					<div className="space-y-4">
-						<h3 className="text-lg font-semibold text-foreground border-b pb-2">Embodied Carbon</h3>
+						<h3 className="text-lg font-semibold text-foreground py-2">Embodied Carbon</h3>
 
 						<TooltipField label="Structural frame material" tooltip="Select the dominant material used in the structural frame">
 							<Select value={stageData['Structural Frame Materials'] || ''} onValueChange={(value) => handleInputChange('Structural Frame Materials', value)}>
@@ -291,7 +269,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 
 					{/* Ecology & Biodiversity */}
 					<div className="space-y-4">
-						<h3 className="text-lg font-semibold text-foreground border-b pb-2">Ecology & Biodiversity</h3>
+						<h3 className="text-lg font-semibold text-foreground py-2">Ecology & Biodiversity</h3>
 
 						<TooltipField label="Biodiversity net gain" tooltip="Enter the predicted Biodiversity Net Gain percentage">
 							<div className="relative">
@@ -345,7 +323,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 			</div>
 
 			{/* Fixed footer buttons */}
-			<div className="pt-4 border-t bg-background">
+			<div className="my-4 pt-4 border-t bg-background">
 				<div className="flex justify-between">
 					<AlertDialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
 						<AlertDialogTrigger asChild>

@@ -151,3 +151,7 @@ h2 {
 label {
 	@apply text-sm font-medium text-rose-400;
 }
+
+[data-placeholder] {
+	color: #d1d5db; /* Tailwind gray-300 */
+}
