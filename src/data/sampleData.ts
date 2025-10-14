@@ -36,6 +36,7 @@ export const sampleProjects: Project[] = [
 
 				'Upfront Carbon': 450,
 				'Total Embodied Carbon': 650,
+				'Structural Frame Materials': 'Concrete',
 				'Biogenic Carbon': 50,
 
 				'Biodiversity Net Gain': 15,
@@ -51,6 +52,7 @@ export const sampleProjects: Project[] = [
 
 				'Upfront Carbon': 450,
 				'Total Embodied Carbon': 650,
+				'Structural Frame Materials': 'Concrete',
 				'Biogenic Carbon': 50,
 
 				'Biodiversity Net Gain': 15,
@@ -66,6 +68,7 @@ export const sampleProjects: Project[] = [
 
 				'Upfront Carbon': 450,
 				'Total Embodied Carbon': 650,
+				'Structural Frame Materials': 'Concrete',
 				'Biogenic Carbon': 50,
 
 				'Biodiversity Net Gain': 15,
@@ -81,6 +84,7 @@ export const sampleProjects: Project[] = [
 
 				'Upfront Carbon': 450,
 				'Total Embodied Carbon': 650,
+				'Structural Frame Materials': 'Concrete',
 				'Biogenic Carbon': 50,
 
 				'Biodiversity Net Gain': 15,
@@ -96,6 +100,7 @@ export const sampleProjects: Project[] = [
 
 				'Upfront Carbon': 450,
 				'Total Embodied Carbon': 650,
+				'Structural Frame Materials': 'Concrete',
 				'Biogenic Carbon': 50,
 
 				'Biodiversity Net Gain': 15,
@@ -111,6 +116,7 @@ export const sampleProjects: Project[] = [
 
 				'Upfront Carbon': 450,
 				'Total Embodied Carbon': 650,
+				'Structural Frame Materials': 'Concrete',
 				'Biogenic Carbon': 50,
 
 				'Biodiversity Net Gain': 15,
@@ -126,6 +132,7 @@ export const sampleProjects: Project[] = [
 
 				'Upfront Carbon': 450,
 				'Total Embodied Carbon': 650,
+				'Structural Frame Materials': 'Concrete',
 				'Biogenic Carbon': 50,
 
 				'Biodiversity Net Gain': 15,
@@ -133,20 +140,6 @@ export const sampleProjects: Project[] = [
 				'Urban Greening Factor': 12,
 			},
 		},
-
-		'Operational Energy Total': 75,
-		'Operational Energy Part L': 65,
-		'Operational Energy Gas': 25,
-		'Space Heating Demand': 30,
-		'Total Renewable Energy Generation': 20,
-
-		'Upfront Carbon': 450,
-		'Total Embodied Carbon': 650,
-		'Biogenic Carbon': 50,
-
-		'Biodiversity Net Gain': 15,
-		'Habitats Units Gained': 12,
-		'Urban Greening Factor': 12,
 	},
 	{
 		id: '2',
@@ -282,21 +275,6 @@ export const sampleProjects: Project[] = [
 				'Urban Greening Factor': 8,
 			},
 		},
-
-		'Operational Energy Total': 135,
-		'Operational Energy Part L': 80,
-		'Operational Energy Gas': 35,
-
-		'Space Heating Demand': 40,
-		'Total Renewable Energy Generation': 15,
-
-		'Upfront Carbon': 780,
-		'Total Embodied Carbon': 1080,
-		'Biogenic Carbon': -60,
-
-		'Biodiversity Net Gain': 10,
-		'Habitats Units Gained': 8,
-		'Urban Greening Factor': 8,
 	},
 	{
 		id: '3',
@@ -425,19 +403,5 @@ export const sampleProjects: Project[] = [
 				'Urban Greening Factor': 15,
 			},
 		},
-
-		'Operational Energy Total': 65,
-		'Operational Energy Part L': 55,
-		'Operational Energy Gas': 20,
-		'Space Heating Demand': 25,
-		'Total Renewable Energy Generation': 25,
-
-		'Upfront Carbon': 380,
-		'Total Embodied Carbon': 580,
-		'Biogenic Carbon': 40,
-
-		'Biodiversity Net Gain': 20,
-		'Habitats Units Gained': 15,
-		'Urban Greening Factor': 15,
 	},
 ];

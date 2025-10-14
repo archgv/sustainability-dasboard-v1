@@ -1,7 +1,10 @@
+import { StageKey } from './KeyStage';
 import { Project } from './project';
 
+type StageKPIKeys = keyof Project['RIBA Stage'][StageKey];
+
 export interface KPIOption {
-	key: keyof Project;
+	key: StageKPIKeys;
 	label: string;
 	unit: string;
 	totalUnit: string;

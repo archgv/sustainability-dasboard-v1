@@ -8,6 +8,7 @@ import { chartColors } from '../Key/KeyColor';
 import { generateNiceTicks } from '../UtilChart/UtilTick';
 import { transformDataForValueType } from '../UtilChart/UtilValueType';
 import { getResponsiveContainerProps, getChartProps, getCartesianGridProps, getYAxisProps, getXAxisProps, getBarProps, getTooltipContainerStyle, findUnit } from '../UtilChart/ChartConfig';
+import { getProjectCurrrentStage } from '../Util/UtilProject';
 
 interface SingleTimeProps {
 	projects: Project[];
@@ -24,17 +25,29 @@ export const SingleTime = ({ projects, selectedKPI1, valueType, isComparingToSel
 
 	const timelineData = transformedProjects
 		.map((project) => {
-			const baseId = project.id.split('-')[0];
+			const projectCurrentStage = getProjectCurrrentStage(project);
+
+			const kpiValues = Object.fromEntries(
+				KPIOptions.map(({ key }) => {
+					const value = projectCurrentStage?.[key] ?? 0;
+					return [key, value];
+				})
+			);
+
 			const displayName = isComparingToSelf && project['Current RIBA Stage'] ? `${project['Project Name']} (RIBA ${project['Current RIBA Stage']})` : project['Project Name'];
 
 			// Extract year only from completion date
 			const completionYear = new Date(project['PC Date']).getFullYear();
 
 			return {
-				...project,
+				'Project Name': project['Project Name'],
+				'Primary Sector': project['Primary Sector'],
+				'Current RIBA Stage': project['Current RIBA Stage'],
+				'Structural Frame Materials': projectCurrentStage?.['Structural Frame Materials'],
 				displayName,
 				completionYear,
 				date: new Date(project['PC Date']).getTime(),
+				...kpiValues,
 			};
 		})
 		.sort((a, b) => a.date - b.date);

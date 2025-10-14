@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { StageKey } from '@/components/Key/KeyStage';
 import { TooltipField } from '../ui/tooltip-field';
+import { Unit } from '../ui/unit';
 
 interface RibaStageProps {
 	stageNumber: string;
@@ -70,23 +71,27 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 			{/* Scrollable content area */}
 			<div className="flex-1 overflow-y-auto space-y-6 pr-2">
 				<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-					{/* Operational Energy */}
-					<div className="space-y-4">
-						<h3 className="text-lg font-semibold text-foreground py-2">Operational Energy</h3>
-
+					<div className="lg:col-span-2">
 						<TooltipField label="Update GIA (only if different)" tooltip="Enter a stage-specific GIA below only if it differs from the project GIA">
 							<div className="relative">
 								<Input
-									placeholder={`Enter value (e.g. 6,500) - Project GIA: ${projectGia || 'N/A'} m²`}
+									placeholder={`Enter value (e.g. 6,500) - Project GIA: ${projectGia || 'N/A'}`}
 									value={stageData['Updated GIA'] || ''}
 									onChange={(e) => handleInputChange('Updated GIA', e.target.value)}
 									type="number"
 									min="1"
 									className="pr-8"
 								/>
-								<div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">m²</div>
+								<Unit>m²</Unit>
 							</div>
 						</TooltipField>
+					</div>
+				</div>
+
+				<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+					{/* Operational Energy */}
+					<div className="space-y-4">
+						<h3 className="text-lg font-semibold text-foreground py-2">Operational Energy</h3>
 
 						<TooltipField label="Energy measurement method" tooltip="Provide the methodology used for measuring operational energy">
 							<Select value={stageData['Method Energy Measurement'] || ''} onValueChange={(value) => handleInputChange('Method Energy Measurement', value)}>
@@ -114,7 +119,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 									max="150"
 									className="pr-20"
 								/>
-								<div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">kWh/m²/yr</div>
+								<Unit>kWh/m²/yr</Unit>
 							</div>
 						</TooltipField>
 
@@ -129,7 +134,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 									max="150"
 									className="pr-20"
 								/>
-								<div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">kWh/m²/yr</div>
+								<Unit>kWh/m²/yr</Unit>
 							</div>
 						</TooltipField>
 
@@ -144,7 +149,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 									max="150"
 									className="pr-20"
 								/>
-								<div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">kWh/m²/yr</div>
+								<Unit>kWh/m²/yr</Unit>
 							</div>
 						</TooltipField>
 
@@ -158,7 +163,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 									min="0"
 									className="pr-20"
 								/>
-								<div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">kWh/m²/yr</div>
+								<Unit>kWh/m²/yr</Unit>
 							</div>
 						</TooltipField>
 
@@ -222,7 +227,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 									max="1500"
 									className="pr-24"
 								/>
-								<div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">kgCO2e/m²</div>
+								<Unit>kgCO2e/m²</Unit>
 							</div>
 						</TooltipField>
 
@@ -237,7 +242,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 									max="1500"
 									className="pr-24"
 								/>
-								<div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">kgCO2e/m²</div>
+								<Unit>kgCO2e/m²</Unit>
 							</div>
 						</TooltipField>
 
@@ -252,7 +257,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 									max="0"
 									className="pr-24"
 								/>
-								<div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">kgCO2e/m²</div>
+								<Unit>kgCO2e/m²</Unit>
 							</div>
 						</TooltipField>
 
@@ -282,7 +287,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 									max="200"
 									className="pr-8"
 								/>
-								<div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">%</div>
+								<Unit>%</Unit>
 							</div>
 						</TooltipField>
 

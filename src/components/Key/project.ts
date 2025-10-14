@@ -63,26 +63,4 @@ export interface Project {
 			'General Biodiversity Clarification Notes'?: string;
 		};
 	};
-
-	'Updated GIA'?: number; //? // ADD DATA, SECTOR, COMPARE, PORTFOLIO
-	'Method Energy Measurement'?: string; //? // NOT USED
-
-	'Operational Energy Total': number;
-	'Operational Energy Part L': number;
-	'Operational Energy Gas': number;
-
-	'Space Heating Demand': number;
-	'Renewable Energy Type'?: string; //? NOT OPTIONAL WITH DROPDOWN, ADD DATA, COMPARE (TOOLTIP)
-	'Total Renewable Energy Generation': number;
-	'Structural Frame Materials'?: string; //? NOT OPTIONAL WITH DROPDOWN, ADD DATA, COMPARE (TOOLTIP)
-
-	'Upfront Carbon': number;
-	'Total Embodied Carbon': number;
-	'Biogenic Carbon'?: number;
-	'Embodied Carbon Scope Clarifications'?: string; //? NOT USED
-
-	'Biodiversity Net Gain': number;
-	'Habitats Units Gained': number;
-	'Urban Greening Factor': number;
-	'General Biodiversity Clarification Notes'?: string; //? NOT USED
 }

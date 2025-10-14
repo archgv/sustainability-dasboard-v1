@@ -103,10 +103,10 @@ export const AddOverview = ({ selectedProject, projectData, onDataUpdate, onSave
 				{/* Project Overview */}
 				<div className="space-y-4">
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-						<TooltipField label="Current RIBA Stage" tooltip="Current RIBA Stage" required={true}>
+						<TooltipField label="Current RIBA stage" tooltip="Current RIBA stage" required={true}>
 							<Select value={projectData['Current RIBA Stage'] || ''} onValueChange={(value) => handleInputChange('Current RIBA Stage', value)}>
 								<SelectTrigger>
-									<SelectValue placeholder="Select Current RIBA Stage" />
+									<SelectValue placeholder="Select current RIBA stage" />
 								</SelectTrigger>
 								<SelectContent>
 									{stages.map((stage) => (
@@ -140,7 +140,7 @@ export const AddOverview = ({ selectedProject, projectData, onDataUpdate, onSave
 						<TooltipField label="Operational energy of existing building" tooltip="Enter the annual operational energy of the existing building (if retained)">
 							<div className="relative">
 								<Input
-									placeholder="Enter kWh/m²/yr (e.g. 130 kWh/m²/yr)"
+									placeholder="Enter value (e.g. 130)"
 									value={projectData['Operational Energy Existing Building'] || ''}
 									onChange={(e) => handleInputChange('Operational Energy Existing Building', e.target.value)}
 									type="number"
@@ -196,7 +196,7 @@ export const AddOverview = ({ selectedProject, projectData, onDataUpdate, onSave
 							<Input placeholder="Enter company name" value={projectData['External Consultants'] || ''} onChange={(e) => handleInputChange('External Consultants', e.target.value)} />
 						</TooltipField>
 
-						<TooltipField label="H&B Sustainability champion" tooltip="Enter the name of the internal sustainability champion on the project team (not a member of the EI team)">
+						<TooltipField label="Sustainability champion" tooltip="Enter the name of the internal sustainability champion on the project team (not a member of the EI team)">
 							<Select value={projectData['Sustianability Champion Name'] || ''} onValueChange={(value) => handleInputChange('Sustianability Champion Name', value)}>
 								<SelectTrigger>
 									<SelectValue placeholder="Select name" />

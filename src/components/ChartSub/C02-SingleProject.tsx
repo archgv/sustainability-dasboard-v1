@@ -19,6 +19,7 @@ import {
 	findUnit,
 	MultiLineTickComponent,
 } from '../UtilChart/ChartConfig';
+import { getProjectCurrrentStage } from '../Util/UtilProject';
 
 interface BarChartProps {
 	projects: Project[];
@@ -32,14 +33,34 @@ interface BarChartProps {
 export const SingleProject = ({ projects, selectedKPI1, valueType, isComparingToSelf = false, showBenchmarks, selectedBarChartBenchmark }: BarChartProps) => {
 	const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
 
-	const transformedProjects = transformDataForValueType(projects, valueType, selectedKPI1, '');
-	const sortedProjects = transformedProjects;
+	const sortedProjects = transformDataForValueType(projects, valueType, selectedKPI1, '');
 
 	// Add biogenic data as negative values for totalEmbodiedCarbon - use sorted projects
-	const chartData = sortedProjects.map((project) => ({
-		...project,
-		'Biogenic Carbon': selectedKPI1 === 'Total Embodied Carbon' ? -Math.abs(project['Biogenic Carbon'] || 0) * (valueType === 'total' ? getProjectArea(project.id.split('-')[0]) : 1) : 0,
-	}));
+	const chartData = sortedProjects.map((project) => {
+		const projectCurrentStage = getProjectCurrrentStage(project);
+
+		const kpiValues = Object.fromEntries(
+			KPIOptions.map(({ key }) => {
+				let value = projectCurrentStage?.[key] ?? 0;
+
+				// apply special case logic for Biogenic Carbon
+				if (key === 'Biogenic Carbon' && selectedKPI1 === 'Total Embodied Carbon') {
+					value = -Math.abs(value) * (valueType === 'total' ? getProjectArea(project.id.split('-')[0]) : 1);
+				}
+
+				return [key, value];
+			})
+		);
+
+		return {
+			// minimal fields used in the BarChart
+			'Project Name': project['Project Name'],
+			'Primary Sector': project['Primary Sector'],
+			'Current RIBA Stage': project['Current RIBA Stage'],
+			'Structural Frame Materials': projectCurrentStage?.['Structural Frame Materials'],
+			...kpiValues,
+		};
+	});
 
 	// Get UKNZCBS benchmark data for the bar chart - always based on PRIMARY project only
 	const getBenchmarkUpfrontCarbon = () => {
@@ -170,24 +191,33 @@ export const SingleProject = ({ projects, selectedKPI1, valueType, isComparingTo
 						contentStyle={getTooltipContainerStyle()}
 						content={({ active, payload, label }) => {
 							if (active && payload && payload.length) {
-								const mainData = payload.find((p) => p.dataKey === selectedKPI1);
-								const biogenicData = payload.find((p) => p.dataKey === 'Biogenic Carbon');
+								const project = payload[0]?.payload;
+
+								const mainValue = project[selectedKPI1];
+								const biogenicValue = project['Biogenic Carbon'];
+								const structuralValue = project['Structural Frame Materials'];
 
 								return (
 									<div className="bg-white p-3 border rounded-lg shadow-lg" style={{ backgroundColor: 'white', borderColor: chartColors.primary }}>
 										<p className="font-semibold" style={{ color: chartColors.dark }}>
 											Project: {label}
 										</p>
-										{mainData && (
+										{mainValue && (
 											<p className="text-sm" style={{ color: chartColors.dark }}>
-												{kpi1Config.key}: {formatNumber(mainData.value)} {findUnit(kpi1Config, valueType)}
+												{kpi1Config.key}: {formatNumber(mainValue)} {findUnit(kpi1Config, valueType)}
 											</p>
 										)}
-										{biogenicData && (
+										{biogenicValue && (
 											<p className="text-sm" style={{ color: chartColors.dark }}>
-												Biogenic Carbon: {formatNumber(Math.abs(biogenicData.value))} {findUnit(kpi1Config, valueType)}
+												Biogenic Carbon: {formatNumber(Math.abs(biogenicValue))} {findUnit(kpi1Config, valueType)}
 											</p>
 										)}
+										{structuralValue && (
+											<p className="text-sm" style={{ color: chartColors.dark }}>
+												Structural Frame Materials: {structuralValue}
+											</p>
+										)}
+
 										{benchmarkUpfrontCarbon.length > 0 && (
 											<div className="mt-2 pt-2 border-t">
 												<p className="text-xs font-medium" style={{ color: chartColors.dark }}>

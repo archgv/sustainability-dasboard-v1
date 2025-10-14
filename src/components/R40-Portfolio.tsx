@@ -15,6 +15,8 @@ export const Portfolio = ({ projects, isComparingToSelf = false, selectedRibaSta
 		return num.toLocaleString();
 	};
 
+	const currrentStageProject = (project) => project['RIBA Stage'][project['Current RIBA Stage']];
+
 	return (
 		<Card className="shadow-inner rounded-tl-[40px] rounded-tr-[40px] rounded-bl-none rounded-br-none pb-20">
 			<div className="flex items-center justify-between mb-2">
@@ -32,44 +34,45 @@ export const Portfolio = ({ projects, isComparingToSelf = false, selectedRibaSta
 
 							<div className="space-y-3 mb-4">
 								<div className="flex items-center text-sm text-gray-600">
-									<House className="h-4 w-4 mr-2" />
-									{project['Primary Sector'] || 'ERROR'}
+									{/* <House className="h-4 w-4 mr-2" /> */}
+									<span className="text-sm text-gray-600">Primary sector: {project['Primary Sector'] || 'ERROR'}</span>
 								</div>
 								<div className="flex items-center text-sm text-gray-600">
-									<MapPin className="h-4 w-4 mr-2" />
-									{project['Project Location']}
+									{/* <MapPin className="h-4 w-4 mr-2" /> */}
+									<span className="text-sm text-gray-600">Location: {project['Project Location']}</span>
 								</div>
 								<div className="flex items-center text-sm text-gray-600">
-									<Calendar className="h-4 w-4 mr-2" />
-									{project['Current RIBA Stage'] === '7' ? `PC date ${new Date(project['PC Date']).getFullYear()}` : `PC date ${new Date(project['PC Date']).getFullYear()}`}
+									{/* <Calendar className="h-4 w-4 mr-2" /> */}
+									<span className="text-sm text-gray-600">
+										PC date: {project['Current RIBA Stage'] === '7' ? `${new Date(project['PC Date']).getFullYear()}` : `${new Date(project['PC Date']).getFullYear()}`}
+									</span>
 								</div>
 								<div className="flex items-center text-sm text-gray-600">
-									<FileText className="h-4 w-4 mr-2" />
-									<span className="text-sm text-gray-600">RIBA Stage {project['Current RIBA Stage']}</span>
+									{/* <FileText className="h-4 w-4 mr-2" /> */}
+									<span className="text-sm text-gray-600">RIBA stage: {project['Current RIBA Stage']}</span>
 								</div>
 								<div className="flex items-center text-sm text-gray-600">
-									<Hourglass className="h-4 w-4 mr-2" />
-									{project['Project Type'] === 'New Build' ? 'New Build' : 'Retrofit'}
+									<span className="font-medium">Type: {project['Project Type'] === 'New Build' ? 'New Build' : 'Retrofit'}</span>
 								</div>
 
 								<div className="text-sm text-gray-600">
-									<span className="font-medium">GIA:</span> {formatNumber(project['GIA'] || 0)} m²
+									<span className="font-medium">GIA: {formatNumber(project['GIA'] || 0)} m²</span>
 								</div>
 
 								<div className="text-sm text-gray-600">
 									{/* <Leaf className="h-4 w-4 mr-2 text-green-600" /> */}
-									<span className="font-medium">Embodied Carbon:</span> {formatNumber(project['Total Embodied Carbon'])} kgCO2e/m²
+									<span className="font-medium">Embodied Carbon: {formatNumber(currrentStageProject(project)['Total Embodied Carbon'])} kgCO2e/m²</span>
 								</div>
 
 								<div className="text-sm text-gray-600">
 									{/* <Zap className="h-4 w-4 mr-2 text-blue-600" /> */}
-									<span className="font-medium">Operational Energy:</span> {formatNumber(project['Operational Energy Total'])} kWh/m²/yr
+									<span className="font-medium">Operational Energy: {formatNumber(currrentStageProject(project)['Operational Energy Total'])} kWh/m²/yr</span>
 								</div>
 
 								{project['Project Type'] === 'Retrofit' && project['Operational Energy Existing Building'] && (
 									<div className="text-sm text-gray-600">
 										{/* <Zap className="h-4 w-4 mr-2 text-orange-600" /> */}
-										<span className="font-medium">Existing Building Energy:</span> {formatNumber(project['Operational Energy Existing Building'])} kWh/m²/yr
+										<span className="font-medium">Existing Building Energy: {formatNumber(project['Operational Energy Existing Building'])} kWh/m²/yr</span>
 									</div>
 								)}
 							</div>

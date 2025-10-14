@@ -5,15 +5,15 @@ import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks, uknzcbsOperationalEne
 export const getChartTitle = (chartType: string, valueType: string, selectedKPI1: string, selectedKPI2: string): string => {
 	const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
 	const kpi2Config = KPIOptions.find((kpi) => kpi.key === selectedKPI2);
-	const valueTypeLabel = valueType === 'average' ? '/m²' : 'total';
+	const valueTypeLabel = valueType === 'average' ? 'per m²' : 'total';
 
 	switch (chartType) {
 		case 'Compare Two':
-			return `${kpi1Config?.key} vs ${kpi2Config?.key} (${valueTypeLabel})`;
+			return `${kpi1Config?.label} vs ${kpi2Config?.label} (${valueTypeLabel})`;
 		case 'Single Project':
-			return `${kpi1Config?.key} by Project (${valueTypeLabel})`;
+			return `${kpi1Config?.label} by project (${valueTypeLabel})`;
 		case 'Single Time':
-			return `${kpi1Config?.key} Over Time (${valueTypeLabel})`;
+			return `${kpi1Config?.label} over time (${valueTypeLabel})`;
 		default:
 			return 'Chart';
 	}
