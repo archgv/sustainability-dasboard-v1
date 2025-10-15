@@ -91,7 +91,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 				<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 					{/* Operational Energy */}
 					<div className="space-y-4">
-						<h3 className="text-lg font-semibold text-foreground py-2">Operational Energy</h3>
+						<h3 className="text-lg font-semibold text-gray-500 py-0 px-6">Operational Energy</h3>
 
 						<TooltipField label="Energy measurement method" tooltip="Provide the methodology used for measuring operational energy">
 							<Select value={stageData['Method Energy Measurement'] || ''} onValueChange={(value) => handleInputChange('Method Energy Measurement', value)}>
@@ -199,7 +199,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 
 					{/* Embodied Carbon */}
 					<div className="space-y-4">
-						<h3 className="text-lg font-semibold text-foreground py-2">Embodied Carbon</h3>
+						<h3 className="text-lg font-semibold text-gray-500 py-0 px-6">Embodied Carbon</h3>
 
 						<TooltipField label="Structural frame material" tooltip="Select the dominant material used in the structural frame">
 							<Select value={stageData['Structural Frame Materials'] || ''} onValueChange={(value) => handleInputChange('Structural Frame Materials', value)}>
@@ -227,7 +227,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 									max="1500"
 									className="pr-24"
 								/>
-								<Unit>kgCO2e/m²</Unit>
+								<Unit>kgCO₂e/m²</Unit>
 							</div>
 						</TooltipField>
 
@@ -242,7 +242,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 									max="1500"
 									className="pr-24"
 								/>
-								<Unit>kgCO2e/m²</Unit>
+								<Unit>kgCO₂e/m²</Unit>
 							</div>
 						</TooltipField>
 
@@ -257,7 +257,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 									max="0"
 									className="pr-24"
 								/>
-								<Unit>kgCO2e/m²</Unit>
+								<Unit>kgCO₂e/m²</Unit>
 							</div>
 						</TooltipField>
 
@@ -274,7 +274,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 
 					{/* Ecology & Biodiversity */}
 					<div className="space-y-4">
-						<h3 className="text-lg font-semibold text-foreground py-2">Ecology & Biodiversity</h3>
+						<h3 className="text-lg font-semibold text-gray-500 py-0 px-6">Ecology & Biodiversity</h3>
 
 						<TooltipField label="Biodiversity net gain" tooltip="Enter the predicted Biodiversity Net Gain percentage">
 							<div className="relative">

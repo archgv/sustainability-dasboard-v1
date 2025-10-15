@@ -10,17 +10,17 @@ import { WizardProgressIndicator } from './P10-Progress';
 
 interface ProjectSelectionProps {
 	projects: Project[];
-	selectedProjectId: string;
+	id: string;
 	onProjectSelect: (projectId: string) => void;
 	onNext: () => void;
 	onCancel: () => void;
 }
 
-export const AddSelection = ({ projects, selectedProjectId, onProjectSelect, onNext, onCancel }: ProjectSelectionProps) => {
+export const AddSelection = ({ projects, id, onProjectSelect, onNext, onCancel }: ProjectSelectionProps) => {
 	const [open, setOpen] = useState(false);
 	const [searchValue, setSearchValue] = useState('');
 
-	const selectedProject = projects.find((p) => p.id === selectedProjectId);
+	const selectedProject = projects.find((p) => p.id === id);
 
 	const filteredProjects = projects.filter((project) => project['Project Name'].toLowerCase().includes(searchValue.toLowerCase()) || project.id.toLowerCase().includes(searchValue.toLowerCase()));
 
@@ -30,7 +30,7 @@ export const AddSelection = ({ projects, selectedProjectId, onProjectSelect, onN
 	};
 
 	const handleNext = () => {
-		if (selectedProjectId) {
+		if (id) {
 			onNext();
 		}
 	};
@@ -63,7 +63,7 @@ export const AddSelection = ({ projects, selectedProjectId, onProjectSelect, onN
 									<CommandGroup>
 										{filteredProjects.map((project) => (
 											<CommandItem key={project.id} value={`${project.id} ${project['Project Name']}`} onSelect={() => handleProjectSelect(project.id)}>
-												<Check className={cn('mr-2 h-4 w-4', selectedProjectId === project.id ? 'opacity-100' : 'opacity-0')} />
+												<Check className={cn('mr-2 h-4 w-4', id === project.id ? 'opacity-100' : 'opacity-0')} />
 												<div className="w-full">
 													<div className="font-medium">{project['Project Name']}</div>
 													<div className="text-sm text-muted-foreground mt-1 space-y-1">
@@ -98,7 +98,7 @@ export const AddSelection = ({ projects, selectedProjectId, onProjectSelect, onN
 					<Button variant="outline" onClick={onCancel}>
 						Cancel
 					</Button>
-					<Button onClick={handleNext} disabled={!selectedProjectId}>
+					<Button onClick={handleNext} disabled={!id}>
 						Next
 					</Button>
 				</div>

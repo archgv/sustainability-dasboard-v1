@@ -24,8 +24,8 @@ import { TooltipField } from '../ui/tooltip-field';
 
 interface ProjectOverviewProps {
 	selectedProject?: Project;
-	projectData: WizardData['projectData'];
-	onDataUpdate: (data: WizardData['projectData']) => void;
+	projectData: WizardData;
+	onDataUpdate: (data: WizardData) => void;
 	onSave: () => void;
 	onSaveAndExit: () => void;
 	onCancel: () => void;

@@ -19,31 +19,29 @@ interface AddProjectDataWizardProps {
 export type WizardStep = 'project-selection' | 'project-overview' | 'certifications' | '1' | '2' | '3' | '4' | '5' | '6' | '7';
 
 export interface WizardData {
-	selectedProjectId: string;
-	projectData: {
-		// Section B - Project Overview (user input)
-		'Operational Energy Existing Building'?: string;
-		'GIA'?: string;
-		'Building Lifespan'?: string;
-		'PC Date'?: string;
+	id: string;
+	'Operational Energy Existing Building'?: string;
+	'GIA'?: string;
+	'Building Lifespan'?: string;
+	'PC Date'?: string;
 
-		'EI Team Scope'?: string;
-		'External Consultants'?: string;
-		'Sustianability Champion Name'?: string;
-		'Mission Statement'?: string;
+	'EI Team Scope'?: string;
+	'External Consultants'?: string;
+	'Sustianability Champion Name'?: string;
+	'Mission Statement'?: string;
 
-		'BREEAM': string;
-		'LEED': string;
-		'WELL': string;
-		'Fitwell'?: string;
-		'Passivhaus': string;
-		'EnerPHit': string;
-		'UKNZCBS'?: string;
-		'NABERS': string;
-		'Other Cerification'?: string;
+	'BREEAM': string;
+	'LEED': string;
+	'WELL': string;
+	'Fitwell'?: string;
+	'Passivhaus': string;
+	'EnerPHit': string;
+	'UKNZCBS'?: string;
+	'NABERS': string;
+	'Other Cerification'?: string;
 
-		'Current RIBA Stage': string;
-	};
+	'Current RIBA Stage': string;
+
 	'RIBA Stage': {
 		[key: string]: {
 			// Stage-specific data
@@ -76,8 +74,38 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
 	const [currentStep, setCurrentStep] = useState<WizardStep>('project-selection');
 	const [activeTab, setActiveTab] = useState<string>('project-overview');
 	const [wizardData, setWizardData] = useState<WizardData>({
-		selectedProjectId: '',
-		projectData: {
+		id: '',
+		'Operational Energy Existing Building': '',
+		'GIA': '',
+		'Building Lifespan': '',
+		'PC Date': '',
+
+		'EI Team Scope': '',
+		'External Consultants': '',
+		'Sustianability Champion Name': '',
+		'Mission Statement': '',
+
+		'BREEAM': '',
+		'LEED': '',
+		'WELL': '',
+		'Fitwell': '',
+		'Passivhaus': '',
+		'EnerPHit': '',
+		'UKNZCBS': '',
+		'NABERS': '',
+		'Other Cerification': '',
+
+		'Current RIBA Stage': '',
+
+		'RIBA Stage': {},
+	});
+
+	// Reset wizard to initial state when dialog opens
+	const resetWizard = () => {
+		setCurrentStep('project-selection');
+		setActiveTab('project-overview');
+		setWizardData({
+			id: '',
 			'Operational Energy Existing Building': '',
 			'GIA': '',
 			'Building Lifespan': '',
@@ -99,39 +127,7 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
 			'Other Cerification': '',
 
 			'Current RIBA Stage': '',
-		},
-		'RIBA Stage': {},
-	});
 
-	// Reset wizard to initial state when dialog opens
-	const resetWizard = () => {
-		setCurrentStep('project-selection');
-		setActiveTab('project-overview');
-		setWizardData({
-			selectedProjectId: '',
-			projectData: {
-				'Operational Energy Existing Building': '',
-				'GIA': '',
-				'Building Lifespan': '',
-				'PC Date': '',
-
-				'EI Team Scope': '',
-				'External Consultants': '',
-				'Sustianability Champion Name': '',
-				'Mission Statement': '',
-
-				'BREEAM': '',
-				'LEED': '',
-				'WELL': '',
-				'Fitwell': '',
-				'Passivhaus': '',
-				'EnerPHit': '',
-				'UKNZCBS': '',
-				'NABERS': '',
-				'Other Cerification': '',
-
-				'Current RIBA Stage': '',
-			},
 			'RIBA Stage': {},
 		});
 	};
@@ -152,21 +148,6 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
 		const mapCertificationValue = (value: string) => {
 			if (!value || value === 'N/A') return '';
 			return value.toLowerCase().replace(' ', '-');
-		};
-
-		const updatedProjectData = {
-			...wizardData.projectData,
-
-			'Operational Energy Existing Building': project['Operational Energy Existing Building']?.toString() || '',
-			'GIA': project['GIA']?.toString() || '',
-			'PC Date': project['PC Date'] ? new Date(project['PC Date']).getFullYear().toString() : '',
-
-			'BREEAM': mapCertificationValue(project['BREEAM'] || ''),
-			'LEED': mapCertificationValue(project['LEED'] || ''),
-			'WELL': mapCertificationValue(project['WELL'] || ''),
-			'Passivhaus': project['Passivhaus'] ? 'Passivhaus' : '',
-			'EnerPHit': project['EnerPHit'] ? 'EnerPHit' : '',
-			'NABERS': project['NABERS']?.includes('Star') ? 'yes' : '',
 		};
 
 		const mapStageData = (stage: Project['RIBA Stage'][StageKey]) => ({
@@ -201,8 +182,17 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
 
 		setWizardData((prev) => ({
 			...prev,
-			selectedProjectId: projectId,
-			projectData: updatedProjectData,
+			id: projectId,
+			'Operational Energy Existing Building': project['Operational Energy Existing Building']?.toString() || '',
+			'GIA': project['GIA']?.toString() || '',
+			'PC Date': project['PC Date'] ? new Date(project['PC Date']).getFullYear().toString() : '',
+
+			'BREEAM': mapCertificationValue(project['BREEAM'] || ''),
+			'LEED': mapCertificationValue(project['LEED'] || ''),
+			'WELL': mapCertificationValue(project['WELL'] || ''),
+			'Passivhaus': project['Passivhaus'] ? 'Passivhaus' : '',
+			'EnerPHit': project['EnerPHit'] ? 'EnerPHit' : '',
+			'NABERS': project['NABERS']?.includes('Star') ? 'yes' : '',
 			'RIBA Stage': {
 				...prev['RIBA Stage'],
 				...ribaStagesData,
@@ -237,19 +227,11 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
 		onClose();
 	};
 
-	const selectedProject = projects.find((p) => p.id === wizardData.selectedProjectId);
+	const selectedProject = projects.find((p) => p.id === wizardData.id);
 
 	const renderCurrentStep = () => {
 		if (currentStep === 'project-selection') {
-			return (
-				<AddSelection
-					projects={projects}
-					selectedProjectId={wizardData.selectedProjectId}
-					onProjectSelect={handleProjectSelect}
-					onNext={() => setCurrentStep('project-overview')}
-					onCancel={onClose}
-				/>
-			);
+			return <AddSelection projects={projects} id={wizardData.id} onProjectSelect={handleProjectSelect} onNext={() => setCurrentStep('project-overview')} onCancel={onClose} />;
 		}
 
 		// Tabbed interface for all other steps
@@ -259,7 +241,7 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
 					<DialogTitle className="text-2xl font-semibold">Project Data - {selectedProject?.['Project Name']}</DialogTitle>
 				</DialogHeader>
 
-				<Tabs value={activeTab} onValueChange={setActiveTab} className="w-full ">
+				<Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
 					<TabsList className="flex h-12 gap-2 rounded-full bg-gray-100 p-4 my-4">
 						<TabsTrigger
 							value="project-overview"
@@ -304,8 +286,8 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
 					<TabsContent value="project-overview">
 						<AddOverview
 							selectedProject={selectedProject}
-							projectData={wizardData.projectData}
-							onDataUpdate={(data) => updateWizardData({ projectData: data })}
+							projectData={wizardData}
+							onDataUpdate={(data) => updateWizardData(data)}
 							onSave={handleSave}
 							onSaveAndExit={handleSaveAndExit}
 							onCancel={handleCancel}
@@ -313,13 +295,7 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
 					</TabsContent>
 
 					<TabsContent value="certifications">
-						<AddCertifications
-							projectData={wizardData.projectData}
-							onDataUpdate={(data) => updateWizardData({ projectData: data })}
-							onSave={handleSave}
-							onSaveAndExit={handleSaveAndExit}
-							onCancel={handleCancel}
-						/>
+						<AddCertifications projectData={wizardData} onDataUpdate={(data) => updateWizardData(data)} onSave={handleSave} onSaveAndExit={handleSaveAndExit} onCancel={handleCancel} />
 					</TabsContent>
 
 					{StageKeys.map((stage) => (
@@ -327,7 +303,7 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
 							<AddRIBAStage
 								stageNumber={stage.split('-')[1]}
 								stageData={wizardData['RIBA Stage'][stage] || {}}
-								projectGia={wizardData.projectData['GIA']}
+								projectGia={wizardData['GIA']}
 								onDataUpdate={(data) => {
 									const updatedRibaStages = {
 										...wizardData['RIBA Stage'],

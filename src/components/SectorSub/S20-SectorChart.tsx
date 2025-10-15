@@ -1,23 +1,80 @@
 import { Card } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine } from 'recharts';
 import { formatNumber } from '@/lib/utils';
-import { sectorConfig } from '@/components/Key/KeySector';
+import { sectorConfig, SectorKeys } from '@/components/Key/KeySector';
 import { chartColors } from '../Key/KeyColor';
-import { getResponsiveContainerProps, getCartesianGridProps, getTooltipContainerStyle, findUnit, getChartProps } from '../UtilChart/ChartConfig';
+import { getResponsiveContainerProps, getCartesianGridProps, getTooltipContainerStyle, findUnit, getChartProps, findUnitBracket } from '../UtilChart/ChartConfig';
 import { KPIOption } from '../Key/KeyKPI';
+import { Project } from '../Key/project';
+import { getProjectCurrrentStage } from '../Util/UtilProject';
 
 interface SectorChartProps {
-	chartData: any[];
+	filteredProjects: Project[];
+	sectorStats: Record<string, { totalValue: number; count: number }>;
 	currentKPI: KPIOption;
 	selectedKPI: string;
 	valueType: 'average' | 'total';
 }
 
-export const SectorChart = ({ chartData, currentKPI, selectedKPI, valueType }: SectorChartProps) => {
+export interface ChartDataItem {
+	sector: string; // sector key like "Residential"
+	value: number; // average or total KPI value
+	biogenicValue: number; // negative biogenic carbon value
+	count: number; // number of projects
+}
+
+interface BiogenicStats {
+	totalValue: number;
+	count: number;
+}
+
+export const SectorChart = ({ filteredProjects, sectorStats, currentKPI, selectedKPI, valueType }: SectorChartProps) => {
+	const getAverage = (total: number, count: number) => {
+		return count > 0 ? Math.round(total / count) : 0;
+	};
+
+	// Create chart data ensuring all sectors are included
+	const chartData: ChartDataItem[] = SectorKeys.map((sector) => {
+		const stats = sectorStats[sector];
+		const baseValue = stats ? getAverage(stats.totalValue, stats.count) : 0;
+
+		// For Total Embodied Carbon, also calculate biogenic data for negative columns
+		let biogenicValue = 0;
+		if (selectedKPI === 'Total Embodied Carbon' && stats) {
+			const biogenicStats = filteredProjects.reduce<BiogenicStats>(
+				(acc, project: Project) => {
+					if (project['Primary Sector'] === sector) {
+						const value = getProjectCurrrentStage(project)['Biogenic Carbon'] || 0;
+						const gia = project['GIA'] || 0;
+						if (valueType === 'total' && gia > 0) {
+							let totalValue = value * gia;
+							totalValue = totalValue / 1000; // Convert kg to tonnes
+							acc.totalValue += totalValue;
+						} else {
+							acc.totalValue += value;
+						}
+						acc.count += 1;
+					}
+					return acc;
+				},
+				{ totalValue: 0, count: 0 }
+			);
+
+			biogenicValue = biogenicStats.count > 0 ? Math.round(biogenicStats.totalValue / biogenicStats.count) : 0;
+		}
+
+		return {
+			sector: sector,
+			value: baseValue,
+			biogenicValue: -Math.abs(biogenicValue), // Make it negative for below zero
+			count: stats ? stats.count : 0,
+		};
+	});
+
 	return (
 		<Card className="shadow-inner mb-8">
 			<h3 className="font-medium mt-8 mb-2 text-center" style={{ color: chartColors.dark }}>
-				{currentKPI.label} by sector {findUnit(currentKPI, valueType)}
+				{currentKPI.label} by sector {findUnitBracket(currentKPI, valueType)}
 			</h3>
 			<div className="h-[460px] flex justify-center" data-chart="sector-chart">
 				<ResponsiveContainer {...getResponsiveContainerProps()}>
@@ -26,7 +83,7 @@ export const SectorChart = ({ chartData, currentKPI, selectedKPI, valueType }: S
 						<XAxis dataKey="sector" tick={{ fill: chartColors.dark, dy: 20 }} axisLine={false} tickLine={false} interval={0} />
 						<YAxis
 							label={{
-								value: `${currentKPI.key} ${findUnit(currentKPI, valueType)}`,
+								value: `${currentKPI.key} ${findUnitBracket(currentKPI, valueType)}`,
 								angle: -90,
 								position: 'insideLeft',
 								offset: -10,
@@ -117,7 +174,7 @@ export const SectorChart = ({ chartData, currentKPI, selectedKPI, valueType }: S
 										>
 											<p style={{ margin: 0, fontWeight: 'bold' }}>{`Sector: ${label}`}</p>
 											<p style={{ margin: 0, color: chartColors.primary }}>{`Average Whole Life Carbon: ${formatNumber(data.value)} ${findUnit(currentKPI, valueType)}`}</p>
-											<p style={{ margin: 0, color: chartColors.dark }}>{`Average biogenic: ${formatNumber(data.biogenicValue)} ${findUnit(currentKPI, valueType)}`}</p>
+											<p style={{ margin: 0, color: chartColors.dark }}>{`Average Biogenic: ${formatNumber(data.biogenicValue)} ${findUnit(currentKPI, valueType)}`}</p>
 										</div>
 									);
 								}

@@ -20,8 +20,8 @@ import {
 import { TooltipField } from '../ui/tooltip-field';
 
 interface CertificationsProps {
-	projectData: WizardData['projectData'];
-	onDataUpdate: (data: WizardData['projectData']) => void;
+	projectData: WizardData;
+	onDataUpdate: (data: WizardData) => void;
 	onSave: () => void;
 	onSaveAndExit: () => void;
 	onCancel: () => void;

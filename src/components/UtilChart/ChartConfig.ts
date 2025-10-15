@@ -59,11 +59,16 @@ export const findUnit = (currentKPI: KPIOption, valueType: string, forCSV: boole
 	return forCSV ? unit.replace(/CO₂/g, 'CO2').replace(/²/g, '2') : unit;
 };
 
+export const findUnitBracket = (currentKPI: KPIOption, valueType: string, forCSV: boolean = false) => {
+	if (currentKPI.key === 'Urban Greening Factor') return findUnit(currentKPI, valueType, forCSV);
+	return `(${findUnit(currentKPI, valueType, forCSV)})`;
+};
+
 // Common XAxis props for bar charts
 export const getXAxisProps = (chart: string, selectedKPI: string, currentKPI: KPIOption, valueType: string) => {
 	let value = 'Year';
 	if (chart === 'Compare Two') {
-		value = `${currentKPI.key || selectedKPI} (${findUnit(currentKPI, valueType)})`;
+		value = `${currentKPI.key || selectedKPI} ${findUnitBracket(currentKPI, valueType)}`;
 	}
 	let label = { value: value, position: 'insideBottom', offset: -20, style: { textAnchor: 'middle', fontSize: 12 } };
 	if (chart === 'Single Project') {
@@ -79,7 +84,7 @@ export const getXAxisProps = (chart: string, selectedKPI: string, currentKPI: KP
 
 // Common YAxis props for bar charts
 export const getYAxisProps = (chart: string, selectedKPI: string, currentKPI: KPIOption, valueType: string) => {
-	const value = `${currentKPI.key || selectedKPI} (${findUnit(currentKPI, valueType)})`;
+	const value = `${currentKPI.key || selectedKPI} ${findUnitBracket(currentKPI, valueType)}`;
 	// if (chart === 'Single Time') {
 	//    value = `${currentKPI?.value} (${getDisplayUnit()})`;
 	// }

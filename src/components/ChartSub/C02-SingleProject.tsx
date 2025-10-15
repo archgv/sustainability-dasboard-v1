@@ -16,8 +16,8 @@ import {
 	getXAxisProps,
 	getBarProps,
 	getTooltipContainerStyle,
-	findUnit,
 	MultiLineTickComponent,
+	findUnitBracket,
 } from '../UtilChart/ChartConfig';
 import { getProjectCurrrentStage } from '../Util/UtilProject';
 
@@ -183,10 +183,7 @@ export const SingleProject = ({ projects, selectedKPI1, valueType, isComparingTo
 						}
 					/>
 					<Tooltip
-						formatter={(value: number, name: string) => [
-							`${formatNumber(value)} ${findUnit(kpi1Config, valueType)}`,
-							name === 'Biogenic Carbon' ? 'Biogenic Carbon' : kpi1Config.key || selectedKPI1,
-						]}
+						formatter={(value: number, name: string) => [`${formatNumber(value)} ${findUnitBracket(kpi1Config, valueType)}`, kpi1Config.key || selectedKPI1]}
 						labelFormatter={(label) => `Project: ${label}`}
 						contentStyle={getTooltipContainerStyle()}
 						content={({ active, payload, label }) => {
@@ -197,6 +194,8 @@ export const SingleProject = ({ projects, selectedKPI1, valueType, isComparingTo
 								const biogenicValue = project['Biogenic Carbon'];
 								const structuralValue = project['Structural Frame Materials'];
 
+								const biogenicKPIOption = KPIOptions.find((kpi) => kpi.key === 'Biogenic Carbon');
+
 								return (
 									<div className="bg-white p-3 border rounded-lg shadow-lg" style={{ backgroundColor: 'white', borderColor: chartColors.primary }}>
 										<p className="font-semibold" style={{ color: chartColors.dark }}>
@@ -204,12 +203,12 @@ export const SingleProject = ({ projects, selectedKPI1, valueType, isComparingTo
 										</p>
 										{mainValue && (
 											<p className="text-sm" style={{ color: chartColors.dark }}>
-												{kpi1Config.key}: {formatNumber(mainValue)} {findUnit(kpi1Config, valueType)}
+												{kpi1Config.key}: {formatNumber(mainValue)} {findUnitBracket(kpi1Config, valueType)}
 											</p>
 										)}
 										{biogenicValue && (
 											<p className="text-sm" style={{ color: chartColors.dark }}>
-												Biogenic Carbon: {formatNumber(Math.abs(biogenicValue))} {findUnit(kpi1Config, valueType)}
+												Biogenic Carbon: {formatNumber(Math.abs(biogenicValue))} {findUnitBracket(biogenicKPIOption, valueType)}
 											</p>
 										)}
 										{structuralValue && (
@@ -225,7 +224,7 @@ export const SingleProject = ({ projects, selectedKPI1, valueType, isComparingTo
 												</p>
 												{benchmarkUpfrontCarbon.map((benchmark, idx) => (
 													<p key={idx} className="text-xs" style={{ color: chartColors.dark }}>
-														{benchmark.name}: {formatNumber(benchmark.value)} {findUnit(kpi1Config, valueType)}
+														{benchmark.name}: {formatNumber(benchmark.value)} {findUnitBracket(kpi1Config, valueType)}
 													</p>
 												))}
 											</div>

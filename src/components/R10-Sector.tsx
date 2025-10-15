@@ -10,6 +10,7 @@ import { SectorSelector } from '@/components/SectorSub/S10-SectorSelector';
 import { SectorChart } from '@/components/SectorSub/S20-SectorChart';
 import { SectorTable } from '@/components/SectorSub/S30-SectorTable';
 import { chartColors } from './Key/KeyColor';
+import { getProjectCurrrentStage } from './Util/UtilProject';
 
 interface SectorStats {
 	count: number;
@@ -29,18 +30,6 @@ interface SectorStats {
 	minValue: number;
 	maxValue: number;
 	values: number[];
-}
-
-export interface ChartDataItem {
-	sector: string; // sector key like "Residential"
-	value: number; // average or total KPI value
-	biogenicValue: number; // negative biogenic carbon value
-	count: number; // number of projects
-}
-
-interface BiogenicStats {
-	totalValue: number;
-	count: number;
 }
 
 export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
@@ -82,7 +71,7 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 			};
 		}
 		acc[sector].count++;
-		const value = project[selectedKPI] || 0;
+		const value = getProjectCurrrentStage(project)[selectedKPI] || 0;
 		const gia = project['GIA'] || 0;
 		if (valueType === 'total' && gia > 0) {
 			let totalValue = value * gia;
@@ -105,48 +94,6 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 		acc[sector].totalGIA += gia;
 		return acc;
 	}, {});
-
-	const getAverage = (total: number, count: number) => {
-		return count > 0 ? Math.round(total / count) : 0;
-	};
-
-	// Create chart data ensuring all sectors are included
-	const chartData: ChartDataItem[] = SectorKeys.map((sector) => {
-		const stats = sectorStats[sector];
-		const baseValue = stats ? getAverage(stats.totalValue, stats.count) : 0;
-
-		// For Total Embodied Carbon, also calculate biogenic data for negative columns
-		let biogenicValue = 0;
-		if (selectedKPI === 'Total Embodied Carbon' && stats) {
-			const biogenicStats = filteredProjects.reduce<BiogenicStats>(
-				(acc, project: Project) => {
-					if (project['Primary Sector'] === sector) {
-						const value = project['Biogenic Carbon'] || 0;
-						const gia = project['GIA'] || 0;
-						if (valueType === 'total' && gia > 0) {
-							let totalValue = value * gia;
-							totalValue = totalValue / 1000; // Convert kg to tonnes
-							acc.totalValue += totalValue;
-						} else {
-							acc.totalValue += value;
-						}
-						acc.count += 1;
-					}
-					return acc;
-				},
-				{ totalValue: 0, count: 0 }
-			);
-
-			biogenicValue = biogenicStats.count > 0 ? Math.round(biogenicStats.totalValue / biogenicStats.count) : 0;
-		}
-
-		return {
-			sector: sector,
-			value: baseValue,
-			biogenicValue: -Math.abs(biogenicValue), // Make it negative for below zero
-			count: stats ? stats.count : 0,
-		};
-	});
 
 	const handleDownloadCSV = () => {
 		exportSectorCSV({
@@ -192,7 +139,7 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 							onDownloadPNG={handleDownloadPNG}
 						/>
 
-						<SectorChart chartData={chartData} currentKPI={currentKPI} selectedKPI={selectedKPI} valueType={valueType} />
+						<SectorChart filteredProjects={filteredProjects} sectorStats={sectorStats} currentKPI={currentKPI} selectedKPI={selectedKPI} valueType={valueType} />
 					</div>
 
 					<SectorTable sectorStats={sectorStats} currentKPI={currentKPI} valueType={valueType} />

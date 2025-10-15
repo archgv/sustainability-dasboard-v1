@@ -12,7 +12,7 @@ export interface KPIOption {
 
 const kWhm2yr = 'kWh/m²/yr';
 const MWhyr = 'MWh/yr';
-const kgCO2em2 = 'kgCO2e/m²';
+const kgCO2em2 = 'kgCO₂e/m²';
 const tCO2e = 'tCO₂e';
 
 export const KPIOptions: KPIOption[] = [
