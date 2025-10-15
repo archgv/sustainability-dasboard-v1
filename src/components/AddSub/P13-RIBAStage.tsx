@@ -257,7 +257,9 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 									max="0"
 									className="pr-24"
 								/>
-								<Unit>kgCO₂e/m²</Unit>
+								<Unit>
+									kgCO<sub>2</sub>e/m<sup>2</sup>
+								</Unit>
 							</div>
 						</TooltipField>
 
