@@ -9,24 +9,21 @@ import {
 } from "recharts";
 import { Project } from "../Key/project";
 import { KPIOptions } from "../Key/KeyKPI";
-import { getProjectArea } from "../Key/KeyChart";
 import { getSectorColor, getSectorShape } from "@/components/Key/KeySector";
 import { formatNumber } from "@/lib/utils";
-import { ChartShape } from "../UtilChart/UtilShape";
+import { ChartShape } from "../Util/UtilShape";
 import { chartColors } from "../Key/KeyColor";
-import { generateNiceTicks } from "../UtilChart/UtilTick";
-import { transformDataForValueType } from "../UtilChart/UtilValueType";
+import { generateNiceTicks } from "../Util/UtilTick";
 import {
   getResponsiveContainerProps,
   getChartProps,
   getCartesianGridProps,
   getYAxisProps,
   getXAxisProps,
-  getBarProps,
   getTooltipContainerStyle,
-  findUnit,
-} from "../UtilChart/ChartConfig";
-import { getProjectCurrrentStage } from "../Util/UtilProject";
+  getUnit,
+} from "../Util/ChartConfig";
+import { getGIA, getProjectCurrrentStage } from "../Util/UtilProject";
 
 interface CompareTwoProps {
   projects: Project[];
@@ -46,20 +43,12 @@ export const CompareTwo = ({
   const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
   const kpi2Config = KPIOptions.find((kpi) => kpi.key === selectedKPI2);
 
-  const transformedProjects = transformDataForValueType(
-    projects,
-    valueType,
-    selectedKPI1,
-    selectedKPI2
-  );
-  const sortedProjects = transformedProjects;
-
   // Transform biogenic carbon values to negative for bubble chart display - use sorted projects
-  const bubbleChartData = sortedProjects.map((project) => {
+  const chartData = projects.map((project) => {
     const projectCurrentStage = getProjectCurrrentStage(project);
-    const projectKPI1 = projectCurrentStage[selectedKPI1];
-    const projectKPI2 = projectCurrentStage[selectedKPI2];
-
+    const multiplier = valueType === "total" ? getGIA(project) : 1;
+    const projectKPI1 = projectCurrentStage[selectedKPI1] * multiplier;
+    const projectKPI2 = projectCurrentStage[selectedKPI2] * multiplier;
     return {
       "Project Name": project["Project Name"],
       "Primary Sector": project["Primary Sector"],
@@ -88,7 +77,9 @@ export const CompareTwo = ({
           tickFormatter={(value) => formatNumber(value)}
           ticks={(() => {
             const maxValue = Math.max(
-              ...bubbleChartData.map((p) => Math.abs(p[selectedKPI1] || 0))
+              ...chartData.map((project) =>
+                Math.abs(Number(project[selectedKPI1]) || 0)
+              )
             );
             return generateNiceTicks(maxValue * 1.1);
           })()}
@@ -101,7 +92,9 @@ export const CompareTwo = ({
           tickFormatter={(value) => formatNumber(value)}
           ticks={(() => {
             const maxValue = Math.max(
-              ...bubbleChartData.map((p) => Math.abs(p[selectedKPI2] || 0))
+              ...chartData.map((project) =>
+                Math.abs(Number(project[selectedKPI1]) || 0)
+              )
             );
             return generateNiceTicks(maxValue * 1.1);
           })()}
@@ -139,11 +132,11 @@ export const CompareTwo = ({
                   </p>
                   <p className="text-sm" style={{ color: chartColors.dark }}>
                     {kpi1Config.key}: {formatNumber(project[selectedKPI1])}{" "}
-                    {findUnit(kpi1Config, valueType)}
+                    {getUnit(kpi1Config, valueType)}
                   </p>
                   <p className="text-sm" style={{ color: chartColors.dark }}>
                     {kpi2Config.key}: {formatNumber(project[selectedKPI2])}{" "}
-                    {findUnit(kpi2Config, valueType)}
+                    {getUnit(kpi2Config, valueType)}
                   </p>
                 </div>
               );
@@ -153,7 +146,7 @@ export const CompareTwo = ({
         />
         <Scatter
           name="Projects"
-          data={bubbleChartData}
+          data={chartData}
           fill={chartColors.primary}
           fillOpacity={0.8}
           shape={(props) => {

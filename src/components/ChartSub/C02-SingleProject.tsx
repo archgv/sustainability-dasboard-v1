@@ -11,7 +11,6 @@ import {
 } from "recharts";
 import { Project } from "../Key/project";
 import { KPIOptions } from "../Key/KeyKPI";
-import { getProjectArea } from "../Key/KeyChart";
 import {
   getSectorColor,
   getSectorBenchmarkColor,
@@ -22,8 +21,8 @@ import {
   uknzcbsBenchmarks,
 } from "@/data/benchmarkData";
 import { chartColors } from "../Key/KeyColor";
-import { generateNiceTicks } from "../UtilChart/UtilTick";
-import { transformDataForValueType } from "../UtilChart/UtilValueType";
+import { generateNiceTicks } from "../Util/UtilTick";
+
 import {
   getResponsiveContainerProps,
   getChartProps,
@@ -33,16 +32,17 @@ import {
   getBarProps,
   getTooltipContainerStyle,
   MultiLineTickComponent,
-  findUnitBracket,
-} from "../UtilChart/ChartConfig";
-import { getProjectCurrrentStage } from "../Util/UtilProject";
+  getUnitBracket,
+} from "../Util/ChartConfig";
+import { getGIA, getProjectCurrrentStage } from "../Util/UtilProject";
+import { getProjectData } from "../Util/UtilChart";
 
 interface BarChartProps {
   projects: Project[];
   selectedKPI1: string;
   valueType: string;
   isComparingToSelf?: boolean;
-  showBenchmarks: boolean;
+  showSingleProjectBenchmarks: boolean;
   selectedBarChartBenchmark: string;
 }
 
@@ -51,36 +51,25 @@ export const SingleProject = ({
   selectedKPI1,
   valueType,
   isComparingToSelf = false,
-  showBenchmarks,
+  showSingleProjectBenchmarks,
   selectedBarChartBenchmark,
 }: BarChartProps) => {
   const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
 
-  const sortedProjects = transformDataForValueType(
-    projects,
-    valueType,
-    selectedKPI1,
-    ""
-  );
-
   // Add biogenic data as negative values for totalEmbodiedCarbon - use sorted projects
-  const chartData = sortedProjects.map((project) => {
+  const chartData = projects.map((project) => {
     const projectCurrentStage = getProjectCurrrentStage(project);
 
     const kpiValues = Object.fromEntries(
       KPIOptions.map(({ key }) => {
-        let value = projectCurrentStage?.[key] ?? 0;
+        const multiplier = valueType === "total" ? getGIA(project) : 1;
+        let value = Number(projectCurrentStage[key]) * multiplier;
 
-        // apply special case logic for Biogenic Carbon
         if (
           key === "Biogenic Carbon" &&
           selectedKPI1 === "Total Embodied Carbon"
         ) {
-          value =
-            -Math.abs(value) *
-            (valueType === "total"
-              ? getProjectArea(project.id.split("-")[0])
-              : 1);
+          value = -Math.abs(value);
         }
 
         return [key, value];
@@ -162,7 +151,7 @@ export const SingleProject = ({
   // Get benchmark data for the primary project's sector (only for Total Embodied Carbon with average)
   const getBenchmarkEmbodiedCarbon = () => {
     if (
-      !showBenchmarks ||
+      !showSingleProjectBenchmarks ||
       selectedKPI1 !== "Total Embodied Carbon" ||
       valueType !== "average" ||
       projects.length === 0
@@ -233,13 +222,25 @@ export const SingleProject = ({
             {...getYAxisProps("Single Project", kpi1Config, valueType)}
             tickFormatter={(value) => formatNumber(value)}
             domain={
+              valueType === "average" &&
               selectedKPI1 === "Total Embodied Carbon"
                 ? [0, 1600]
+                : valueType === "average" &&
+                  selectedKPI1 === "Operational Energy Total"
+                ? [0, 300]
+                : valueType === "average" && selectedKPI1 === "Upfront Carbon"
+                ? [0, 1000]
                 : [0, "dataMax"]
             }
             ticks={
+              valueType === "average" &&
               selectedKPI1 === "Total Embodied Carbon"
                 ? [0, 400, 800, 1200, 1600]
+                : valueType === "average" &&
+                  selectedKPI1 === "Operational Energy Total"
+                ? [0, 50, 100, 150, 200, 250, 300]
+                : valueType === "average" && selectedKPI1 === "Upfront Carbon"
+                ? [0, 200, 400, 600, 800, 1000]
                 : (() => {
                     const maxValue = Math.max(
                       ...chartData.map((p) => Math.abs(p[selectedKPI1] || 0))
@@ -249,11 +250,9 @@ export const SingleProject = ({
             }
           />
           <Tooltip
-            formatter={(value: number, name: string) => [
-              `${formatNumber(value)} ${findUnitBracket(
-                kpi1Config,
-                valueType
-              )}`,
+            cursor={{ fill: "none" }}
+            formatter={(value: number) => [
+              `${formatNumber(value)} ${getUnitBracket(kpi1Config, valueType)}`,
               kpi1Config.key || selectedKPI1,
             ]}
             labelFormatter={(label) => `Project: ${label}`}
@@ -263,12 +262,17 @@ export const SingleProject = ({
                 const project = payload[0]?.payload;
 
                 const mainValue = project[selectedKPI1];
-                const biogenicValue = project["Biogenic Carbon"];
-                const structuralValue = project["Structural Frame Materials"];
 
+                const biogenicValue = project["Biogenic Carbon"];
                 const biogenicKPIOption = KPIOptions.find(
                   (kpi) => kpi.key === "Biogenic Carbon"
                 );
+
+                const structuralValue = project["Structural Frame Materials"];
+                const structuralShow = [
+                  "Upfront Carbon",
+                  "Total Embodied Carbon",
+                ].includes(selectedKPI1);
 
                 return (
                   <div
@@ -290,7 +294,7 @@ export const SingleProject = ({
                         style={{ color: chartColors.dark }}
                       >
                         {kpi1Config.key}: {formatNumber(mainValue)}{" "}
-                        {findUnitBracket(kpi1Config, valueType)}
+                        {getUnitBracket(kpi1Config, valueType)}
                       </p>
                     )}
                     {biogenicValue && (
@@ -299,37 +303,16 @@ export const SingleProject = ({
                         style={{ color: chartColors.dark }}
                       >
                         Biogenic Carbon: {formatNumber(Math.abs(biogenicValue))}{" "}
-                        {findUnitBracket(biogenicKPIOption, valueType)}
+                        {getUnitBracket(biogenicKPIOption, valueType)}
                       </p>
                     )}
-                    {structuralValue && (
+                    {structuralShow && structuralValue && (
                       <p
                         className="text-sm"
                         style={{ color: chartColors.dark }}
                       >
                         Structural Frame Materials: {structuralValue}
                       </p>
-                    )}
-
-                    {benchmarkUpfrontCarbon.length > 0 && (
-                      <div className="mt-2 pt-2 border-t">
-                        <p
-                          className="text-xs font-medium"
-                          style={{ color: chartColors.dark }}
-                        >
-                          Benchmarks:
-                        </p>
-                        {benchmarkUpfrontCarbon.map((benchmark, idx) => (
-                          <p
-                            key={idx}
-                            className="text-xs"
-                            style={{ color: chartColors.dark }}
-                          >
-                            {benchmark.name}: {formatNumber(benchmark.value)}{" "}
-                            {findUnitBracket(kpi1Config, valueType)}
-                          </p>
-                        ))}
-                      </div>
                     )}
                   </div>
                 );
@@ -343,7 +326,7 @@ export const SingleProject = ({
             fill={chartColors.primary}
             name={kpi1Config.key || selectedKPI1}
           >
-            {sortedProjects.map((project, index) => {
+            {chartData.map((project, index) => {
               const sectorColor = getSectorColor(project["Primary Sector"]);
               return (
                 <Cell
@@ -362,7 +345,7 @@ export const SingleProject = ({
               fill="white"
               name="Biogenic Carbon"
             >
-              {sortedProjects.map((project, index) => {
+              {chartData.map((project, index) => {
                 const sectorColor = getSectorColor(project["Primary Sector"]);
                 return (
                   <Cell
@@ -375,7 +358,7 @@ export const SingleProject = ({
               })}
             </Bar>
           )}
-          {<ReferenceLine y={0} stroke="#A8A8A3" strokeWidth={4} />}
+          {<ReferenceLine y={0} stroke={chartColors.pink} strokeWidth={4} />}
 
           {/* Benchmark lines for Embodied Carbon */}
           {benchmarkEmbodiedCarbon.map((benchmark, index) => (

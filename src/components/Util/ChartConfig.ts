@@ -43,18 +43,7 @@ export const MultiLineTickComponent = (props) => {
   return lines;
 };
 
-// export const getUnitLabel = (currentKPI: KPIOption, valueType: string, forCSV: boolean = false): string => {
-// 	const baseUnit = currentKPI?.unit;
-
-// 	const unit = forCSV ? baseUnit.replace(/CO2/g, 'CO2').replace(/₂/g, '2') : baseUnit.replace(/CO2/g, 'CO₂');
-
-// 	if (valueType === 'total') {
-// 		return unit.replace('/m²', '').replace('/year', '/year total');
-// 	}
-// 	return unit;
-// };
-
-export const findUnit = (
+export const getUnit = (
   currentKPI: KPIOption,
   valueType: string,
   forCSV: boolean = false
@@ -63,14 +52,14 @@ export const findUnit = (
   return forCSV ? unit.replace(/CO₂/g, "CO2").replace(/²/g, "2") : unit;
 };
 
-export const findUnitBracket = (
+export const getUnitBracket = (
   currentKPI: KPIOption,
   valueType: string,
   forCSV: boolean = false
 ) => {
   if (currentKPI.key === "Urban Greening Factor")
-    return findUnit(currentKPI, valueType, forCSV);
-  return `(${findUnit(currentKPI, valueType, forCSV)})`;
+    return getUnit(currentKPI, valueType, forCSV);
+  return `(${getUnit(currentKPI, valueType, forCSV)})`;
 };
 
 // Common XAxis props for bar charts
@@ -81,7 +70,7 @@ export const getXAxisProps = (
 ) => {
   let value = "Year";
   if (chart === "Compare Two") {
-    value = `${currentKPI.key} ${findUnitBracket(currentKPI, valueType)}`;
+    value = `${currentKPI.key} ${getUnitBracket(currentKPI, valueType)}`;
   }
   let label = {
     value: value,
@@ -115,10 +104,8 @@ export const getYAxisProps = (
   currentKPI: KPIOption,
   valueType: string
 ) => {
-  const value = `${currentKPI.key} ${findUnitBracket(currentKPI, valueType)}`;
-  // if (chart === 'Single Time') {
-  //    value = `${currentKPI?.value} (${getDisplayUnit()})`;
-  // }
+  const value = `${currentKPI.key} ${getUnitBracket(currentKPI, valueType)}`;
+
   return {
     tick: { fill: chartColors.dark, fontSize: 12 },
     tickLine: false,

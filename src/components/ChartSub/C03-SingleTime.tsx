@@ -17,19 +17,18 @@ import {
   uknzcbsOperationalEnergyBenchmarks,
 } from "@/data/benchmarkData";
 import { chartColors } from "../Key/KeyColor";
-import { generateNiceTicks } from "../UtilChart/UtilTick";
-import { transformDataForValueType } from "../UtilChart/UtilValueType";
+import { generateNiceTicks } from "../Util/UtilTick";
 import {
   getResponsiveContainerProps,
   getChartProps,
   getCartesianGridProps,
   getYAxisProps,
   getXAxisProps,
-  getBarProps,
   getTooltipContainerStyle,
-  findUnit,
-} from "../UtilChart/ChartConfig";
-import { getProjectCurrrentStage } from "../Util/UtilProject";
+  getUnit,
+} from "../Util/ChartConfig";
+import { getGIA, getProjectCurrrentStage } from "../Util/UtilProject";
+import { getProjectData } from "../Util/UtilChart";
 
 interface SingleTimeProps {
   projects: Project[];
@@ -48,20 +47,21 @@ export const SingleTime = ({
 }: SingleTimeProps) => {
   const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
 
-  const transformedProjects = transformDataForValueType(
-    projects,
-    valueType,
-    selectedKPI1,
-    ""
-  );
+  // const transformedProjects = getProjectData(
+  //   projects,
+  //   valueType,
+  //   selectedKPI1,
+  //   ""
+  // );
 
-  const timelineData = transformedProjects
+  const chartData = projects
     .map((project) => {
       const projectCurrentStage = getProjectCurrrentStage(project);
 
       const kpiValues = Object.fromEntries(
         KPIOptions.map(({ key }) => {
-          const value = projectCurrentStage?.[key] ?? 0;
+          const multiplier = valueType === "total" ? getGIA(project) : 1;
+          const value = Number(projectCurrentStage[key]) * multiplier;
           return [key, value];
         })
       );
@@ -92,11 +92,11 @@ export const SingleTime = ({
   const showBenchmarkUpfrontCarbon =
     valueType === "average" &&
     selectedKPI1 === "Upfront Carbon" &&
-    timelineData.length > 0;
+    chartData.length > 0;
   const showBenchmarkOperationalEnergy =
     valueType === "average" &&
     selectedKPI1 === "Operational Energy Total" &&
-    timelineData.length > 0;
+    chartData.length > 0;
 
   // Create UKNZCBS benchmark data for upfront carbon
   const createUpfrontBenchmarkData = () => {
@@ -214,7 +214,7 @@ export const SingleTime = ({
     : "#1E9F5A";
 
   // Determine graph range based on project data
-  const projectYears = timelineData.map((p) => p.completionYear);
+  const projectYears = chartData.map((p) => p.completionYear);
   const minProjectYear = Math.min(...projectYears);
   const maxProjectYear = Math.max(...projectYears);
 
@@ -227,7 +227,7 @@ export const SingleTime = ({
 
   return (
     <ResponsiveContainer {...getResponsiveContainerProps()}>
-      <LineChart data={timelineData} {...getChartProps()}>
+      <LineChart data={chartData} {...getChartProps()}>
         <CartesianGrid {...getCartesianGridProps()} />
         <XAxis
           {...getXAxisProps("Single Time", kpi1Config, valueType)}
@@ -244,7 +244,7 @@ export const SingleTime = ({
           tickFormatter={(value) => formatNumber(value)}
           ticks={(() => {
             const maxValue = Math.max(
-              ...timelineData.map((p) => Math.abs(p[selectedKPI1] || 0)),
+              ...chartData.map((p) => Math.abs(p[selectedKPI1] || 0)),
               ...(showBenchmarkUpfrontCarbon &&
               upfrontBenchmarkData.newBuildData
                 ? upfrontBenchmarkData.newBuildData.map((b) => b.benchmarkValue)
@@ -328,7 +328,7 @@ export const SingleTime = ({
                       >
                         {kpi1Config.key}:{" "}
                         {formatNumber(projectData.value as number)}{" "}
-                        {findUnit(kpi1Config, valueType)}
+                        {getUnit(kpi1Config, valueType)}
                       </p>
                     </>
                   )}
@@ -340,7 +340,7 @@ export const SingleTime = ({
                           style={{ color: benchmarkColor }}
                         >
                           New Build: {formatNumber(newBuildBenchmark)}{" "}
-                          {findUnit(kpi1Config, valueType)}
+                          {getUnit(kpi1Config, valueType)}
                         </p>
                       )}
                       {retrofitBenchmark && (
@@ -349,7 +349,7 @@ export const SingleTime = ({
                           style={{ color: benchmarkColor }}
                         >
                           Retrofit: {formatNumber(retrofitBenchmark)}{" "}
-                          {findUnit(kpi1Config, valueType)}
+                          {getUnit(kpi1Config, valueType)}
                         </p>
                       )}
                     </div>
@@ -373,7 +373,7 @@ export const SingleTime = ({
         />
 
         {/* Render dots with sector colors */}
-        {timelineData.map((project, index) => {
+        {chartData.map((project, index) => {
           const sectorColor = getSectorColor(project["Primary Sector"]);
           return (
             <Line
