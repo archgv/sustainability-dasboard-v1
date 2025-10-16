@@ -318,23 +318,22 @@ export const SingleTime = ({ projects, selectedKPI1, valueType, isComparingToSel
 						dot={false}
 						name="New Build Benchmark"
 						connectNulls={false}
-						label={({ x, y, index, value, dataIndex, viewBox, ...props }) => {
-							const { data } = props; // not always passed, so use operationalEnergyBenchmarkData if needed
-							const isLast = index === operationalEnergyBenchmarkData.newBuildData.length - 1;
-							if (!isLast) return null;
-							return (
-								<text
-									x={x}
-									y={y + 20} // move text slightly above the dot
-									textAnchor="middle"
-									fill={benchmarkColor}
-									fontSize={12}
-									fontWeight="bold"
-								>
-									New Build
-								</text>
-							);
-						}}
+					label={({ x, y, index }) => {
+						const isLast = index === operationalEnergyBenchmarkData.newBuildData.length - 1;
+						if (!isLast) return null;
+						return (
+							<text
+								x={x}
+								y={y + 20}
+								textAnchor="middle"
+								fill={benchmarkColor}
+								fontSize={12}
+								fontWeight="bold"
+							>
+								New Build
+							</text>
+						);
+					}}
 					/>
 				)}
 
@@ -349,23 +348,22 @@ export const SingleTime = ({ projects, selectedKPI1, valueType, isComparingToSel
 						dot={false}
 						name="Retrofit Benchmark"
 						connectNulls={false}
-						label={({ x, y, index, value, dataIndex, viewBox, ...props }) => {
-							const { data } = props; // not always passed, so use operationalEnergyBenchmarkData if needed
-							const isLast = index === operationalEnergyBenchmarkData.retrofitData.length - 1;
-							if (!isLast) return null;
-							return (
-								<text
-									x={x}
-									y={y - 20} // move text slightly above the dot
-									textAnchor="middle"
-									fill={benchmarkColor}
-									fontSize={12}
-									fontWeight="bold"
-								>
-									Retrofit
-								</text>
-							);
-						}}
+					label={({ x, y, index }) => {
+						const isLast = index === operationalEnergyBenchmarkData.retrofitData.length - 1;
+						if (!isLast) return null;
+						return (
+							<text
+								x={x}
+								y={y - 20}
+								textAnchor="middle"
+								fill={benchmarkColor}
+								fontSize={12}
+								fontWeight="bold"
+							>
+								Retrofit
+							</text>
+						);
+					}}
 					/>
 				)}
 
