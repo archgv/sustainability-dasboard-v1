@@ -1,4 +1,12 @@
-import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import {
+  ScatterChart,
+  Scatter,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 import { Project } from "../Key/project";
 import { KPIOptions } from "../Key/KeyKPI";
 import { getProjectArea } from "../Key/KeyChart";
@@ -38,7 +46,12 @@ export const CompareTwo = ({
   const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
   const kpi2Config = KPIOptions.find((kpi) => kpi.key === selectedKPI2);
 
-  const transformedProjects = transformDataForValueType(projects, valueType, selectedKPI1, selectedKPI2);
+  const transformedProjects = transformDataForValueType(
+    projects,
+    valueType,
+    selectedKPI1,
+    selectedKPI2
+  );
   const sortedProjects = transformedProjects;
 
   // Transform biogenic carbon values to negative for bubble chart display - use sorted projects
@@ -51,8 +64,14 @@ export const CompareTwo = ({
       "Project Name": project["Project Name"],
       "Primary Sector": project["Primary Sector"],
       "Current RIBA Stage": project["Current RIBA Stage"],
-      [selectedKPI1]: selectedKPI1 === "Biogenic Carbon" ? -Math.abs(projectKPI1 || 0) : projectKPI1,
-      [selectedKPI2]: selectedKPI2 === "Biogenic Carbon" ? -Math.abs(projectKPI2 || 0) : projectKPI2,
+      [selectedKPI1]:
+        selectedKPI1 === "Biogenic Carbon"
+          ? -Math.abs(projectKPI1 || 0)
+          : projectKPI1,
+      [selectedKPI2]:
+        selectedKPI2 === "Biogenic Carbon"
+          ? -Math.abs(projectKPI2 || 0)
+          : projectKPI2,
     };
   });
 
@@ -61,25 +80,29 @@ export const CompareTwo = ({
       <ScatterChart {...getChartProps()}>
         <CartesianGrid {...getCartesianGridProps()} />
         <XAxis
-          {...getXAxisProps("Compare Two", selectedKPI1, kpi1Config, valueType)}
+          {...getXAxisProps("Compare Two", kpi1Config, valueType)}
           type="number"
           dataKey={selectedKPI1}
           name={kpi1Config.key || selectedKPI1}
           tick={{ fill: chartColors.dark, fontSize: 12 }}
           tickFormatter={(value) => formatNumber(value)}
           ticks={(() => {
-            const maxValue = Math.max(...bubbleChartData.map((p) => Math.abs(p[selectedKPI1] || 0)));
+            const maxValue = Math.max(
+              ...bubbleChartData.map((p) => Math.abs(p[selectedKPI1] || 0))
+            );
             return generateNiceTicks(maxValue * 1.1);
           })()}
         />
         <YAxis
-          {...getYAxisProps("Compare Two", selectedKPI2, kpi2Config, valueType)}
+          {...getYAxisProps("Compare Two", kpi2Config, valueType)}
           type="number"
           dataKey={selectedKPI2}
           name={kpi2Config.key || selectedKPI2}
           tickFormatter={(value) => formatNumber(value)}
           ticks={(() => {
-            const maxValue = Math.max(...bubbleChartData.map((p) => Math.abs(p[selectedKPI2] || 0)));
+            const maxValue = Math.max(
+              ...bubbleChartData.map((p) => Math.abs(p[selectedKPI2] || 0))
+            );
             return generateNiceTicks(maxValue * 1.1);
           })()}
         />
@@ -97,19 +120,30 @@ export const CompareTwo = ({
               return (
                 <div
                   className="bg-white p-3 border rounded-lg shadow-lg"
-                  style={{ backgroundColor: "white", borderColor: chartColors.primary }}
+                  style={{
+                    backgroundColor: "white",
+                    borderColor: chartColors.primary,
+                  }}
                 >
-                  <p className="font-semibold" style={{ color: chartColors.dark }}>
+                  <p
+                    className="font-semibold"
+                    style={{ color: chartColors.dark }}
+                  >
                     {displayName}
                   </p>
-                  <p className="text-sm" style={{ color: chartColors.darkGreen }}>
-                    {data["Primary Sector"]}
+                  <p
+                    className="text-sm"
+                    style={{ color: chartColors.darkGreen }}
+                  >
+                    {project["Primary Sector"]}
                   </p>
                   <p className="text-sm" style={{ color: chartColors.dark }}>
-                    {kpi1Config.key}: {formatNumber(data[selectedKPI1])} {findUnit(kpi1Config, valueType)}
+                    {kpi1Config.key}: {formatNumber(project[selectedKPI1])}{" "}
+                    {findUnit(kpi1Config, valueType)}
                   </p>
                   <p className="text-sm" style={{ color: chartColors.dark }}>
-                    {kpi2Config.key}: {formatNumber(data[selectedKPI2])} {findUnit(kpi2Config, valueType)}
+                    {kpi2Config.key}: {formatNumber(project[selectedKPI2])}{" "}
+                    {findUnit(kpi2Config, valueType)}
                   </p>
                 </div>
               );

@@ -1,9 +1,21 @@
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
 import { Project } from "../Key/project";
 import { KPIOptions } from "../Key/KeyKPI";
 import { getSectorColor, getSectorBenchmarkColor } from "../Key/KeySector";
 import { formatNumber } from "@/lib/utils";
-import { uknzcbsBenchmarks, uknzcbsOperationalEnergyBenchmarks } from "@/data/benchmarkData";
+import {
+  uknzcbsBenchmarks,
+  uknzcbsOperationalEnergyBenchmarks,
+} from "@/data/benchmarkData";
 import { chartColors } from "../Key/KeyColor";
 import { generateNiceTicks } from "../UtilChart/UtilTick";
 import { transformDataForValueType } from "../UtilChart/UtilValueType";
@@ -36,7 +48,12 @@ export const SingleTime = ({
 }: SingleTimeProps) => {
   const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
 
-  const transformedProjects = transformDataForValueType(projects, valueType, selectedKPI1, "");
+  const transformedProjects = transformDataForValueType(
+    projects,
+    valueType,
+    selectedKPI1,
+    ""
+  );
 
   const timelineData = transformedProjects
     .map((project) => {
@@ -46,7 +63,7 @@ export const SingleTime = ({
         KPIOptions.map(({ key }) => {
           const value = projectCurrentStage?.[key] ?? 0;
           return [key, value];
-        }),
+        })
       );
 
       const displayName =
@@ -61,7 +78,8 @@ export const SingleTime = ({
         "Project Name": project["Project Name"],
         "Primary Sector": project["Primary Sector"],
         "Current RIBA Stage": project["Current RIBA Stage"],
-        "Structural Frame Materials": projectCurrentStage?.["Structural Frame Materials"],
+        "Structural Frame Materials":
+          projectCurrentStage?.["Structural Frame Materials"],
         displayName,
         completionYear,
         date: new Date(project["PC Date"]).getTime(),
@@ -72,9 +90,13 @@ export const SingleTime = ({
 
   // Get UKNZCBS benchmark data for timeline - ONLY for Upfront Carbon and Operational Energy with per sqm
   const showBenchmarkUpfrontCarbon =
-    valueType === "average" && selectedKPI1 === "Upfront Carbon" && timelineData.length > 0;
+    valueType === "average" &&
+    selectedKPI1 === "Upfront Carbon" &&
+    timelineData.length > 0;
   const showBenchmarkOperationalEnergy =
-    valueType === "average" && selectedKPI1 === "Operational Energy Total" && timelineData.length > 0;
+    valueType === "average" &&
+    selectedKPI1 === "Operational Energy Total" &&
+    timelineData.length > 0;
 
   // Create UKNZCBS benchmark data for upfront carbon
   const createUpfrontBenchmarkData = () => {
@@ -82,12 +104,16 @@ export const SingleTime = ({
       return { newBuildData: [], retrofitData: [] };
     }
 
-    const sectorData = uknzcbsBenchmarks[projects[0]["Primary Sector"] as keyof typeof uknzcbsBenchmarks];
+    const sectorData =
+      uknzcbsBenchmarks[
+        projects[0]["Primary Sector"] as keyof typeof uknzcbsBenchmarks
+      ];
     if (!sectorData) {
       return { newBuildData: [], retrofitData: [] };
     }
 
-    const subSectorData = sectorData[selectedSubSector as keyof typeof sectorData];
+    const subSectorData =
+      sectorData[selectedSubSector as keyof typeof sectorData];
     if (!subSectorData) {
       return { newBuildData: [], retrofitData: [] };
     }
@@ -98,7 +124,10 @@ export const SingleTime = ({
     const newBuildData = years
       .map((year) => ({
         completionYear: year,
-        benchmarkValue: subSectorData["New Build"][year as keyof (typeof subSectorData)["New Build"]],
+        benchmarkValue:
+          subSectorData["New Build"][
+            year as keyof (typeof subSectorData)["New Build"]
+          ],
         benchmarkType: "New Build",
       }))
       .filter((item) => item.benchmarkValue !== undefined);
@@ -107,7 +136,10 @@ export const SingleTime = ({
       ? years
           .map((year) => ({
             completionYear: year,
-            benchmarkValue: subSectorData["Retrofit"][year as keyof (typeof subSectorData)["Retrofit"]],
+            benchmarkValue:
+              subSectorData["Retrofit"][
+                year as keyof (typeof subSectorData)["Retrofit"]
+              ],
             benchmarkType: "Retrofit",
           }))
           .filter((item) => item.benchmarkValue !== undefined)
@@ -126,13 +158,16 @@ export const SingleTime = ({
 
     const sectorData =
       uknzcbsOperationalEnergyBenchmarks[
-        projects[0]["Primary Sector"] as keyof typeof uknzcbsOperationalEnergyBenchmarks
+        projects[0][
+          "Primary Sector"
+        ] as keyof typeof uknzcbsOperationalEnergyBenchmarks
       ];
     if (!sectorData) {
       return { newBuildData: [], retrofitData: [] };
     }
 
-    const subSectorData = sectorData[selectedSubSector as keyof typeof sectorData];
+    const subSectorData =
+      sectorData[selectedSubSector as keyof typeof sectorData];
     if (!subSectorData) {
       return { newBuildData: [], retrofitData: [] };
     }
@@ -150,7 +185,10 @@ export const SingleTime = ({
           benchmarkValue: value,
         };
       })
-      .filter((item) => item.benchmarkValue !== undefined && item.benchmarkValue !== null);
+      .filter(
+        (item) =>
+          item.benchmarkValue !== undefined && item.benchmarkValue !== null
+      );
 
     const retrofitData = benchmarkYears
       .map((year) => {
@@ -162,13 +200,18 @@ export const SingleTime = ({
           benchmarkValue: value,
         };
       })
-      .filter((item) => item.benchmarkValue !== undefined && item.benchmarkValue !== null);
+      .filter(
+        (item) =>
+          item.benchmarkValue !== undefined && item.benchmarkValue !== null
+      );
 
     return { newBuildData, retrofitData };
   };
 
   const operationalEnergyBenchmarkData = createOperationalEnergyBenchmarkData();
-  const benchmarkColor = projects[0] ? getSectorBenchmarkColor(projects[0]["Primary Sector"]) : "#1E9F5A";
+  const benchmarkColor = projects[0]
+    ? getSectorBenchmarkColor(projects[0]["Primary Sector"])
+    : "#1E9F5A";
 
   // Determine graph range based on project data
   const projectYears = timelineData.map((p) => p.completionYear);
@@ -177,14 +220,17 @@ export const SingleTime = ({
 
   // Set X-axis domain to start at 2020 (or earlier project year) and extend to 2050
   const xAxisDomain = [Math.min(2020, minProjectYear), 2050];
-  const xAxisTicks = [2020, 2022, 2024, 2026, 2028, 2030, 2032, 2034, 2036, 2038, 2040, 2042, 2044, 2046, 2048, 2050];
+  const xAxisTicks = [
+    2020, 2022, 2024, 2026, 2028, 2030, 2032, 2034, 2036, 2038, 2040, 2042,
+    2044, 2046, 2048, 2050,
+  ];
 
   return (
     <ResponsiveContainer {...getResponsiveContainerProps()}>
       <LineChart data={timelineData} {...getChartProps()}>
         <CartesianGrid {...getCartesianGridProps()} />
         <XAxis
-          {...getXAxisProps("Single Time", selectedKPI1, kpi1Config, valueType)}
+          {...getXAxisProps("Single Time", kpi1Config, valueType)}
           dataKey="completionYear"
           type="number"
           scale="linear"
@@ -194,23 +240,31 @@ export const SingleTime = ({
           tick={{ fill: chartColors.dark, fontSize: 12 }}
         />
         <YAxis
-          {...getYAxisProps("Single Time", selectedKPI1, kpi1Config, valueType)}
+          {...getYAxisProps("Single Time", kpi1Config, valueType)}
           tickFormatter={(value) => formatNumber(value)}
           ticks={(() => {
             const maxValue = Math.max(
               ...timelineData.map((p) => Math.abs(p[selectedKPI1] || 0)),
-              ...(showBenchmarkUpfrontCarbon && upfrontBenchmarkData.newBuildData
+              ...(showBenchmarkUpfrontCarbon &&
+              upfrontBenchmarkData.newBuildData
                 ? upfrontBenchmarkData.newBuildData.map((b) => b.benchmarkValue)
                 : []),
-              ...(showBenchmarkUpfrontCarbon && upfrontBenchmarkData.retrofitData
+              ...(showBenchmarkUpfrontCarbon &&
+              upfrontBenchmarkData.retrofitData
                 ? upfrontBenchmarkData.retrofitData.map((b) => b.benchmarkValue)
                 : []),
-              ...(showBenchmarkOperationalEnergy && operationalEnergyBenchmarkData.newBuildData
-                ? operationalEnergyBenchmarkData.newBuildData.map((b) => b.benchmarkValue || 0)
+              ...(showBenchmarkOperationalEnergy &&
+              operationalEnergyBenchmarkData.newBuildData
+                ? operationalEnergyBenchmarkData.newBuildData.map(
+                    (b) => b.benchmarkValue || 0
+                  )
                 : []),
-              ...(showBenchmarkOperationalEnergy && operationalEnergyBenchmarkData.retrofitData
-                ? operationalEnergyBenchmarkData.retrofitData.map((b) => b.benchmarkValue || 0)
-                : []),
+              ...(showBenchmarkOperationalEnergy &&
+              operationalEnergyBenchmarkData.retrofitData
+                ? operationalEnergyBenchmarkData.retrofitData.map(
+                    (b) => b.benchmarkValue || 0
+                  )
+                : [])
             );
             return generateNiceTicks(maxValue * 1.1);
           })()}
@@ -219,7 +273,9 @@ export const SingleTime = ({
           contentStyle={getTooltipContainerStyle()}
           content={({ active, payload, label }) => {
             if (active && payload && payload.length) {
-              const projectData = payload.find((p) => p.dataKey === selectedKPI1);
+              const projectData = payload.find(
+                (p) => p.dataKey === selectedKPI1
+              );
               const year = parseInt(label as string);
 
               // Find benchmark values for this year
@@ -228,48 +284,72 @@ export const SingleTime = ({
 
               if (showBenchmarkUpfrontCarbon) {
                 newBuildBenchmark = upfrontBenchmarkData.newBuildData.find(
-                  (d) => d.completionYear === year,
+                  (d) => d.completionYear === year
                 )?.benchmarkValue;
                 retrofitBenchmark = upfrontBenchmarkData.retrofitData.find(
-                  (d) => d.completionYear === year,
+                  (d) => d.completionYear === year
                 )?.benchmarkValue;
               } else if (showBenchmarkOperationalEnergy) {
-                newBuildBenchmark = operationalEnergyBenchmarkData.newBuildData.find(
-                  (d) => d.completionYear === year,
-                )?.benchmarkValue;
-                retrofitBenchmark = operationalEnergyBenchmarkData.retrofitData.find(
-                  (d) => d.completionYear === year,
-                )?.benchmarkValue;
+                newBuildBenchmark =
+                  operationalEnergyBenchmarkData.newBuildData.find(
+                    (d) => d.completionYear === year
+                  )?.benchmarkValue;
+                retrofitBenchmark =
+                  operationalEnergyBenchmarkData.retrofitData.find(
+                    (d) => d.completionYear === year
+                  )?.benchmarkValue;
               }
 
               return (
                 <div
                   className="bg-white p-3 border rounded-lg shadow-lg"
-                  style={{ backgroundColor: "white", borderColor: chartColors.primary }}
+                  style={{
+                    backgroundColor: "white",
+                    borderColor: chartColors.primary,
+                  }}
                 >
-                  <p className="font-semibold" style={{ color: chartColors.dark }}>
+                  <p
+                    className="font-semibold"
+                    style={{ color: chartColors.dark }}
+                  >
                     Year: {label}
                   </p>
                   {projectData && (
                     <>
-                      <p className="text-sm" style={{ color: chartColors.dark }}>
+                      <p
+                        className="text-sm"
+                        style={{ color: chartColors.dark }}
+                      >
                         Project: {projectData.payload.displayName}
                       </p>
-                      <p className="text-sm" style={{ color: chartColors.dark }}>
-                        {kpi1Config.key}: {formatNumber(projectData.value as number)} {findUnit(kpi1Config, valueType)}
+                      <p
+                        className="text-sm"
+                        style={{ color: chartColors.dark }}
+                      >
+                        {kpi1Config.key}:{" "}
+                        {formatNumber(projectData.value as number)}{" "}
+                        {findUnit(kpi1Config, valueType)}
                       </p>
                     </>
                   )}
                   {(newBuildBenchmark || retrofitBenchmark) && (
                     <div className="mt-2 pt-2 border-t border-gray-200">
                       {newBuildBenchmark && (
-                        <p className="text-sm" style={{ color: benchmarkColor }}>
-                          New Build: {formatNumber(newBuildBenchmark)} {findUnit(kpi1Config, valueType)}
+                        <p
+                          className="text-sm"
+                          style={{ color: benchmarkColor }}
+                        >
+                          New Build: {formatNumber(newBuildBenchmark)}{" "}
+                          {findUnit(kpi1Config, valueType)}
                         </p>
                       )}
                       {retrofitBenchmark && (
-                        <p className="text-sm" style={{ color: benchmarkColor }}>
-                          Retrofit: {formatNumber(retrofitBenchmark)} {findUnit(kpi1Config, valueType)}
+                        <p
+                          className="text-sm"
+                          style={{ color: benchmarkColor }}
+                        >
+                          Retrofit: {formatNumber(retrofitBenchmark)}{" "}
+                          {findUnit(kpi1Config, valueType)}
                         </p>
                       )}
                     </div>
@@ -310,114 +390,138 @@ export const SingleTime = ({
         })}
 
         {/* UKNZCBS upfront carbon benchmark lines */}
-        {showBenchmarkUpfrontCarbon && upfrontBenchmarkData.newBuildData.length > 0 && (
-          <Line
-            type="monotone"
-            dataKey="benchmarkValue"
-            data={upfrontBenchmarkData.newBuildData}
-            stroke={benchmarkColor}
-            strokeWidth={2}
-            strokeDasharray="10 5"
-            dot={false}
-            name="New Build Benchmark"
-            connectNulls={false}
-            label={({ x, y, index }) => {
-              const isLast = index === upfrontBenchmarkData.newBuildData.length - 1;
-              if (!isLast) return null;
-              return (
-                <text x={x} y={y - 20} textAnchor="middle" fill={benchmarkColor} fontSize={12} fontWeight="bold">
-                  New Build
-                </text>
-              );
-            }}
-          />
-        )}
+        {showBenchmarkUpfrontCarbon &&
+          upfrontBenchmarkData.newBuildData.length > 0 && (
+            <Line
+              type="monotone"
+              dataKey="benchmarkValue"
+              data={upfrontBenchmarkData.newBuildData}
+              stroke={benchmarkColor}
+              strokeWidth={2}
+              strokeDasharray="10 5"
+              dot={false}
+              name="New Build Benchmark"
+              connectNulls={false}
+              label={({ x, y, index }) => {
+                const isLast =
+                  index === upfrontBenchmarkData.newBuildData.length - 1;
+                if (!isLast) return null;
+                return (
+                  <text
+                    x={x}
+                    y={y - 20}
+                    textAnchor="middle"
+                    fill={benchmarkColor}
+                    fontSize={12}
+                    fontWeight="bold"
+                  >
+                    New Build
+                  </text>
+                );
+              }}
+            />
+          )}
 
-        {showBenchmarkUpfrontCarbon && upfrontBenchmarkData.retrofitData.length > 0 && (
-          <Line
-            type="monotone"
-            dataKey="benchmarkValue"
-            data={upfrontBenchmarkData.retrofitData}
-            stroke={benchmarkColor}
-            strokeWidth={2}
-            strokeDasharray="2 2"
-            dot={false}
-            name="Retrofit Benchmark"
-            connectNulls={false}
-            label={({ x, y, index }) => {
-              const isLast = index === upfrontBenchmarkData.retrofitData.length - 1;
-              if (!isLast) return null;
-              return (
-                <text x={x} y={y + 20} textAnchor="middle" fill={benchmarkColor} fontSize={12} fontWeight="bold">
-                  Retrofit
-                </text>
-              );
-            }}
-          />
-        )}
+        {showBenchmarkUpfrontCarbon &&
+          upfrontBenchmarkData.retrofitData.length > 0 && (
+            <Line
+              type="monotone"
+              dataKey="benchmarkValue"
+              data={upfrontBenchmarkData.retrofitData}
+              stroke={benchmarkColor}
+              strokeWidth={2}
+              strokeDasharray="2 2"
+              dot={false}
+              name="Retrofit Benchmark"
+              connectNulls={false}
+              label={({ x, y, index }) => {
+                const isLast =
+                  index === upfrontBenchmarkData.retrofitData.length - 1;
+                if (!isLast) return null;
+                return (
+                  <text
+                    x={x}
+                    y={y + 20}
+                    textAnchor="middle"
+                    fill={benchmarkColor}
+                    fontSize={12}
+                    fontWeight="bold"
+                  >
+                    Retrofit
+                  </text>
+                );
+              }}
+            />
+          )}
 
         {/* UKNZCBS operational energy benchmark lines */}
-        {showBenchmarkOperationalEnergy && operationalEnergyBenchmarkData.newBuildData.length > 0 && (
-          <Line
-            type="monotone"
-            dataKey="benchmarkValue"
-            data={operationalEnergyBenchmarkData.newBuildData}
-            stroke={benchmarkColor}
-            strokeWidth={2}
-            strokeDasharray="10 5"
-            dot={false}
-            name="New Build Benchmark"
-            connectNulls={false}
-            label={({ x, y, index, value, dataIndex, viewBox, ...props }) => {
-              const { data } = props; // not always passed, so use operationalEnergyBenchmarkData if needed
-              const isLast = index === operationalEnergyBenchmarkData.newBuildData.length - 1;
-              if (!isLast) return null;
-              return (
-                <text
-                  x={x}
-                  y={y + 20} // move text slightly above the dot
-                  textAnchor="middle"
-                  fill={benchmarkColor}
-                  fontSize={12}
-                  fontWeight="bold"
-                >
-                  New Build
-                </text>
-              );
-            }}
-          />
-        )}
+        {showBenchmarkOperationalEnergy &&
+          operationalEnergyBenchmarkData.newBuildData.length > 0 && (
+            <Line
+              type="monotone"
+              dataKey="benchmarkValue"
+              data={operationalEnergyBenchmarkData.newBuildData}
+              stroke={benchmarkColor}
+              strokeWidth={2}
+              strokeDasharray="10 5"
+              dot={false}
+              name="New Build Benchmark"
+              connectNulls={false}
+              label={({ x, y, index, value, dataIndex, viewBox, ...props }) => {
+                const { data } = props; // not always passed, so use operationalEnergyBenchmarkData if needed
+                const isLast =
+                  index ===
+                  operationalEnergyBenchmarkData.newBuildData.length - 1;
+                if (!isLast) return null;
+                return (
+                  <text
+                    x={x}
+                    y={y + 20} // move text slightly above the dot
+                    textAnchor="middle"
+                    fill={benchmarkColor}
+                    fontSize={12}
+                    fontWeight="bold"
+                  >
+                    New Build
+                  </text>
+                );
+              }}
+            />
+          )}
 
-        {showBenchmarkOperationalEnergy && operationalEnergyBenchmarkData.retrofitData.length > 0 && (
-          <Line
-            type="monotone"
-            dataKey="benchmarkValue"
-            data={operationalEnergyBenchmarkData.retrofitData}
-            stroke={benchmarkColor}
-            strokeWidth={2}
-            strokeDasharray="2 2"
-            dot={false}
-            name="Retrofit Benchmark"
-            connectNulls={false}
-            label={({ x, y, index, value, dataIndex, viewBox, ...props }) => {
-              const { data } = props; // not always passed, so use operationalEnergyBenchmarkData if needed
-              const isLast = index === operationalEnergyBenchmarkData.retrofitData.length - 1;
-              if (!isLast) return null;
-              return (
-                <text
-                  x={x}
-                  y={y - 20} // move text slightly above the dot
-                  textAnchor="middle"
-                  fill={benchmarkColor}
-                  fontSize={12}
-                  fontWeight="bold"
-                >
-                  Retrofit
-                </text>
-              );
-            }}
-          />
-        )}
+        {showBenchmarkOperationalEnergy &&
+          operationalEnergyBenchmarkData.retrofitData.length > 0 && (
+            <Line
+              type="monotone"
+              dataKey="benchmarkValue"
+              data={operationalEnergyBenchmarkData.retrofitData}
+              stroke={benchmarkColor}
+              strokeWidth={2}
+              strokeDasharray="2 2"
+              dot={false}
+              name="Retrofit Benchmark"
+              connectNulls={false}
+              label={({ x, y, index, value, dataIndex, viewBox, ...props }) => {
+                const { data } = props; // not always passed, so use operationalEnergyBenchmarkData if needed
+                const isLast =
+                  index ===
+                  operationalEnergyBenchmarkData.retrofitData.length - 1;
+                if (!isLast) return null;
+                return (
+                  <text
+                    x={x}
+                    y={y - 20} // move text slightly above the dot
+                    textAnchor="middle"
+                    fill={benchmarkColor}
+                    fontSize={12}
+                    fontWeight="bold"
+                  >
+                    Retrofit
+                  </text>
+                );
+              }}
+            />
+          )}
       </LineChart>
     </ResponsiveContainer>
   );

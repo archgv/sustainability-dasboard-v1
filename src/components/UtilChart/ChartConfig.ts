@@ -76,16 +76,12 @@ export const findUnitBracket = (
 // Common XAxis props for bar charts
 export const getXAxisProps = (
   chart: string,
-  selectedKPI: string,
   currentKPI: KPIOption,
   valueType: string
 ) => {
   let value = "Year";
   if (chart === "Compare Two") {
-    value = `${currentKPI.key || selectedKPI} ${findUnitBracket(
-      currentKPI,
-      valueType
-    )}`;
+    value = `${currentKPI.key} ${findUnitBracket(currentKPI, valueType)}`;
   }
   let label = {
     value: value,
@@ -97,9 +93,18 @@ export const getXAxisProps = (
     label = null;
   }
 
+  let axisLine = { strokeWidth: 4, stroke: chartColors.pink };
+
+  if (
+    chart === "Single Project" &&
+    currentKPI.key === "Total Embodied Carbon"
+  ) {
+    axisLine = null;
+  }
+
   return {
     tickLine: false,
-    axisLine: { strokeWidth: 4, stroke: chartColors.pink },
+    axisLine: axisLine,
     label: label,
   };
 };
@@ -107,14 +112,10 @@ export const getXAxisProps = (
 // Common YAxis props for bar charts
 export const getYAxisProps = (
   chart: string,
-  selectedKPI: string,
   currentKPI: KPIOption,
   valueType: string
 ) => {
-  const value = `${currentKPI.key || selectedKPI} ${findUnitBracket(
-    currentKPI,
-    valueType
-  )}`;
+  const value = `${currentKPI.key} ${findUnitBracket(currentKPI, valueType)}`;
   // if (chart === 'Single Time') {
   //    value = `${currentKPI?.value} (${getDisplayUnit()})`;
   // }

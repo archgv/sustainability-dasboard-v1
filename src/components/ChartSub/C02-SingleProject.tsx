@@ -12,9 +12,15 @@ import {
 import { Project } from "../Key/project";
 import { KPIOptions } from "../Key/KeyKPI";
 import { getProjectArea } from "../Key/KeyChart";
-import { getSectorColor, getSectorBenchmarkColor } from "@/components/Key/KeySector";
+import {
+  getSectorColor,
+  getSectorBenchmarkColor,
+} from "@/components/Key/KeySector";
 import { formatNumber } from "@/lib/utils";
-import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks } from "@/data/benchmarkData";
+import {
+  totalEmbodiedCarbonBenchmarks,
+  uknzcbsBenchmarks,
+} from "@/data/benchmarkData";
 import { chartColors } from "../Key/KeyColor";
 import { generateNiceTicks } from "../UtilChart/UtilTick";
 import { transformDataForValueType } from "../UtilChart/UtilValueType";
@@ -50,7 +56,12 @@ export const SingleProject = ({
 }: BarChartProps) => {
   const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
 
-  const sortedProjects = transformDataForValueType(projects, valueType, selectedKPI1, "");
+  const sortedProjects = transformDataForValueType(
+    projects,
+    valueType,
+    selectedKPI1,
+    ""
+  );
 
   // Add biogenic data as negative values for totalEmbodiedCarbon - use sorted projects
   const chartData = sortedProjects.map((project) => {
@@ -61,12 +72,19 @@ export const SingleProject = ({
         let value = projectCurrentStage?.[key] ?? 0;
 
         // apply special case logic for Biogenic Carbon
-        if (key === "Biogenic Carbon" && selectedKPI1 === "Total Embodied Carbon") {
-          value = -Math.abs(value) * (valueType === "total" ? getProjectArea(project.id.split("-")[0]) : 1);
+        if (
+          key === "Biogenic Carbon" &&
+          selectedKPI1 === "Total Embodied Carbon"
+        ) {
+          value =
+            -Math.abs(value) *
+            (valueType === "total"
+              ? getProjectArea(project.id.split("-")[0])
+              : 1);
         }
 
         return [key, value];
-      }),
+      })
     );
 
     return {
@@ -74,7 +92,8 @@ export const SingleProject = ({
       "Project Name": project["Project Name"],
       "Primary Sector": project["Primary Sector"],
       "Current RIBA Stage": project["Current RIBA Stage"],
-      "Structural Frame Materials": projectCurrentStage?.["Structural Frame Materials"],
+      "Structural Frame Materials":
+        projectCurrentStage?.["Structural Frame Materials"],
       ...kpiValues,
     };
   });
@@ -91,21 +110,33 @@ export const SingleProject = ({
     }
 
     // ALWAYS use the first project in the original array as the primary project
-    const benchmarkColor = getSectorBenchmarkColor(projects[0]["Primary Sector"]);
+    const benchmarkColor = getSectorBenchmarkColor(
+      projects[0]["Primary Sector"]
+    );
 
     // Get the PC date from the primary project to determine benchmark year
     let benchmarkYear = parseInt(projects[0]["PC Date"]) || 2025;
     if (benchmarkYear < 2025) benchmarkYear = 2025; // Use 2025 for years before 2025
 
     // Get benchmark values for this sector and sub-sector
-    const sectorData = uknzcbsBenchmarks[projects[0]["Primary Sector"] as keyof typeof uknzcbsBenchmarks];
+    const sectorData =
+      uknzcbsBenchmarks[
+        projects[0]["Primary Sector"] as keyof typeof uknzcbsBenchmarks
+      ];
     if (!sectorData) return [];
 
-    const subSectorData = sectorData[selectedBarChartBenchmark as keyof typeof sectorData];
+    const subSectorData =
+      sectorData[selectedBarChartBenchmark as keyof typeof sectorData];
     if (!subSectorData) return [];
 
-    const newBuildValue = subSectorData["New Build"]?.[benchmarkYear as keyof (typeof subSectorData)["New Build"]];
-    const retrofitValue = subSectorData["Retrofit"]?.[benchmarkYear as keyof (typeof subSectorData)["Retrofit"]];
+    const newBuildValue =
+      subSectorData["New Build"]?.[
+        benchmarkYear as keyof (typeof subSectorData)["New Build"]
+      ];
+    const retrofitValue =
+      subSectorData["Retrofit"]?.[
+        benchmarkYear as keyof (typeof subSectorData)["Retrofit"]
+      ];
 
     const benchmarkLines = [];
     if (newBuildValue !== undefined) {
@@ -140,11 +171,17 @@ export const SingleProject = ({
     }
 
     // ALWAYS use the first project in the original array as the primary project
-    const benchmarkColor = getSectorBenchmarkColor(projects[0]["Primary Sector"]);
+    const benchmarkColor = getSectorBenchmarkColor(
+      projects[0]["Primary Sector"]
+    );
 
     // Get benchmark values for this sector
     const sectorBenchmarks =
-      totalEmbodiedCarbonBenchmarks[projects[0]["Primary Sector"] as keyof typeof totalEmbodiedCarbonBenchmarks];
+      totalEmbodiedCarbonBenchmarks[
+        projects[0][
+          "Primary Sector"
+        ] as keyof typeof totalEmbodiedCarbonBenchmarks
+      ];
 
     if (!sectorBenchmarks) return [];
 
@@ -164,7 +201,7 @@ export const SingleProject = ({
         <BarChart data={chartData} barGap={-100} {...getChartProps()}>
           <CartesianGrid vertical={false} {...getCartesianGridProps()} />
           <XAxis
-            {...getXAxisProps("Single Project", selectedKPI1, kpi1Config, valueType)}
+            {...getXAxisProps("Single Project", kpi1Config, valueType)}
             dataKey={(item) => {
               const displayName =
                 isComparingToSelf && item["Current RIBA Stage"]
@@ -177,7 +214,14 @@ export const SingleProject = ({
               return (
                 <g transform={`translate(${props.x + 25},${props.y + 20})`}>
                   {lines.map((line, index) => (
-                    <text key={index} x={0} y={index * 12} textAnchor="end" fill={chartColors.dark} fontSize="10">
+                    <text
+                      key={index}
+                      x={0}
+                      y={index * 12}
+                      textAnchor="end"
+                      fill={chartColors.dark}
+                      fontSize="10"
+                    >
                       {line}
                     </text>
                   ))}
@@ -186,21 +230,30 @@ export const SingleProject = ({
             }}
           />
           <YAxis
-            {...getYAxisProps("Single Project", selectedKPI1, kpi1Config, valueType)}
+            {...getYAxisProps("Single Project", kpi1Config, valueType)}
             tickFormatter={(value) => formatNumber(value)}
-            domain={selectedKPI1 === "Total Embodied Carbon" ? [0, 1600] : [0, "dataMax"]}
+            domain={
+              selectedKPI1 === "Total Embodied Carbon"
+                ? [0, 1600]
+                : [0, "dataMax"]
+            }
             ticks={
               selectedKPI1 === "Total Embodied Carbon"
                 ? [0, 400, 800, 1200, 1600]
                 : (() => {
-                    const maxValue = Math.max(...chartData.map((p) => Math.abs(p[selectedKPI1] || 0)));
+                    const maxValue = Math.max(
+                      ...chartData.map((p) => Math.abs(p[selectedKPI1] || 0))
+                    );
                     return generateNiceTicks(maxValue * 1.1);
                   })()
             }
           />
           <Tooltip
             formatter={(value: number, name: string) => [
-              `${formatNumber(value)} ${findUnitBracket(kpi1Config, valueType)}`,
+              `${formatNumber(value)} ${findUnitBracket(
+                kpi1Config,
+                valueType
+              )}`,
               kpi1Config.key || selectedKPI1,
             ]}
             labelFormatter={(label) => `Project: ${label}`}
@@ -213,41 +266,67 @@ export const SingleProject = ({
                 const biogenicValue = project["Biogenic Carbon"];
                 const structuralValue = project["Structural Frame Materials"];
 
-                const biogenicKPIOption = KPIOptions.find((kpi) => kpi.key === "Biogenic Carbon");
+                const biogenicKPIOption = KPIOptions.find(
+                  (kpi) => kpi.key === "Biogenic Carbon"
+                );
 
                 return (
                   <div
                     className="bg-white p-3 border rounded-lg shadow-lg"
-                    style={{ backgroundColor: "white", borderColor: chartColors.primary }}
+                    style={{
+                      backgroundColor: "white",
+                      borderColor: chartColors.primary,
+                    }}
                   >
-                    <p className="font-semibold" style={{ color: chartColors.dark }}>
+                    <p
+                      className="font-semibold"
+                      style={{ color: chartColors.dark }}
+                    >
                       Project: {label}
                     </p>
                     {mainValue && (
-                      <p className="text-sm" style={{ color: chartColors.dark }}>
-                        {kpi1Config.key}: {formatNumber(mainValue)} {findUnitBracket(kpi1Config, valueType)}
+                      <p
+                        className="text-sm"
+                        style={{ color: chartColors.dark }}
+                      >
+                        {kpi1Config.key}: {formatNumber(mainValue)}{" "}
+                        {findUnitBracket(kpi1Config, valueType)}
                       </p>
                     )}
                     {biogenicValue && (
-                      <p className="text-sm" style={{ color: chartColors.dark }}>
+                      <p
+                        className="text-sm"
+                        style={{ color: chartColors.dark }}
+                      >
                         Biogenic Carbon: {formatNumber(Math.abs(biogenicValue))}{" "}
                         {findUnitBracket(biogenicKPIOption, valueType)}
                       </p>
                     )}
                     {structuralValue && (
-                      <p className="text-sm" style={{ color: chartColors.dark }}>
+                      <p
+                        className="text-sm"
+                        style={{ color: chartColors.dark }}
+                      >
                         Structural Frame Materials: {structuralValue}
                       </p>
                     )}
 
                     {benchmarkUpfrontCarbon.length > 0 && (
                       <div className="mt-2 pt-2 border-t">
-                        <p className="text-xs font-medium" style={{ color: chartColors.dark }}>
+                        <p
+                          className="text-xs font-medium"
+                          style={{ color: chartColors.dark }}
+                        >
                           Benchmarks:
                         </p>
                         {benchmarkUpfrontCarbon.map((benchmark, idx) => (
-                          <p key={idx} className="text-xs" style={{ color: chartColors.dark }}>
-                            {benchmark.name}: {formatNumber(benchmark.value)} {findUnitBracket(kpi1Config, valueType)}
+                          <p
+                            key={idx}
+                            className="text-xs"
+                            style={{ color: chartColors.dark }}
+                          >
+                            {benchmark.name}: {formatNumber(benchmark.value)}{" "}
+                            {findUnitBracket(kpi1Config, valueType)}
                           </p>
                         ))}
                       </div>
@@ -266,14 +345,33 @@ export const SingleProject = ({
           >
             {sortedProjects.map((project, index) => {
               const sectorColor = getSectorColor(project["Primary Sector"]);
-              return <Cell key={index} fill={sectorColor} stroke={sectorColor} strokeWidth={3} />;
+              return (
+                <Cell
+                  key={index}
+                  fill={sectorColor}
+                  stroke={sectorColor}
+                  strokeWidth={3}
+                />
+              );
             })}
           </Bar>
           {selectedKPI1 === "Total Embodied Carbon" && (
-            <Bar dataKey="Biogenic Carbon" {...getBarProps()} fill="white" name="Biogenic Carbon">
+            <Bar
+              dataKey="Biogenic Carbon"
+              {...getBarProps()}
+              fill="white"
+              name="Biogenic Carbon"
+            >
               {sortedProjects.map((project, index) => {
                 const sectorColor = getSectorColor(project["Primary Sector"]);
-                return <Cell key={index} fill="white" stroke={sectorColor} strokeWidth={3} />;
+                return (
+                  <Cell
+                    key={index}
+                    fill="white"
+                    stroke={sectorColor}
+                    strokeWidth={3}
+                  />
+                );
               })}
             </Bar>
           )}
@@ -291,7 +389,11 @@ export const SingleProject = ({
                 value: benchmark.name,
                 position: "insideTopRight",
                 offset: 10,
-                style: { fill: benchmark.color, fontSize: "12px", fontWeight: "bold" },
+                style: {
+                  fill: benchmark.color,
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                },
               }}
             />
           ))}
@@ -303,12 +405,18 @@ export const SingleProject = ({
               y={benchmark.value}
               stroke={benchmark.color}
               strokeWidth={2}
-              strokeDasharray={benchmark.name.includes("New Build") ? "10 5" : "2 2"}
+              strokeDasharray={
+                benchmark.name.includes("New Build") ? "10 5" : "2 2"
+              }
               label={{
                 value: benchmark.name,
                 position: "insideTopRight",
                 offset: 10,
-                style: { fill: benchmark.color, fontSize: "12px", fontWeight: "bold" },
+                style: {
+                  fill: benchmark.color,
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                },
               }}
             />
           ))}
