@@ -88,10 +88,11 @@ export const CompareTwo = ({
           contentStyle={getTooltipContainerStyle()}
           content={({ active, payload }) => {
             if (active && payload && payload.length) {
+              const project = payload[0].payload;
               const displayName =
-                isComparingToSelf && data["Current RIBA Stage"]
-                  ? `${data["Project Name"]} (RIBA ${data["Current RIBA Stage"]})`
-                  : data["Project Name"];
+                isComparingToSelf && project["Current RIBA Stage"]
+                  ? `${project["Project Name"]} (RIBA ${project["Current RIBA Stage"]})`
+                  : project["Project Name"];
 
               return (
                 <div
