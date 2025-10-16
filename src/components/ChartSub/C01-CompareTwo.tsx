@@ -9,6 +9,7 @@ import { chartColors } from '../Key/KeyColor';
 import { generateNiceTicks } from '../UtilChart/UtilTick';
 import { transformDataForValueType } from '../UtilChart/UtilValueType';
 import { getResponsiveContainerProps, getChartProps, getCartesianGridProps, getYAxisProps, getXAxisProps, getBarProps, getTooltipContainerStyle, findUnit } from '../UtilChart/ChartConfig';
+import { getProjectCurrrentStage } from '../Util/UtilProject';
 
 interface CompareTwoProps {
 	projects: Project[];
@@ -26,11 +27,20 @@ export const CompareTwo = ({ projects, selectedKPI1, selectedKPI2, valueType, is
 	const sortedProjects = transformedProjects;
 
 	// Transform biogenic carbon values to negative for bubble chart display - use sorted projects
-	const bubbleChartData = sortedProjects.map((project) => ({
-		...project,
-		[selectedKPI1]: selectedKPI1 === 'Biogenic Carbonn' ? -Math.abs(project[selectedKPI1] || 0) : project[selectedKPI1],
-		[selectedKPI2]: selectedKPI2 === 'Biogenic Carbon' ? -Math.abs(project[selectedKPI2] || 0) : project[selectedKPI2],
-	}));
+	const bubbleChartData = sortedProjects.map((project) => {
+		const projectCurrentStage = getProjectCurrrentStage(project);
+		const projectKPI1 = projectCurrentStage[selectedKPI1];
+		const projectKPI2 = projectCurrentStage[selectedKPI2];
+
+		return {
+			id: project.id,
+			'Project Name': project['Project Name'],
+			'Primary Sector': project['Primary Sector'],
+			'Current RIBA Stage': project['Current RIBA Stage'],
+			[selectedKPI1]: selectedKPI1 === 'Biogenic Carbon' ? -Math.abs(projectKPI1 || 0) : projectKPI1,
+			[selectedKPI2]: selectedKPI2 === 'Biogenic Carbon' ? -Math.abs(projectKPI2 || 0) : projectKPI2,
+		};
+	});
 
 	return (
 		<ResponsiveContainer {...getResponsiveContainerProps()}>
