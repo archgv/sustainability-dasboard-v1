@@ -104,7 +104,7 @@ export const Portfolio = ({
                     {formatNumber(
                       currrentStageProject(project)["Total Embodied Carbon"]
                     )}{" "}
-                    kgCO<sup>2</sup>e/m²
+                    kgCO<sub>2</sub>e/m²
                   </span>
                 </div>
 
