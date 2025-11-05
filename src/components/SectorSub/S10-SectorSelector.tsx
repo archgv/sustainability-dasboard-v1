@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { KPIOptionsOther } from "@/components/Key/KeyKPI";
+import { KPIOptionsFiltered } from "@/components/Key/KeyKPI";
 import { chartColors } from "../Key/KeyColor";
 
 interface SectorSelectorProps {
@@ -43,7 +43,7 @@ export const SectorSelector = ({
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {KPIOptionsOther.map((kpi) => (
+            {KPIOptionsFiltered.map((kpi) => (
               <SelectItem key={kpi.key} value={kpi.key}>
                 {kpi.label}
               </SelectItem>
