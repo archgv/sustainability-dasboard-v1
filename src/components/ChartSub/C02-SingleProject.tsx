@@ -317,7 +317,7 @@ export const SingleProject = ({
                         className="text-sm"
                         style={{ color: chartColors.dark }}
                       >
-                        Total Renewable Energy Generation:{" "}
+                        Renewable Energy Generation:{" "}
                         {formatNumber(Math.abs(renewableValue))}{" "}
                         {getUnitBracket(renewableKPIOption, valueType)}
                       </p>
