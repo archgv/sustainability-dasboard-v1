@@ -263,10 +263,25 @@ export const SingleProject = ({
 
                 const mainValue = project[selectedKPI1];
 
+                const renewableValue =
+                  project["Total Renewable Energy Generation"];
+                const renewableKPIOption = KPIOptions.find(
+                  (kpi) => kpi.key === "Total Renewable Energy Generation"
+                );
+                const renewableShow = [
+                  "Operational Energy Total",
+                  "Operational Energy Part L",
+                  "Operational Energy Gas",
+                ].includes(selectedKPI1);
+
                 const biogenicValue = project["Biogenic Carbon"];
                 const biogenicKPIOption = KPIOptions.find(
                   (kpi) => kpi.key === "Biogenic Carbon"
                 );
+                const biogenicShow = [
+                  "Upfront Carbon",
+                  "Total Embodied Carbon",
+                ].includes(selectedKPI1);
 
                 const structuralValue = project["Structural Frame Materials"];
                 const structuralShow = [
@@ -297,7 +312,17 @@ export const SingleProject = ({
                         {getUnitBracket(kpi1Config, valueType)}
                       </p>
                     )}
-                    {biogenicValue && (
+                    {renewableShow && renewableValue && (
+                      <p
+                        className="text-sm"
+                        style={{ color: chartColors.dark }}
+                      >
+                        Total Renewable Energy Generation:{" "}
+                        {formatNumber(Math.abs(renewableValue))}{" "}
+                        {getUnitBracket(renewableKPIOption, valueType)}
+                      </p>
+                    )}
+                    {biogenicShow && biogenicValue && (
                       <p
                         className="text-sm"
                         style={{ color: chartColors.dark }}
