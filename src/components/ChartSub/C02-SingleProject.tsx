@@ -289,6 +289,11 @@ export const SingleProject = ({
                   "Total Embodied Carbon",
                 ].includes(selectedKPI1);
 
+                const habitatValue = project["Habitats Units Gained"];
+                const habitatShow = ["Biodiversity Net Gain"].includes(
+                  selectedKPI1
+                );
+
                 return (
                   <div
                     className="bg-white p-3 border rounded-lg shadow-lg"
@@ -337,6 +342,14 @@ export const SingleProject = ({
                         style={{ color: chartColors.dark }}
                       >
                         Structural Frame Materials: {structuralValue}
+                      </p>
+                    )}
+                    {habitatShow && habitatValue && (
+                      <p
+                        className="text-sm"
+                        style={{ color: chartColors.dark }}
+                      >
+                        Habitats Units Gained: {habitatValue}
                       </p>
                     )}
                   </div>
