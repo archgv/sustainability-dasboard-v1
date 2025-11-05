@@ -13,6 +13,7 @@ import {
   KPIKeysFiltered,
   KPIOptions,
 } from "./Key/KeyKPI";
+import { useEffect } from "react";
 
 interface SelectorProps {
   chartType: string;
@@ -35,6 +36,17 @@ export const Selector = ({
   valueType,
   setValueType,
 }: SelectorProps) => {
+  useEffect(() => {
+    if (!valueType) {
+      setValueType("total");
+    }
+  }, [selectedKPI1, setValueType, valueType]);
+
+  useEffect(() => {
+    setSelectedKPI2(KPIMatrix[selectedKPI1][0]);
+  }, [selectedKPI1, setSelectedKPI1, selectedKPI2, setSelectedKPI2]);
+
+  console.log(KPIMatrix[selectedKPI1][0]);
   return (
     <Card className="p-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -65,26 +77,31 @@ export const Selector = ({
             </Select>
           </div>
 
-          <div className="w-[130px]">
-            <Label
-              htmlFor="value-type"
-              className="text-sm font-medium text-gray-700 mb-4 block pl-6"
-            >
-              Value Type
-            </Label>
-            <Select
-              value={valueType}
-              onValueChange={(value) => setValueType(value as string)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select Value Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="total">Total</SelectItem>
-                <SelectItem value="average">Per m² GIA</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          {/* Value Type Selector */}
+          {!["Biodiversity Net Gain", "Urban Greening Factor"].includes(
+            selectedKPI1
+          ) && (
+            <div className="w-[130px]">
+              <Label
+                htmlFor="value-type"
+                className="text-sm font-medium text-gray-700 mb-4 block pl-6"
+              >
+                Value Type
+              </Label>
+              <Select
+                value={valueType}
+                onValueChange={(value) => setValueType(value as string)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Value Type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="total">Total</SelectItem>
+                  <SelectItem value="average">Per m² GIA</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
         </div>
 
         <div className="flex items-center gap-2">
