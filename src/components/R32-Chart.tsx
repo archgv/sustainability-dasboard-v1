@@ -23,7 +23,7 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 	const [selectedKPI1, setSelectedKPI1] = useState('Operational Energy');
 	const [selectedKPI2, setSelectedKPI2] = useState('Operational Energy');
 	const [valueType, setValueType] = useState('average');
-	const [showSingleProjectBenchmarks, setShowSingleProjectBenchmarks] = useState(false);
+	const [showEmbodiedCarbonBenchmarks, setShowEmbodiedCarbonBenchmarks] = useState(false);
 	const [selectedSubSector, setSelectedSubSector] = useState('');
 
 	const handleExportCSV = () => {
@@ -34,7 +34,7 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 			selectedKPI2,
 			valueType,
 			isComparingToSelf,
-			showSingleProjectBenchmarks,
+			showEmbodiedCarbonBenchmarks,
 			selectedSubSector,
 		});
 	};
@@ -46,7 +46,7 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 			selectedKPI1,
 			selectedKPI2,
 			valueType,
-			showSingleProjectBenchmarks,
+			showEmbodiedCarbonBenchmarks,
 			selectedSubSector,
 		});
 	};
@@ -64,7 +64,7 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 				return <CompareTwo {...commonProps} selectedKPI2={selectedKPI2} />;
 
 			case 'Single Project':
-				return <SingleProject {...commonProps} showSingleProjectBenchmarks={showSingleProjectBenchmarks} selectedSubSector={selectedSubSector} />;
+				return <SingleProject {...commonProps} showEmbodiedCarbonBenchmarks={showEmbodiedCarbonBenchmarks} selectedSubSector={selectedSubSector} />;
 
 			case 'Single Time':
 				return <SingleTime {...commonProps} selectedSubSector={selectedSubSector} />;
@@ -97,13 +97,13 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 						{/* Show benchmark toggle only for Embodied Carbon with average values */}
 						{selectedKPI1 === 'Embodied Carbon' && chartType === 'Single Project' && (
 							<Button
-								variant={showSingleProjectBenchmarks ? 'default' : 'outline'}
+								variant={showEmbodiedCarbonBenchmarks ? 'default' : 'outline'}
 								size="sm"
-								onClick={() => setShowSingleProjectBenchmarks(!showSingleProjectBenchmarks)}
+								onClick={() => setShowEmbodiedCarbonBenchmarks(!showEmbodiedCarbonBenchmarks)}
 								disabled={!hasBenchmarks(projects)}
 								className="flex items-center gap-2"
 							>
-								{showSingleProjectBenchmarks ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+								{showEmbodiedCarbonBenchmarks ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
 								Benchmarks
 							</Button>
 						)}

@@ -12,12 +12,12 @@ interface ExportCSVOptions {
 	selectedKPI2: string;
 	valueType: string;
 	isComparingToSelf?: boolean;
-	showSingleProjectBenchmarks: boolean;
+	showEmbodiedCarbonBenchmarks: boolean;
 	selectedSubSector: string;
 }
 
 export const exportChartToCSV = (options: ExportCSVOptions) => {
-	const { projects, chartType, selectedKPI1, selectedKPI2, valueType, isComparingToSelf = false, showSingleProjectBenchmarks, selectedSubSector } = options;
+	const { projects, chartType, selectedKPI1, selectedKPI2, valueType, isComparingToSelf = false, showEmbodiedCarbonBenchmarks, selectedSubSector } = options;
 
 	const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
 	const kpi2Config = KPIOptions.find((kpi) => kpi.key === selectedKPI2);
@@ -110,7 +110,7 @@ export const exportChartToCSV = (options: ExportCSVOptions) => {
 		}
 
 		// Get benchmark data for total embodied carbon
-		if (showSingleProjectBenchmarks && selectedKPI1 === 'Embodied Carbon' && valueType === 'average' && projects.length > 0) {
+		if (showEmbodiedCarbonBenchmarks && selectedKPI1 === 'Embodied Carbon' && valueType === 'average' && projects.length > 0) {
 			// Get benchmark values for this sector
 			const sectorBenchmarks = benchmarkEmbodiedCarbon[projects[0]['Primary Sector'] as keyof typeof benchmarkEmbodiedCarbon];
 

@@ -102,7 +102,7 @@ export const getYAxisProps = (chart: string, currentKPI: KPIOption, valueType: s
 
 // Common Bar props
 export const getBarProps = () => ({
-	barSize: 100,
+	barSize: 80,
 	radius: [6, 6, 0, 0] as [number, number, number, number],
 });
 

@@ -27,11 +27,11 @@ interface BarChartProps {
 	selectedKPI1: string;
 	valueType: string;
 	isComparingToSelf?: boolean;
-	showSingleProjectBenchmarks: boolean;
+	showEmbodiedCarbonBenchmarks: boolean;
 	selectedSubSector: string;
 }
 
-export const SingleProject = ({ projects, selectedKPI1, valueType, isComparingToSelf = false, showSingleProjectBenchmarks, selectedSubSector }: BarChartProps) => {
+export const SingleProject = ({ projects, selectedKPI1, valueType, isComparingToSelf = false, showEmbodiedCarbonBenchmarks, selectedSubSector }: BarChartProps) => {
 	const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
 
 	const chartData = projects.map((project) => {
@@ -57,25 +57,44 @@ export const SingleProject = ({ projects, selectedKPI1, valueType, isComparingTo
 	});
 
 	// Get UKNZCBS benchmark data for the bar chart - always based on PRIMARY project only
-	const getBenchmarkOperationalEnergy = () => {
-		if (!selectedSubSector || selectedKPI1 !== 'Operational Energy' || valueType !== 'average' || projects.length === 0) {
-			return [];
-		}
+	const getBenchmark = () => {
+		if (!selectedSubSector || valueType !== 'average' || projects.length === 0) return [];
 
-		// ALWAYS use the first project in the original array as the primary project
 		const benchmarkColor = getSectorBenchmarkColor(projects[0]['Primary Sector']);
 
 		let benchmarkYear = projects[0]['Construction Start Year'] || 2025;
 		if (benchmarkYear < 2025) benchmarkYear = 2025; // Use 2025 for years before 2025
 
-		const sectorData = benchmarkOperationalEnergy[projects[0]['Primary Sector'] as keyof typeof benchmarkOperationalEnergy];
+		let benchmarkKPI;
+		switch (selectedKPI1) {
+			case 'Upfront Carbon':
+				benchmarkKPI = benchmarkUpfrontCarbon;
+				break;
+			case 'Operational Energy':
+				benchmarkKPI = benchmarkOperationalEnergy;
+				break;
+			case 'Embodied Carbon':
+				benchmarkKPI = benchmarkEmbodiedCarbon;
+				break;
+		}
+
+		const sectorData = benchmarkKPI[projects[0]['Primary Sector']];
 		if (!sectorData) return [];
 
-		const subSectorData = sectorData[selectedSubSector as keyof typeof sectorData];
+		if (selectedKPI1 === 'Embodied Carbon')
+			if (!showEmbodiedCarbonBenchmarks) return [];
+			else
+				return Object.entries(sectorData).map(([name, value]) => ({
+					name,
+					value,
+					color: benchmarkColor,
+				}));
+
+		const subSectorData = sectorData[selectedSubSector];
 		if (!subSectorData) return [];
 
-		const newBuildValue = subSectorData['New Build']?.[benchmarkYear as keyof (typeof subSectorData)['New Build']];
-		const retrofitValue = subSectorData['Retrofit']?.[benchmarkYear as keyof (typeof subSectorData)['Retrofit']];
+		const newBuildValue = subSectorData['New Build']?.[benchmarkYear];
+		const retrofitValue = subSectorData['Retrofit']?.[benchmarkYear];
 
 		const benchmarkLines = [];
 		if (newBuildValue !== undefined) {
@@ -98,73 +117,12 @@ export const SingleProject = ({ projects, selectedKPI1, valueType, isComparingTo
 		return benchmarkLines;
 	};
 
-	// Get UKNZCBS benchmark data for the bar chart - always based on PRIMARY project only
-	const getBenchmarkUpfrontCarbon = () => {
-		if (!selectedSubSector || selectedKPI1 !== 'Upfront Carbon' || valueType !== 'average' || projects.length === 0) {
-			return [];
-		}
-
-		// ALWAYS use the first project in the original array as the primary project
-		const benchmarkColor = getSectorBenchmarkColor(projects[0]['Primary Sector']);
-
-		let benchmarkYear = projects[0]['Construction Start Year'] || 2025;
-		if (benchmarkYear < 2025) benchmarkYear = 2025; // Use 2025 for years before 2025
-
-		const sectorData = benchmarkUpfrontCarbon[projects[0]['Primary Sector'] as keyof typeof benchmarkUpfrontCarbon];
-		if (!sectorData) return [];
-
-		const subSectorData = sectorData[selectedSubSector as keyof typeof sectorData];
-		if (!subSectorData) return [];
-
-		const newBuildValue = subSectorData['New Build']?.[benchmarkYear as keyof (typeof subSectorData)['New Build']];
-		const retrofitValue = subSectorData['Retrofit']?.[benchmarkYear as keyof (typeof subSectorData)['Retrofit']];
-
-		const benchmarkLines = [];
-		if (newBuildValue !== undefined) {
-			benchmarkLines.push({
-				name: `New Build (${benchmarkYear})`,
-				value: newBuildValue,
-				color: benchmarkColor,
-				year: benchmarkYear,
-			});
-		}
-		if (retrofitValue !== undefined) {
-			benchmarkLines.push({
-				name: `Retrofit (${benchmarkYear})`,
-				value: retrofitValue,
-				color: benchmarkColor,
-				year: benchmarkYear,
-			});
-		}
-
-		return benchmarkLines;
-	};
-
-	// Get benchmark data for the primary project's sector (only for Embodied Carbon with average)
-	const getBenchmarkEmbodiedCarbon = () => {
-		if (!showSingleProjectBenchmarks || selectedKPI1 !== 'Embodied Carbon' || projects.length === 0) {
-			return [];
-		}
-
-		// ALWAYS use the first project in the original array as the primary project
-		const benchmarkColor = getSectorBenchmarkColor(projects[0]['Primary Sector']);
-
-		// Get benchmark values for this sector
-		const sectorBenchmarks = benchmarkEmbodiedCarbon[projects[0]['Primary Sector'] as keyof typeof benchmarkEmbodiedCarbon];
-
-		if (!sectorBenchmarks) return [];
-
-		return Object.entries(sectorBenchmarks).map(([name, value]) => ({
-			name,
-			value,
-			color: benchmarkColor,
-		}));
-	};
+	const barSize = Math.min(100, Math.max(8, 400 / chartData.length));
 
 	return (
 		<div className="w-full h-full flex justify-center">
 			<ResponsiveContainer {...getResponsiveContainerProps()}>
-				<BarChart data={chartData} barGap={-100} {...getChartProps()}>
+				<BarChart data={chartData} barGap={-barSize} {...getChartProps()}>
 					<CartesianGrid vertical={false} {...getCartesianGridProps()} />
 					<XAxis
 						{...getXAxisProps('Single Project', kpi1Config, valueType)}
@@ -303,14 +261,14 @@ export const SingleProject = ({ projects, selectedKPI1, valueType, isComparingTo
 							return null;
 						}}
 					/>
-					<Bar dataKey={selectedKPI1} {...getBarProps()} fill={chartColors.primary} name={kpi1Config.key || selectedKPI1}>
+					<Bar dataKey={selectedKPI1} {...getBarProps()} barSize={barSize} fill={chartColors.primary} name={kpi1Config.key || selectedKPI1}>
 						{chartData.map((project, index) => {
 							const sectorColor = getSectorColor(project['Primary Sector']);
 							return <Cell key={index} fill={sectorColor} stroke={sectorColor} strokeWidth={3} />;
 						})}
 					</Bar>
 					{selectedKPI1 === 'Embodied Carbon' && (
-						<Bar dataKey="Biogenic Carbon" {...getBarProps()} fill="white" name="Biogenic Carbon">
+						<Bar dataKey="Biogenic Carbon" {...getBarProps()} barSize={barSize} fill="white" name="Biogenic Carbon">
 							{chartData.map((project, index) => {
 								const sectorColor = getSectorColor(project['Primary Sector']);
 								return <Cell key={index} fill="white" stroke={sectorColor} strokeWidth={3} />;
@@ -319,68 +277,27 @@ export const SingleProject = ({ projects, selectedKPI1, valueType, isComparingTo
 					)}
 					{<ReferenceLine y={0} stroke={chartColors.pink} strokeWidth={4} />}
 
-					{/* Benchmark lines for Operational Energy */}
-					{getBenchmarkOperationalEnergy().map((benchmark, index) => (
-						<ReferenceLine
-							key={benchmark.name}
-							y={benchmark.value}
-							stroke={benchmark.color}
-							strokeWidth={2}
-							strokeDasharray="2 2"
-							label={{
-								value: benchmark.name,
-								position: 'insideTopRight',
-								offset: 10,
-								style: {
-									fill: benchmark.color,
-									fontSize: '12px',
-									fontWeight: 'bold',
-								},
-							}}
-						/>
-					))}
-
-					{/* Benchmark lines for Embodied Carbon */}
-					{getBenchmarkEmbodiedCarbon().map((benchmark, index) => (
-						<ReferenceLine
-							key={benchmark.name}
-							y={benchmark.value}
-							stroke={benchmark.color}
-							strokeWidth={2}
-							strokeDasharray="2 2"
-							label={{
-								value: benchmark.name,
-								position: 'insideTopRight',
-								offset: 10,
-								style: {
-									fill: benchmark.color,
-									fontSize: '12px',
-									fontWeight: 'bold',
-								},
-							}}
-						/>
-					))}
-
-					{/* UKNZCBS Benchmark lines for Upfront Carbon */}
-					{getBenchmarkUpfrontCarbon().map((benchmark, index) => (
-						<ReferenceLine
-							key={benchmark.name}
-							y={benchmark.value}
-							stroke={benchmark.color}
-							strokeWidth={2}
-							strokeDasharray={benchmark.name.includes('New Build') ? '10 5' : '2 2'}
-							label={{
-								value: benchmark.name,
-								position: 'insideTopRight',
-								offset: 10,
-								style: {
-									fill: benchmark.color,
-									fontSize: '12px',
-									fontWeight: 'bold',
-								},
-							}}
-						/>
-					))}
+					{/* Benchmark lines for Operational Energy, Upfront Carbon */}
+					{['Operational Energy', 'Upfront Carbon', 'Embodied Carbon'].includes(selectedKPI1) &&
+						getBenchmark().map((benchmark, index) => (
+							<ReferenceLine
+								key={benchmark.name}
+								y={benchmark.value}
+								stroke={benchmark.color}
+								strokeWidth={2}
+								strokeDasharray="2 2"
+								label={{
+									value: benchmark.name,
+									position: 'insideTopRight',
+									offset: 10,
+									style: {
+										fill: benchmark.color,
+										fontSize: '12px',
+										fontWeight: 'bold',
+									},
+								}}
+							/>
+						))}
 				</BarChart>
 			</ResponsiveContainer>
 		</div>

@@ -9,12 +9,12 @@ interface ExportPNGOptions {
 	selectedKPI1: string;
 	selectedKPI2: string;
 	valueType: string;
-	showSingleProjectBenchmarks: boolean;
+	showEmbodiedCarbonBenchmarks: boolean;
 	selectedSubSector: string;
 }
 
 export const exportChartToPNG = (options: ExportPNGOptions) => {
-	const { projects, chartType, selectedKPI1, selectedKPI2, valueType, showSingleProjectBenchmarks, selectedSubSector } = options;
+	const { projects, chartType, selectedKPI1, selectedKPI2, valueType, showEmbodiedCarbonBenchmarks, selectedSubSector } = options;
 
 	// Find the chart SVG element - use specific selector to avoid conflicts
 	const chartContainer = document.querySelector('[data-chart="chart-container"]');
@@ -123,7 +123,7 @@ export const exportChartToPNG = (options: ExportPNGOptions) => {
 			}
 
 			// Get benchmark data for total embodied carbon
-			if (showSingleProjectBenchmarks && selectedKPI1 === 'Embodied Carbon' && valueType === 'average' && projects.length > 0) {
+			if (showEmbodiedCarbonBenchmarks && selectedKPI1 === 'Embodied Carbon' && valueType === 'average' && projects.length > 0) {
 				const benchmarkColor = getSectorBenchmarkColor(projects[0]['Primary Sector']);
 
 				// Get benchmark values for this sector

@@ -98,17 +98,9 @@ export const SingleTime = ({ projects, selectedKPI1, valueType, isComparingToSel
 
 	// Create operational energy benchmark data for timeline
 	const createOperationalEnergyBenchmarkData = () => {
-		if (!showBenchmarkOperationalEnergy || !projects[0] || !selectedSubSector) {
-			return { newBuildData: [], retrofitData: [] };
-		}
-
 		const sectorData = benchmarkOperationalEnergy[projects[0]['Primary Sector'] as keyof typeof benchmarkOperationalEnergy];
-		if (!sectorData) {
-			return { newBuildData: [], retrofitData: [] };
-		}
-
 		const subSectorData = sectorData[selectedSubSector as keyof typeof sectorData];
-		if (!subSectorData) {
+		if (!showBenchmarkOperationalEnergy || !projects[0] || !selectedSubSector || !sectorData || !subSectorData) {
 			return { newBuildData: [], retrofitData: [] };
 		}
 
