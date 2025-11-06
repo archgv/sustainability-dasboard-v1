@@ -56,21 +56,13 @@ export const SingleProject = ({
 }: BarChartProps) => {
   const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
 
-  // Add biogenic data as negative values for totalEmbodiedCarbon - use sorted projects
   const chartData = projects.map((project) => {
     const projectCurrentStage = getProjectCurrrentStage(project);
 
     const kpiValues = Object.fromEntries(
       KPIOptions.map(({ key }) => {
         const multiplier = valueType === "total" ? getGIA(project) : 1;
-        let value = Number(projectCurrentStage[key]) * multiplier;
-
-        if (
-          key === "Biogenic Carbon" &&
-          selectedKPI1 === "Total Embodied Carbon"
-        ) {
-          value = -Math.abs(value);
-        }
+        const value = Number(projectCurrentStage[key]) * multiplier;
 
         return [key, value];
       })
@@ -323,7 +315,7 @@ export const SingleProject = ({
                         style={{ color: chartColors.dark }}
                       >
                         Renewable Energy Generation:{" "}
-                        {formatNumber(Math.abs(renewableValue))}{" "}
+                        {formatNumber(renewableValue)}{" "}
                         {getUnitBracket(renewableKPIOption, valueType)}
                       </p>
                     )}
@@ -332,7 +324,7 @@ export const SingleProject = ({
                         className="text-sm"
                         style={{ color: chartColors.dark }}
                       >
-                        Biogenic Carbon: {formatNumber(Math.abs(biogenicValue))}{" "}
+                        Biogenic Carbon: {formatNumber(biogenicValue)}{" "}
                         {getUnitBracket(biogenicKPIOption, valueType)}
                       </p>
                     )}

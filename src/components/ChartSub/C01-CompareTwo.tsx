@@ -43,7 +43,6 @@ export const CompareTwo = ({
   const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
   const kpi2Config = KPIOptions.find((kpi) => kpi.key === selectedKPI2);
 
-  // Transform biogenic carbon values to negative for bubble chart display - use sorted projects
   const chartData = projects.map((project) => {
     const projectCurrentStage = getProjectCurrrentStage(project);
     const multiplier = valueType === "total" ? getGIA(project) : 1;
@@ -53,14 +52,8 @@ export const CompareTwo = ({
       "Project Name": project["Project Name"],
       "Primary Sector": project["Primary Sector"],
       "Current RIBA Stage": project["Current RIBA Stage"],
-      [selectedKPI1]:
-        selectedKPI1 === "Biogenic Carbon"
-          ? -Math.abs(projectKPI1 || 0)
-          : projectKPI1,
-      [selectedKPI2]:
-        selectedKPI2 === "Biogenic Carbon"
-          ? -Math.abs(projectKPI2 || 0)
-          : projectKPI2,
+      [selectedKPI1]: projectKPI1,
+      [selectedKPI2]: projectKPI2,
     };
   });
 

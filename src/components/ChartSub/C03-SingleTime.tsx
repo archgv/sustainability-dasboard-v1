@@ -47,13 +47,6 @@ export const SingleTime = ({
 }: SingleTimeProps) => {
   const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
 
-  // const transformedProjects = getProjectData(
-  //   projects,
-  //   valueType,
-  //   selectedKPI1,
-  //   ""
-  // );
-
   const chartData = projects
     .map((project) => {
       const projectCurrentStage = getProjectCurrrentStage(project);

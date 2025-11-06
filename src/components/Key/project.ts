@@ -12,33 +12,32 @@ export interface Project {
   "Studio Discipline"?: string;
   Neighbourhood?: string;
 
-  "Operational Energy Existing Building"?: number; //ONLY IN PORTFOLIO
-  GIA: number; // Gross Internal Area in m²
-  "Building Lifespan"?: number; // NOT USED
-  "PC Date": string; // DROPDOWN
+  "Operational Energy Existing Building"?: number;
+  GIA: number;
+  "Building Lifespan"?: number;
+  "PC Date": string;
 
-  "EI Team Scope"?: string; // NOT USED
-  "External Consultants"?: string; // NOT USED
-  "Sustianability Champion Name"?: string; // NOT USED
-  "Mission Statement"?: string; // NOT USED
+  "EI Team Scope"?: string;
+  "External Consultants"?: string;
+  "Sustianability Champion Name"?: string;
+  "Mission Statement"?: string;
 
-  // Accreditations
   BREEAM: string;
   LEED: string;
   WELL: string;
-  Fitwell: string; //1-5 stars xxx not on the list
-  Passivhaus: string; // Unknown, Cetified, Not Targeted xxx doesnt work
-  EnerPHit: string; // Unknown, Cetified, Not Targeted xxx doesnt work
-  UKNZCBS: string; // Unknown, Cetified + year
-  NABERS: string; //1-6 stars
-  "Other Cerification"?: string; //? // TEXT
+  Fitwell: string;
+  Passivhaus: string;
+  EnerPHit: string;
+  UKNZCBS: string;
+  NABERS: string;
+  "Other Cerification"?: string;
 
   "Current RIBA Stage": StageKey;
 
   "RIBA Stage": {
     [K in StageKey]: {
-      "Updated GIA"?: number; // mess
-      "Method Energy Measurement"?: string; // waiting to be used
+      "Updated GIA"?: number;
+      "Method Energy Measurement"?: string;
 
       "Operational Energy Total": number;
       "Operational Energy Part L": number;
@@ -47,17 +46,19 @@ export interface Project {
       "Space Heating Demand": number;
 
       "Total Renewable Energy Generation": number;
-      "Renewable Energy Type"?: string; // tooltip in chart for total renewable energy generation
+      "Renewable Energy Type"?: string;
+      "EPC Rating"?: string;
 
+      "Embodied Carbon Measurement Method"?: string;
       "Upfront Carbon": number;
       "Total Embodied Carbon": number;
-      "Structural Frame Materials"?: string; // tool tip for upfront carbon and total embodied carbon
+      "Structural Frame Materials"?: string;
 
       "Biogenic Carbon"?: number;
       "Embodied Carbon Scope Clarifications"?: string;
 
       "Biodiversity Net Gain": number;
-      "Habitats Units Gained": number; // tool tip for biodiversity net gain
+      "Habitats Units Gained": number;
 
       "Urban Greening Factor": number;
       "General Biodiversity Clarification Notes"?: string;

@@ -93,7 +93,7 @@ export const SectorChart = ({
     return {
       sector: sector,
       value: baseValue,
-      biogenicValue: -Math.abs(biogenicValue), // Make it negative for below zero
+      biogenicValue: biogenicValue,
       count: stats ? stats.count : 0,
     };
   });
