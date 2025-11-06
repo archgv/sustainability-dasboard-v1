@@ -68,13 +68,17 @@ export const AddSelection = ({ projects, id, onProjectSelect, onNext, onCancel }
 													<div className="font-medium">{project['Project Name']}</div>
 													<div className="text-sm text-muted-foreground mt-1 space-y-1">
 														<div className="flex flex-wrap gap-2">
-															{project['BREEAM'] && <span className="bg-green-100 text-green-800 px-2 py-0.5 rounded text-xs">BREEAM: {project['BREEAM']}</span>}
+															{/* {project['BREEAM'] && <span className="bg-green-100 text-green-800 px-2 py-0.5 rounded text-xs">BREEAM: {project['BREEAM']}</span>}
 															{project['LEED'] && <span className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-xs">LEED: {project['LEED']}</span>}
 															{project['WELL'] && <span className="bg-purple-100 text-purple-800 px-2 py-0.5 rounded text-xs">WELL: {project['WELL']}</span>}
 															{project['Passivhaus'] && (
 																<span className="bg-orange-100 text-orange-800 px-2 py-0.5 rounded text-xs">Passivhaus: {project['Passivhaus']}</span>
 															)}
-															{project['EnerPHit'] && <span className="bg-orange-100 text-orange-800 px-2 py-0.5 rounded text-xs">EnerPHit: {project['EnerPHit']}</span>}
+															{project['EnerPHit'] && <span className="bg-orange-100 text-orange-800 px-2 py-0.5 rounded text-xs">EnerPHit: {project['EnerPHit']}</span>} */}
+															{project['Project Type'] && <span className="bg-purple-100 text-purple-800 px-4 py-1 rounded-full text-xs">{project['Project Type']}</span>}
+															{project['Primary Sector'] && (
+																<span className="bg-orange-100 text-orange-800 px-4 py-1 rounded-full text-xs">{project['Primary Sector']}</span>
+															)}
 														</div>
 														<div className="flex gap-4 text-xs">
 															{/* {project.operationalEnergy && <span>Energy: {project.operationalEnergy} kWh/m²/yr</span>} */}

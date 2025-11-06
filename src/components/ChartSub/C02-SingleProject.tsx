@@ -27,10 +27,10 @@ interface BarChartProps {
 	valueType: string;
 	isComparingToSelf?: boolean;
 	showSingleProjectBenchmarks: boolean;
-	selectedBarChartBenchmark: string;
+	selectedSubSector: string;
 }
 
-export const SingleProject = ({ projects, selectedKPI1, valueType, isComparingToSelf = false, showSingleProjectBenchmarks, selectedBarChartBenchmark }: BarChartProps) => {
+export const SingleProject = ({ projects, selectedKPI1, valueType, isComparingToSelf = false, showSingleProjectBenchmarks, selectedSubSector }: BarChartProps) => {
 	const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
 
 	const chartData = projects.map((project) => {
@@ -57,7 +57,7 @@ export const SingleProject = ({ projects, selectedKPI1, valueType, isComparingTo
 
 	// Get UKNZCBS benchmark data for the bar chart - always based on PRIMARY project only
 	const getBenchmarkUpfrontCarbon = () => {
-		if (!selectedBarChartBenchmark || selectedKPI1 !== 'Upfront Carbon' || valueType !== 'average' || projects.length === 0) {
+		if (!selectedSubSector || selectedKPI1 !== 'Upfront Carbon' || valueType !== 'average' || projects.length === 0) {
 			return [];
 		}
 
@@ -72,7 +72,7 @@ export const SingleProject = ({ projects, selectedKPI1, valueType, isComparingTo
 		const sectorData = uknzcbsBenchmarks[projects[0]['Primary Sector'] as keyof typeof uknzcbsBenchmarks];
 		if (!sectorData) return [];
 
-		const subSectorData = sectorData[selectedBarChartBenchmark as keyof typeof sectorData];
+		const subSectorData = sectorData[selectedSubSector as keyof typeof sectorData];
 		if (!subSectorData) return [];
 
 		const newBuildValue = subSectorData['New Build']?.[benchmarkYear as keyof (typeof subSectorData)['New Build']];
@@ -101,7 +101,7 @@ export const SingleProject = ({ projects, selectedKPI1, valueType, isComparingTo
 
 	// Get benchmark data for the primary project's sector (only for Embodied Carbon with average)
 	const getBenchmarkEmbodiedCarbon = () => {
-		if (!showSingleProjectBenchmarks || selectedKPI1 !== 'Embodied Carbon' || valueType !== 'average' || projects.length === 0) {
+		if (!showSingleProjectBenchmarks || selectedKPI1 !== 'Embodied Carbon' || projects.length === 0) {
 			return [];
 		}
 
@@ -131,7 +131,7 @@ export const SingleProject = ({ projects, selectedKPI1, valueType, isComparingTo
 					<XAxis
 						{...getXAxisProps('Single Project', kpi1Config, valueType)}
 						dataKey={(item) => {
-							const displayName = isComparingToSelf && item['Current RIBA Stage'] ? `${item['Project Name']} (RIBA ${item['Current RIBA Stage']})` : item['Project Name'];
+							const displayName = isComparingToSelf && item['Current RIBA Stage'] ? `RIBA ${item['Current RIBA Stage']}` : item['Project Name'];
 							return displayName;
 						}}
 						tick={(props) => {

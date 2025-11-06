@@ -118,14 +118,29 @@ export const AddOverview = ({ selectedProject, projectData, onDataUpdate, onSave
 							</Select>
 						</TooltipField>
 
+						<TooltipField label="PC year" tooltip="Enter the expected or actual Practical Completion year" required={true}>
+							<Select value={projectData['PC Date'] || ''} onValueChange={(value) => handleInputChange('PC Date', value)}>
+								<SelectTrigger>
+									<SelectValue placeholder="Select year" />
+								</SelectTrigger>
+								<SelectContent>
+									{years.map((year) => (
+										<SelectItem key={year} value={year.toString()}>
+											{year}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						</TooltipField>
+
 						<TooltipField
-							label="PC year"
-							tooltip="Enter the expected or actual Practical Completion year. Please be as accurate as possible, as UKNZCBS benchmarks are year-specific"
+							label="Construction start date"
+							tooltip="Enter the construction start date. This is essential as it identifies the associated UKNZCBS benchmark dataset"
 							required={true}
 						>
 							<Select value={projectData['PC Date'] || ''} onValueChange={(value) => handleInputChange('PC Date', value)}>
 								<SelectTrigger>
-									<SelectValue placeholder="Select year" />
+									<SelectValue placeholder="Select construction start date" />
 								</SelectTrigger>
 								<SelectContent>
 									{years.map((year) => (
@@ -210,7 +225,7 @@ export const AddOverview = ({ selectedProject, projectData, onDataUpdate, onSave
 						</TooltipField>
 					</div>
 
-					<TooltipField label="Mission statement" tooltip="Add a brief project mission statement relating to sustainability">
+					{/* <TooltipField label="Mission statement" tooltip="Add a brief project mission statement relating to sustainability">
 						<Textarea
 							placeholder="Enter text (max 250 characters)"
 							value={projectData['Mission Statement'] || ''}
@@ -218,7 +233,7 @@ export const AddOverview = ({ selectedProject, projectData, onDataUpdate, onSave
 							maxLength={250}
 							className="resize-none"
 						/>
-					</TooltipField>
+					</TooltipField> */}
 				</div>
 			</div>
 

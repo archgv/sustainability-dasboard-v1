@@ -68,16 +68,20 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 
 	const energyMethods = ['IES - CIBSE TM54', 'PHPP', 'Benchmark', 'Other'];
 
+	const epcRating = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+
+	const embodiedMethod = ['Benchmark', 'OneClick LCA', 'H\\B:ERT', 'Other LCA tool'];
+
 	return (
 		<div className="flex flex-col h-[75vh]">
 			{/* Scrollable content area */}
 			<div className="flex-1 overflow-y-auto space-y-6 pr-2">
 				<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 					<div className="lg:col-span-2">
-						<TooltipField label="Update GIA (only if different)" tooltip="Enter a stage-specific GIA below only if it differs from the project GIA">
+						<TooltipField label="Update GIA (only if different)" tooltip='Enter a stage specific GIA below, if the value is different to the GIA indicated in the "Overview" tab'>
 							<div className="relative">
 								<Input
-									placeholder={`Enter value (e.g. 6,500) - Project GIA: ${projectGia || 'N/A'}`}
+									placeholder={`Enter alternative value, curently ${projectGia || 'N/A'}`}
 									value={stageData['Updated GIA'] || ''}
 									onChange={(e) => handleInputChange('Updated GIA', e.target.value)}
 									type="number"
@@ -197,11 +201,41 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 								<div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400 pointer-events-none">kWh/yr</div>
 							</div>
 						</TooltipField>
+
+						<TooltipField label="EPC rating" tooltip="???">
+							<Select value={stageData['Method Energy Measurement'] || ''} onValueChange={(value) => handleInputChange('Method Energy Measurement', value)}>
+								<SelectTrigger>
+									<SelectValue placeholder="EPC rating" />
+								</SelectTrigger>
+								<SelectContent>
+									{epcRating.map((rating) => (
+										<SelectItem key={rating} value={rating}>
+											{rating}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						</TooltipField>
 					</div>
 
 					{/* Embodied Carbon */}
 					<div className="space-y-4">
 						<h3 className="text-lg font-semibold text-gray-500 py-0 px-6">Embodied Carbon</h3>
+
+						<TooltipField label="Embodied carbon measurement method" tooltip="Provide the methodology used for measuring the embodied carbon">
+							<Select value={stageData['Method Energy Measurement'] || ''} onValueChange={(value) => handleInputChange('Method Energy Measurement', value)}>
+								<SelectTrigger>
+									<SelectValue placeholder="Embodied carbon measurement method" />
+								</SelectTrigger>
+								<SelectContent>
+									{embodiedMethod.map((method) => (
+										<SelectItem key={method} value={method}>
+											{method}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						</TooltipField>
 
 						<TooltipField label="Structural frame material" tooltip="Select the dominant material used in the structural frame">
 							<Select value={stageData['Structural Frame Materials'] || ''} onValueChange={(value) => handleInputChange('Structural Frame Materials', value)}>

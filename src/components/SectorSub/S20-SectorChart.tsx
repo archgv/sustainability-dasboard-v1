@@ -156,7 +156,7 @@ export const SectorChart = ({ filteredProjects, sectorStats, currentKPI, selecte
 								if (selectedKPI === 'Embodied Carbon') {
 									const data = props.payload;
 									const wholeLifeCarbon = formatNumber(Number(data.value));
-									return [`${wholeLifeCarbon} ${getUnit(currentKPI, valueType)}`, valueType === 'total' ? 'Average Whole Life Carbon' : 'Average Whole Life Carbon'];
+									return [`${wholeLifeCarbon} ${getUnit(currentKPI, valueType)}`, valueType === 'total' ? 'Cumulative total Whole Life Carbon' : 'Average Whole Life Carbon'];
 								}
 								return [`${formatNumber(Number(value))} ${getUnit(currentKPI, valueType)}`, valueType === 'total' ? 'Cumulative total' : 'Average'];
 							}}
@@ -165,6 +165,7 @@ export const SectorChart = ({ filteredProjects, sectorStats, currentKPI, selecte
 							content={({ active, payload, label }) => {
 								if (active && payload && payload.length && selectedKPI === 'Embodied Carbon') {
 									const data = payload[0].payload;
+									const labelText = valueType === 'total' ? 'Cumulative' : 'Average';
 									return (
 										<div
 											style={{
@@ -173,8 +174,8 @@ export const SectorChart = ({ filteredProjects, sectorStats, currentKPI, selecte
 											}}
 										>
 											<p style={{ margin: 0, fontWeight: 'bold' }}>{`Sector: ${label}`}</p>
-											<p style={{ margin: 0, color: chartColors.primary }}>{`Average Whole Life Carbon: ${formatNumber(data.value)} ${getUnit(currentKPI, valueType)}`}</p>
-											<p style={{ margin: 0, color: chartColors.dark }}>{`Average Biogenic: ${formatNumber(data.biogenicValue)} ${getUnit(currentKPI, valueType)}`}</p>
+											<p style={{ margin: 0, color: chartColors.primary }}>{`${labelText} Whole Life Carbon: ${formatNumber(data.value)} ${getUnit(currentKPI, valueType)}`}</p>
+											<p style={{ margin: 0, color: chartColors.dark }}>{`${labelText} Biogenic: ${formatNumber(data.biogenicValue)} ${getUnit(currentKPI, valueType)}`}</p>
 										</div>
 									);
 								}

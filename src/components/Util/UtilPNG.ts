@@ -10,11 +10,11 @@ interface ExportPNGOptions {
 	selectedKPI2: string;
 	valueType: string;
 	showSingleProjectBenchmarks: boolean;
-	selectedBarChartBenchmark: string;
+	selectedSubSector: string;
 }
 
 export const exportChartToPNG = (options: ExportPNGOptions) => {
-	const { projects, chartType, selectedKPI1, selectedKPI2, valueType, showSingleProjectBenchmarks, selectedBarChartBenchmark } = options;
+	const { projects, chartType, selectedKPI1, selectedKPI2, valueType, showSingleProjectBenchmarks, selectedSubSector } = options;
 
 	// Find the chart SVG element - use specific selector to avoid conflicts
 	const chartContainer = document.querySelector('[data-chart="chart-container"]');
@@ -81,7 +81,7 @@ export const exportChartToPNG = (options: ExportPNGOptions) => {
 		// Get benchmark data for PNG export
 		const getBenchmarkDataForPNG = () => {
 			// Get UKNZCBS benchmark data for upfront carbon
-			if (selectedKPI1 === 'Upfront Carbon' && selectedBarChartBenchmark && valueType === 'average' && projects.length > 0) {
+			if (selectedKPI1 === 'Upfront Carbon' && selectedSubSector && valueType === 'average' && projects.length > 0) {
 				const benchmarkColor = getSectorBenchmarkColor(projects[0]['Primary Sector']);
 
 				// Get the PC date from the primary project to determine benchmark year
@@ -92,7 +92,7 @@ export const exportChartToPNG = (options: ExportPNGOptions) => {
 				const sectorData = uknzcbsBenchmarks[projects[0]['Primary Sector'] as keyof typeof uknzcbsBenchmarks];
 				if (!sectorData) return { lines: [], title: '' };
 
-				const subSectorData = sectorData[selectedBarChartBenchmark as keyof typeof sectorData];
+				const subSectorData = sectorData[selectedSubSector as keyof typeof sectorData];
 				if (!subSectorData) return { lines: [], title: '' };
 
 				const newBuildValue = subSectorData['New Build']?.[benchmarkYear as keyof (typeof subSectorData)['New Build']];
@@ -118,7 +118,7 @@ export const exportChartToPNG = (options: ExportPNGOptions) => {
 
 				return {
 					lines: benchmarkLines,
-					title: `UKNZCBS: ${selectedBarChartBenchmark}`,
+					title: `UKNZCBS: ${selectedSubSector}`,
 				};
 			}
 

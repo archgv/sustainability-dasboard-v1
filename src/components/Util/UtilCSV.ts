@@ -13,11 +13,11 @@ interface ExportCSVOptions {
 	valueType: string;
 	isComparingToSelf?: boolean;
 	showSingleProjectBenchmarks: boolean;
-	selectedBarChartBenchmark: string;
+	selectedSubSector: string;
 }
 
 export const exportChartToCSV = (options: ExportCSVOptions) => {
-	const { projects, chartType, selectedKPI1, selectedKPI2, valueType, isComparingToSelf = false, showSingleProjectBenchmarks, selectedBarChartBenchmark } = options;
+	const { projects, chartType, selectedKPI1, selectedKPI2, valueType, isComparingToSelf = false, showSingleProjectBenchmarks, selectedSubSector } = options;
 
 	const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
 	const kpi2Config = KPIOptions.find((kpi) => kpi.key === selectedKPI2);
@@ -71,7 +71,7 @@ export const exportChartToCSV = (options: ExportCSVOptions) => {
 	// Add benchmark data to CSV if available
 	const getBenchmarkDataForCSV = () => {
 		// Get UKNZCBS benchmark data for upfront carbon
-		if (selectedKPI1 === 'Upfront Carbon' && selectedBarChartBenchmark && valueType === 'average' && projects.length > 0) {
+		if (selectedKPI1 === 'Upfront Carbon' && selectedSubSector && valueType === 'average' && projects.length > 0) {
 			const primaryProject = projects[0];
 			const primarySector = primaryProject['Primary Sector'];
 
@@ -83,7 +83,7 @@ export const exportChartToCSV = (options: ExportCSVOptions) => {
 			const sectorData = uknzcbsBenchmarks[primarySector as keyof typeof uknzcbsBenchmarks];
 			if (!sectorData) return { lines: [], title: '' };
 
-			const subSectorData = sectorData[selectedBarChartBenchmark as keyof typeof sectorData];
+			const subSectorData = sectorData[selectedSubSector as keyof typeof sectorData];
 			if (!subSectorData) return { lines: [], title: '' };
 
 			const newBuildValue = subSectorData['New Build']?.[benchmarkYear as keyof (typeof subSectorData)['New Build']];
@@ -105,7 +105,7 @@ export const exportChartToCSV = (options: ExportCSVOptions) => {
 
 			return {
 				lines: benchmarkLines,
-				title: `UKNZCBS: ${selectedBarChartBenchmark}`,
+				title: `UKNZCBS: ${selectedSubSector}`,
 			};
 		}
 

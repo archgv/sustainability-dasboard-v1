@@ -35,7 +35,7 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 			valueType,
 			isComparingToSelf,
 			showSingleProjectBenchmarks,
-			selectedBarChartBenchmark: selectedSubSector,
+			selectedSubSector,
 		});
 	};
 
@@ -47,7 +47,7 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 			selectedKPI2,
 			valueType,
 			showSingleProjectBenchmarks,
-			selectedBarChartBenchmark: selectedSubSector,
+			selectedSubSector,
 		});
 	};
 
@@ -64,7 +64,7 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 				return <CompareTwo {...commonProps} selectedKPI2={selectedKPI2} />;
 
 			case 'Single Project':
-				return <SingleProject {...commonProps} showSingleProjectBenchmarks={showSingleProjectBenchmarks} selectedBarChartBenchmark={selectedSubSector} />;
+				return <SingleProject {...commonProps} showSingleProjectBenchmarks={showSingleProjectBenchmarks} selectedSubSector={selectedSubSector} />;
 
 			case 'Single Time':
 				return <SingleTime {...commonProps} selectedSubSector={selectedSubSector} />;
@@ -95,7 +95,7 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 					<h2 className="py-2">{getChartTitle(chartType, valueType, selectedKPI1, selectedKPI2)}</h2>
 					<div className="flex items-center space-x-2">
 						{/* Show benchmark toggle only for Embodied Carbon with average values */}
-						{selectedKPI1 === 'Embodied Carbon' && valueType === 'average' && chartType === 'Single Project' && (
+						{selectedKPI1 === 'Embodied Carbon' && chartType === 'Single Project' && (
 							<Button
 								variant={showSingleProjectBenchmarks ? 'default' : 'outline'}
 								size="sm"
@@ -118,26 +118,10 @@ export const Chart = ({ projects, isComparingToSelf = false, selectedRibaStages 
 					</div>
 				</div>
 
-				{/* Sub-sector toggle for upfront carbon timeline */}
-				{showSectorToggle && (
-					<div className="mb-2 flex justify-end items-center py-4">
-						<p className="text-sm font-medium mb-2 px-10" style={{ color: chartColors.pink }}>
-							UKNZCBS Benchmarks
-						</p>
-						<div className="flex flex-wrap gap-2">
-							{availableSubSectors.map((subSector) => (
-								<Button key={subSector} variant={selectedSubSector === subSector ? 'default' : 'outline'} size="sm" onClick={() => setSelectedSubSector(subSector)} className="text-xs">
-									{subSector}
-								</Button>
-							))}
-						</div>
-					</div>
-				)}
-
 				{/* Sub-sector toggle for upfront carbon bar chart */}
 				{showSectorToggle && (
 					<div className="mb-2 flex justify-end items-center py-4">
-						<p className="text-me font-medium mb-2 px-10" style={{ color: chartColors.pink }}>
+						<p className="text-me font-medium pr-4" style={{ color: chartColors.pink }}>
 							UKNZCBS Benchmarks
 						</p>
 						<div className="flex flex-wrap gap-2">

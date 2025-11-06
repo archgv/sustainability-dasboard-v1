@@ -54,8 +54,8 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 			? projects
 			: projects.filter((project) => {
 					const projectYear = new Date(project['PC Date']).getFullYear();
-					const filterYear = parseInt(yearFilter.replace('from-', ''));
-					return projectYear >= filterYear;
+					const filterYear = parseInt(yearFilter);
+					return projectYear == filterYear;
 			  });
 
 	const sectorStats = filteredProjects.reduce<SectorStatsMap>((acc, project: Project) => {
