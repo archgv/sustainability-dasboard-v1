@@ -100,7 +100,7 @@ export const AddRIBAStage = ({ stageNumber, stageData, projectGia, onDataUpdate,
 						<h3 className="text-lg font-semibold text-gray-500 py-0 px-6">Operational Energy</h3>
 
 						<TooltipField label="Energy measurement method" tooltip="Provide the methodology used for measuring operational energy">
-							<Select value={stageData['Method Energy Measurement'] || ''} onValueChange={(value) => handleInputChange('Method Energy Measurement', value)}>
+							<Select value={stageData['Energy Measurement Method'] || ''} onValueChange={(value) => handleInputChange('Energy Measurement Method', value)}>
 								<SelectTrigger>
 									<SelectValue placeholder="Confirm method" />
 								</SelectTrigger>

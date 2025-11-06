@@ -1,6 +1,6 @@
 import { Project } from '../Key/project';
 import { KPIOptions } from '../Key/KeyKPI';
-import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks, uknzcbsOperationalEnergyBenchmarks } from '@/data/benchmarkData';
+import { benchmarkEmbodiedCarbon, benchmarkUpfrontCarbon, benchmarkOperationalEnergy } from '@/data/benchmarkData';
 import { getGIA, getProjectCurrrentStage } from '../Util/UtilProject';
 
 export const getChartTitle = (chartType: string, valueType: string, selectedKPI1: string, selectedKPI2: string): string => {
@@ -22,7 +22,7 @@ export const getChartTitle = (chartType: string, valueType: string, selectedKPI1
 
 export const hasBenchmarks = (projects: Project[]): boolean => {
 	if (projects.length === 0) return false;
-	return !!totalEmbodiedCarbonBenchmarks[projects[0]['Primary Sector'] as keyof typeof totalEmbodiedCarbonBenchmarks];
+	return !!benchmarkEmbodiedCarbon[projects[0]['Primary Sector'] as keyof typeof benchmarkEmbodiedCarbon];
 };
 
 export const getAvailableSubSectors = (projects: Project[], selectedKPI1: string): string[] => {
@@ -30,10 +30,10 @@ export const getAvailableSubSectors = (projects: Project[], selectedKPI1: string
 
 	// Check both upfront carbon and operational energy benchmarks
 	if (selectedKPI1 === 'Upfront Carbon') {
-		const sectorData = uknzcbsBenchmarks[projects[0]['Primary Sector'] as keyof typeof uknzcbsBenchmarks];
+		const sectorData = benchmarkUpfrontCarbon[projects[0]['Primary Sector'] as keyof typeof benchmarkUpfrontCarbon];
 		return sectorData ? Object.keys(sectorData) : [];
 	} else if (selectedKPI1 === 'Operational Energy') {
-		const sectorData = uknzcbsOperationalEnergyBenchmarks[projects[0]['Primary Sector'] as keyof typeof uknzcbsOperationalEnergyBenchmarks];
+		const sectorData = benchmarkOperationalEnergy[projects[0]['Primary Sector'] as keyof typeof benchmarkOperationalEnergy];
 		return sectorData ? Object.keys(sectorData) : [];
 	}
 

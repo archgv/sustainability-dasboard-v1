@@ -3,7 +3,7 @@ import { Project } from '../Key/project';
 import { KPIOptions } from '../Key/KeyKPI';
 import { getSectorColor, getSectorBenchmarkColor } from '../Key/KeySector';
 import { formatNumber } from '@/lib/utils';
-import { uknzcbsBenchmarks, uknzcbsOperationalEnergyBenchmarks } from '@/data/benchmarkData';
+import { benchmarkUpfrontCarbon, benchmarkOperationalEnergy } from '@/data/benchmarkData';
 import { chartColors } from '../Key/KeyColor';
 import { generateNiceTicks } from '../Util/UtilTick';
 import { getResponsiveContainerProps, getChartProps, getCartesianGridProps, getYAxisProps, getXAxisProps, getTooltipContainerStyle, getUnit } from '../Util/ChartConfig';
@@ -45,11 +45,10 @@ export const SingleTime = ({ projects, selectedKPI1, valueType, isComparingToSel
 				'Structural Frame Materials': projectCurrentStage?.['Structural Frame Materials'],
 				displayName,
 				completionYear,
-				date: project['PC Year'],
 				...kpiValues,
 			};
 		})
-		.sort((a, b) => a.date - b.date);
+		.sort((a, b) => a.completionYear - b.completionYear);
 
 	// Get UKNZCBS benchmark data for timeline - ONLY for Upfront Carbon and Operational Energy with per sqm
 	const showBenchmarkUpfrontCarbon = valueType === 'average' && selectedKPI1 === 'Upfront Carbon' && chartData.length > 0;
@@ -61,7 +60,7 @@ export const SingleTime = ({ projects, selectedKPI1, valueType, isComparingToSel
 			return { newBuildData: [], retrofitData: [] };
 		}
 
-		const sectorData = uknzcbsBenchmarks[projects[0]['Primary Sector'] as keyof typeof uknzcbsBenchmarks];
+		const sectorData = benchmarkUpfrontCarbon[projects[0]['Primary Sector'] as keyof typeof benchmarkUpfrontCarbon];
 		if (!sectorData) {
 			return { newBuildData: [], retrofitData: [] };
 		}
@@ -103,7 +102,7 @@ export const SingleTime = ({ projects, selectedKPI1, valueType, isComparingToSel
 			return { newBuildData: [], retrofitData: [] };
 		}
 
-		const sectorData = uknzcbsOperationalEnergyBenchmarks[projects[0]['Primary Sector'] as keyof typeof uknzcbsOperationalEnergyBenchmarks];
+		const sectorData = benchmarkOperationalEnergy[projects[0]['Primary Sector'] as keyof typeof benchmarkOperationalEnergy];
 		if (!sectorData) {
 			return { newBuildData: [], retrofitData: [] };
 		}

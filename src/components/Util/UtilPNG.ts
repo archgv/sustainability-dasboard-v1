@@ -1,5 +1,5 @@
 import { Project } from '../Key/project';
-import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks } from '@/data/benchmarkData';
+import { benchmarkEmbodiedCarbon, benchmarkUpfrontCarbon } from '@/data/benchmarkData';
 import { getSectorBenchmarkColor } from '@/components/Key/KeySector';
 import { getChartTitle } from './UtilChart';
 
@@ -89,7 +89,7 @@ export const exportChartToPNG = (options: ExportPNGOptions) => {
 				if (benchmarkYear < 2025) benchmarkYear = 2025;
 
 				// Get benchmark values for this sector and sub-sector
-				const sectorData = uknzcbsBenchmarks[projects[0]['Primary Sector'] as keyof typeof uknzcbsBenchmarks];
+				const sectorData = benchmarkUpfrontCarbon[projects[0]['Primary Sector'] as keyof typeof benchmarkUpfrontCarbon];
 				if (!sectorData) return { lines: [], title: '' };
 
 				const subSectorData = sectorData[selectedSubSector as keyof typeof sectorData];
@@ -127,7 +127,7 @@ export const exportChartToPNG = (options: ExportPNGOptions) => {
 				const benchmarkColor = getSectorBenchmarkColor(projects[0]['Primary Sector']);
 
 				// Get benchmark values for this sector
-				const sectorBenchmarks = totalEmbodiedCarbonBenchmarks[projects[0]['Primary Sector'] as keyof typeof totalEmbodiedCarbonBenchmarks];
+				const sectorBenchmarks = benchmarkEmbodiedCarbon[projects[0]['Primary Sector'] as keyof typeof benchmarkEmbodiedCarbon];
 
 				if (!sectorBenchmarks) return { lines: [], title: '' };
 

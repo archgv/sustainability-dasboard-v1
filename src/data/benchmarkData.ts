@@ -1,5 +1,5 @@
-// Benchmark data for Embodied Carbon
-export const totalEmbodiedCarbonBenchmarks = {
+// Embodied Carbon - sector
+export const benchmarkEmbodiedCarbon = {
 	'Residential': {
 		'Business as usual': 1200,
 		'RIBA 2025': 800,
@@ -17,8 +17,8 @@ export const totalEmbodiedCarbonBenchmarks = {
 	},
 };
 
-// UKNZCBS benchmark data by sector with sub-sectors and build types
-export const uknzcbsBenchmarks = {
+// UKNZCBS Upfront Carbon - sector, sub-sectors, build types
+export const benchmarkUpfrontCarbon = {
 	'CCC': {
 		'Culture & entertainment (General)': {
 			'New Build': {
@@ -699,8 +699,8 @@ export const uknzcbsBenchmarks = {
 	},
 };
 
-// UKNZCBS Operational Energy benchmark data by sector with sub-sectors and build types
-export const uknzcbsOperationalEnergyBenchmarks = {
+// UKNZCBS Operational Energy - sector, sub-sectors, build types
+export const benchmarkOperationalEnergy = {
 	'CCC': {
 		'Culture & entertainment (Performance)': {
 			'New Build': {

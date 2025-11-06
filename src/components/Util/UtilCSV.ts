@@ -1,6 +1,6 @@
 import { Project } from '../Key/project';
 import { KPIOptions } from '../Key/KeyKPI';
-import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks } from '@/data/benchmarkData';
+import { benchmarkEmbodiedCarbon, benchmarkUpfrontCarbon } from '@/data/benchmarkData';
 import { getChartTitle, getProjectData } from './UtilChart';
 import { getUnit } from './ChartConfig';
 import { getGIA } from './UtilProject';
@@ -80,7 +80,7 @@ export const exportChartToCSV = (options: ExportCSVOptions) => {
 			if (benchmarkYear < 2025) benchmarkYear = 2025;
 
 			// Get benchmark values for this sector and sub-sector
-			const sectorData = uknzcbsBenchmarks[primarySector as keyof typeof uknzcbsBenchmarks];
+			const sectorData = benchmarkUpfrontCarbon[primarySector as keyof typeof benchmarkUpfrontCarbon];
 			if (!sectorData) return { lines: [], title: '' };
 
 			const subSectorData = sectorData[selectedSubSector as keyof typeof sectorData];
@@ -112,7 +112,7 @@ export const exportChartToCSV = (options: ExportCSVOptions) => {
 		// Get benchmark data for total embodied carbon
 		if (showSingleProjectBenchmarks && selectedKPI1 === 'Embodied Carbon' && valueType === 'average' && projects.length > 0) {
 			// Get benchmark values for this sector
-			const sectorBenchmarks = totalEmbodiedCarbonBenchmarks[projects[0]['Primary Sector'] as keyof typeof totalEmbodiedCarbonBenchmarks];
+			const sectorBenchmarks = benchmarkEmbodiedCarbon[projects[0]['Primary Sector'] as keyof typeof benchmarkEmbodiedCarbon];
 
 			if (!sectorBenchmarks) return { lines: [], title: '' };
 

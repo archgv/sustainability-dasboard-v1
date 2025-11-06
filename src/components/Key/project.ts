@@ -38,7 +38,7 @@ export interface Project {
 	'RIBA Stage': {
 		[K in StageKey]: {
 			'Updated GIA'?: number;
-			'Method Energy Measurement'?: string;
+			'Energy Measurement Method'?: string;
 
 			'Operational Energy': number;
 			'Operational Energy Part L': number;

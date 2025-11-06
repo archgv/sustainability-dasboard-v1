@@ -26,7 +26,6 @@ export const Selector = ({ chartType, setChartType, selectedKPI1, setSelectedKPI
 		setSelectedKPI2(KPIMatrix[selectedKPI1][0]);
 	}, [selectedKPI1, setSelectedKPI1, selectedKPI2, setSelectedKPI2]);
 
-	console.log(KPIMatrix[selectedKPI1][0]);
 	return (
 		<Card className="p-6">
 			<div className="flex flex-wrap items-center justify-between gap-4">
