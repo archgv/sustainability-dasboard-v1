@@ -43,9 +43,7 @@ export const Portfolio = ({ projects, isComparingToSelf = false, selectedRibaSta
 								</div>
 								<div className="flex items-center text-sm text-gray-600">
 									{/* <Calendar className="h-4 w-4 mr-2" /> */}
-									<span className="text-sm text-gray-600">
-										PC date: {project['Current RIBA Stage'] === '7' ? `${new Date(project['PC Date']).getFullYear()}` : `${new Date(project['PC Date']).getFullYear()}`}
-									</span>
+									<span className="text-sm text-gray-600">PC year: {project['PC Year']}</span>
 								</div>
 								<div className="flex items-center text-sm text-gray-600">
 									{/* <FileText className="h-4 w-4 mr-2" /> */}

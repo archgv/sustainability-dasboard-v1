@@ -36,7 +36,7 @@ export const SingleTime = ({ projects, selectedKPI1, valueType, isComparingToSel
 			const displayName = isComparingToSelf && project['Current RIBA Stage'] ? `${project['Project Name']} (RIBA ${project['Current RIBA Stage']})` : project['Project Name'];
 
 			// Extract year only from completion date
-			const completionYear = new Date(project['PC Date']).getFullYear();
+			const completionYear = project['PC Year'];
 
 			return {
 				'Project Name': project['Project Name'],
@@ -45,7 +45,7 @@ export const SingleTime = ({ projects, selectedKPI1, valueType, isComparingToSel
 				'Structural Frame Materials': projectCurrentStage?.['Structural Frame Materials'],
 				displayName,
 				completionYear,
-				date: new Date(project['PC Date']).getTime(),
+				date: project['PC Year'],
 				...kpiValues,
 			};
 		})

@@ -119,7 +119,7 @@ export const AddOverview = ({ selectedProject, projectData, onDataUpdate, onSave
 						</TooltipField>
 
 						<TooltipField label="PC year" tooltip="Enter the expected or actual Practical Completion year" required={true}>
-							<Select value={projectData['PC Date'] || ''} onValueChange={(value) => handleInputChange('PC Date', value)}>
+							<Select value={projectData['PC Year'] || ''} onValueChange={(value) => handleInputChange('PC Year', value)}>
 								<SelectTrigger>
 									<SelectValue placeholder="Select year" />
 								</SelectTrigger>
@@ -134,13 +134,13 @@ export const AddOverview = ({ selectedProject, projectData, onDataUpdate, onSave
 						</TooltipField>
 
 						<TooltipField
-							label="Construction start date"
-							tooltip="Enter the construction start date. This is essential as it identifies the associated UKNZCBS benchmark dataset"
+							label="Construction start year"
+							tooltip="Enter the construction start year. This is essential as it identifies the associated UKNZCBS benchmark dataset"
 							required={true}
 						>
-							<Select value={projectData['PC Date'] || ''} onValueChange={(value) => handleInputChange('PC Date', value)}>
+							<Select value={projectData['Construction Start Year'] || ''} onValueChange={(value) => handleInputChange('Construction Start Year', value)}>
 								<SelectTrigger>
-									<SelectValue placeholder="Select construction start date" />
+									<SelectValue placeholder="Select construction start year" />
 								</SelectTrigger>
 								<SelectContent>
 									{years.map((year) => (

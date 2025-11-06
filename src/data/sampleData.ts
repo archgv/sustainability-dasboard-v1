@@ -13,7 +13,8 @@ export const sampleProjects: Project[] = [
 		Neighbourhood: 'A',
 
 		GIA: 9800,
-		'PC Date': '2023-06-15',
+		'PC Year': 2023,
+		'Construction Start Year': 2023,
 
 		BREEAM: 'Outstanding',
 		LEED: 'Gold',
@@ -148,7 +149,8 @@ export const sampleProjects: Project[] = [
 		'Primary Sector': 'Residential',
 		'Project Type': 'New Build',
 		GIA: 12500,
-		'PC Date': '2022-11-30',
+		'PC Year': 2022,
+		'Construction Start Year': 2022,
 
 		BREEAM: 'Very Good',
 		LEED: 'Silver',
@@ -283,7 +285,8 @@ export const sampleProjects: Project[] = [
 		'Primary Sector': 'Education',
 		'Project Type': 'New Build',
 		GIA: 15200,
-		'PC Date': '2023-01-20',
+		'PC Year': 2023,
+		'Construction Start Year': 2023,
 
 		BREEAM: 'Outstanding',
 		LEED: 'Platinum',

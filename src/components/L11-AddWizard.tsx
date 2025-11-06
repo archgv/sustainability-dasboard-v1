@@ -23,7 +23,8 @@ export interface WizardData {
 	'Operational Energy Existing Building'?: string;
 	'GIA'?: string;
 	'Building Lifespan'?: string;
-	'PC Date'?: string;
+	'PC Year'?: string;
+	'Construction Start Year'?: string;
 
 	'EI Team Scope'?: string;
 	'External Consultants'?: string;
@@ -78,7 +79,8 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
 		'Operational Energy Existing Building': '',
 		'GIA': '',
 		'Building Lifespan': '',
-		'PC Date': '',
+		'PC Year': '',
+		'Construction Start Year': '',
 
 		'EI Team Scope': '',
 		'External Consultants': '',
@@ -109,7 +111,8 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
 			'Operational Energy Existing Building': '',
 			'GIA': '',
 			'Building Lifespan': '',
-			'PC Date': '',
+			'PC Year': '',
+			'Construction Start Year': '',
 
 			'EI Team Scope': '',
 			'External Consultants': '',
@@ -185,7 +188,8 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
 			id: projectId,
 			'Operational Energy Existing Building': project['Operational Energy Existing Building']?.toString() || '',
 			'GIA': project['GIA']?.toString() || '',
-			'PC Date': project['PC Date'] ? new Date(project['PC Date']).getFullYear().toString() : '',
+			'PC Year': project['PC Year'] ? project['PC Year'].toString() : '',
+			'Construction Start Year': project['Construction Start Year'] ? project['Construction Start Year'].toString() : '',
 
 			'BREEAM': mapCertificationValue(project['BREEAM'] || ''),
 			'LEED': mapCertificationValue(project['LEED'] || ''),

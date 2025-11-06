@@ -62,7 +62,7 @@ export const exportChartToCSV = (options: ExportCSVOptions) => {
 			row.push((project[selectedKPI2 as keyof Project] as number)?.toString() || '0');
 		}
 		if (chartType === 'Single Time') {
-			row.push(new Date(project['PC Date']).getFullYear().toString());
+			row.push(project['PC Year'].toString());
 		}
 
 		csvContent += row.join(',') + '\n';
@@ -75,8 +75,8 @@ export const exportChartToCSV = (options: ExportCSVOptions) => {
 			const primaryProject = projects[0];
 			const primarySector = primaryProject['Primary Sector'];
 
-			// Get the PC date from the primary project to determine benchmark year
-			let benchmarkYear = parseInt(primaryProject['PC Date']) || 2025;
+			// Get the PC year from the primary project to determine benchmark year
+			let benchmarkYear = primaryProject['PC Year'] || 2025;
 			if (benchmarkYear < 2025) benchmarkYear = 2025;
 
 			// Get benchmark values for this sector and sub-sector

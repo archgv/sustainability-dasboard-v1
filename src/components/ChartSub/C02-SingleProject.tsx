@@ -64,8 +64,8 @@ export const SingleProject = ({ projects, selectedKPI1, valueType, isComparingTo
 		// ALWAYS use the first project in the original array as the primary project
 		const benchmarkColor = getSectorBenchmarkColor(projects[0]['Primary Sector']);
 
-		// Get the PC date from the primary project to determine benchmark year
-		let benchmarkYear = parseInt(projects[0]['PC Date']) || 2025;
+		// Get the PC year from the primary project to determine benchmark year
+		let benchmarkYear = projects[0]['PC Year'] || 2025;
 		if (benchmarkYear < 2025) benchmarkYear = 2025; // Use 2025 for years before 2025
 
 		// Get benchmark values for this sector and sub-sector

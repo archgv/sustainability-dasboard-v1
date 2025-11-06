@@ -15,7 +15,8 @@ export interface Project {
 	'Operational Energy Existing Building'?: number;
 	GIA: number;
 	'Building Lifespan'?: number;
-	'PC Date': string;
+	'PC Year': number;
+	'Construction Start Year': number;
 
 	'EI Team Scope'?: string;
 	'External Consultants'?: string;
@@ -45,8 +46,8 @@ export interface Project {
 
 			'Space Heating Demand': number;
 
-			'Renewable Energy Generation': number;
 			'Renewable Energy Type'?: string;
+			'Renewable Energy Generation': number;
 			'EPC Rating'?: string;
 
 			'Embodied Carbon Measurement Method'?: string;
