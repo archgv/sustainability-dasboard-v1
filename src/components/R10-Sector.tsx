@@ -34,7 +34,7 @@ interface SectorStats {
 
 export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 	const [isExpanded, setIsExpanded] = useState(false);
-	const [selectedKPI, setSelectedKPI] = useState('Total Embodied Carbon');
+	const [selectedKPI, setSelectedKPI] = useState('Embodied Carbon');
 	const [valueType, setValueType] = useState<'average' | 'total'>('average');
 	const [yearFilter, setYearFilter] = useState('all');
 	// Force average for biodiversity metrics
@@ -76,9 +76,9 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
 		if (valueType === 'total' && gia > 0) {
 			let totalValue = value * gia;
 			// Convert to appropriate units for totals
-			if (selectedKPI === 'Upfront Carbon' || selectedKPI === 'Total Embodied Carbon') {
+			if (selectedKPI === 'Upfront Carbon' || selectedKPI === 'Embodied Carbon') {
 				totalValue = totalValue / 1000; // Convert kg to tonnes
-			} else if (selectedKPI === 'Operational Energy Total' || selectedKPI === 'Operational Energy Gas') {
+			} else if (selectedKPI === 'Operational Energy' || selectedKPI === 'Operational Energy Gas') {
 				totalValue = totalValue / 1000; // Convert kWh to MWh
 			}
 			acc[sector].totalValue += totalValue;

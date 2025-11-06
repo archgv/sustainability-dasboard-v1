@@ -48,17 +48,17 @@ export interface WizardData {
 			'Updated GIA'?: string;
 			'Method Energy Measurement'?: string;
 
-			'Operational Energy Total'?: string;
+			'Operational Energy'?: string;
 			'Operational Energy Part L'?: string;
 			'Operational Energy Gas'?: string;
 
 			'Space Heating Demand'?: string;
 			'Renewable Energy Type'?: string;
-			'Total Renewable Energy Generation'?: string;
+			'Renewable Energy Generation'?: string;
 			'Structural Frame Materials'?: string;
 
 			'Upfront Carbon'?: string;
-			'Total Embodied Carbon'?: string;
+			'Embodied Carbon'?: string;
 			'Biogenic Carbon'?: string;
 			'Embodied Carbon Scope Clarifications'?: string;
 
@@ -154,17 +154,17 @@ export const AddProjectDataWizard = ({ isOpen, onClose, onSave, projects }: AddP
 			'Updated GIA': stage?.['Updated GIA']?.toString() || '',
 			'Method Energy Measurement': stage?.['Method Energy Measurement']?.toString() || '',
 
-			'Operational Energy Total': stage?.['Operational Energy Total']?.toString() || '',
+			'Operational Energy': stage?.['Operational Energy']?.toString() || '',
 			'Operational Energy Part L': stage?.['Operational Energy Part L']?.toString() || '',
 			'Operational Energy Gas': stage?.['Operational Energy Gas']?.toString() || '',
 
 			'Space Heating Demand': stage?.['Space Heating Demand']?.toString() || '',
 			'Renewable Energy Type': stage?.['Renewable Energy Type'] || '',
-			'Total Renewable Energy Generation': stage?.['Total Renewable Energy Generation']?.toString() || '',
+			'Renewable Energy Generation': stage?.['Renewable Energy Generation']?.toString() || '',
 			'Structural Frame Materials': stage?.['Structural Frame Materials'] || '',
 
 			'Upfront Carbon': stage?.['Upfront Carbon']?.toString() || '',
-			'Total Embodied Carbon': stage?.['Total Embodied Carbon']?.toString() || '',
+			'Embodied Carbon': stage?.['Embodied Carbon']?.toString() || '',
 			'Biogenic Carbon': stage?.['Biogenic Carbon']?.toString() || '',
 			'Embodied Carbon Scope Clarifications': stage?.['Embodied Carbon Scope Clarifications'] || '',
 

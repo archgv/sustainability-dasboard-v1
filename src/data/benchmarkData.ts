@@ -1,4 +1,4 @@
-// Benchmark data for Total Embodied Carbon
+// Benchmark data for Embodied Carbon
 export const totalEmbodiedCarbonBenchmarks = {
 	'Residential': {
 		'Business as usual': 1200,

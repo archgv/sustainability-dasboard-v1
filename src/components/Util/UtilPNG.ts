@@ -1,276 +1,224 @@
-import { Project } from "../Key/project";
-import {
-  totalEmbodiedCarbonBenchmarks,
-  uknzcbsBenchmarks,
-} from "@/data/benchmarkData";
-import { getSectorBenchmarkColor } from "@/components/Key/KeySector";
-import { getChartTitle } from "./UtilChart";
+import { Project } from '../Key/project';
+import { totalEmbodiedCarbonBenchmarks, uknzcbsBenchmarks } from '@/data/benchmarkData';
+import { getSectorBenchmarkColor } from '@/components/Key/KeySector';
+import { getChartTitle } from './UtilChart';
 
 interface ExportPNGOptions {
-  projects: Project[];
-  chartType: string;
-  selectedKPI1: string;
-  selectedKPI2: string;
-  valueType: string;
-  showSingleProjectBenchmarks: boolean;
-  selectedBarChartBenchmark: string;
+	projects: Project[];
+	chartType: string;
+	selectedKPI1: string;
+	selectedKPI2: string;
+	valueType: string;
+	showSingleProjectBenchmarks: boolean;
+	selectedBarChartBenchmark: string;
 }
 
 export const exportChartToPNG = (options: ExportPNGOptions) => {
-  const {
-    projects,
-    chartType,
-    selectedKPI1,
-    selectedKPI2,
-    valueType,
-    showSingleProjectBenchmarks,
-    selectedBarChartBenchmark,
-  } = options;
+	const { projects, chartType, selectedKPI1, selectedKPI2, valueType, showSingleProjectBenchmarks, selectedBarChartBenchmark } = options;
 
-  // Find the chart SVG element - use specific selector to avoid conflicts
-  const chartContainer = document.querySelector(
-    '[data-chart="chart-container"]'
-  );
-  if (!chartContainer) {
-    console.error("Chart container not found");
-    return;
-  }
+	// Find the chart SVG element - use specific selector to avoid conflicts
+	const chartContainer = document.querySelector('[data-chart="chart-container"]');
+	if (!chartContainer) {
+		console.error('Chart container not found');
+		return;
+	}
 
-  const svgElement = chartContainer.querySelector("svg");
-  if (!svgElement) {
-    console.error("SVG element not found");
-    return;
-  }
+	const svgElement = chartContainer.querySelector('svg');
+	if (!svgElement) {
+		console.error('SVG element not found');
+		return;
+	}
 
-  // Create a canvas element with extra space for logo and title
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
-  if (!ctx) {
-    console.error("Canvas context not available");
-    return;
-  }
+	// Create a canvas element with extra space for logo and title
+	const canvas = document.createElement('canvas');
+	const ctx = canvas.getContext('2d');
+	if (!ctx) {
+		console.error('Canvas context not available');
+		return;
+	}
 
-  // Set canvas dimensions with extra height for logo, title, and bottom margin
-  const svgRect = svgElement.getBoundingClientRect();
-  canvas.width = svgRect.width * 2; // Higher resolution
-  canvas.height = (svgRect.height + 180) * 2; // Extra space for logo, title, and bottom margin
-  ctx.scale(2, 2);
+	// Set canvas dimensions with extra height for logo, title, and bottom margin
+	const svgRect = svgElement.getBoundingClientRect();
+	canvas.width = svgRect.width * 2; // Higher resolution
+	canvas.height = (svgRect.height + 180) * 2; // Extra space for logo, title, and bottom margin
+	ctx.scale(2, 2);
 
-  let yPosition = 30;
+	let yPosition = 30;
 
-  // Load and draw logo
-  const logo = new Image();
-  logo.crossOrigin = "anonymous";
-  logo.onload = () => {
-    // Fill white background
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, canvas.width / 2, canvas.height / 2);
+	// Load and draw logo
+	const logo = new Image();
+	logo.crossOrigin = 'anonymous';
+	logo.onload = () => {
+		// Fill white background
+		ctx.fillStyle = '#ffffff';
+		ctx.fillRect(0, 0, canvas.width / 2, canvas.height / 2);
 
-    // Draw logo at top left
-    const logoWidth = 80;
-    const logoHeight = (logo.height / logo.width) * logoWidth;
-    ctx.drawImage(logo, 20, yPosition, logoWidth, logoHeight);
+		// Draw logo at top left
+		const logoWidth = 80;
+		const logoHeight = (logo.height / logo.width) * logoWidth;
+		ctx.drawImage(logo, 20, yPosition, logoWidth, logoHeight);
 
-    // Set font and color for title (Arial font family)
-    ctx.font = "bold 18px Arial, sans-serif";
-    ctx.fillStyle = "#272727";
-    ctx.textAlign = "center";
+		// Set font and color for title (Arial font family)
+		ctx.font = 'bold 18px Arial, sans-serif';
+		ctx.fillStyle = '#272727';
+		ctx.textAlign = 'center';
 
-    yPosition = Math.max(yPosition + logoHeight + 20, 80);
+		yPosition = Math.max(yPosition + logoHeight + 20, 80);
 
-    // Get chart title and value type information
-    const chartTitle = getChartTitle(
-      chartType,
-      selectedKPI1,
-      selectedKPI2,
-      valueType
-    );
-    const valueTypeText =
-      valueType === "average" ? "(per sqm GIA)" : "(Total values)";
+		// Get chart title and value type information
+		const chartTitle = getChartTitle(chartType, selectedKPI1, selectedKPI2, valueType);
+		const valueTypeText = valueType === 'average' ? '(per sqm GIA)' : '(Total values)';
 
-    // Draw title
-    ctx.fillText(chartTitle, canvas.width / 4, yPosition);
+		// Draw title
+		ctx.fillText(chartTitle, canvas.width / 4, yPosition);
 
-    // Draw value type subtitle
-    ctx.font = "14px Arial, sans-serif";
-    ctx.fillText(valueTypeText, canvas.width / 4, yPosition + 25);
+		// Draw value type subtitle
+		ctx.font = '14px Arial, sans-serif';
+		ctx.fillText(valueTypeText, canvas.width / 4, yPosition + 25);
 
-    yPosition += 50;
+		yPosition += 50;
 
-    // Get benchmark data for PNG export
-    const getBenchmarkDataForPNG = () => {
-      // Get UKNZCBS benchmark data for upfront carbon
-      if (
-        selectedKPI1 === "Upfront Carbon" &&
-        selectedBarChartBenchmark &&
-        valueType === "average" &&
-        projects.length > 0
-      ) {
-        const benchmarkColor = getSectorBenchmarkColor(
-          projects[0]["Primary Sector"]
-        );
+		// Get benchmark data for PNG export
+		const getBenchmarkDataForPNG = () => {
+			// Get UKNZCBS benchmark data for upfront carbon
+			if (selectedKPI1 === 'Upfront Carbon' && selectedBarChartBenchmark && valueType === 'average' && projects.length > 0) {
+				const benchmarkColor = getSectorBenchmarkColor(projects[0]['Primary Sector']);
 
-        // Get the PC date from the primary project to determine benchmark year
-        let benchmarkYear = parseInt(projects[0]["PC Date"]) || 2025;
-        if (benchmarkYear < 2025) benchmarkYear = 2025;
+				// Get the PC date from the primary project to determine benchmark year
+				let benchmarkYear = parseInt(projects[0]['PC Date']) || 2025;
+				if (benchmarkYear < 2025) benchmarkYear = 2025;
 
-        // Get benchmark values for this sector and sub-sector
-        const sectorData =
-          uknzcbsBenchmarks[
-            projects[0]["Primary Sector"] as keyof typeof uknzcbsBenchmarks
-          ];
-        if (!sectorData) return { lines: [], title: "" };
+				// Get benchmark values for this sector and sub-sector
+				const sectorData = uknzcbsBenchmarks[projects[0]['Primary Sector'] as keyof typeof uknzcbsBenchmarks];
+				if (!sectorData) return { lines: [], title: '' };
 
-        const subSectorData =
-          sectorData[selectedBarChartBenchmark as keyof typeof sectorData];
-        if (!subSectorData) return { lines: [], title: "" };
+				const subSectorData = sectorData[selectedBarChartBenchmark as keyof typeof sectorData];
+				if (!subSectorData) return { lines: [], title: '' };
 
-        const newBuildValue =
-          subSectorData["New Build"]?.[
-            benchmarkYear as keyof (typeof subSectorData)["New Build"]
-          ];
-        const retrofitValue =
-          subSectorData["Retrofit"]?.[
-            benchmarkYear as keyof (typeof subSectorData)["Retrofit"]
-          ];
+				const newBuildValue = subSectorData['New Build']?.[benchmarkYear as keyof (typeof subSectorData)['New Build']];
+				const retrofitValue = subSectorData['Retrofit']?.[benchmarkYear as keyof (typeof subSectorData)['Retrofit']];
 
-        const benchmarkLines = [];
-        if (newBuildValue !== undefined) {
-          benchmarkLines.push({
-            name: `New Build (PC ${benchmarkYear})`,
-            value: newBuildValue,
-            color: benchmarkColor,
-            year: benchmarkYear,
-          });
-        }
-        if (retrofitValue !== undefined) {
-          benchmarkLines.push({
-            name: `Retrofit (PC ${benchmarkYear})`,
-            value: retrofitValue,
-            color: benchmarkColor,
-            year: benchmarkYear,
-          });
-        }
+				const benchmarkLines = [];
+				if (newBuildValue !== undefined) {
+					benchmarkLines.push({
+						name: `New Build (PC ${benchmarkYear})`,
+						value: newBuildValue,
+						color: benchmarkColor,
+						year: benchmarkYear,
+					});
+				}
+				if (retrofitValue !== undefined) {
+					benchmarkLines.push({
+						name: `Retrofit (PC ${benchmarkYear})`,
+						value: retrofitValue,
+						color: benchmarkColor,
+						year: benchmarkYear,
+					});
+				}
 
-        return {
-          lines: benchmarkLines,
-          title: `UKNZCBS: ${selectedBarChartBenchmark}`,
-        };
-      }
+				return {
+					lines: benchmarkLines,
+					title: `UKNZCBS: ${selectedBarChartBenchmark}`,
+				};
+			}
 
-      // Get benchmark data for total embodied carbon
-      if (
-        showSingleProjectBenchmarks &&
-        selectedKPI1 === "Total Embodied Carbon" &&
-        valueType === "average" &&
-        projects.length > 0
-      ) {
-        const benchmarkColor = getSectorBenchmarkColor(
-          projects[0]["Primary Sector"]
-        );
+			// Get benchmark data for total embodied carbon
+			if (showSingleProjectBenchmarks && selectedKPI1 === 'Embodied Carbon' && valueType === 'average' && projects.length > 0) {
+				const benchmarkColor = getSectorBenchmarkColor(projects[0]['Primary Sector']);
 
-        // Get benchmark values for this sector
-        const sectorBenchmarks =
-          totalEmbodiedCarbonBenchmarks[
-            projects[0][
-              "Primary Sector"
-            ] as keyof typeof totalEmbodiedCarbonBenchmarks
-          ];
+				// Get benchmark values for this sector
+				const sectorBenchmarks = totalEmbodiedCarbonBenchmarks[projects[0]['Primary Sector'] as keyof typeof totalEmbodiedCarbonBenchmarks];
 
-        if (!sectorBenchmarks) return { lines: [], title: "" };
+				if (!sectorBenchmarks) return { lines: [], title: '' };
 
-        const benchmarkLines = Object.entries(sectorBenchmarks).map(
-          ([name, value]) => ({
-            name,
-            value,
-            color: benchmarkColor,
-          })
-        );
+				const benchmarkLines = Object.entries(sectorBenchmarks).map(([name, value]) => ({
+					name,
+					value,
+					color: benchmarkColor,
+				}));
 
-        return {
-          lines: benchmarkLines,
-          title: `Benchmarks: ${projects[0]["Primary Sector"]}`,
-        };
-      }
+				return {
+					lines: benchmarkLines,
+					title: `Benchmarks: ${projects[0]['Primary Sector']}`,
+				};
+			}
 
-      return { lines: [], title: "" };
-    };
+			return { lines: [], title: '' };
+		};
 
-    // Add benchmark information if available
-    const benchmarkData = getBenchmarkDataForPNG();
-    if (benchmarkData.lines.length > 0) {
-      // Draw benchmark title
-      ctx.font = "bold 14px Arial, sans-serif";
-      ctx.fillStyle = "#666666";
-      ctx.textAlign = "left";
+		// Add benchmark information if available
+		const benchmarkData = getBenchmarkDataForPNG();
+		if (benchmarkData.lines.length > 0) {
+			// Draw benchmark title
+			ctx.font = 'bold 14px Arial, sans-serif';
+			ctx.fillStyle = '#666666';
+			ctx.textAlign = 'left';
 
-      ctx.fillText(benchmarkData.title, 20, yPosition);
-      yPosition += 30;
+			ctx.fillText(benchmarkData.title, 20, yPosition);
+			yPosition += 30;
 
-      // Draw benchmark legend
-      ctx.font = "12px Arial, sans-serif";
-      let xPos = 20;
+			// Draw benchmark legend
+			ctx.font = '12px Arial, sans-serif';
+			let xPos = 20;
 
-      benchmarkData.lines.forEach((benchmark, index) => {
-        // Draw line indicator
-        ctx.strokeStyle = benchmark.color;
-        ctx.lineWidth = 2;
-        ctx.setLineDash(
-          benchmark.name.includes("New Build") ? [5, 5] : [10, 5]
-        );
-        ctx.beginPath();
-        ctx.moveTo(xPos, yPosition - 5);
-        ctx.lineTo(xPos + 24, yPosition - 5);
-        ctx.stroke();
-        ctx.setLineDash([]); // Reset dash pattern
+			benchmarkData.lines.forEach((benchmark, index) => {
+				// Draw line indicator
+				ctx.strokeStyle = benchmark.color;
+				ctx.lineWidth = 2;
+				ctx.setLineDash(benchmark.name.includes('New Build') ? [5, 5] : [10, 5]);
+				ctx.beginPath();
+				ctx.moveTo(xPos, yPosition - 5);
+				ctx.lineTo(xPos + 24, yPosition - 5);
+				ctx.stroke();
+				ctx.setLineDash([]); // Reset dash pattern
 
-        // Draw text
-        ctx.fillStyle = "#272727";
-        ctx.fillText(benchmark.name, xPos + 30, yPosition);
+				// Draw text
+				ctx.fillStyle = '#272727';
+				ctx.fillText(benchmark.name, xPos + 30, yPosition);
 
-        xPos += 200; // Space for next legend item
-        if (xPos > canvas.width / 2 - 200) {
-          xPos = 20;
-          yPosition += 20;
-        }
-      });
+				xPos += 200; // Space for next legend item
+				if (xPos > canvas.width / 2 - 200) {
+					xPos = 20;
+					yPosition += 20;
+				}
+			});
 
-      yPosition += 30;
-    }
+			yPosition += 30;
+		}
 
-    ctx.fillStyle = "#272727"; // Reset color
-    ctx.textAlign = "center"; // Reset alignment
+		ctx.fillStyle = '#272727'; // Reset color
+		ctx.textAlign = 'center'; // Reset alignment
 
-    // Convert SVG to data URL
-    const svgData = new XMLSerializer().serializeToString(svgElement);
-    const svgBlob = new Blob([svgData], {
-      type: "image/svg+xml;charset=utf-8",
-    });
-    const svgUrl = URL.createObjectURL(svgBlob);
+		// Convert SVG to data URL
+		const svgData = new XMLSerializer().serializeToString(svgElement);
+		const svgBlob = new Blob([svgData], {
+			type: 'image/svg+xml;charset=utf-8',
+		});
+		const svgUrl = URL.createObjectURL(svgBlob);
 
-    // Create image and draw to canvas
-    const img = new Image();
-    img.onload = () => {
-      // Draw the SVG image below the title
-      ctx.drawImage(img, 0, yPosition, svgRect.width, svgRect.height);
+		// Create image and draw to canvas
+		const img = new Image();
+		img.onload = () => {
+			// Draw the SVG image below the title
+			ctx.drawImage(img, 0, yPosition, svgRect.width, svgRect.height);
 
-      // Convert canvas to PNG and download
-      canvas.toBlob((blob) => {
-        if (blob) {
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = `chart-${selectedKPI1}-${valueType}-${Date.now()}.png`;
-          a.click();
-          URL.revokeObjectURL(url);
-        }
-      }, "image/png");
+			// Convert canvas to PNG and download
+			canvas.toBlob((blob) => {
+				if (blob) {
+					const url = URL.createObjectURL(blob);
+					const a = document.createElement('a');
+					a.href = url;
+					a.download = `chart-${selectedKPI1}-${valueType}-${Date.now()}.png`;
+					a.click();
+					URL.revokeObjectURL(url);
+				}
+			}, 'image/png');
 
-      URL.revokeObjectURL(svgUrl);
-    };
+			URL.revokeObjectURL(svgUrl);
+		};
 
-    img.src = svgUrl;
-  };
+		img.src = svgUrl;
+	};
 
-  logo.src = "/lovable-uploads/4ce0bfd4-e09c-45a3-bb7c-0a84df6eca91.png";
+	logo.src = '/lovable-uploads/4ce0bfd4-e09c-45a3-bb7c-0a84df6eca91.png';
 };
