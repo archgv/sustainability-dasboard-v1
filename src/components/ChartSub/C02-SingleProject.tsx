@@ -150,7 +150,7 @@ export const SingleProject = ({ projects, selectedKPI1, valueType, isComparingTo
 							valueType === 'average' && selectedKPI1 === 'Embodied Carbon'
 								? [0, 1600]
 								: valueType === 'average' && selectedKPI1 === 'Operational Energy'
-								? [0, 300]
+								? [0, 500]
 								: valueType === 'average' && selectedKPI1 === 'Upfront Carbon'
 								? [0, 1000]
 								: [0, 'dataMax']
@@ -159,7 +159,7 @@ export const SingleProject = ({ projects, selectedKPI1, valueType, isComparingTo
 							valueType === 'average' && selectedKPI1 === 'Embodied Carbon'
 								? [0, 400, 800, 1200, 1600]
 								: valueType === 'average' && selectedKPI1 === 'Operational Energy'
-								? [0, 50, 100, 150, 200, 250, 300]
+								? [0, 100, 200, 300, 400, 500]
 								: valueType === 'average' && selectedKPI1 === 'Upfront Carbon'
 								? [0, 200, 400, 600, 800, 1000]
 								: (() => {
