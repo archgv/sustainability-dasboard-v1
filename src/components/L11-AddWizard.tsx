@@ -6,6 +6,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { AlertTriangle } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Project } from "@/components/Key/project";
 import { AddSelection } from "./AddSub/P00-Selection";
@@ -95,6 +108,9 @@ export const AddProjectDataWizard = ({
   const [currentStep, setCurrentStep] =
     useState<WizardStep>("project-selection");
   const [activeTab, setActiveTab] = useState<string>("project-overview");
+  const [showExitDialog, setShowExitDialog] = useState(false);
+  const [showCancelDialog, setShowCancelDialog] = useState(false);
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [wizardData, setWizardData] = useState<WizardData>({
     id: "",
     "Operational Energy Existing Building": "",
@@ -284,7 +300,7 @@ export const AddProjectDataWizard = ({
 
     // Tabbed interface for all other steps
     return (
-      <div className="space-y-4">
+      <div className="flex flex-col h-full space-y-4">
         <DialogHeader>
           <DialogTitle className="text-2xl font-semibold">
             Project Data - {selectedProject?.["id"]}{" "}
@@ -292,90 +308,161 @@ export const AddProjectDataWizard = ({
           </DialogTitle>
         </DialogHeader>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="flex h-12 gap-2 rounded-full bg-gray-100 p-4 my-4">
-            <TabsTrigger
-              value="project-overview"
-              className="rounded-full px-4 py-2 text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-gray-900"
-            >
-              <span>Overview</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="certifications"
-              className="rounded-full px-4 py-2 text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-gray-900"
-            >
-              <span>Certifications</span>
-            </TabsTrigger>
-
-            <div className="flex-[2] flex gap-4 justify-end items-center text-sm">
-              <span>RIBA Stage</span>
-            </div>
-
-            {StageKeys.map((key) => (
+        <div className="flex-1 overflow-hidden">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full h-full flex flex-col">
+            <TabsList className="flex h-12 gap-2 rounded-full bg-gray-100 p-4 my-4">
               <TabsTrigger
-                value={key}
+                value="project-overview"
                 className="rounded-full px-4 py-2 text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-gray-900"
               >
-                <span>{key}</span>
+                <span>Overview</span>
               </TabsTrigger>
-            ))}
-          </TabsList>
+              <TabsTrigger
+                value="certifications"
+                className="rounded-full px-4 py-2 text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-gray-900"
+              >
+                <span>Certifications</span>
+              </TabsTrigger>
 
-          <TabsContent value="project-overview">
-            <AddOverview
-              selectedProject={selectedProject}
-              projectData={wizardData}
-              onDataUpdate={(data) => updateWizardData(data)}
-              onSave={handleSave}
-              onSaveAndExit={handleSaveAndExit}
-              onCancel={handleCancel}
-            />
-          </TabsContent>
+              <div className="flex-[2] flex gap-4 justify-end items-center text-sm">
+                <span>RIBA Stage</span>
+              </div>
 
-          <TabsContent value="certifications">
-            <AddCertifications
-              projectData={wizardData}
-              onDataUpdate={(data) => updateWizardData(data)}
-              onSave={handleSave}
-              onSaveAndExit={handleSaveAndExit}
-              onCancel={handleCancel}
-            />
-          </TabsContent>
+              {StageKeys.map((key) => (
+                <TabsTrigger
+                  value={key}
+                  className="rounded-full px-4 py-2 text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-gray-900"
+                >
+                  <span>{key}</span>
+                </TabsTrigger>
+              ))}
+            </TabsList>
 
-          {StageKeys.map((stage) => (
-            <TabsContent key={stage} value={stage}>
-              <AddRIBAStage
-                stageNumber={stage.split("-")[1]}
-                stageData={wizardData["RIBA Stage"][stage] || {}}
-                projectGia={wizardData["GIA"]}
-                onDataUpdate={(data) => {
-                  const updatedRibaStages = {
-                    ...wizardData["RIBA Stage"],
-                    [stage]: data,
-                  };
-                  updateWizardData({
-                    "RIBA Stage": updatedRibaStages,
-                  });
-                }}
-                onSave={handleSave}
-                onSaveAndExit={handleSaveAndExit}
-                onCancel={handleCancel}
-                currentStep={stage as WizardStep}
-                completedSteps={[]}
-                stageCompletionData={{
-                  "riba-1": {
-                    completed: true,
-                    date: "10.01.2025",
-                  },
-                  "riba-2": {
-                    completed: true,
-                    date: "12.06.2025",
-                  },
-                }}
-              />
-            </TabsContent>
-          ))}
-        </Tabs>
+            <div className="flex-1 overflow-hidden">
+              <TabsContent value="project-overview" className="h-full mt-0">
+                <AddOverview
+                  selectedProject={selectedProject}
+                  projectData={wizardData}
+                  onDataUpdate={(data) => updateWizardData(data)}
+                />
+              </TabsContent>
+
+              <TabsContent value="certifications" className="h-full mt-0">
+                <AddCertifications
+                  projectData={wizardData}
+                  onDataUpdate={(data) => updateWizardData(data)}
+                />
+              </TabsContent>
+
+              {StageKeys.map((stage) => (
+                <TabsContent key={stage} value={stage} className="h-full mt-0">
+                  <AddRIBAStage
+                    stageNumber={stage.split("-")[1]}
+                    stageData={wizardData["RIBA Stage"][stage] || {}}
+                    projectGia={wizardData["GIA"]}
+                    onDataUpdate={(data) => {
+                      const updatedRibaStages = {
+                        ...wizardData["RIBA Stage"],
+                        [stage]: data,
+                      };
+                      updateWizardData({
+                        "RIBA Stage": updatedRibaStages,
+                      });
+                    }}
+                    currentStep={stage as WizardStep}
+                    completedSteps={[]}
+                    stageCompletionData={{
+                      "riba-1": {
+                        completed: true,
+                        date: "10.01.2025",
+                      },
+                      "riba-2": {
+                        completed: true,
+                        date: "12.06.2025",
+                      },
+                    }}
+                  />
+                </TabsContent>
+              ))}
+            </div>
+          </Tabs>
+        </div>
+
+        {/* Consolidated footer buttons */}
+        <div className="p-2 bg-background shadow-inner rounded-[20px]">
+          <div className="flex justify-between">
+            <AlertDialog
+              open={showCancelDialog}
+              onOpenChange={setShowCancelDialog}
+            >
+              <AlertDialogTrigger asChild>
+                <Button variant="outline">Cancel</Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle className="flex items-center gap-2">
+                    <AlertTriangle className="h-5 w-5 text-amber-500" />
+                    Are you sure you want to cancel?
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    All unsaved work will be lost.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Keep editing</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleCancel}>
+                    Discard changes and exit
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+
+            <div className="flex gap-2">
+              <AlertDialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
+                <AlertDialogTrigger asChild>
+                  <Button variant="outline">Save</Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Project data saved successfully
+                    </AlertDialogTitle>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogAction
+                      onClick={() => {
+                        handleSave();
+                        setShowSaveDialog(false);
+                      }}
+                    >
+                      OK
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+
+              <AlertDialog open={showExitDialog} onOpenChange={setShowExitDialog}>
+                <AlertDialogTrigger asChild>
+                  <Button>Save & Exit</Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className="flex items-center gap-2">
+                      <AlertTriangle className="h-5 w-5 text-amber-500" />
+                      Save progress and exit?
+                    </AlertDialogTitle>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Keep editing</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleSaveAndExit}>
+                      Yes, Save & Exit
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
+          </div>
+        </div>
       </div>
     );
   };
