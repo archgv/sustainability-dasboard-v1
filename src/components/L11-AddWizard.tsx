@@ -311,48 +311,14 @@ export const AddProjectDataWizard = ({
               <span>RIBA Stage</span>
             </div>
 
-            <TabsTrigger
-              value="1"
-              className="rounded-full px-4 py-2 text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-gray-900"
-            >
-              <span>1</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="2"
-              className="rounded-full px-4 py-2 text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-gray-900"
-            >
-              <span>2</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="3"
-              className="rounded-full px-4 py-2 text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-gray-900"
-            >
-              <span>3</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="4"
-              className="rounded-full px-4 py-2 text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-gray-900"
-            >
-              <span>4</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="5"
-              className="rounded-full px-4 py-2 text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-gray-900"
-            >
-              <span>5</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="6"
-              className="rounded-full px-4 py-2 text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-gray-900"
-            >
-              <span>6</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="7"
-              className="rounded-full px-4 py-2 text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-gray-900"
-            >
-              <span>7</span>
-            </TabsTrigger>
+            {StageKeys.map((key) => (
+              <TabsTrigger
+                value={key}
+                className="rounded-full px-4 py-2 text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-gray-900"
+              >
+                <span>{key}</span>
+              </TabsTrigger>
+            ))}
           </TabsList>
 
           <TabsContent value="project-overview">

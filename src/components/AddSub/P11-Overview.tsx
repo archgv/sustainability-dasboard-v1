@@ -70,7 +70,7 @@ export const AddOverview = ({
   }
 
   return (
-    <div className="flex flex-col h-full max-h-[70vh]">
+    <div className="flex flex-col h-full max-h-[70vh] space-y-4">
       {/* Scrollable content area */}
       <div className="flex-1 overflow-y-auto space-y-6 pr-2">
         {/* Project Information */}
@@ -315,7 +315,7 @@ export const AddOverview = ({
       </div>
 
       {/* Fixed footer buttons */}
-      <div className="pt-4 border-t bg-background">
+      <div className="p-2 bg-background shadow-inner rounded-[20px]">
         <div className="flex justify-between">
           <AlertDialog
             open={showCancelDialog}

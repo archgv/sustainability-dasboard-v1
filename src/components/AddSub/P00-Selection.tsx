@@ -17,7 +17,6 @@ import {
 import { Check, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Project } from "@/components/Key/project";
-import { WizardProgressIndicator } from "./P10-Progress";
 
 interface ProjectSelectionProps {
   projects: Project[];
@@ -61,11 +60,6 @@ export const AddSelection = ({
           Add Project Data
         </DialogTitle>
       </DialogHeader>
-
-      <WizardProgressIndicator
-        currentStep="project-selection"
-        completedSteps={[]}
-      />
 
       <div className="space-y-4">
         <div>
