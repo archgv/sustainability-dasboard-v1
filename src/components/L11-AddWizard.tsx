@@ -27,6 +27,90 @@ import { AddOverview } from "./AddSub/P11-Overview";
 import { AddCertifications } from "./AddSub/P12-Certifications";
 import { AddRIBAStage } from "./AddSub/P13-RIBAStage";
 import { StageKey, StageKeys } from "./Key/KeyStage";
+import { z } from "zod";
+
+const ribaStageSchema = z.object({
+  "Operational Energy": z.string().refine(
+    (val) => {
+      if (!val || val === "") return true;
+      const num = parseFloat(val);
+      return !isNaN(num) && num >= 0 && num <= 500;
+    },
+    { message: "Operational Energy must be between 0-500 kWh/m²/yr" }
+  ),
+  "Operational Energy Part L": z.string().refine(
+    (val) => {
+      if (!val || val === "") return true;
+      const num = parseFloat(val);
+      return !isNaN(num) && num >= 0 && num <= 500;
+    },
+    { message: "Operational Energy Part L must be between 0-500 kWh/m²/yr" }
+  ),
+  "Operational Energy Gas": z.string().refine(
+    (val) => {
+      if (!val || val === "") return true;
+      const num = parseFloat(val);
+      return !isNaN(num) && num >= 0 && num <= 300;
+    },
+    { message: "Operational Energy Gas must be between 0-300 kWh/m²/yr" }
+  ),
+  "Space Heating Demand": z.string().refine(
+    (val) => {
+      if (!val || val === "") return true;
+      const num = parseFloat(val);
+      return !isNaN(num) && num >= 0 && num <= 300;
+    },
+    { message: "Space Heating Demand must be between 0-300 kWh/m²/yr" }
+  ),
+  "Upfront Carbon": z.string().refine(
+    (val) => {
+      if (!val || val === "") return true;
+      const num = parseFloat(val);
+      return !isNaN(num) && num >= 0 && num <= 1500;
+    },
+    { message: "Upfront Carbon must be between 0-1500 kgCO₂e/m²" }
+  ),
+  "Embodied Carbon": z.string().refine(
+    (val) => {
+      if (!val || val === "") return true;
+      const num = parseFloat(val);
+      return !isNaN(num) && num >= 0 && num <= 2500;
+    },
+    { message: "Total Embodied Carbon must be between 0-2500 kgCO₂e/m²" }
+  ),
+  "Biogenic Carbon": z.string().refine(
+    (val) => {
+      if (!val || val === "") return true;
+      const num = parseFloat(val);
+      return !isNaN(num) && num >= -600 && num <= 0;
+    },
+    { message: "Biogenic Carbon must be between -600 to 0 kgCO₂e/m²" }
+  ),
+  "Biodiversity Net Gain": z.string().refine(
+    (val) => {
+      if (!val || val === "") return true;
+      const num = parseFloat(val);
+      return !isNaN(num) && num >= 0 && num <= 200;
+    },
+    { message: "Biodiversity Net Gain must be between 0-200%" }
+  ),
+  "Habitats Units Gained": z.string().refine(
+    (val) => {
+      if (!val || val === "") return true;
+      const num = parseFloat(val);
+      return !isNaN(num) && num >= 0 && num <= 50;
+    },
+    { message: "Habitat Units Gained must be between 0-50" }
+  ),
+  "Urban Greening Factor": z.string().refine(
+    (val) => {
+      if (!val || val === "") return true;
+      const num = parseFloat(val);
+      return !isNaN(num) && num >= 0 && num <= 10;
+    },
+    { message: "Urban Greening Factor must be between 0-10" }
+  ),
+});
 
 interface AddProjectDataWizardProps {
   isOpen: boolean;
@@ -188,6 +272,47 @@ export const AddProjectDataWizard = ({
     }
   }, [isOpen]);
 
+  // Helper function to validate a single RIBA stage
+  const validateRIBAStage = (
+    stageKey: string,
+    stageData: Partial<WizardData["RIBA Stage"][StageKey]>
+  ): string[] => {
+    const result = ribaStageSchema.safeParse({
+      "Operational Energy": stageData["Operational Energy"] || "",
+      "Operational Energy Part L": stageData["Operational Energy Part L"] || "",
+      "Operational Energy Gas": stageData["Operational Energy Gas"] || "",
+      "Space Heating Demand": stageData["Space Heating Demand"] || "",
+      "Upfront Carbon": stageData["Upfront Carbon"] || "",
+      "Embodied Carbon": stageData["Embodied Carbon"] || "",
+      "Biogenic Carbon": stageData["Biogenic Carbon"] || "",
+      "Biodiversity Net Gain": stageData["Biodiversity Net Gain"] || "",
+      "Habitats Units Gained": stageData["Habitats Units Gained"] || "",
+      "Urban Greening Factor": stageData["Urban Greening Factor"] || "",
+    });
+
+    if (!result.success) {
+      return result.error.errors.map((err) => err.message);
+    }
+    return [];
+  };
+
+  // Validate all RIBA stages
+  const validateAllRIBAStages = (wizardDataToValidate: WizardData) => {
+    const errors: { tab: string; errors: string[] }[] = [];
+
+    StageKeys.forEach((stageKey) => {
+      const stageData = wizardDataToValidate["RIBA Stage"][stageKey];
+      if (stageData) {
+        const stageErrors = validateRIBAStage(stageKey, stageData);
+        if (stageErrors.length > 0) {
+          errors.push({ tab: stageKey, errors: stageErrors });
+        }
+      }
+    });
+
+    setValidationErrors(errors);
+  };
+
   // Helper function to populate wizard data with existing project data
   const populateWizardDataFromProject = (projectId: string) => {
     const project = projects.find((p) => p.id === projectId);
@@ -241,8 +366,7 @@ export const AddProjectDataWizard = ({
       {} as WizardData["RIBA Stage"]
     );
 
-    setWizardData((prev) => ({
-      ...prev,
+    const newWizardData: WizardData = {
       id: projectId,
       "Operational Energy Existing Building":
         project["Operational Energy Existing Building"]?.toString() || "",
@@ -252,17 +376,30 @@ export const AddProjectDataWizard = ({
         ? project["Construction Start Year"].toString()
         : "",
 
+      "EI Team Scope": "",
+      "External Consultants": "",
+      "Project Lead": "",
+      "Mission Statement": "",
+
       BREEAM: mapCertificationValue(project["BREEAM"] || ""),
       LEED: mapCertificationValue(project["LEED"] || ""),
       WELL: mapCertificationValue(project["WELL"] || ""),
+      Fitwell: "",
       Passivhaus: project["Passivhaus"] ? "Passivhaus" : "",
       EnerPHit: project["EnerPHit"] ? "EnerPHit" : "",
+      UKNZCBS: "",
       NABERS: project["NABERS"]?.includes("Star") ? "yes" : "",
-      "RIBA Stage": {
-        ...prev["RIBA Stage"],
-        ...ribaStagesData,
-      },
-    }));
+      "Other Cerification": "",
+
+      "Current RIBA Stage": "",
+
+      "RIBA Stage": ribaStagesData,
+    };
+
+    setWizardData(newWizardData);
+
+    // Validate all RIBA stages after population
+    validateAllRIBAStages(newWizardData);
 
     // Move to tabbed interface after project selection
     setCurrentStep("project-overview");
