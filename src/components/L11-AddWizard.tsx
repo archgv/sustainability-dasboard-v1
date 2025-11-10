@@ -288,115 +288,135 @@ export const AddProjectDataWizard = ({
   const renderCurrentStep = () => {
     if (currentStep === "project-selection") {
       return (
-        <AddSelection
-          projects={projects}
-          id={wizardData.id}
-          onProjectSelect={handleProjectSelect}
-          onNext={() => setCurrentStep("project-overview")}
-          onCancel={onClose}
-        />
+        <div className="p-6">
+          <AddSelection
+            projects={projects}
+            id={wizardData.id}
+            onProjectSelect={handleProjectSelect}
+            onNext={() => setCurrentStep("project-overview")}
+            onCancel={onClose}
+          />
+        </div>
       );
     }
 
     // Tabbed interface for all other steps
     return (
-      <div className="flex flex-col h-full min-h-0 space-y-4">
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-semibold">
-            Project Data - {selectedProject?.["id"]}{" "}
-            {selectedProject?.["Project Name"]}
-          </DialogTitle>
-        </DialogHeader>
+      <div className="flex flex-col h-[90vh] overflow-hidden">
+        <div className="flex flex-col overflow-hidden px-6 pt-6 pb-8">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-semibold px-6">
+              Project Data - {selectedProject?.["id"]}{" "}
+              {selectedProject?.["Project Name"]}
+            </DialogTitle>
+          </DialogHeader>
 
-        <div className="flex-1 min-h-0 overflow-hidden">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full h-full min-h-0 flex flex-col">
-            <TabsList className="flex h-12 gap-2 rounded-full bg-gray-100 p-4 my-4">
-              <TabsTrigger
-                value="project-overview"
-                className="rounded-full px-4 py-2 text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-gray-900"
-              >
-                <span>Overview</span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="certifications"
-                className="rounded-full px-4 py-2 text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-gray-900"
-              >
-                <span>Certifications</span>
-              </TabsTrigger>
-
-              <div className="flex-[2] flex gap-4 justify-end items-center text-sm">
-                <span>RIBA Stage</span>
-              </div>
-
-              {StageKeys.map((key) => (
+          <div className="flex-1 overflow-hidden">
+            <Tabs
+              value={activeTab}
+              onValueChange={setActiveTab}
+              className="w-full h-full flex flex-col"
+            >
+              <TabsList className="flex h-16 gap-2 rounded-full bg-gray-100 p-4 my-4">
                 <TabsTrigger
-                  value={key}
+                  value="project-overview"
                   className="rounded-full px-4 py-2 text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-gray-900"
                 >
-                  <span>{key}</span>
+                  <span>Overview</span>
                 </TabsTrigger>
-              ))}
-            </TabsList>
+                <TabsTrigger
+                  value="certifications"
+                  className="rounded-full px-4 py-2 text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-gray-900"
+                >
+                  <span>Certifications</span>
+                </TabsTrigger>
 
-            <div className="flex-1 min-h-0 overflow-hidden">
-              <TabsContent value="project-overview" className="h-full overflow-y-auto mt-0">
-                <AddOverview
-                  selectedProject={selectedProject}
-                  projectData={wizardData}
-                  onDataUpdate={(data) => updateWizardData(data)}
-                />
-              </TabsContent>
+                <div className="flex-[2] flex gap-4 justify-end items-center text-sm">
+                  <span>RIBA Stage</span>
+                </div>
 
-              <TabsContent value="certifications" className="h-full overflow-y-auto mt-0">
-                <AddCertifications
-                  projectData={wizardData}
-                  onDataUpdate={(data) => updateWizardData(data)}
-                />
-              </TabsContent>
+                {StageKeys.map((key) => (
+                  <TabsTrigger
+                    value={key}
+                    className="rounded-full px-4 py-2 text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-gray-900"
+                  >
+                    <span>{key}</span>
+                  </TabsTrigger>
+                ))}
+              </TabsList>
 
-              {StageKeys.map((stage) => (
-                <TabsContent key={stage} value={stage} className="h-full overflow-y-auto mt-0">
-                  <AddRIBAStage
-                    stageNumber={stage.split("-")[1]}
-                    stageData={wizardData["RIBA Stage"][stage] || {}}
-                    projectGia={wizardData["GIA"]}
-                    onDataUpdate={(data) => {
-                      const updatedRibaStages = {
-                        ...wizardData["RIBA Stage"],
-                        [stage]: data,
-                      };
-                      updateWizardData({
-                        "RIBA Stage": updatedRibaStages,
-                      });
-                    }}
-                    currentStep={stage as WizardStep}
-                    completedSteps={[]}
-                    stageCompletionData={{
-                      "riba-1": {
-                        completed: true,
-                        date: "10.01.2025",
-                      },
-                      "riba-2": {
-                        completed: true,
-                        date: "12.06.2025",
-                      },
-                    }}
+              <div className="flex-1 overflow-hidden rounded-tl-[32px] rounded-tr-[32px] h-full">
+                <TabsContent
+                  value="project-overview"
+                  className="h-full overflow-y-auto"
+                >
+                  <AddOverview
+                    selectedProject={selectedProject}
+                    projectData={wizardData}
+                    onDataUpdate={(data) => updateWizardData(data)}
                   />
                 </TabsContent>
-              ))}
-            </div>
-          </Tabs>
+
+                <TabsContent
+                  value="certifications"
+                  className="h-full overflow-y-auto"
+                >
+                  <AddCertifications
+                    projectData={wizardData}
+                    onDataUpdate={(data) => updateWizardData(data)}
+                  />
+                </TabsContent>
+
+                {StageKeys.map((stage) => (
+                  <TabsContent
+                    key={stage}
+                    value={stage}
+                    className="h-full overflow-y-auto mt-0"
+                  >
+                    <AddRIBAStage
+                      stageNumber={stage.split("-")[1]}
+                      stageData={wizardData["RIBA Stage"][stage] || {}}
+                      projectGia={wizardData["GIA"]}
+                      onDataUpdate={(data) => {
+                        const updatedRibaStages = {
+                          ...wizardData["RIBA Stage"],
+                          [stage]: data,
+                        };
+                        updateWizardData({
+                          "RIBA Stage": updatedRibaStages,
+                        });
+                      }}
+                      currentStep={stage as WizardStep}
+                      completedSteps={[]}
+                      stageCompletionData={{
+                        "riba-1": {
+                          completed: true,
+                          date: "10.01.2025",
+                        },
+                        "riba-2": {
+                          completed: true,
+                          date: "12.06.2025",
+                        },
+                      }}
+                    />
+                  </TabsContent>
+                ))}
+              </div>
+            </Tabs>
+          </div>
         </div>
 
-        {/* Consolidated footer buttons */}
-        <div className="p-2 bg-background shadow-inner rounded-[20px]">
-          <div className="flex justify-between">
+        {/* Footer buttons */}
+        <div className="bg-background shadow-inner rounded-full h-[80px] p-4 mt-auto">
+          <div className="flex justify-between items-center">
             <AlertDialog
               open={showCancelDialog}
               onOpenChange={setShowCancelDialog}
             >
               <AlertDialogTrigger asChild>
-                <Button variant="outline">Cancel</Button>
+                <Button variant="outline" size="lg">
+                  Cancel
+                </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
@@ -418,9 +438,14 @@ export const AddProjectDataWizard = ({
             </AlertDialog>
 
             <div className="flex gap-2">
-              <AlertDialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
+              <AlertDialog
+                open={showSaveDialog}
+                onOpenChange={setShowSaveDialog}
+              >
                 <AlertDialogTrigger asChild>
-                  <Button variant="outline">Save</Button>
+                  <Button variant="outline" size="lg">
+                    Save
+                  </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
@@ -441,9 +466,12 @@ export const AddProjectDataWizard = ({
                 </AlertDialogContent>
               </AlertDialog>
 
-              <AlertDialog open={showExitDialog} onOpenChange={setShowExitDialog}>
+              <AlertDialog
+                open={showExitDialog}
+                onOpenChange={setShowExitDialog}
+              >
                 <AlertDialogTrigger asChild>
-                  <Button>Save & Exit</Button>
+                  <Button size="lg">Save & Exit</Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
@@ -470,7 +498,7 @@ export const AddProjectDataWizard = ({
   return (
     <Dialog open={isOpen} onOpenChange={() => {}}>
       <DialogContent
-        className="max-w-4xl h-[90vh] overflow-hidden flex flex-col"
+        className="max-w-4xl"
         hideCloseButton={true}
         preventOutsideClick={true}
       >

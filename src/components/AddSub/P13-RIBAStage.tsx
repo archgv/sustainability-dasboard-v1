@@ -1,7 +1,4 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -10,25 +7,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { HelpCircle, AlertTriangle } from "lucide-react";
 import { WizardData } from "../L11-AddWizard";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { StageKey } from "@/components/Key/KeyStage";
 import { TooltipField } from "../ui/tooltip-field";
 import { Unit } from "../ui/unit";
@@ -54,7 +33,6 @@ export const AddRIBAStage = ({
   completedSteps,
   stageCompletionData,
 }: RibaStageProps) => {
-
   const handleInputChange = (field: string, value: string) => {
     onDataUpdate({
       ...stageData,
@@ -91,7 +69,7 @@ export const AddRIBAStage = ({
   ];
 
   return (
-    <div className="space-y-6 pr-2">
+    <div className="space-y-6 mt-4">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
           <TooltipField
@@ -176,10 +154,7 @@ export const AddRIBAStage = ({
                 placeholder="Enter value (e.g. 45)"
                 value={stageData["Operational Energy Part L"] || ""}
                 onChange={(e) =>
-                  handleInputChange(
-                    "Operational Energy Part L",
-                    e.target.value
-                  )
+                  handleInputChange("Operational Energy Part L", e.target.value)
                 }
                 type="number"
                 min="0"
