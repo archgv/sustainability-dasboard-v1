@@ -116,6 +116,10 @@ export const AddProjectDataWizard = ({
     { tab: string; errors: string[] }[]
   >([]);
   const [isFormValid, setIsFormValid] = useState(true);
+
+  React.useEffect(() => {
+    setIsFormValid(validationErrors.length === 0);
+  }, [validationErrors]);
   const [wizardData, setWizardData] = useState<WizardData>({
     id: "",
     "Operational Energy Existing Building": "",
@@ -392,12 +396,11 @@ export const AddProjectDataWizard = ({
                         });
                       }}
                       onValidationChange={(isValid, errorMessage) => {
-                        const tabName = `riba-${stage.split("-")[1]}`;
-                        
+                        const tabName = stage; // use exact tab id
+
                         setValidationErrors((prev) => {
                           // Remove existing errors for this tab
                           const filtered = prev.filter((e) => e.tab !== tabName);
-                          
                           // Add new errors if invalid
                           if (!isValid && errorMessage) {
                             return [
@@ -405,16 +408,7 @@ export const AddProjectDataWizard = ({
                               { tab: tabName, errors: errorMessage.split("; ") },
                             ];
                           }
-                          
                           return filtered;
-                        });
-                        
-                        // Check if any tab has errors
-                        setIsFormValid((prevValid) => {
-                          const hasOtherTabErrors = validationErrors.some(
-                            (e) => e.tab !== tabName && e.errors.length > 0
-                          );
-                          return isValid && !hasOtherTabErrors;
                         });
                       }}
                       currentStep={stage as WizardStep}
@@ -505,7 +499,9 @@ export const AddProjectDataWizard = ({
                                     ? "Overview"
                                     : tabError.tab === "certifications"
                                     ? "Certifications"
-                                    : `RIBA Stage ${tabError.tab.split("-")[1]}`}
+                                    : tabError.tab.includes("-")
+                                    ? `RIBA Stage ${tabError.tab.split("-")[1]}`
+                                    : `RIBA Stage ${tabError.tab}`}
                                 </Badge>
                                 <span className="text-muted-foreground text-sm">
                                   {error}
