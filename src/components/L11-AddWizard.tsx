@@ -445,7 +445,36 @@ export const AddProjectDataWizard = ({
 
             <div className="flex gap-2 items-center">
               {validationError && (
-                <p className="text-red-500 text-sm mr-4">{validationError}</p>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                    >
+                      <AlertTriangle className="h-5 w-5" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="flex items-center gap-2 text-red-500">
+                        <AlertTriangle className="h-5 w-5" />
+                        Validation Errors
+                      </AlertDialogTitle>
+                      <AlertDialogDescription className="space-y-2 pt-4">
+                        <p className="text-foreground font-medium">
+                          Please fix the following errors before saving:
+                        </p>
+                        <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                          <li>{validationError}</li>
+                        </ul>
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogAction>OK</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               )}
               <AlertDialog
                 open={showSaveDialog}
