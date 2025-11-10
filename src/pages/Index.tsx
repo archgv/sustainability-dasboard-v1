@@ -13,7 +13,9 @@ import { Card } from "@/components/ui/card";
 
 const Index = () => {
   const [filteredProjects, setFilteredProjects] = useState(sampleProjects);
-  const [primaryProject, setPrimaryProject] = useState(sampleProjects[0]?.id || "");
+  const [primaryProject, setPrimaryProject] = useState(
+    sampleProjects[0]?.id || ""
+  );
   const [comparisonProjects, setComparisonProjects] = useState<string[]>([]);
   const [compareToSelf, setCompareToSelf] = useState(false);
   const [selectedRibaStages, setSelectedRibaStages] = useState<string[]>([]);
@@ -23,8 +25,6 @@ const Index = () => {
     "Project Type": "all",
     "Current RIBA Stage": "all",
     dateRange: "all",
-    carbonRange: [0, 200],
-    energyRange: [0, 200],
   });
 
   const handleFilterChange = (newFilters: typeof filters) => {
@@ -32,14 +32,14 @@ const Index = () => {
 
     const filtered = sampleProjects.filter((project) => {
       const primarySectorMatch =
-        newFilters["Primary Sector"] === "all" || project["Primary Sector"] === newFilters["Primary Sector"];
+        newFilters["Primary Sector"] === "all" ||
+        project["Primary Sector"] === newFilters["Primary Sector"];
       const projectTypeMatch =
-        newFilters["Project Type"] === "all" || project["Project Type"] === newFilters["Project Type"];
+        newFilters["Project Type"] === "all" ||
+        project["Project Type"] === newFilters["Project Type"];
       const ribaStageMatch =
         newFilters["Current RIBA Stage"] === "all" ||
         project["Current RIBA Stage"] === newFilters["Current RIBA Stage"];
-      //const carbonMatch = project.carbonIntensity >= newFilters.carbonRange[0] && project.carbonIntensity <= newFilters.carbonRange[1];
-      //const energyMatch = project.operationalEnergy >= newFilters.energyRange[0] && project.operationalEnergy <= newFilters.energyRange[1];
 
       let dateMatch = true;
       if (newFilters.dateRange !== "all") {
@@ -56,8 +56,9 @@ const Index = () => {
         }
       }
 
-      //return typologyMatch && projectTypeMatch && ribaStageMatch && carbonMatch && energyMatch && dateMatch;
-      return primarySectorMatch && projectTypeMatch && ribaStageMatch && dateMatch;
+      return (
+        primarySectorMatch && projectTypeMatch && ribaStageMatch && dateMatch
+      );
     });
 
     setFilteredProjects(filtered);
@@ -69,13 +70,15 @@ const Index = () => {
       "Project Type": "all",
       "Current RIBA Stage": "all",
       dateRange: "all",
-      carbonRange: [0, 200],
-      energyRange: [0, 200],
     };
     handleFilterChange(defaultFilters);
   };
 
-  const handleComparisonChange = (projects: string[], compareToSelfFlag: boolean, ribaStages: string[]) => {
+  const handleComparisonChange = (
+    projects: string[],
+    compareToSelfFlag: boolean,
+    ribaStages: string[]
+  ) => {
     setComparisonProjects(projects);
     setCompareToSelf(compareToSelfFlag);
     setSelectedRibaStages(ribaStages);
@@ -92,15 +95,12 @@ const Index = () => {
   const getDisplayProjects = () => {
     // Handle self-comparison mode
     if (compareToSelf && selectedRibaStages.length > 0) {
-      const primaryProjectData = filteredProjects.find((p) => p.id === primaryProject);
+      const primaryProjectData = filteredProjects.find(
+        (p) => p.id === primaryProject
+      );
       if (!primaryProjectData) return [];
 
-      return selectedRibaStages.map((stageId) => ({
-        ...primaryProjectData,
-        id: `${primaryProjectData.id}-${stageId}`,
-        "Current RIBA Stage": stageId as Project["Current RIBA Stage"],
-        "Project Name": primaryProjectData["Project Name"],
-      }));
+      return [primaryProjectData];
     }
 
     // Handle comparison mode with multiple projects
@@ -114,7 +114,9 @@ const Index = () => {
 
     // Default: show only the primary project when no comparisons are selected
     if (primaryProject) {
-      const primaryProjectData = filteredProjects.find((p) => p.id === primaryProject);
+      const primaryProjectData = filteredProjects.find(
+        (p) => p.id === primaryProject
+      );
       return primaryProjectData ? [primaryProjectData] : [];
     }
 
@@ -157,8 +159,12 @@ const Index = () => {
           <div className="flex-1 ml-[460px] mr-10 space-y-8">
             <Card className="p-0 w-[calc(100%+160px)] -ml-[85px] -mr-[80px] bg-pink-300 rounded-tl-none rounded-tr-none rounded-bl-[120px] rounded-br-[120px]">
               <div className="px-24 py-4 flex justify-between text-center items-center">
-                <h1 className="text-white text-2xl font-bold">Sustainability Dashboard</h1>
-                <p className=" text-rose-100 text-lg">Environmental KPIs across all projects</p>
+                <h1 className="text-white text-2xl font-bold">
+                  Sustainability Dashboard
+                </h1>
+                <p className=" text-rose-100 text-lg">
+                  Environmental KPIs across all projects
+                </p>
               </div>
             </Card>
             <div className="w-full space-y-8">

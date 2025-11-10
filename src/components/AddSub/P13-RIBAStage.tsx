@@ -180,7 +180,7 @@ export const AddRIBAStage = ({
 
             <TooltipField
               label="Operational energy: Part L"
-              tooltip="Enter regulated operational energy use (Part L)"
+              tooltip="Enter regulated and unregulated operational energy use (Part L)"
             >
               <div className="relative">
                 <Input
@@ -423,7 +423,7 @@ export const AddRIBAStage = ({
             </TooltipField>
 
             <TooltipField
-              label="Embodied carbon scope clarifications"
+              label="Carbon scope clarifications"
               tooltip="Specify scope, life cycle modules, and whether using RICS V1 or V2 etc."
             >
               <Textarea
