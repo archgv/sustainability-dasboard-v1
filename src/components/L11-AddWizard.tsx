@@ -300,7 +300,7 @@ export const AddProjectDataWizard = ({
 
     // Tabbed interface for all other steps
     return (
-      <div className="flex flex-col h-full space-y-4">
+      <div className="flex flex-col h-full min-h-0 space-y-4">
         <DialogHeader>
           <DialogTitle className="text-2xl font-semibold">
             Project Data - {selectedProject?.["id"]}{" "}
@@ -308,8 +308,8 @@ export const AddProjectDataWizard = ({
           </DialogTitle>
         </DialogHeader>
 
-        <div className="flex-1 overflow-hidden">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full h-full flex flex-col">
+        <div className="flex-1 min-h-0 overflow-hidden">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full h-full min-h-0 flex flex-col">
             <TabsList className="flex h-12 gap-2 rounded-full bg-gray-100 p-4 my-4">
               <TabsTrigger
                 value="project-overview"
@@ -338,7 +338,7 @@ export const AddProjectDataWizard = ({
               ))}
             </TabsList>
 
-            <div className="flex-1 overflow-hidden">
+            <div className="flex-1 min-h-0 overflow-hidden">
               <TabsContent value="project-overview" className="h-full overflow-y-auto mt-0">
                 <AddOverview
                   selectedProject={selectedProject}
@@ -470,7 +470,7 @@ export const AddProjectDataWizard = ({
   return (
     <Dialog open={isOpen} onOpenChange={() => {}}>
       <DialogContent
-        className="max-w-4xl max-h-[90vh]"
+        className="max-w-4xl h-[90vh] overflow-hidden flex flex-col"
         hideCloseButton={true}
         preventOutsideClick={true}
       >
