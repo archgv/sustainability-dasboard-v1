@@ -112,7 +112,9 @@ export const AddProjectDataWizard = ({
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
-  const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const [validationErrors, setValidationErrors] = useState<
+    { tab: string; errors: string[] }[]
+  >([]);
   const [isFormValid, setIsFormValid] = useState(true);
   const [wizardData, setWizardData] = useState<WizardData>({
     id: "",
@@ -390,12 +392,30 @@ export const AddProjectDataWizard = ({
                         });
                       }}
                       onValidationChange={(isValid, errorMessage) => {
-                        setIsFormValid(isValid);
-                        if (!isValid && errorMessage) {
-                          setValidationErrors(errorMessage.split("; "));
-                        } else {
-                          setValidationErrors([]);
-                        }
+                        const tabName = `riba-${stage.split("-")[1]}`;
+                        
+                        setValidationErrors((prev) => {
+                          // Remove existing errors for this tab
+                          const filtered = prev.filter((e) => e.tab !== tabName);
+                          
+                          // Add new errors if invalid
+                          if (!isValid && errorMessage) {
+                            return [
+                              ...filtered,
+                              { tab: tabName, errors: errorMessage.split("; ") },
+                            ];
+                          }
+                          
+                          return filtered;
+                        });
+                        
+                        // Check if any tab has errors
+                        setIsFormValid((prevValid) => {
+                          const hasOtherTabErrors = validationErrors.some(
+                            (e) => e.tab !== tabName && e.errors.length > 0
+                          );
+                          return isValid && !hasOtherTabErrors;
+                        });
                       }}
                       currentStep={stage as WizardStep}
                       completedSteps={[]}
@@ -471,18 +491,28 @@ export const AddProjectDataWizard = ({
                           Please fix the following errors before saving:
                         </p>
                         <div className="space-y-2">
-                          {validationErrors.map((error, index) => (
-                            <div key={index} className="flex items-start gap-2">
-                              <Badge variant="destructive" className="text-xs px-2 py-0.5 shrink-0">
-                                {activeTab === "project-overview"
-                                  ? "Overview"
-                                  : activeTab === "certifications"
-                                  ? "Certifications"
-                                  : `RIBA Stage ${activeTab.split("-")[1]}`}
-                              </Badge>
-                              <span className="text-muted-foreground text-sm">{error}</span>
-                            </div>
-                          ))}
+                          {validationErrors.flatMap((tabError) =>
+                            tabError.errors.map((error, errorIndex) => (
+                              <div
+                                key={`${tabError.tab}-${errorIndex}`}
+                                className="flex items-start gap-2"
+                              >
+                                <Badge
+                                  variant="destructive"
+                                  className="text-xs px-2 py-0.5 shrink-0"
+                                >
+                                  {tabError.tab === "project-overview"
+                                    ? "Overview"
+                                    : tabError.tab === "certifications"
+                                    ? "Certifications"
+                                    : `RIBA Stage ${tabError.tab.split("-")[1]}`}
+                                </Badge>
+                                <span className="text-muted-foreground text-sm">
+                                  {error}
+                                </span>
+                              </div>
+                            ))
+                          )}
                         </div>
                       </AlertDialogDescription>
                     </AlertDialogHeader>
