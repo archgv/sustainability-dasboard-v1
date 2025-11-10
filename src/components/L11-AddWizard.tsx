@@ -339,7 +339,7 @@ export const AddProjectDataWizard = ({
             </TabsList>
 
             <div className="flex-1 overflow-hidden">
-              <TabsContent value="project-overview" className="h-full mt-0">
+              <TabsContent value="project-overview" className="h-full overflow-y-auto mt-0">
                 <AddOverview
                   selectedProject={selectedProject}
                   projectData={wizardData}
@@ -347,7 +347,7 @@ export const AddProjectDataWizard = ({
                 />
               </TabsContent>
 
-              <TabsContent value="certifications" className="h-full mt-0">
+              <TabsContent value="certifications" className="h-full overflow-y-auto mt-0">
                 <AddCertifications
                   projectData={wizardData}
                   onDataUpdate={(data) => updateWizardData(data)}
@@ -355,7 +355,7 @@ export const AddProjectDataWizard = ({
               </TabsContent>
 
               {StageKeys.map((stage) => (
-                <TabsContent key={stage} value={stage} className="h-full mt-0">
+                <TabsContent key={stage} value={stage} className="h-full overflow-y-auto mt-0">
                   <AddRIBAStage
                     stageNumber={stage.split("-")[1]}
                     stageData={wizardData["RIBA Stage"][stage] || {}}

@@ -48,7 +48,7 @@ export const AddCertifications = ({
   };
 
   return (
-    <div className="h-full overflow-y-auto space-y-6 pr-2">
+    <div className="space-y-6 pr-2">
       {/* Certifications */}
       <div className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
