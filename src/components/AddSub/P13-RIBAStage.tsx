@@ -14,14 +14,86 @@ import { TooltipField } from "../ui/tooltip-field";
 import { Unit } from "../ui/unit";
 import { z } from "zod";
 
-const operationalEnergySchema = z.object({
+const ribaStageSchema = z.object({
   "Operational Energy": z.string().refine(
     (val) => {
-      if (!val || val === "") return true; // Allow empty
+      if (!val || val === "") return true;
       const num = parseFloat(val);
       return !isNaN(num) && num >= 0 && num <= 500;
     },
     { message: "Operational Energy must be between 0-500 kWh/m²/yr" }
+  ),
+  "Operational Energy Part L": z.string().refine(
+    (val) => {
+      if (!val || val === "") return true;
+      const num = parseFloat(val);
+      return !isNaN(num) && num >= 0 && num <= 500;
+    },
+    { message: "Operational Energy Part L must be between 0-500 kWh/m²/yr" }
+  ),
+  "Operational Energy Gas": z.string().refine(
+    (val) => {
+      if (!val || val === "") return true;
+      const num = parseFloat(val);
+      return !isNaN(num) && num >= 0 && num <= 300;
+    },
+    { message: "Operational Energy Gas must be between 0-300 kWh/m²/yr" }
+  ),
+  "Space Heating Demand": z.string().refine(
+    (val) => {
+      if (!val || val === "") return true;
+      const num = parseFloat(val);
+      return !isNaN(num) && num >= 0 && num <= 300;
+    },
+    { message: "Space Heating Demand must be between 0-300 kWh/m²/yr" }
+  ),
+  "Upfront Carbon": z.string().refine(
+    (val) => {
+      if (!val || val === "") return true;
+      const num = parseFloat(val);
+      return !isNaN(num) && num >= 0 && num <= 1500;
+    },
+    { message: "Upfront Carbon must be between 0-1500 kgCO₂e/m²" }
+  ),
+  "Embodied Carbon": z.string().refine(
+    (val) => {
+      if (!val || val === "") return true;
+      const num = parseFloat(val);
+      return !isNaN(num) && num >= 0 && num <= 2500;
+    },
+    { message: "Total Embodied Carbon must be between 0-2500 kgCO₂e/m²" }
+  ),
+  "Biogenic Carbon": z.string().refine(
+    (val) => {
+      if (!val || val === "") return true;
+      const num = parseFloat(val);
+      return !isNaN(num) && num >= -600 && num <= 0;
+    },
+    { message: "Biogenic Carbon must be between -600 to 0 kgCO₂e/m²" }
+  ),
+  "Biodiversity Net Gain": z.string().refine(
+    (val) => {
+      if (!val || val === "") return true;
+      const num = parseFloat(val);
+      return !isNaN(num) && num >= 0 && num <= 200;
+    },
+    { message: "Biodiversity Net Gain must be between 0-200%" }
+  ),
+  "Habitats Units Gained": z.string().refine(
+    (val) => {
+      if (!val || val === "") return true;
+      const num = parseFloat(val);
+      return !isNaN(num) && num >= 0 && num <= 50;
+    },
+    { message: "Habitat Units Gained must be between 0-50" }
+  ),
+  "Urban Greening Factor": z.string().refine(
+    (val) => {
+      if (!val || val === "") return true;
+      const num = parseFloat(val);
+      return !isNaN(num) && num >= 0 && num <= 10;
+    },
+    { message: "Urban Greening Factor must be between 0-10" }
   ),
 });
 
@@ -48,43 +120,63 @@ export const AddRIBAStage = ({
   completedSteps,
   stageCompletionData,
 }: RibaStageProps) => {
-  const [validationError, setValidationError] = useState<string>("");
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, boolean>>({});
 
-  const validateOperationalEnergy = (value: string) => {
-    const result = operationalEnergySchema.safeParse({
-      "Operational Energy": value,
+  const validateAllFields = () => {
+    const result = ribaStageSchema.safeParse({
+      "Operational Energy": stageData["Operational Energy"] || "",
+      "Operational Energy Part L": stageData["Operational Energy Part L"] || "",
+      "Operational Energy Gas": stageData["Operational Energy Gas"] || "",
+      "Space Heating Demand": stageData["Space Heating Demand"] || "",
+      "Upfront Carbon": stageData["Upfront Carbon"] || "",
+      "Embodied Carbon": stageData["Embodied Carbon"] || "",
+      "Biogenic Carbon": stageData["Biogenic Carbon"] || "",
+      "Biodiversity Net Gain": stageData["Biodiversity Net Gain"] || "",
+      "Habitats Units Gained": stageData["Habitats Units Gained"] || "",
+      "Urban Greening Factor": stageData["Urban Greening Factor"] || "",
     });
 
     if (!result.success) {
-      const errorMessage = result.error.errors[0]?.message || "";
-      setValidationError(errorMessage);
-      onValidationChange?.(false, errorMessage);
+      const errors = result.error.errors.map((err) => err.message);
+      const errorFields = result.error.errors.reduce((acc, err) => {
+        const fieldName = err.path[0] as string;
+        acc[fieldName] = true;
+        return acc;
+      }, {} as Record<string, boolean>);
+
+      setValidationErrors(errors);
+      setFieldErrors(errorFields);
+      onValidationChange?.(false, errors.join("; "));
       return false;
     } else {
-      setValidationError("");
+      setValidationErrors([]);
+      setFieldErrors({});
       onValidationChange?.(true);
       return true;
     }
   };
 
   useEffect(() => {
-    if (stageData["Operational Energy"]) {
-      validateOperationalEnergy(stageData["Operational Energy"]);
-    } else {
-      setValidationError("");
-      onValidationChange?.(true);
-    }
-  }, [stageData["Operational Energy"]]);
+    validateAllFields();
+  }, [
+    stageData["Operational Energy"],
+    stageData["Operational Energy Part L"],
+    stageData["Operational Energy Gas"],
+    stageData["Space Heating Demand"],
+    stageData["Upfront Carbon"],
+    stageData["Embodied Carbon"],
+    stageData["Biogenic Carbon"],
+    stageData["Biodiversity Net Gain"],
+    stageData["Habitats Units Gained"],
+    stageData["Urban Greening Factor"],
+  ]);
 
   const handleInputChange = (field: string, value: string) => {
     onDataUpdate({
       ...stageData,
       [field]: value,
     });
-
-    if (field === "Operational Energy") {
-      validateOperationalEnergy(value);
-    }
   };
 
   const structuralMaterials = [
@@ -187,7 +279,7 @@ export const AddRIBAStage = ({
                 min="0"
                 max="500"
                 className={`pr-20 ${
-                  validationError
+                  fieldErrors["Operational Energy"]
                     ? "border-2 border-red-500 focus-visible:ring-red-500"
                     : ""
                 }`}
@@ -209,8 +301,12 @@ export const AddRIBAStage = ({
                 }
                 type="number"
                 min="0"
-                max="150"
-                className="pr-20"
+                max="500"
+                className={`pr-20 ${
+                  fieldErrors["Operational Energy Part L"]
+                    ? "border-2 border-red-500 focus-visible:ring-red-500"
+                    : ""
+                }`}
               />
               <Unit>kWh/m²/yr</Unit>
             </div>
@@ -229,8 +325,12 @@ export const AddRIBAStage = ({
                 }
                 type="number"
                 min="0"
-                max="150"
-                className="pr-20"
+                max="300"
+                className={`pr-20 ${
+                  fieldErrors["Operational Energy Gas"]
+                    ? "border-2 border-red-500 focus-visible:ring-red-500"
+                    : ""
+                }`}
               />
               <Unit>kWh/m²/yr</Unit>
             </div>
@@ -249,7 +349,12 @@ export const AddRIBAStage = ({
                 }
                 type="number"
                 min="0"
-                className="pr-20"
+                max="300"
+                className={`pr-20 ${
+                  fieldErrors["Space Heating Demand"]
+                    ? "border-2 border-red-500 focus-visible:ring-red-500"
+                    : ""
+                }`}
               />
               <Unit>kWh/m²/yr</Unit>
             </div>
@@ -389,7 +494,11 @@ export const AddRIBAStage = ({
                 type="number"
                 min="0"
                 max="1500"
-                className="pr-24"
+                className={`pr-24 ${
+                  fieldErrors["Upfront Carbon"]
+                    ? "border-2 border-red-500 focus-visible:ring-red-500"
+                    : ""
+                }`}
               />
               <Unit>kgCO₂e/m²</Unit>
             </div>
@@ -408,8 +517,12 @@ export const AddRIBAStage = ({
                 }
                 type="number"
                 min="0"
-                max="1500"
-                className="pr-24"
+                max="2500"
+                className={`pr-24 ${
+                  fieldErrors["Embodied Carbon"]
+                    ? "border-2 border-red-500 focus-visible:ring-red-500"
+                    : ""
+                }`}
               />
               <Unit>kgCO₂e/m²</Unit>
             </div>
@@ -429,7 +542,11 @@ export const AddRIBAStage = ({
                 type="number"
                 min="-600"
                 max="0"
-                className="pr-24"
+                className={`pr-24 ${
+                  fieldErrors["Biogenic Carbon"]
+                    ? "border-2 border-red-500 focus-visible:ring-red-500"
+                    : ""
+                }`}
               />
               <Unit>
                 kgCO<sub>2</sub>e/m<sup>2</sup>
@@ -476,7 +593,11 @@ export const AddRIBAStage = ({
                 type="number"
                 min="0"
                 max="200"
-                className="pr-8"
+                className={`pr-8 ${
+                  fieldErrors["Biodiversity Net Gain"]
+                    ? "border-2 border-red-500 focus-visible:ring-red-500"
+                    : ""
+                }`}
               />
               <Unit>%</Unit>
             </div>
@@ -495,6 +616,11 @@ export const AddRIBAStage = ({
               type="number"
               min="0"
               max="50"
+              className={
+                fieldErrors["Habitats Units Gained"]
+                  ? "border-2 border-red-500 focus-visible:ring-red-500"
+                  : ""
+              }
             />
           </TooltipField>
 
@@ -512,6 +638,11 @@ export const AddRIBAStage = ({
               step="0.1"
               min="0"
               max="10"
+              className={
+                fieldErrors["Urban Greening Factor"]
+                  ? "border-2 border-red-500 focus-visible:ring-red-500"
+                  : ""
+              }
             />
           </TooltipField>
 

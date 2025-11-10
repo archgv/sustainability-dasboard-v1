@@ -111,7 +111,7 @@ export const AddProjectDataWizard = ({
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
-  const [validationError, setValidationError] = useState<string>("");
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [isFormValid, setIsFormValid] = useState(true);
   const [wizardData, setWizardData] = useState<WizardData>({
     id: "",
@@ -390,7 +390,11 @@ export const AddProjectDataWizard = ({
                       }}
                       onValidationChange={(isValid, errorMessage) => {
                         setIsFormValid(isValid);
-                        setValidationError(errorMessage || "");
+                        if (!isValid && errorMessage) {
+                          setValidationErrors(errorMessage.split("; "));
+                        } else {
+                          setValidationErrors([]);
+                        }
                       }}
                       currentStep={stage as WizardStep}
                       completedSteps={[]}
@@ -444,7 +448,7 @@ export const AddProjectDataWizard = ({
             </AlertDialog>
 
             <div className="flex gap-2 items-center">
-              {validationError && (
+              {validationErrors.length > 0 && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button
@@ -466,7 +470,9 @@ export const AddProjectDataWizard = ({
                           Please fix the following errors before saving:
                         </p>
                         <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                          <li>{validationError}</li>
+                          {validationErrors.map((error, index) => (
+                            <li key={index}>{error}</li>
+                          ))}
                         </ul>
                       </AlertDialogDescription>
                     </AlertDialogHeader>
