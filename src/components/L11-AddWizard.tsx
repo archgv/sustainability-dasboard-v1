@@ -111,6 +111,8 @@ export const AddProjectDataWizard = ({
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [validationError, setValidationError] = useState<string>("");
+  const [isFormValid, setIsFormValid] = useState(true);
   const [wizardData, setWizardData] = useState<WizardData>({
     id: "",
     "Operational Energy Existing Building": "",
@@ -386,6 +388,10 @@ export const AddProjectDataWizard = ({
                           "RIBA Stage": updatedRibaStages,
                         });
                       }}
+                      onValidationChange={(isValid, errorMessage) => {
+                        setIsFormValid(isValid);
+                        setValidationError(errorMessage || "");
+                      }}
                       currentStep={stage as WizardStep}
                       completedSteps={[]}
                       stageCompletionData={{
@@ -437,13 +443,21 @@ export const AddProjectDataWizard = ({
               </AlertDialogContent>
             </AlertDialog>
 
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
+              {validationError && (
+                <p className="text-red-500 text-sm mr-4">{validationError}</p>
+              )}
               <AlertDialog
                 open={showSaveDialog}
                 onOpenChange={setShowSaveDialog}
               >
                 <AlertDialogTrigger asChild>
-                  <Button variant="outline" size="lg">
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    disabled={!isFormValid}
+                    className={!isFormValid ? "opacity-50 cursor-not-allowed" : ""}
+                  >
                     Save
                   </Button>
                 </AlertDialogTrigger>
@@ -471,7 +485,13 @@ export const AddProjectDataWizard = ({
                 onOpenChange={setShowExitDialog}
               >
                 <AlertDialogTrigger asChild>
-                  <Button size="lg">Save & Exit</Button>
+                  <Button
+                    size="lg"
+                    disabled={!isFormValid}
+                    className={!isFormValid ? "opacity-50 cursor-not-allowed" : ""}
+                  >
+                    Save & Exit
+                  </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>

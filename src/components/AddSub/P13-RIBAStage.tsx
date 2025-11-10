@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -11,12 +12,25 @@ import { WizardData } from "../L11-AddWizard";
 import { StageKey } from "@/components/Key/KeyStage";
 import { TooltipField } from "../ui/tooltip-field";
 import { Unit } from "../ui/unit";
+import { z } from "zod";
+
+const operationalEnergySchema = z.object({
+  "Operational Energy": z.string().refine(
+    (val) => {
+      if (!val || val === "") return true; // Allow empty
+      const num = parseFloat(val);
+      return !isNaN(num) && num >= 0 && num <= 500;
+    },
+    { message: "Operational Energy must be between 0-500 kWh/m²/yr" }
+  ),
+});
 
 interface RibaStageProps {
   stageNumber: string;
   stageData: Partial<WizardData["RIBA Stage"][StageKey]>;
   projectGia: string;
   onDataUpdate: (data: WizardData["RIBA Stage"][StageKey]) => void;
+  onValidationChange?: (isValid: boolean, errorMessage?: string) => void;
   currentStep: string;
   completedSteps: string[];
   stageCompletionData?: {
@@ -29,15 +43,48 @@ export const AddRIBAStage = ({
   stageData,
   projectGia,
   onDataUpdate,
+  onValidationChange,
   currentStep,
   completedSteps,
   stageCompletionData,
 }: RibaStageProps) => {
+  const [validationError, setValidationError] = useState<string>("");
+
+  const validateOperationalEnergy = (value: string) => {
+    const result = operationalEnergySchema.safeParse({
+      "Operational Energy": value,
+    });
+
+    if (!result.success) {
+      const errorMessage = result.error.errors[0]?.message || "";
+      setValidationError(errorMessage);
+      onValidationChange?.(false, errorMessage);
+      return false;
+    } else {
+      setValidationError("");
+      onValidationChange?.(true);
+      return true;
+    }
+  };
+
+  useEffect(() => {
+    if (stageData["Operational Energy"]) {
+      validateOperationalEnergy(stageData["Operational Energy"]);
+    } else {
+      setValidationError("");
+      onValidationChange?.(true);
+    }
+  }, [stageData["Operational Energy"]]);
+
   const handleInputChange = (field: string, value: string) => {
     onDataUpdate({
       ...stageData,
       [field]: value,
     });
+
+    if (field === "Operational Energy") {
+      validateOperationalEnergy(value);
+    }
   };
 
   const structuralMaterials = [
@@ -138,8 +185,12 @@ export const AddRIBAStage = ({
                 }
                 type="number"
                 min="0"
-                max="150"
-                className="pr-20"
+                max="500"
+                className={`pr-20 ${
+                  validationError
+                    ? "border-2 border-red-500 focus-visible:ring-red-500"
+                    : ""
+                }`}
               />
               <Unit>kWh/m²/yr</Unit>
             </div>
