@@ -7,6 +7,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -465,11 +466,20 @@ export const AddProjectDataWizard = ({
                         <AlertTriangle className="h-5 w-5" />
                         Validation Errors
                       </AlertDialogTitle>
-                      <AlertDialogDescription className="space-y-2 pt-4">
+                      <AlertDialogDescription className="space-y-4 pt-4">
                         <p className="text-foreground font-medium">
                           Please fix the following errors before saving:
                         </p>
-                        <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                        <div className="flex flex-wrap gap-2">
+                          <Badge variant="destructive" className="text-sm px-3 py-1">
+                            {activeTab === "project-overview"
+                              ? "Overview"
+                              : activeTab === "certifications"
+                              ? "Certifications"
+                              : `RIBA Stage ${activeTab.split("-")[1]}`}
+                          </Badge>
+                        </div>
+                        <ul className="list-disc list-inside space-y-1 text-muted-foreground text-sm">
                           {validationErrors.map((error, index) => (
                             <li key={index}>{error}</li>
                           ))}
