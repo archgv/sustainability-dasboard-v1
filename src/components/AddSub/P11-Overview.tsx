@@ -75,7 +75,7 @@ export const AddOverview = ({
       <div className="flex-1 overflow-y-auto space-y-6 pr-2">
         {/* Project Information */}
         <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-x-8 gap-y-4 bg-muted/30 p-4 rounded-[20px] px-6">
+          <div className="grid grid-cols-2 gap-x-[72px] gap-y-4 bg-muted/30 p-4 rounded-[20px] px-6">
             <div>
               <Label className="text-sm font-medium">Project Location</Label>
               <p className="text-sm text-muted-foreground mt-1">
