@@ -470,20 +470,20 @@ export const AddProjectDataWizard = ({
                         <p className="text-foreground font-medium">
                           Please fix the following errors before saving:
                         </p>
-                        <div className="flex flex-wrap gap-2">
-                          <Badge variant="destructive" className="text-sm px-3 py-1">
-                            {activeTab === "project-overview"
-                              ? "Overview"
-                              : activeTab === "certifications"
-                              ? "Certifications"
-                              : `RIBA Stage ${activeTab.split("-")[1]}`}
-                          </Badge>
-                        </div>
-                        <ul className="list-disc list-inside space-y-1 text-muted-foreground text-sm">
+                        <div className="space-y-2">
                           {validationErrors.map((error, index) => (
-                            <li key={index}>{error}</li>
+                            <div key={index} className="flex items-start gap-2">
+                              <Badge variant="destructive" className="text-xs px-2 py-0.5 shrink-0">
+                                {activeTab === "project-overview"
+                                  ? "Overview"
+                                  : activeTab === "certifications"
+                                  ? "Certifications"
+                                  : `RIBA Stage ${activeTab.split("-")[1]}`}
+                              </Badge>
+                              <span className="text-muted-foreground text-sm">{error}</span>
+                            </div>
                           ))}
-                        </ul>
+                        </div>
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
