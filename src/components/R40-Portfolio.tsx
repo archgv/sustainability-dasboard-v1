@@ -25,6 +25,7 @@ export const Portfolio = ({
 }: PortfolioProps) => {
   // Format numbers with commas
   const formatNumber = (num: number) => {
+    if (num == null || isNaN(num as number)) return "";
     return num.toLocaleString();
   };
 
