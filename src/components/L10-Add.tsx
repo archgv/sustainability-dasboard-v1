@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { Plus, Download } from 'lucide-react';
 import { AddProjectDataWizard } from './L11-AddWizard';
 import { Project } from '@/components/Key/project';
+import { exportToExcel } from './Util/UtilExcel';
 
 import { WizardData } from './L11-AddWizard';
 import { sampleProjects } from '@/data/sampleData';
@@ -35,6 +36,17 @@ export const AddProjectData = ({ projects }: AddProjectDataProps) => {
 				<div className="text-md text-gray-300">Total Projects</div>
 				<div className="text-2xl font-bold text-pink-300">{sampleProjects.length}</div>
 			</div>
+
+			<Card className="p-2 mt-4">
+				<Button 
+					className="rounded-full w-full h-[50px] border-0 shadow-inner bg-gray-50" 
+					variant="outline" 
+					onClick={() => exportToExcel(sampleProjects)}
+				>
+					<Download className="h-5 w-5 mr-2" />
+					<h2 className="hover:text-white p-0 m-0">Export Data</h2>
+				</Button>
+			</Card>
 		</>
 	);
 };
