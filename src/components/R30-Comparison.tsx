@@ -252,7 +252,7 @@ export const Comparison = ({
                             {project["Project Type"]}
                           </Badge>
                           <span className="text-xs text-gray-500">
-                            RIBA {project["Current RIBA Stage"]}
+                            RIBA {project["View RIBA Stage"]}
                           </span>
                         </div>
                       </div>

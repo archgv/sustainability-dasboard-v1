@@ -10,7 +10,7 @@ import { SectorSelector } from "@/components/SectorSub/S10-SectorSelector";
 import { SectorChart } from "@/components/SectorSub/S20-SectorChart";
 import { SectorTable } from "@/components/SectorSub/S30-SectorTable";
 import { chartColors } from "./Key/KeyColor";
-import { getProjectCurrrentStage } from "./Util/UtilProject";
+import { getProjectViewStage } from "./Util/UtilProject";
 
 interface SectorStats {
   count: number;
@@ -62,7 +62,7 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
         });
 
   const filteredProjectsNull = filteredProjectsYear.filter(
-    (project) => getProjectCurrrentStage(project)[selectedKPI]
+    (project) => getProjectViewStage(project)[selectedKPI]
   );
 
   const sectorStats = filteredProjectsNull.reduce<SectorStatsMap>(
@@ -79,7 +79,7 @@ export const SectorPerformance = ({ projects }: { projects: Project[] }) => {
         };
       }
       acc[sector].count++;
-      const value = getProjectCurrrentStage(project)[selectedKPI] || 0;
+      const value = getProjectViewStage(project)[selectedKPI] || 0;
       const gia = project["GIA"] || 0;
       if (valueType === "total" && gia > 0) {
         let totalValue = value * gia;

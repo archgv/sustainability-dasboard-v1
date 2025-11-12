@@ -23,7 +23,7 @@ const Index = () => {
   const [filters, setFilters] = useState({
     "Primary Sector": "all",
     "Project Type": "all",
-    "Current RIBA Stage": "all",
+    "View RIBA Stage": "all",
     dateRange: "all",
   });
 
@@ -38,8 +38,8 @@ const Index = () => {
         newFilters["Project Type"] === "all" ||
         project["Project Type"] === newFilters["Project Type"];
       const ribaStageMatch =
-        newFilters["Current RIBA Stage"] === "all" ||
-        project["Current RIBA Stage"] === newFilters["Current RIBA Stage"];
+        newFilters["View RIBA Stage"] === "all" ||
+        project["View RIBA Stage"] === newFilters["View RIBA Stage"];
 
       let dateMatch = true;
       if (newFilters.dateRange !== "all") {
@@ -68,7 +68,7 @@ const Index = () => {
     const defaultFilters = {
       "Primary Sector": "all",
       "Project Type": "all",
-      "Current RIBA Stage": "all",
+      "View RIBA Stage": "all",
       dateRange: "all",
     };
     handleFilterChange(defaultFilters);

@@ -1,5 +1,3 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -9,27 +7,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { HelpCircle, AlertTriangle, Info } from "lucide-react";
 import { Project } from "@/components/Key/project";
 import { WizardData } from "../L11-AddWizard";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { StageKeys } from "../Key/KeyStage";
 import { TooltipField } from "../ui/tooltip-field";
 
@@ -58,6 +37,13 @@ export const AddOverview = ({
   if (!selectedProject) {
     return null;
   }
+
+  console.log(projectData["Current RIBA Stage"]);
+  console.log(Object.keys(projectData));
+  console.log(
+    typeof projectData["Current RIBA Stage"],
+    projectData["Current RIBA Stage"]
+  );
 
   return (
     <div className="space-y-6">
@@ -126,8 +112,8 @@ export const AddOverview = ({
       <div className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <TooltipField
-            label="Current RIBA stage"
-            tooltip="Current RIBA stage"
+            label="Current RIBA Stage"
+            tooltip="Current RIBA Stage"
             required={true}
           >
             <Select
@@ -137,7 +123,7 @@ export const AddOverview = ({
               }
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select current RIBA stage" />
+                <SelectValue placeholder="Select Current RIBA Stage" />
               </SelectTrigger>
               <SelectContent>
                 {stages.map((stage) => (

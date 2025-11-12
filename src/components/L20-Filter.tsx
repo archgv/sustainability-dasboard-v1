@@ -18,7 +18,7 @@ interface FilterProps {
     "Primary Sector": string;
     dateRange: string;
     "Project Type": string;
-    "Current RIBA Stage": string;
+    "View RIBA Stage": string;
   };
   onFilterChange: (filters: FilterProps["filters"]) => void;
   onClearFilters: () => void;
@@ -50,7 +50,7 @@ export const FilterPanel = ({
   const handleRibaStageChange = (value: string) => {
     onFilterChange({
       ...filters,
-      "Current RIBA Stage": value,
+      "View RIBA Stage": value,
     });
   };
   return (
@@ -128,7 +128,7 @@ export const FilterPanel = ({
                 RIBA Stage
               </Label>
               <Select
-                value={filters["Current RIBA Stage"] || "all"}
+                value={filters["View RIBA Stage"] || "all"}
                 onValueChange={handleRibaStageChange}
               >
                 <SelectTrigger>

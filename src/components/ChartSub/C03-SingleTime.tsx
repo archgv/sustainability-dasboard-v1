@@ -27,7 +27,7 @@ import {
   getTooltipContainerStyle,
   getUnit,
 } from "../Util/ChartConfig";
-import { getGIA, getProjectCurrrentStage } from "../Util/UtilProject";
+import { getGIA, getProjectViewStage } from "../Util/UtilProject";
 import { getProjectData } from "../Util/UtilChart";
 
 interface SingleTimeProps {
@@ -49,7 +49,7 @@ export const SingleTime = ({
 
   const chartData = projects
     .map((project) => {
-      const projectCurrentStage = getProjectCurrrentStage(project);
+      const projectCurrentStage = getProjectViewStage(project);
 
       const kpiValues = Object.fromEntries(
         KPIOptions.map(({ key }) => {
@@ -60,8 +60,8 @@ export const SingleTime = ({
       );
 
       const displayName =
-        isComparingToSelf && project["Current RIBA Stage"]
-          ? `${project["Project Name"]} (RIBA ${project["Current RIBA Stage"]})`
+        isComparingToSelf && project["View RIBA Stage"]
+          ? `${project["Project Name"]} (RIBA ${project["View RIBA Stage"]})`
           : project["Project Name"];
 
       // Extract year only from completion date
@@ -71,7 +71,7 @@ export const SingleTime = ({
         id: project["id"],
         "Project Name": project["Project Name"],
         "Primary Sector": project["Primary Sector"],
-        "Current RIBA Stage": project["Current RIBA Stage"],
+        "View RIBA Stage": project["View RIBA Stage"],
         "Structural Frame Materials":
           projectCurrentStage?.["Structural Frame Materials"],
         displayName,

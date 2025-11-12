@@ -30,7 +30,7 @@ export const Portfolio = ({
   };
 
   const currrentStageProject = (project) =>
-    project["RIBA Stage"][project["Current RIBA Stage"]];
+    project["RIBA Stage"][project["View RIBA Stage"]];
 
   return (
     <Card className="shadow-inner rounded-tl-[40px] rounded-tr-[40px] rounded-bl-none rounded-br-none pb-20">

@@ -36,7 +36,7 @@ import {
   getUnitBracket,
   getUnit,
 } from "../Util/ChartConfig";
-import { getGIA, getProjectCurrrentStage } from "../Util/UtilProject";
+import { getGIA, getProjectViewStage } from "../Util/UtilProject";
 import { getProjectData } from "../Util/UtilChart";
 
 interface BarChartProps {
@@ -58,7 +58,7 @@ export const SingleProject = ({
 }: BarChartProps) => {
   const kpi1Config = KPIOptions.find((kpi) => kpi.key === selectedKPI1);
   const chartData = projects.map((project) => {
-    const projectCurrentStage = getProjectCurrrentStage(project);
+    const projectCurrentStage = getProjectViewStage(project);
 
     const kpiValues = Object.fromEntries(
       KPIOptions.map(({ key }) => {
@@ -73,7 +73,7 @@ export const SingleProject = ({
       id: project["id"],
       "Project Name": project["Project Name"],
       "Primary Sector": project["Primary Sector"],
-      "Current RIBA Stage": project["Current RIBA Stage"],
+      "View RIBA Stage": project["View RIBA Stage"],
       "Structural Frame Materials":
         projectCurrentStage?.["Structural Frame Materials"],
       ...kpiValues,
@@ -155,8 +155,8 @@ export const SingleProject = ({
             {...getXAxisProps("Single Project", kpi1Config, valueType)}
             dataKey={(project) => {
               const displayName =
-                isComparingToSelf && project["Current RIBA Stage"]
-                  ? `${project["id"]} ${project["Project Name"]} (RIBA ${project["Current RIBA Stage"]})`
+                isComparingToSelf && project["View RIBA Stage"]
+                  ? `${project["id"]} ${project["Project Name"]} (RIBA ${project["View RIBA Stage"]})`
                   : project["id"] + " " + project["Project Name"];
               return displayName;
             }}

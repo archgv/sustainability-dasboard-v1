@@ -35,6 +35,7 @@ export interface Project {
   "Other Cerification"?: string;
 
   "Current RIBA Stage": StageKey;
+  "View RIBA Stage": StageKey;
 
   "RIBA Stage": {
     [K in StageKey]: {

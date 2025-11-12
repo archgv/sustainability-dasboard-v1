@@ -155,6 +155,7 @@ export interface WizardData {
   "Other Cerification"?: string;
 
   "Current RIBA Stage": string;
+  "View RIBA Stage": string;
 
   "RIBA Stage": {
     [key: string]: {
@@ -228,6 +229,7 @@ export const AddProjectDataWizard = ({
     "Other Cerification": "",
 
     "Current RIBA Stage": "",
+    "View RIBA Stage": "",
 
     "RIBA Stage": {},
   });
@@ -260,6 +262,7 @@ export const AddProjectDataWizard = ({
       "Other Cerification": "",
 
       "Current RIBA Stage": "",
+      "View RIBA Stage": "",
 
       "RIBA Stage": {},
     });
@@ -318,12 +321,6 @@ export const AddProjectDataWizard = ({
     const project = projects.find((p) => p.id === projectId);
     if (!project) return;
 
-    // Map certification values to wizard format
-    const mapCertificationValue = (value: string) => {
-      if (!value || value === "N/A") return "";
-      return value.toLowerCase().replace(" ", "-");
-    };
-
     const mapStageData = (stage: Project["RIBA Stage"][StageKey]) => ({
       "Updated GIA": stage?.["Updated GIA"]?.toString() || "",
       "Method Energy Measurement":
@@ -371,27 +368,27 @@ export const AddProjectDataWizard = ({
       "Operational Energy Existing Building":
         project["Operational Energy Existing Building"]?.toString() || "",
       GIA: project["GIA"]?.toString() || "",
-      "PC Year": project["PC Year"] ? project["PC Year"].toString() : "",
-      "Construction Start Year": project["Construction Start Year"]
-        ? project["Construction Start Year"].toString()
-        : "",
+      "PC Year": project["PC Year"]?.toString() || "",
+      "Construction Start Year":
+        project["Construction Start Year"]?.toString() || "",
 
-      "EI Team Scope": "",
-      "External Consultants": "",
-      "Project Lead": "",
-      "Mission Statement": "",
+      "EI Team Scope": project["EI Team Scope"]?.toString() || "",
+      "External Consultants": project["External Consultants"]?.toString() || "",
+      "Project Lead": project["Project Lead"]?.toString() || "",
+      "Mission Statement": project["Mission Statement"]?.toString() || "",
 
-      BREEAM: mapCertificationValue(project["BREEAM"] || ""),
-      LEED: mapCertificationValue(project["LEED"] || ""),
-      WELL: mapCertificationValue(project["WELL"] || ""),
-      Fitwell: "",
-      Passivhaus: project["Passivhaus"] ? "Passivhaus" : "",
-      EnerPHit: project["EnerPHit"] ? "EnerPHit" : "",
-      UKNZCBS: "",
-      NABERS: project["NABERS"]?.includes("Star") ? "yes" : "",
-      "Other Cerification": "",
+      BREEAM: project["BREEAM"] || "",
+      LEED: project["LEED"] || "",
+      WELL: project["WELL"] || "",
+      Fitwell: project["Fitwell"] || "",
+      Passivhaus: project["Passivhaus"] || "",
+      EnerPHit: project["EnerPHit"] || "",
+      UKNZCBS: project["UKNZCBS"] || "",
+      NABERS: project["NABERS"] || "",
+      "Other Cerification": project["Other Cerification"]?.toString() || "",
 
-      "Current RIBA Stage": "",
+      "Current RIBA Stage": project["Current RIBA Stage"]?.toString() || "",
+      "View RIBA Stage": project["View RIBA Stage"]?.toString() || "",
 
       "RIBA Stage": ribaStagesData,
     };
@@ -537,12 +534,17 @@ export const AddProjectDataWizard = ({
 
                         setValidationErrors((prev) => {
                           // Remove existing errors for this tab
-                          const filtered = prev.filter((e) => e.tab !== tabName);
+                          const filtered = prev.filter(
+                            (e) => e.tab !== tabName
+                          );
                           // Add new errors if invalid
                           if (!isValid && errorMessage) {
                             return [
                               ...filtered,
-                              { tab: tabName, errors: errorMessage.split("; ") },
+                              {
+                                tab: tabName,
+                                errors: errorMessage.split("; "),
+                              },
                             ];
                           }
                           return filtered;
@@ -664,7 +666,9 @@ export const AddProjectDataWizard = ({
                     variant="outline"
                     size="lg"
                     disabled={!isFormValid}
-                    className={!isFormValid ? "opacity-50 cursor-not-allowed" : ""}
+                    className={
+                      !isFormValid ? "opacity-50 cursor-not-allowed" : ""
+                    }
                   >
                     Save
                   </Button>
@@ -696,7 +700,9 @@ export const AddProjectDataWizard = ({
                   <Button
                     size="lg"
                     disabled={!isFormValid}
-                    className={!isFormValid ? "opacity-50 cursor-not-allowed" : ""}
+                    className={
+                      !isFormValid ? "opacity-50 cursor-not-allowed" : ""
+                    }
                   >
                     Save & Exit
                   </Button>

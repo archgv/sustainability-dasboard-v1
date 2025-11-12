@@ -23,7 +23,7 @@ import {
   getTooltipContainerStyle,
   getUnit,
 } from "../Util/ChartConfig";
-import { getGIA, getProjectCurrrentStage } from "../Util/UtilProject";
+import { getGIA, getProjectViewStage } from "../Util/UtilProject";
 
 interface CompareTwoProps {
   projects: Project[];
@@ -44,7 +44,7 @@ export const CompareTwo = ({
   const kpi2Config = KPIOptions.find((kpi) => kpi.key === selectedKPI2);
 
   const chartData = projects.map((project) => {
-    const projectCurrentStage = getProjectCurrrentStage(project);
+    const projectCurrentStage = getProjectViewStage(project);
     const multiplier = valueType === "total" ? getGIA(project) : 1;
     const projectKPI1 = projectCurrentStage[selectedKPI1] * multiplier;
     const projectKPI2 = projectCurrentStage[selectedKPI2] * multiplier;
@@ -52,7 +52,7 @@ export const CompareTwo = ({
       id: project["id"],
       "Project Name": project["Project Name"],
       "Primary Sector": project["Primary Sector"],
-      "Current RIBA Stage": project["Current RIBA Stage"],
+      "View RIBA Stage": project["View RIBA Stage"],
       [selectedKPI1]: projectKPI1,
       [selectedKPI2]: projectKPI2,
     };
@@ -100,8 +100,8 @@ export const CompareTwo = ({
             if (active && payload && payload.length) {
               const project = payload[0].payload;
               const displayName =
-                isComparingToSelf && project["Current RIBA Stage"]
-                  ? `${project["id"]} ${project["Project Name"]} (RIBA ${project["Current RIBA Stage"]})`
+                isComparingToSelf && project["View RIBA Stage"]
+                  ? `${project["id"]} ${project["Project Name"]} (RIBA ${project["View RIBA Stage"]})`
                   : project["id"] + " " + project["Project Name"];
 
               const energyValue = project["Energy Measurement Method"];
